@@ -1,0 +1,22 @@
+[package]
+name = "resilnet_core"
+version = "0.1.0"
+edition = "2021"
+description = "ResilNet hybrid routing core engine (offline-first, FFI-ready)"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "resilnet_core"
+# lib + cdylib + staticlib สำหรับ Flutter (iOS/Android/macOS) ผ่าน FRB
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[dependencies]
+tokio = { version = "1.43", features = ["full"] }
+parking_lot = "0.12"
+uuid = { version = "1.11", features = ["v4"] }
+thiserror = "2.0"
+tracing = "0.1"
+flutter_rust_bridge = "=2.11.1"
+
+[dev-dependencies]
+tokio = { version = "1.43", features = ["full", "test-util"] }

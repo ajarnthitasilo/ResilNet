@@ -1,0 +1,345 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../models/peer.dart';
+import '../services/crypto_service.dart';
+import '../state/app_state.dart';
+
+class QrScannerScreen extends StatefulWidget {
+  const QrScannerScreen({super.key});
+
+  @override
+  State<QrScannerScreen> createState() => _QrScannerScreenState();
+}
+
+class _QrScannerScreenState extends State<QrScannerScreen> {
+  MobileScannerController? _controller;
+  bool _handled = false;
+  bool _starting = true;
+  bool _closing = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _boot();
+  }
+
+  Future<void> _boot() async {
+    // หยุด BLE ก่อนเปิดกล้อง — ลดโอกาส radio conflict / UI freeze บน iOS
+    try {
+      await context.read<AppState>().pauseRadiosForCamera();
+    } catch (e) {
+      debugPrint('[ResilNet] pause radios: $e');
+    }
+    if (!mounted) return;
+    await _prepareCamera();
+  }
+
+  Future<void> _safeClose([bool? result]) async {
+    if (_closing) return;
+    _closing = true;
+    try {
+      await _controller?.stop();
+    } catch (_) {}
+    try {
+      await _controller?.dispose();
+    } catch (_) {}
+    _controller = null;
+    if (!mounted) return;
+    final s = context.read<AppState>();
+    Navigator.of(context).pop(result);
+    // resume หลัง pop เพื่อไม่บล็อกการปิดหน้า
+    unawaited(s.resumeRadiosAfterCamera());
+  }
+
+  @override
+  void dispose() {
+    // เผื่อถูก pop ด้วย gesture / system back
+    final c = _controller;
+    _controller = null;
+    c?.dispose();
+    // อย่าเรียก context ใน dispose — resume ผ่าน WillPop / _safeClose เป็นหลัก
+    super.dispose();
+  }
+
+  Future<void> _prepareCamera() async {
+    setState(() {
+      _starting = true;
+      _error = null;
+    });
+
+    try {
+      final status = await Permission.camera.request();
+      if (!status.isGranted) {
+        if (!mounted) return;
+        setState(() {
+          _starting = false;
+          _error = status.isPermanentlyDenied
+              ? 'ไม่ได้รับสิทธิ์กล้อง — เปิดใน Settings > ResilNet'
+              : 'ต้องอนุญาตกล้องเพื่อสแกน QR';
+        });
+        return;
+      }
+
+      final controller = MobileScannerController(
+        formats: const [BarcodeFormat.qrCode],
+        detectionSpeed: DetectionSpeed.normal,
+        facing: CameraFacing.back,
+        autoStart: true,
+      );
+      _controller = controller;
+      if (!mounted) return;
+      setState(() => _starting = false);
+    } catch (e, st) {
+      debugPrint('[ResilNet] camera prepare failed: $e\n$st');
+      if (!mounted) return;
+      setState(() {
+        _starting = false;
+        _error = 'เปิดกล้องไม่สำเร็จ: $e';
+      });
+    }
+  }
+
+  Future<void> _handle(String data) async {
+    if (_handled || _closing) return;
+    _handled = true;
+    try {
+      await _controller?.stop();
+    } catch (_) {}
+
+    try {
+      final obj = jsonDecode(data) as Map<String, dynamic>;
+      final id = (obj['id'] as String?)?.trim() ?? '';
+      final rawKey = ((obj['pk'] ?? obj['pubKey']) as String?)?.trim() ?? '';
+      final name = (obj['name'] as String?)?.trim();
+      if (id.isEmpty || rawKey.isEmpty) {
+        throw const FormatException('Invalid QR data');
+      }
+
+      final pub = CryptoService.normalizePublicKey(rawKey);
+      if (!mounted) return;
+      final s = context.read<AppState>();
+      final now = DateTime.now().millisecondsSinceEpoch;
+      await s.db.upsertPeer(
+        Peer(
+          id: id,
+          publicKey: pub,
+          displayName: name,
+          isVerifiedIssuer: false,
+          isBlocked: false,
+          lastSeen: now,
+        ),
+      );
+
+      if (!mounted) return;
+      await _safeClose(true);
+    } catch (e) {
+      debugPrint('[ResilNet] QR handle failed: $e');
+      _handled = false;
+      try {
+        await _controller?.start();
+      } catch (_) {}
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('สแกนไม่สำเร็จ: QR ไม่ถูกต้อง')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        await _safeClose(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('สแกน QR เพิ่มเพื่อน'),
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => _safeClose(false),
+          ),
+        ),
+        body: _buildScannerBody(),
+      ),
+    );
+  }
+
+  Widget _buildScannerBody() {
+    if (_starting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_error != null) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_error!, textAlign: TextAlign.center),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: () async {
+                if (await Permission.camera.isPermanentlyDenied) {
+                  await openAppSettings();
+                } else {
+                  await _prepareCamera();
+                }
+              },
+              child: const Text('ลองอีกครั้ง / เปิด Settings'),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => _safeClose(false),
+              child: const Text('ปิด'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final controller = _controller;
+    if (controller == null) {
+      return const Center(child: Text('กล้องยังไม่พร้อม'));
+    }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        MobileScanner(
+          controller: controller,
+          onDetect: (capture) {
+            if (_handled || _closing) return;
+            final barcodes = capture.barcodes;
+            if (barcodes.isEmpty) return;
+            final raw = barcodes.first.rawValue;
+            if (raw == null || raw.isEmpty) return;
+            _handle(raw);
+          },
+          errorBuilder: (context, error) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  'กล้องผิดพลาด: $error',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          },
+        ),
+        const _QrScanOverlay(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            width: double.infinity,
+            color: Colors.black54,
+            padding: const EdgeInsets.all(12),
+            child: const Text(
+              'จัด QR ให้อยู่ในกรอบตรงกลาง',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// กรอบสแกน QR ตรงกลาง — มืดรอบนอกเพื่อโฟกัสตำแหน่งสแกน
+class _QrScanOverlay extends StatelessWidget {
+  const _QrScanOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: CustomPaint(
+        painter: _QrScanOverlayPainter(
+          frameColor: const Color(0xFF10B981),
+          overlayColor: Colors.black.withValues(alpha: 0.55),
+        ),
+        child: const SizedBox.expand(),
+      ),
+    );
+  }
+}
+
+class _QrScanOverlayPainter extends CustomPainter {
+  _QrScanOverlayPainter({
+    required this.frameColor,
+    required this.overlayColor,
+  });
+
+  final Color frameColor;
+  final Color overlayColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const frameRatio = 0.68;
+    final frameSize = size.shortestSide * frameRatio;
+    final left = (size.width - frameSize) / 2;
+    final top = (size.height - frameSize) / 2;
+    final scanRect = Rect.fromLTWH(left, top, frameSize, frameSize);
+    final rrect = RRect.fromRectAndRadius(scanRect, const Radius.circular(16));
+
+    canvas.drawPath(
+      Path.combine(
+        PathOperation.difference,
+        Path()..addRect(Offset.zero & size),
+        Path()..addRRect(rrect),
+      ),
+      Paint()..color = overlayColor,
+    );
+
+    final border = Paint()
+      ..color = frameColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3;
+    canvas.drawRRect(rrect, border);
+
+    const cornerLen = 28.0;
+    const stroke = 5.0;
+    final corner = Paint()
+      ..color = frameColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+
+    void drawCorner(Offset start, Offset hEnd, Offset vEnd) {
+      canvas.drawLine(start, hEnd, corner);
+      canvas.drawLine(start, vEnd, corner);
+    }
+
+    drawCorner(
+      scanRect.topLeft,
+      scanRect.topLeft + const Offset(cornerLen, 0),
+      scanRect.topLeft + const Offset(0, cornerLen),
+    );
+    drawCorner(
+      scanRect.topRight,
+      scanRect.topRight + const Offset(-cornerLen, 0),
+      scanRect.topRight + const Offset(0, cornerLen),
+    );
+    drawCorner(
+      scanRect.bottomLeft,
+      scanRect.bottomLeft + const Offset(cornerLen, 0),
+      scanRect.bottomLeft + const Offset(0, -cornerLen),
+    );
+    drawCorner(
+      scanRect.bottomRight,
+      scanRect.bottomRight + const Offset(-cornerLen, 0),
+      scanRect.bottomRight + const Offset(0, -cornerLen),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _QrScanOverlayPainter oldDelegate) => false;
+}

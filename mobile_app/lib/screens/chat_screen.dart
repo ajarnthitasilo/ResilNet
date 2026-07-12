@@ -1,0 +1,439 @@
+import 'dart:convert';
+
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+import '../models/chat_message.dart';
+import '../state/app_state.dart';
+import '../widgets/identicon.dart';
+import 'qr_scanner_screen.dart';
+
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key, required this.peerId});
+
+  final String peerId;
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final _text = TextEditingController();
+  final _peerPublicPem = TextEditingController();
+  final _focusNode = FocusNode();
+  final _uuid = const Uuid();
+  bool _showEmojiPicker = false;
+
+  static const _pickerBg = Color(0xFF1A2332);
+  static const _pickerAccent = Color(0xFF10B981);
+
+  void _toggleEmojiPicker() {
+    setState(() => _showEmojiPicker = !_showEmojiPicker);
+    if (_showEmojiPicker) {
+      _focusNode.unfocus();
+    } else {
+      _focusNode.requestFocus();
+    }
+  }
+
+  Config get _emojiPickerConfig => Config(
+    height: 256,
+    checkPlatformCompatibility: true,
+    emojiViewConfig: const EmojiViewConfig(
+      backgroundColor: _pickerBg,
+      emojiSizeMax: 28,
+    ),
+    categoryViewConfig: const CategoryViewConfig(
+      backgroundColor: _pickerBg,
+      indicatorColor: _pickerAccent,
+      iconColor: Colors.white54,
+      iconColorSelected: _pickerAccent,
+      backspaceColor: _pickerAccent,
+    ),
+    bottomActionBarConfig: const BottomActionBarConfig(
+      backgroundColor: _pickerBg,
+      buttonColor: _pickerAccent,
+      buttonIconColor: Colors.white,
+    ),
+    searchViewConfig: const SearchViewConfig(
+      backgroundColor: _pickerBg,
+      buttonIconColor: Colors.white54,
+    ),
+  );
+
+  Future<void> _setAlias() async {
+    final s = context.read<AppState>();
+    final existing = await s.db.getContactAlias(widget.peerId) ?? '';
+    final controller = TextEditingController(text: existing);
+
+    if (!mounted) return;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('ตั้งชื่อเล่น (Contact Alias)'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Alias นี้เก็บในเครื่องเท่านั้น (Local-only)\nไม่ถูกส่งออกไปกับระบบ E2EE',
+                style: Theme.of(ctx).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(labelText: 'ชื่อเล่น'),
+                autofocus: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('ยกเลิก'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('บันทึก'),
+            ),
+          ],
+        );
+      },
+    );
+    if (ok != true) return;
+    await s.db.setContactAlias(
+      publicKeyHash: widget.peerId,
+      aliasName: controller.text,
+    );
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _text.dispose();
+    _peerPublicPem.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _send() async {
+    final s = context.read<AppState>();
+    final msgText = _text.text.trim();
+    if (msgText.isEmpty) return;
+
+    final receiverId = widget.peerId;
+    var receiverPub = _peerPublicPem.text.trim();
+    if (receiverPub.isEmpty) {
+      final peer = await s.db.getPeer(receiverId);
+      receiverPub = peer?.publicKey.trim() ?? '';
+      if (receiverPub.isNotEmpty) _peerPublicPem.text = receiverPub;
+    }
+    if (receiverPub.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'กรุณาวาง Public Key (PEM) ของผู้รับก่อน เพื่อเข้ารหัส E2EE',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final pkg = s.crypto.encryptForRecipient(
+      plaintext: msgText,
+      receiverPublicPem: receiverPub,
+      senderId: s.myUserId,
+      receiverId: receiverId,
+      timestamp: ts,
+    );
+
+    final msg = ChatMessage(
+      id: _uuid.v4(),
+      senderId: s.myUserId,
+      receiverId: receiverId,
+      encryptedPayload: pkg.encryptedPayload,
+      encryptedKey: pkg.encryptedKey,
+      signature: pkg.signature,
+      ttl: 5,
+      timestamp: ts,
+      status: MessageStatus.pending,
+      type: MessageType.direct,
+    );
+
+    await s.db.saveMessage(msg);
+    await s.routeOutbound(msg);
+    _text.clear();
+    if (_showEmojiPicker) setState(() => _showEmojiPicker = false);
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  String _statusLabel(MessageStatus s) {
+    return switch (s) {
+      MessageStatus.pending => 'Pending',
+      MessageStatus.sent => 'Transmitted',
+      MessageStatus.relayed => 'Relayed',
+      MessageStatus.delivered => 'Delivered',
+    };
+  }
+
+  String _tryDecrypt(AppState s, ChatMessage m) {
+    if (m.receiverId != s.myUserId && m.senderId != s.myUserId) return '...';
+    if (m.receiverId == s.myUserId) {
+      try {
+        return s.crypto.decryptFromSender(
+          encryptedPayload: m.encryptedPayload,
+          encryptedKey: m.encryptedKey,
+        );
+      } catch (_) {
+        return '[ถอดรหัสไม่สำเร็จ]';
+      }
+    }
+    // Sender side: show local plaintext is not stored; show encrypted preview
+    final decoded = utf8.decode(base64Decode(m.encryptedPayload));
+    final obj = jsonDecode(decoded) as Map<String, dynamic>;
+    return '[ส่งแล้ว • ct=${(obj['ct'] as String).substring(0, 16)}…]';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.watch<AppState>();
+    final myId = s.myUserId;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('แชต (E2EE)'),
+        actions: [
+          IconButton(
+            tooltip: 'สแกน QR เพิ่มเพื่อน/ผู้นำชุมชน',
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+              );
+              if (!context.mounted) return;
+              final peer = await context.read<AppState>().db.getPeer(
+                widget.peerId,
+              );
+              if (!context.mounted) return;
+              if (peer?.publicKey.isNotEmpty == true) {
+                _peerPublicPem.text = peer!.publicKey;
+                setState(() {});
+              }
+            },
+            icon: const Icon(Icons.qr_code_scanner),
+          ),
+          IconButton(
+            tooltip: 'บล็อกผู้ส่งนี้',
+            onPressed: () async {
+              await context.read<AppState>().db.setPeerBlocked(
+                widget.peerId,
+                true,
+              );
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('บล็อกแล้ว: จะไม่แจ้งเตือน/ไม่ relay'),
+                ),
+              );
+            },
+            icon: const Icon(Icons.block),
+          ),
+          IconButton(
+            tooltip: 'ตั้งชื่อเล่น',
+            onPressed: _setAlias,
+            icon: const Icon(Icons.edit_outlined),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(52),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+            child: Row(
+              children: [
+                Identicon(id: widget.peerId, size: 30),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FutureBuilder<String>(
+                    future: s.db.resolveDisplayName(widget.peerId),
+                    builder: (context, nameSnap) {
+                      final name = nameSnap.data ?? widget.peerId;
+                      return Text(
+                        'Peer: $name',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.8),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Me: ${myId.substring(0, 10)}…',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.55),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: TextField(
+              controller: _peerPublicPem,
+              minLines: 2,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                labelText: 'Public Key (PEM) ของผู้รับ',
+                hintText: 'วาง Public Key ของเพื่อนที่นี่ (ได้จาก QR/แชร์ไฟล์)',
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListenableBuilder(
+              listenable: s,
+              builder: (context, _) {
+                return FutureBuilder<List<ChatMessage>>(
+                  future: s.db.getConversation(myId, widget.peerId),
+                  builder: (context, snap) {
+                    final items = snap.data ?? const [];
+                if (items.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'ยังไม่มีข้อความ\nพิมพ์ข้อความด้านล่างเพื่อส่งผ่าน Mesh',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.7),
+                        height: 1.4,
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(14, 4, 14, 14),
+                  itemCount: items.length,
+                  itemBuilder: (context, i) {
+                    final m = items[i];
+                    final isMe = m.senderId == myId;
+                    final text = _tryDecrypt(s, m);
+                    return Align(
+                      alignment: isMe
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 340),
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  text,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _statusLabel(m.status),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall
+                                          ?.copyWith(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.65,
+                                            ),
+                                          ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      'TTL ${m.ttl}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall
+                                          ?.copyWith(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.45,
+                                            ),
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+                  },
+                );
+              },
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        tooltip: 'อิโมจิ',
+                        onPressed: _toggleEmojiPicker,
+                        icon: Icon(
+                          _showEmojiPicker
+                              ? Icons.keyboard_outlined
+                              : Icons.emoji_emotions_outlined,
+                          color: _showEmojiPicker ? _pickerAccent : null,
+                        ),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _text,
+                          focusNode: _focusNode,
+                          minLines: 1,
+                          maxLines: 4,
+                          onTap: () {
+                            if (_showEmojiPicker)
+                              setState(() => _showEmojiPicker = false);
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'พิมพ์ข้อความ… (เข้ารหัสทันทีเมื่อกดส่ง)',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      FilledButton(onPressed: _send, child: const Text('ส่ง')),
+                    ],
+                  ),
+                ),
+                if (_showEmojiPicker)
+                  EmojiPicker(
+                    textEditingController: _text,
+                    config: _emojiPickerConfig,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
