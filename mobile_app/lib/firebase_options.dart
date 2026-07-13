@@ -39,6 +39,6 @@ class DefaultFirebaseOptions {
         messagingSenderId: FirebaseConfig.messagingSenderId,
         projectId: FirebaseConfig.projectId,
         storageBucket: '${FirebaseConfig.projectId}.appspot.com',
-        iosBundleId: 'com.example.resilnet',
+        iosBundleId: 'com.ajarnnarin.resilnet',
       );
 }

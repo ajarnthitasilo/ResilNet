@@ -16,29 +16,6 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>ResilNet</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>แอปต้องใช้ Bluetooth เพื่อสื่อสารแบบออฟไลน์ผ่านเครือข่ายชุมชน (BLE Mesh)</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>แอปต้องใช้ Bluetooth เพื่อโฆษณาตัวตนและรับส่งข้อความในเครือข่ายชุมชน</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>แอปใช้ตำแหน่ง GPS เพื่อคัดกรองประกาศเตือนภัยในพื้นที่ของคุณ และค้นหาอุปกรณ์ BLE ใกล้เคียง</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>แอปใช้ตำแหน่ง GPS เพื่อคัดกรองประกาศเตือนภัยในพื้นที่ของคุณ และเชื่อมต่อเครือข่าย BLE ชุมชน</string>
-	<key>NSCameraUsageDescription</key>
-	<string>แอปใช้กล้องเพื่อสแกน QR Code สำหรับแลกเปลี่ยน Public Key กับเพื่อนในชุมชน</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>แอปใช้ไมโครโฟนเพื่อบันทึกข้อความเสียงแบบ Push-to-Talk ในแชตชุมชน</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>แอปบันทึก QR Code ตัวตนลงคลังภาพ เพื่อแชร์ให้เพื่อนสแกนได้</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>แอปเข้าถึงคลังภาพเพื่อบันทึก QR Code ตัวตน</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>bluetooth-central</string>
-		<string>bluetooth-peripheral</string>
-		<string>remote-notification</string>
-		<string>fetch</string>
-	</array>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -49,6 +26,22 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>แอปต้องใช้ Bluetooth เพื่อสื่อสารแบบออฟไลน์ผ่านเครือข่ายชุมชน (BLE Mesh)</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>แอปต้องใช้ Bluetooth เพื่อโฆษณาตัวตนและรับส่งข้อความในเครือข่ายชุมชน</string>
+	<key>NSCameraUsageDescription</key>
+	<string>แอปใช้กล้องเพื่อสแกน QR Code สำหรับแลกเปลี่ยน Public Key กับเพื่อนในชุมชน</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>แอปใช้ตำแหน่ง GPS เพื่อคัดกรองประกาศเตือนภัยในพื้นที่ของคุณ และเชื่อมต่อเครือข่าย BLE ชุมชน</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>แอปใช้ตำแหน่ง GPS เพื่อคัดกรองประกาศเตือนภัยในพื้นที่ของคุณ และค้นหาอุปกรณ์ BLE ใกล้เคียง</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>แอปใช้ไมโครโฟนเพื่อบันทึกข้อความเสียงแบบ Push-to-Talk ในแชตชุมชน</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>แอปบันทึก QR Code ตัวตนลงคลังภาพ เพื่อแชร์ให้เพื่อนสแกนได้</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>แอปเข้าถึงคลังภาพเพื่อบันทึก QR Code ตัวตน</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -72,6 +65,13 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

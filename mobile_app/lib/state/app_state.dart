@@ -197,7 +197,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
     try {
       final supabaseOk = await initSupabase().timeout(
-        const Duration(seconds: 8),
+        const Duration(seconds: 3),
         onTimeout: () => false,
       );
       await init(enableSupabase: supabaseOk);

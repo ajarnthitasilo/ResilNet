@@ -29,11 +29,11 @@ Future<bool> initSupabase() async {
     await Supabase.initialize(
       url: url,
       publishableKey: key,
-    ).timeout(const Duration(seconds: 6));
+    ).timeout(const Duration(seconds: 3));
     debugPrint('[ResilNet] Supabase initialized');
     return true;
   } catch (e, st) {
-    debugPrint('[ResilNet] Supabase init failed: $e\n$st');
+    debugPrint('[ResilNet] Supabase init failed/timeout: $e\n$st');
     return false;
   }
 }
@@ -43,7 +43,7 @@ Future<void> ensureSupabaseAuthSession() async {
   try {
     final client = Supabase.instance.client;
     if (client.auth.currentSession != null) return;
-    await client.auth.signInAnonymously().timeout(const Duration(seconds: 8));
+    await client.auth.signInAnonymously().timeout(const Duration(seconds: 3));
     debugPrint('[ResilNet] Supabase anonymous session ready');
   } catch (e, st) {
     debugPrint('[ResilNet] Supabase anonymous sign-in failed: $e\n$st');

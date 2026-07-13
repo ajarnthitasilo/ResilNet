@@ -13,11 +13,12 @@ import '../push_background_handler.dart';
 import 'fcm_token_service.dart';
 import 'push_signal_processor.dart';
 
-/// FCM/APNs integration — privacy-first (metadata-only wire payloads).
+/// FCM/APNs — ห้ามแตะ FirebaseMessaging ใน constructor
+/// (ต้องรอหลัง Firebase.initializeApp มิฉะนั้น Release จะค้างจอขาว)
 class PushNotificationService {
   PushNotificationService();
 
-  final _messaging = FirebaseMessaging.instance;
+  FirebaseMessaging? _messaging;
   bool _initialized = false;
   bool _firebaseReady = false;
 
@@ -48,12 +49,13 @@ class PushNotificationService {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       _firebaseReady = true;
+      _messaging = FirebaseMessaging.instance;
 
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
       await _requestPlatformPermissions();
 
-      final settings = await _messaging.requestPermission(
+      final settings = await _messaging!.requestPermission(
         alert: true,
         badge: true,
         sound: true,
@@ -64,16 +66,16 @@ class PushNotificationService {
       FirebaseMessaging.onMessage.listen(_onForegroundMessage);
       FirebaseMessaging.onMessageOpenedApp.listen(_onOpenedApp);
 
-      final initial = await _messaging.getInitialMessage();
+      final initial = await _messaging!.getInitialMessage();
       if (initial != null) {
         unawaited(_dispatch(initial.data));
       }
 
-      _messaging.onTokenRefresh.listen((token) {
+      _messaging!.onTokenRefresh.listen((token) {
         unawaited(_registerToken(token));
       });
 
-      final token = await _messaging.getToken();
+      final token = await _messaging!.getToken();
       if (token != null) {
         await _registerToken(token);
       }
@@ -100,8 +102,9 @@ class PushNotificationService {
   }) async {
     _myUserId = myUserId;
     _tokenService = tokenService;
-    if (_firebaseReady) {
-      final token = await _messaging.getToken();
+    final messaging = _messaging;
+    if (_firebaseReady && messaging != null) {
+      final token = await messaging.getToken();
       if (token != null) await _registerToken(token);
     }
   }

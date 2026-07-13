@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:encrypt/encrypt.dart' as enc;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pointycastle/asn1.dart' as asn1;
 import 'package:pointycastle/export.dart' as pc;
@@ -14,6 +15,7 @@ import 'broadcast_alert_codec.dart';
 class CryptoService {
   static const _kPrivatePem = 'resilnet_rsa_private_pem';
   static const _kPublicPem = 'resilnet_rsa_public_pem';
+  static const _keychainTimeout = Duration(seconds: 3);
 
   final _storage = const FlutterSecureStorage();
 
@@ -21,8 +23,15 @@ class CryptoService {
   String? _privatePem;
 
   Future<void> init() async {
-    _privatePem = await _storage.read(key: _kPrivatePem);
-    _publicPem = await _storage.read(key: _kPublicPem);
+    try {
+      _privatePem = await _storage
+          .read(key: _kPrivatePem)
+          .timeout(_keychainTimeout);
+      _publicPem =
+          await _storage.read(key: _kPublicPem).timeout(_keychainTimeout);
+    } catch (e) {
+      debugPrint('[Crypto] Keychain read timeout/fail: $e');
+    }
 
     if (_privatePem != null && _publicPem != null) return;
 
@@ -32,11 +41,20 @@ class CryptoService {
     );
     final publicPem = _encodePublicKeyToPem(pair.publicKey as pc.RSAPublicKey);
 
-    await _storage.write(key: _kPrivatePem, value: privatePem);
-    await _storage.write(key: _kPublicPem, value: publicPem);
-
     _privatePem = privatePem;
     _publicPem = publicPem;
+
+    // Persist best-effort — อย่าบล็อก startup ถ้า Keychain ค้าง
+    try {
+      await _storage
+          .write(key: _kPrivatePem, value: privatePem)
+          .timeout(_keychainTimeout);
+      await _storage
+          .write(key: _kPublicPem, value: publicPem)
+          .timeout(_keychainTimeout);
+    } catch (e) {
+      debugPrint('[Crypto] Keychain write timeout — using in-memory keys: $e');
+    }
   }
 
   String get publicKeyPem {
