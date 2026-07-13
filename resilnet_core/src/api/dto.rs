@@ -3,7 +3,7 @@
 use flutter_rust_bridge::frb;
 
 use crate::hybrid_router::{
-    MessagePacket, NetworkStatus, RoutedPacket, RouterConfig, TransportType,
+    MessagePacket, NetworkStatus, PayloadTag, RoutedPacket, RouterConfig, TransportType,
 };
 
 /// ช่องทางส่งข้อมูล (mirror ของ `TransportType`)
@@ -21,6 +21,65 @@ impl From<TransportType> for TransportTypeDto {
             TransportType::Internet => Self::Internet,
             TransportType::BluetoothMesh => Self::BluetoothMesh,
             TransportType::OfflineQueue => Self::OfflineQueue,
+        }
+    }
+}
+
+/// ประเภท payload (wire tag: Text=1, Image=2, Audio=3, Firmware=4, Ack=5)
+#[frb]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum PayloadTagDto {
+    #[default]
+    Text,
+    Image,
+    Audio,
+    Firmware,
+    Ack,
+}
+
+impl From<PayloadTag> for PayloadTagDto {
+    fn from(t: PayloadTag) -> Self {
+        match t {
+            PayloadTag::Text => Self::Text,
+            PayloadTag::Image => Self::Image,
+            PayloadTag::Audio => Self::Audio,
+            PayloadTag::Firmware => Self::Firmware,
+            PayloadTag::Ack => Self::Ack,
+        }
+    }
+}
+
+impl From<PayloadTagDto> for PayloadTag {
+    fn from(d: PayloadTagDto) -> Self {
+        match d {
+            PayloadTagDto::Text => Self::Text,
+            PayloadTagDto::Image => Self::Image,
+            PayloadTagDto::Audio => Self::Audio,
+            PayloadTagDto::Firmware => Self::Firmware,
+            PayloadTagDto::Ack => Self::Ack,
+        }
+    }
+}
+
+impl PayloadTagDto {
+    pub const fn from_u8(value: u8) -> Option<Self> {
+        match value {
+            1 => Some(Self::Text),
+            2 => Some(Self::Image),
+            3 => Some(Self::Audio),
+            4 => Some(Self::Firmware),
+            5 => Some(Self::Ack),
+            _ => None,
+        }
+    }
+
+    pub const fn as_u8(self) -> u8 {
+        match self {
+            Self::Text => 1,
+            Self::Image => 2,
+            Self::Audio => 3,
+            Self::Firmware => 4,
+            Self::Ack => 5,
         }
     }
 }
@@ -58,6 +117,7 @@ pub struct MessagePacketDto {
     pub payload: Vec<u8>,
     pub timestamp: u64,
     pub ttl: u8,
+    pub payload_tag: PayloadTagDto,
 }
 
 impl From<MessagePacket> for MessagePacketDto {
@@ -69,19 +129,21 @@ impl From<MessagePacket> for MessagePacketDto {
             payload: p.payload,
             timestamp: p.timestamp,
             ttl: p.ttl,
+            payload_tag: p.payload_tag.into(),
         }
     }
 }
 
 impl From<MessagePacketDto> for MessagePacket {
     fn from(d: MessagePacketDto) -> Self {
-        MessagePacket::with_id(
+        MessagePacket::with_id_and_tag(
             d.id,
             d.sender,
             d.receiver,
             d.payload,
             d.timestamp,
             d.ttl,
+            d.payload_tag.into(),
         )
     }
 }

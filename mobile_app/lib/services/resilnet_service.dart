@@ -210,6 +210,7 @@ class ResilNetService extends ChangeNotifier {
           payload: dto.payload,
           timestampMs: dto.timestamp.toInt(),
           ttl: dto.ttl,
+          payloadTag: dto.payloadTag,
         );
         debugPrint('[ResilNet] UDP → legacy ingest_packet id=${dto.id}');
       }
@@ -261,6 +262,7 @@ class ResilNetService extends ChangeNotifier {
       payload: dto.payload,
       timestampMs: dto.timestamp.toInt(),
       ttl: dto.ttl,
+      payloadTag: dto.payloadTag,
     );
   }
 
@@ -333,6 +335,7 @@ class ResilNetService extends ChangeNotifier {
     required Uint8List payload,
     required int timestampMs,
     int ttl = 5,
+    PayloadTagDto payloadTag = PayloadTagDto.text,
   }) {
     return routePacket(
       packet: MessagePacketDto(
@@ -342,6 +345,7 @@ class ResilNetService extends ChangeNotifier {
         payload: payload,
         timestamp: BigInt.from(timestampMs),
         ttl: ttl,
+        payloadTag: payloadTag,
       ),
     );
   }
@@ -353,6 +357,7 @@ class ResilNetService extends ChangeNotifier {
     required Uint8List payload,
     required int timestampMs,
     int ttl = 5,
+    PayloadTagDto payloadTag = PayloadTagDto.text,
   }) {
     return ingestPacket(
       packet: MessagePacketDto(
@@ -362,6 +367,7 @@ class ResilNetService extends ChangeNotifier {
         payload: payload,
         timestamp: BigInt.from(timestampMs),
         ttl: ttl,
+        payloadTag: payloadTag,
       ),
     );
   }

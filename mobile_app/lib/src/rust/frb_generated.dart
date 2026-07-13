@@ -69,7 +69,7 @@ class ResilNetCore
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 808888182;
+  int get rustContentHash => 991158679;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -80,6 +80,13 @@ class ResilNetCore
 }
 
 abstract class ResilNetCoreApi extends BaseApi {
+  bool crateApiRouterApiCheckChunkDedup({
+    required int msgId,
+    required int chunkIndex,
+  });
+
+  void crateApiRouterApiClearChunkStream({required int msgId});
+
   Future<NetworkStatusDto> crateApiRouterApiGetNetworkStatus();
 
   Future<void> crateApiRouterApiIngestPacket({
@@ -93,6 +100,8 @@ abstract class ResilNetCoreApi extends BaseApi {
   bool crateApiRouterApiIsRouterInitialized();
 
   Future<int> crateApiRouterApiOfflineQueueLen();
+
+  PayloadTagDto? crateApiRouterApiPayloadTagFromU8({required int value});
 
   Future<RoutedPacketDto> crateApiRouterApiRoutePacket({
     required MessagePacketDto packet,
@@ -116,6 +125,59 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   });
 
   @override
+  bool crateApiRouterApiCheckChunkDedup({
+    required int msgId,
+    required int chunkIndex,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_u_16(msgId, serializer);
+          sse_encode_u_8(chunkIndex, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRouterApiCheckChunkDedupConstMeta,
+        argValues: [msgId, chunkIndex],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRouterApiCheckChunkDedupConstMeta =>
+      const TaskConstMeta(
+        debugName: "check_chunk_dedup",
+        argNames: ["msgId", "chunkIndex"],
+      );
+
+  @override
+  void crateApiRouterApiClearChunkStream({required int msgId}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_u_16(msgId, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiRouterApiClearChunkStreamConstMeta,
+        argValues: [msgId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRouterApiClearChunkStreamConstMeta =>
+      const TaskConstMeta(debugName: "clear_chunk_stream", argNames: ["msgId"]);
+
+  @override
   Future<NetworkStatusDto> crateApiRouterApiGetNetworkStatus() {
     return handler.executeNormal(
       NormalTask(
@@ -124,7 +186,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 1,
+            funcId: 3,
             port: port_,
           );
         },
@@ -154,7 +216,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 2,
+            funcId: 4,
             port: port_,
           );
         },
@@ -181,7 +243,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 5,
             port: port_,
           );
         },
@@ -209,7 +271,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 6,
             port: port_,
           );
         },
@@ -233,7 +295,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_bool,
@@ -258,7 +320,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 8,
             port: port_,
           );
         },
@@ -277,6 +339,32 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       const TaskConstMeta(debugName: "offline_queue_len", argNames: []);
 
   @override
+  PayloadTagDto? crateApiRouterApiPayloadTagFromU8({required int value}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_u_8(value, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_box_autoadd_payload_tag_dto,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRouterApiPayloadTagFromU8ConstMeta,
+        argValues: [value],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRouterApiPayloadTagFromU8ConstMeta =>
+      const TaskConstMeta(
+        debugName: "payload_tag_from_u8",
+        argNames: ["value"],
+      );
+
+  @override
   Future<RoutedPacketDto> crateApiRouterApiRoutePacket({
     required MessagePacketDto packet,
   }) {
@@ -288,7 +376,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 10,
             port: port_,
           );
         },
@@ -318,7 +406,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 8,
+              funcId: 11,
               port: port_,
             );
           },
@@ -355,7 +443,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 12,
             port: port_,
           );
         },
@@ -409,6 +497,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  PayloadTagDto dco_decode_box_autoadd_payload_tag_dto(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_payload_tag_dto(raw);
+  }
+
+  @protected
   RouterConfigDto dco_decode_box_autoadd_router_config_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_router_config_dto(raw);
@@ -430,8 +524,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   MessagePacketDto dco_decode_message_packet_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return MessagePacketDto(
       id: dco_decode_String(arr[0]),
       sender: dco_decode_String(arr[1]),
@@ -439,6 +533,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       payload: dco_decode_list_prim_u_8_strict(arr[3]),
       timestamp: dco_decode_u_64(arr[4]),
       ttl: dco_decode_u_8(arr[5]),
+      payloadTag: dco_decode_payload_tag_dto(arr[6]),
     );
   }
 
@@ -452,6 +547,18 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       isInternetAvailable: dco_decode_bool(arr[0]),
       activeBlePeersCount: dco_decode_u_32(arr[1]),
     );
+  }
+
+  @protected
+  PayloadTagDto? dco_decode_opt_box_autoadd_payload_tag_dto(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_payload_tag_dto(raw);
+  }
+
+  @protected
+  PayloadTagDto dco_decode_payload_tag_dto(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PayloadTagDto.values[raw as int];
   }
 
   @protected
@@ -486,6 +593,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   TransportTypeDto dco_decode_transport_type_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return TransportTypeDto.values[raw as int];
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -549,6 +662,14 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  PayloadTagDto sse_decode_box_autoadd_payload_tag_dto(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_payload_tag_dto(deserializer));
+  }
+
+  @protected
   RouterConfigDto sse_decode_box_autoadd_router_config_dto(
     SseDeserializer deserializer,
   ) {
@@ -578,6 +699,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     var var_payload = sse_decode_list_prim_u_8_strict(deserializer);
     var var_timestamp = sse_decode_u_64(deserializer);
     var var_ttl = sse_decode_u_8(deserializer);
+    var var_payloadTag = sse_decode_payload_tag_dto(deserializer);
     return MessagePacketDto(
       id: var_id,
       sender: var_sender,
@@ -585,6 +707,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       payload: var_payload,
       timestamp: var_timestamp,
       ttl: var_ttl,
+      payloadTag: var_payloadTag,
     );
   }
 
@@ -597,6 +720,26 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       isInternetAvailable: var_isInternetAvailable,
       activeBlePeersCount: var_activeBlePeersCount,
     );
+  }
+
+  @protected
+  PayloadTagDto? sse_decode_opt_box_autoadd_payload_tag_dto(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_payload_tag_dto(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PayloadTagDto sse_decode_payload_tag_dto(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PayloadTagDto.values[inner];
   }
 
   @protected
@@ -631,6 +774,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return TransportTypeDto.values[inner];
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
   }
 
   @protected
@@ -704,6 +853,15 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  void sse_encode_box_autoadd_payload_tag_dto(
+    PayloadTagDto self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_payload_tag_dto(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_router_config_dto(
     RouterConfigDto self,
     SseSerializer serializer,
@@ -740,6 +898,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     sse_encode_list_prim_u_8_strict(self.payload, serializer);
     sse_encode_u_64(self.timestamp, serializer);
     sse_encode_u_8(self.ttl, serializer);
+    sse_encode_payload_tag_dto(self.payloadTag, serializer);
   }
 
   @protected
@@ -750,6 +909,28 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_bool(self.isInternetAvailable, serializer);
     sse_encode_u_32(self.activeBlePeersCount, serializer);
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_payload_tag_dto(
+    PayloadTagDto? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_payload_tag_dto(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_payload_tag_dto(
+    PayloadTagDto self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -783,6 +964,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
   }
 
   @protected

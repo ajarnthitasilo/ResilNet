@@ -149,7 +149,7 @@ class Esp32SyncService extends ChangeNotifier {
     // ACK list จาก ESP32: ข้อความที่ ESP32 รับ/บันทึกแล้ว → ถือว่า Delivered
     final acks = (hsResp['acks'] as List<dynamic>? ?? []).cast<String>();
     if (acks.isNotEmpty) {
-      await _db.markMessagesDelivered(acks);
+      await _db.markMessagesDeliveredNow(acks);
     }
 
     // b) Push — ส่งข้อความที่ยังไม่ได้ซิงก์กับ ESP32

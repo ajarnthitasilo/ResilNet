@@ -3,8 +3,9 @@
 use flutter_rust_bridge::frb;
 
 use crate::api::dto::{
-    MessagePacketDto, NetworkStatusDto, RoutedPacketDto, RouterConfigDto,
+    MessagePacketDto, NetworkStatusDto, PayloadTagDto, RoutedPacketDto, RouterConfigDto,
 };
+use crate::hybrid_router::DedupDecision;
 use crate::api::state::{
     get_network_status_mapped, get_handle, ingest_packet_async, init_router_state,
     offline_queue_len_async, route_packet_async_mapped, set_stream_task,
@@ -101,6 +102,32 @@ pub fn is_router_initialized() -> bool {
     crate::api::state::is_initialized()
 }
 
+/// กรอง chunk frame ซ้ำระหว่าง reassembly (audio/firmware binary streams)
+#[frb(sync)]
+pub fn check_chunk_dedup(msg_id: u16, chunk_index: u8) -> bool {
+    let Ok(handle) = get_handle() else {
+        return true;
+    };
+    matches!(
+        handle.check_and_record_chunk(msg_id, chunk_index),
+        DedupDecision::Accept
+    )
+}
+
+/// ล้าง chunk dedup cache เมื่อประกอบ binary stream เสร็จ
+#[frb(sync)]
+pub fn clear_chunk_stream(msg_id: u16) -> Result<(), String> {
+    let handle = get_handle()?;
+    handle.clear_chunk_stream(msg_id);
+    Ok(())
+}
+
+/// แปลง wire tag (1–4) เป็น [PayloadTagDto]
+#[frb(sync)]
+pub fn payload_tag_from_u8(value: u8) -> Option<PayloadTagDto> {
+    PayloadTagDto::from_u8(value)
+}
+
 /// แปลง `RouterError` → String สำหรับ Dart `Result`
 fn map_router_error(err: RouterError) -> String {
     err.to_string()
@@ -119,6 +146,7 @@ mod tests {
             payload: b"hello".to_vec(),
             timestamp: 1_700_000_000_000,
             ttl,
+            payload_tag: crate::api::dto::PayloadTagDto::Text,
         }
     }
 

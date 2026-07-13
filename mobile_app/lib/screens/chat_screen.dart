@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/chat_message.dart';
+import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
@@ -24,7 +27,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final _peerPublicPem = TextEditingController();
   final _focusNode = FocusNode();
   final _uuid = const Uuid();
+  final _audio = AudioRecorderService();
   bool _showEmojiPicker = false;
+  bool _recordingVoice = false;
 
   static const _pickerBg = Color(0xFF1A2332);
   static const _pickerAccent = Color(0xFF10B981);
@@ -112,11 +117,93 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(context.read<AppState>().markConversationRead(widget.peerId));
+    });
+  }
+
+  @override
   void dispose() {
     _text.dispose();
     _peerPublicPem.dispose();
     _focusNode.dispose();
+    _audio.dispose();
     super.dispose();
+  }
+
+  Future<String?> _resolveReceiverPub(AppState s) async {
+    var receiverPub = _peerPublicPem.text.trim();
+    if (receiverPub.isEmpty) {
+      final peer = await s.db.getPeer(widget.peerId);
+      receiverPub = peer?.publicKey.trim() ?? '';
+      if (receiverPub.isNotEmpty) _peerPublicPem.text = receiverPub;
+    }
+    if (receiverPub.isEmpty) {
+      if (!mounted) return null;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'กรุณาวาง Public Key (PEM) ของผู้รับก่อน เพื่อเข้ารหัส E2EE',
+          ),
+        ),
+      );
+      return null;
+    }
+    return receiverPub;
+  }
+
+  Future<void> _startVoiceNote() async {
+    if (_recordingVoice) return;
+    try {
+      await _audio.startRecording();
+      if (mounted) setState(() => _recordingVoice = true);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('ไม่สามารถอัดเสียงได้: $e')),
+      );
+    }
+  }
+
+  Future<void> _stopAndSendVoiceNote() async {
+    if (!_recordingVoice) return;
+    final s = context.read<AppState>();
+    final receiverPub = await _resolveReceiverPub(s);
+    final opus = await _audio.stopRecording();
+    if (mounted) setState(() => _recordingVoice = false);
+    if (receiverPub == null || opus == null || opus.isEmpty) return;
+
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final audioB64 = base64Encode(opus);
+    final pkg = s.crypto.encryptForRecipient(
+      plaintext: audioB64,
+      receiverPublicPem: receiverPub,
+      senderId: s.myUserId,
+      receiverId: widget.peerId,
+      timestamp: ts,
+    );
+
+    final msg = ChatMessage(
+      id: _uuid.v4(),
+      senderId: s.myUserId,
+      receiverId: widget.peerId,
+      content: '🎤 ข้อความเสียง',
+      encryptedPayload: pkg.encryptedPayload,
+      encryptedKey: pkg.encryptedKey,
+      signature: pkg.signature,
+      ttl: 5,
+      timestamp: ts,
+      status: MessageStatus.pending,
+      type: MessageType.direct,
+      payloadKind: 'audio',
+    );
+
+    await s.db.saveMessage(msg);
+    await s.routeOutbound(msg);
+    if (mounted) setState(() {});
   }
 
   Future<void> _send() async {
@@ -125,23 +212,8 @@ class _ChatScreenState extends State<ChatScreen> {
     if (msgText.isEmpty) return;
 
     final receiverId = widget.peerId;
-    var receiverPub = _peerPublicPem.text.trim();
-    if (receiverPub.isEmpty) {
-      final peer = await s.db.getPeer(receiverId);
-      receiverPub = peer?.publicKey.trim() ?? '';
-      if (receiverPub.isNotEmpty) _peerPublicPem.text = receiverPub;
-    }
-    if (receiverPub.isEmpty) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'กรุณาวาง Public Key (PEM) ของผู้รับก่อน เพื่อเข้ารหัส E2EE',
-          ),
-        ),
-      );
-      return;
-    }
+    final receiverPub = await _resolveReceiverPub(s);
+    if (receiverPub == null) return;
 
     final ts = DateTime.now().millisecondsSinceEpoch;
     final pkg = s.crypto.encryptForRecipient(
@@ -179,11 +251,42 @@ class _ChatScreenState extends State<ChatScreen> {
       MessageStatus.sent => 'Transmitted',
       MessageStatus.relayed => 'Relayed',
       MessageStatus.delivered => 'Delivered',
+      MessageStatus.read => 'Read',
+    };
+  }
+
+  Widget _statusTicks(MessageStatus s) {
+    final gray = Colors.white.withValues(alpha: 0.55);
+    const blue = Color(0xFF53BDEB);
+
+    Widget singleTick(Color color) =>
+        Icon(Icons.done, size: 14, color: color);
+
+    Widget doubleTick(Color color) => SizedBox(
+          width: 22,
+          height: 14,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(left: 0, child: singleTick(color)),
+              Positioned(left: 8, child: singleTick(color)),
+            ],
+          ),
+        );
+
+    return switch (s) {
+      MessageStatus.pending => Icon(Icons.schedule, size: 14, color: gray),
+      MessageStatus.sent || MessageStatus.relayed => singleTick(gray),
+      MessageStatus.delivered => doubleTick(gray),
+      MessageStatus.read => doubleTick(blue),
     };
   }
 
   String _tryDecrypt(AppState s, ChatMessage m) {
     if (m.receiverId != s.myUserId && m.senderId != s.myUserId) return '...';
+    if (m.payloadKind == 'audio') {
+      return m.senderId == s.myUserId ? '🎤 ข้อความเสียง (ส่งแล้ว)' : '🎤 ข้อความเสียง';
+    }
     if (m.receiverId == s.myUserId) {
       try {
         return s.crypto.decryptFromSender(
@@ -198,6 +301,22 @@ class _ChatScreenState extends State<ChatScreen> {
     final decoded = utf8.decode(base64Decode(m.encryptedPayload));
     final obj = jsonDecode(decoded) as Map<String, dynamic>;
     return '[ส่งแล้ว • ct=${(obj['ct'] as String).substring(0, 16)}…]';
+  }
+
+  Future<void> _playVoiceNote(AppState s, ChatMessage m) async {
+    try {
+      final audioB64 = s.crypto.decryptFromSender(
+        encryptedPayload: m.encryptedPayload,
+        encryptedKey: m.encryptedKey,
+      );
+      final bytes = base64Decode(audioB64);
+      await _audio.playBytes(Uint8List.fromList(bytes));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('เล่นเสียงไม่สำเร็จ: $e')),
+      );
+    }
   }
 
   @override
@@ -343,10 +462,22 @@ class _ChatScreenState extends State<ChatScreen> {
                                   text,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
+                                if (m.payloadKind == 'audio') ...[
+                                  const SizedBox(height: 8),
+                                  FilledButton.tonalIcon(
+                                    onPressed: () => _playVoiceNote(s, m),
+                                    icon: const Icon(Icons.play_arrow),
+                                    label: const Text('เล่นข้อความเสียง'),
+                                  ),
+                                ],
                                 const SizedBox(height: 8),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    if (isMe) ...[
+                                      _statusTicks(m.status),
+                                      const SizedBox(width: 6),
+                                    ],
                                     Text(
                                       _statusLabel(m.status),
                                       style: Theme.of(context)
@@ -394,6 +525,28 @@ class _ChatScreenState extends State<ChatScreen> {
                   padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
                   child: Row(
                     children: [
+                      Tooltip(
+                        message: _recordingVoice
+                            ? 'ปล่อยเพื่อส่งข้อความเสียง'
+                            : 'กดค้างเพื่ออัดเสียง (PTT)',
+                        child: GestureDetector(
+                          onLongPressStart: (_) {
+                            if (!_recordingVoice) unawaited(_startVoiceNote());
+                          },
+                          onLongPressEnd: (_) {
+                            if (_recordingVoice) {
+                              unawaited(_stopAndSendVoiceNote());
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Icon(
+                              _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
+                              color: _recordingVoice ? Colors.redAccent : null,
+                            ),
+                          ),
+                        ),
+                      ),
                       IconButton(
                         tooltip: 'อิโมจิ',
                         onPressed: _toggleEmojiPicker,

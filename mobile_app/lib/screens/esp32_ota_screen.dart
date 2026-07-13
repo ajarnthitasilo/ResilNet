@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../services/esp32_ota_service.dart';
 import '../services/firmware_config.dart';
 import '../state/app_state.dart';
+import '../widgets/ota_progress_dialog.dart';
 
 /// แฟลชเฟิร์มแวร์ ESP32 ผ่าน Bluetooth OTA
 class Esp32OtaScreen extends StatefulWidget {
@@ -59,25 +62,60 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
     if (file == null) return;
 
     setState(() => _flashing = true);
+
+    final progressState = ValueNotifier(
+      const OtaProgressState(phaseLabel: 'กำลังเชื่อมต่อ…'),
+    );
+    void syncProgress() {
+      final last = _ota.lastControl;
+      final arq = (last?.isProgress == true &&
+              last?.total != null &&
+              last!.total! > 0)
+          ? ((last.received ?? 0) / last.total!) * 100
+          : _ota.progress * 100;
+      progressState.value = progressState.value.copyWith(
+        phaseLabel: _phaseLabel(_ota.phase),
+        progress: _ota.progress,
+        nackArqPercent: arq,
+        statusMessage: _ota.statusMessage,
+        bytesPerSecond: _ota.bytesPerSecond,
+        dismiss: _ota.phase == OtaPhase.done || _ota.phase == OtaPhase.failed,
+      );
+    }
+
+    _ota.addListener(syncProgress);
+    unawaited(
+      OtaProgressDialog.show(
+        context,
+        title: 'อัปเดตเฟิร์มแวร์ ESP32',
+        state: progressState,
+      ),
+    );
+
+    OtaResult result;
     try {
-      final result = await _ota.flashFirmware(
+      result = await _ota.flashFirmware(
         deviceId: _selectedDeviceId!,
         firmwareFile: file,
         kind: _selectedKind,
       );
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            result.success
-                ? 'แฟลชสำเร็จ — บอร์ดกำลังรีสตาร์ท'
-                : (result.message ?? 'แฟลชไม่สำเร็จ'),
-          ),
-        ),
-      );
     } finally {
+      _ota.removeListener(syncProgress);
+      progressState.value = progressState.value.copyWith(dismiss: true);
+      progressState.dispose();
       if (mounted) setState(() => _flashing = false);
     }
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          result.success
+              ? 'แฟลชสำเร็จ — บอร์ดกำลังรีสตาร์ท'
+              : (result.message ?? 'แฟลชไม่สำเร็จ'),
+        ),
+      ),
+    );
   }
 
   String _formatSpeed(double bps) {

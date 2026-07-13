@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
+import '../src/rust/api/router_api.dart';
 
 /// เก็บ chunk ที่ส่งออกไปสำหรับ selective retransmit
 class OutboundChunkCache {
@@ -203,12 +204,20 @@ class ChunkArqService {
     DateTime? now,
   }) async {
     return _executor.run(() async {
+      if (ResilNetChunkCodec.isChunked(payload)) {
+        final frame = ResilNetChunkCodec.parseChunkFrame(payload);
+        if (_shouldDedupChunk(frame.msgId, frame.chunkIndex)) {
+          return const ChunkIngestResult();
+        }
+      }
+
       final result = reassembler.ingest(payload, now: now);
       final msgId = result.msgId;
       if (msgId != null) {
         if (result.complete != null) {
           _clearNackState(msgId);
           outboundCache.remove(msgId);
+          _clearChunkDedup(msgId);
         } else if (transport != ChunkArqTransport.lora) {
           _scheduleGapNack(msgId, transport);
         }
@@ -325,5 +334,22 @@ class ChunkArqService {
     _lastNackAt.clear();
     outboundCache.reset();
     reassembler.reset();
+  }
+
+  bool _shouldDedupChunk(int msgId, int chunkIndex) {
+    try {
+      if (!isRouterInitialized()) return false;
+      return !checkChunkDedup(msgId: msgId, chunkIndex: chunkIndex);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _clearChunkDedup(int msgId) {
+    try {
+      if (isRouterInitialized()) {
+        clearChunkStream(msgId: msgId);
+      }
+    } catch (_) {}
   }
 }

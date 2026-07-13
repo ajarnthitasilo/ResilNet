@@ -10,7 +10,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
+import '../core/resilnet_ack_codec.dart';
+import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
+import '../services/ack_handler_service.dart';
+import '../services/ack_queue_manager.dart';
 import '../services/ble_mesh_service.dart';
 import '../services/broadcast_filter_service.dart';
 import '../services/broadcast_intake_service.dart';
@@ -46,6 +50,8 @@ class AppState extends ChangeNotifier {
   BroadcastFilterService? _broadcastFilter;
   BroadcastIntakeService? _broadcastIntake;
   FirmwareService? _firmware;
+  late final AckHandlerService _ackHandler;
+  AckQueueManager? _ackQueue;
   StreamSubscription<MessagePacketDto>? _rustIncomingSub;
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
 
@@ -74,6 +80,10 @@ class AppState extends ChangeNotifier {
     if (m == null) throw StateError('Mesh not initialized');
     return m;
   }
+
+  AckHandlerService get ackHandler => _ackHandler;
+
+  AckQueueManager? get ackQueue => _ackQueue;
 
   Esp32SyncService get esp32 {
     final e = _esp32;
@@ -201,6 +211,28 @@ class AppState extends ChangeNotifier {
       await resilnet.subscribeIncoming();
       await _attachRustIncomingHandler();
 
+      _ackHandler = AckHandlerService(
+        database: db,
+        myUserId: crypto.myUserId,
+      );
+      _ackHandler.addListener(notifyListeners);
+
+      _ackQueue = AckQueueManager(
+        database: db,
+        myUserId: crypto.myUserId,
+        isHighSpeedTransport: () =>
+            resilnet.isInternetAvailable || resilnet.isGatewayWifiActive,
+        sendAckBatch: _sendAckBatch,
+      );
+      await _ackQueue!.restoreFromDatabase();
+      _ackQueue!.addListener(notifyListeners);
+
+      resilnet.addListener(() {
+        if (resilnet.isInternetAvailable || resilnet.isGatewayWifiActive) {
+          _ackQueue?.onTransportUpgraded();
+        }
+      });
+
       await trustedKeys.init();
       await notifications.init();
       // อย่าบล็อก startup ด้วย notification permission dialog
@@ -230,6 +262,8 @@ class AppState extends ChangeNotifier {
         myUserId: crypto.myUserId,
         broadcastIntake: _broadcastIntake,
         resilnet: resilnet,
+        ackQueue: _ackQueue,
+        ackHandler: _ackHandler,
       );
       _esp32 = Esp32SyncService(
         database: db,
@@ -316,6 +350,9 @@ class AppState extends ChangeNotifier {
     _lifecycleState = state;
     if (state == AppLifecycleState.resumed) {
       unawaited(onAppResumed());
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      unawaited(_ackQueue?.persistToDatabase());
     }
   }
 
@@ -429,7 +466,9 @@ class AppState extends ChangeNotifier {
 
   /// ส่งข้อความออกผ่าน Rust Hybrid Router แล้ว dispatch ตามช่องทางที่เลือก
   Future<RoutedPacketDto> routeOutbound(ChatMessage msg) async {
-    final dto = ResilNetPacketCodec.toDto(msg);
+    final piggyback =
+        _ackQueue?.drainPiggybackFor(msg.receiverId) ?? const <AckEntry>[];
+    final dto = ResilNetPacketCodec.toDto(msg, piggybackAcks: piggyback);
     final routed = await resilnet.routeMessage(
       id: dto.id,
       sender: dto.sender,
@@ -437,6 +476,7 @@ class AppState extends ChangeNotifier {
       payload: dto.payload,
       timestampMs: dto.timestamp.toInt(),
       ttl: dto.ttl,
+      payloadTag: dto.payloadTag,
     );
 
     switch (routed.transport) {
@@ -462,12 +502,68 @@ class AppState extends ChangeNotifier {
   /// รับข้อความจาก Rust stream หลัง dedup แล้วบันทึกลง DB + อัปเดต UI
   Future<void> _onRustIncomingMessage(MessagePacketDto dto) async {
     try {
-      final msg = ResilNetPacketCodec.fromDto(dto);
+      if (dto.payloadTag == PayloadTagDto.ack) {
+        final batch = ResilNetAckCodec.decodeBatchPacket(dto.payload);
+        if (batch != null) {
+          await _ackHandler.handleBatchPacket(batch);
+        }
+        notifyListeners();
+        return;
+      }
+
+      final meta = ResilNetPacketCodec.fromDtoWithMeta(dto);
+      if (meta.piggybackAcks.isNotEmpty) {
+        await _ackHandler.handlePiggybacked(
+          meta.piggybackAcks,
+          envelopeSenderId: dto.sender,
+        );
+      }
+
+      final msg = meta.message;
+      if (msg == null) return;
+
       await mesh.applyIncomingFromRouter(msg);
       notifyListeners();
     } catch (e, st) {
       debugPrint('[ResilNet] _onRustIncomingMessage failed: $e\n$st');
     }
+  }
+
+  /// มาร์กข้อความที่ยังไม่อ่านในบทสนทนา แล้วคิว READ ACK
+  Future<void> markConversationRead(String peerId) async {
+    final unread = await db.getUnreadIncomingMessages(myUserId, peerId);
+    if (unread.isEmpty) return;
+    final now = DateTime.now();
+    for (final m in unread) {
+      await db.markMessagesRead([m.id], now);
+      await _ackQueue?.enqueueRead(
+        msgId: m.id,
+        targetSenderId: m.senderId,
+        at: now,
+      );
+    }
+    notifyListeners();
+  }
+
+  Future<bool> _sendAckBatch(BatchAckPacket packet) async {
+    final queue = _ackQueue;
+    if (queue == null) return false;
+    final dto = ResilNetPacketCodec.ackDto(
+      packetId: queue.newAckPacketId(),
+      senderId: crypto.myUserId,
+      receiverId: packet.receiverId,
+      batch: packet,
+    );
+    final routed = await resilnet.routeMessage(
+      id: dto.id,
+      sender: dto.sender,
+      receiver: dto.receiver,
+      payload: dto.payload,
+      timestampMs: dto.timestamp.toInt(),
+      ttl: dto.ttl,
+      payloadTag: PayloadTagDto.ack,
+    );
+    return routed.transport != TransportTypeDto.offlineQueue;
   }
 
   Future<void> refreshPermissions() async {
@@ -601,6 +697,7 @@ class AppState extends ChangeNotifier {
   @override
   void dispose() {
     _rustIncomingSub?.cancel();
+    _ackQueue?.dispose();
     _udp?.dispose();
     resilnet.dispose();
     super.dispose();

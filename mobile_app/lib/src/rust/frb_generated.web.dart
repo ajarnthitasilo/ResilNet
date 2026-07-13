@@ -40,6 +40,9 @@ abstract class ResilNetCoreApiImplPlatform
   MessagePacketDto dco_decode_box_autoadd_message_packet_dto(dynamic raw);
 
   @protected
+  PayloadTagDto dco_decode_box_autoadd_payload_tag_dto(dynamic raw);
+
+  @protected
   RouterConfigDto dco_decode_box_autoadd_router_config_dto(dynamic raw);
 
   @protected
@@ -55,6 +58,12 @@ abstract class ResilNetCoreApiImplPlatform
   NetworkStatusDto dco_decode_network_status_dto(dynamic raw);
 
   @protected
+  PayloadTagDto? dco_decode_opt_box_autoadd_payload_tag_dto(dynamic raw);
+
+  @protected
+  PayloadTagDto dco_decode_payload_tag_dto(dynamic raw);
+
+  @protected
   RoutedPacketDto dco_decode_routed_packet_dto(dynamic raw);
 
   @protected
@@ -62,6 +71,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   TransportTypeDto dco_decode_transport_type_dto(dynamic raw);
+
+  @protected
+  int dco_decode_u_16(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -95,6 +107,11 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  PayloadTagDto sse_decode_box_autoadd_payload_tag_dto(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   RouterConfigDto sse_decode_box_autoadd_router_config_dto(
     SseDeserializer deserializer,
   );
@@ -112,6 +129,14 @@ abstract class ResilNetCoreApiImplPlatform
   NetworkStatusDto sse_decode_network_status_dto(SseDeserializer deserializer);
 
   @protected
+  PayloadTagDto? sse_decode_opt_box_autoadd_payload_tag_dto(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PayloadTagDto sse_decode_payload_tag_dto(SseDeserializer deserializer);
+
+  @protected
   RoutedPacketDto sse_decode_routed_packet_dto(SseDeserializer deserializer);
 
   @protected
@@ -119,6 +144,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   TransportTypeDto sse_decode_transport_type_dto(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -157,6 +185,12 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  void sse_encode_box_autoadd_payload_tag_dto(
+    PayloadTagDto self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_box_autoadd_router_config_dto(
     RouterConfigDto self,
     SseSerializer serializer,
@@ -184,6 +218,15 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  void sse_encode_opt_box_autoadd_payload_tag_dto(
+    PayloadTagDto? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_payload_tag_dto(PayloadTagDto self, SseSerializer serializer);
+
+  @protected
   void sse_encode_routed_packet_dto(
     RoutedPacketDto self,
     SseSerializer serializer,
@@ -200,6 +243,9 @@ abstract class ResilNetCoreApiImplPlatform
     TransportTypeDto self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);

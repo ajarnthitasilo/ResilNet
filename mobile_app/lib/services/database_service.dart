@@ -1,4 +1,5 @@
 import 'package:path/path.dart' as p;
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../core/resilnet_protocol.dart';
@@ -12,16 +13,20 @@ class DatabaseService {
     if (_db != null) return;
     final dbPath = await getDatabasesPath();
     final path = p.join(dbPath, 'resilnet.db');
-    _db = await openDatabase(
+    _db = await _openDatabaseAt(path);
+  }
+
+  /// In-memory SQLite สำหรับ unit tests
+  @visibleForTesting
+  Future<void> initForTest() async {
+    if (_db != null) return;
+    _db = await _openDatabaseAt(inMemoryDatabasePath);
+  }
+
+  Future<Database> _openDatabaseAt(String path) async {
+    return openDatabase(
       path,
-      version: 9,
-      onConfigure: (db) async {
-        // Composite index สำหรับ rate-limit query และ broadcast discovery
-        await db.execute(
-          'CREATE INDEX IF NOT EXISTS idx_messages_rate_limit '
-          'ON messages(senderId, isBroadcast, timestamp)',
-        );
-      },
+      version: 10,
       onCreate: (db, _) async {
         await db.execute('''
           CREATE TABLE messages (
@@ -43,7 +48,10 @@ class DatabaseService {
             status TEXT NOT NULL,
             alertLat REAL,
             alertLon REAL,
-            alertRadiusM REAL
+            alertRadiusM REAL,
+            payloadKind TEXT NOT NULL DEFAULT 'text',
+            deliveredAt INTEGER,
+            readAt INTEGER
           )
         ''');
         await db.execute(
@@ -90,6 +98,16 @@ class DatabaseService {
           CREATE TABLE contacts (
             publicKeyHash TEXT PRIMARY KEY,
             aliasName TEXT NOT NULL
+          )
+        ''');
+
+        await db.execute('''
+          CREATE TABLE pending_acks (
+            dedupKey TEXT PRIMARY KEY,
+            msgId TEXT NOT NULL,
+            ackType TEXT NOT NULL,
+            timestamp INTEGER NOT NULL,
+            targetSenderId TEXT NOT NULL
           )
         ''');
       },
@@ -187,6 +205,23 @@ class DatabaseService {
           await db.execute('ALTER TABLE messages ADD COLUMN alertLon REAL');
           await db.execute('ALTER TABLE messages ADD COLUMN alertRadiusM REAL');
         }
+
+        if (oldVersion < 10) {
+          await db.execute(
+            "ALTER TABLE messages ADD COLUMN payloadKind TEXT NOT NULL DEFAULT 'text'",
+          );
+          await db.execute('ALTER TABLE messages ADD COLUMN deliveredAt INTEGER');
+          await db.execute('ALTER TABLE messages ADD COLUMN readAt INTEGER');
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS pending_acks (
+              dedupKey TEXT PRIMARY KEY,
+              msgId TEXT NOT NULL,
+              ackType TEXT NOT NULL,
+              timestamp INTEGER NOT NULL,
+              targetSenderId TEXT NOT NULL
+            )
+          ''');
+        }
       },
     );
   }
@@ -237,16 +272,110 @@ class DatabaseService {
     );
   }
 
-  /// อัปเดตสถานะ Delivered จากรายการ ACK (ESP32/Cloud)
-  Future<void> markMessagesDelivered(List<String> ids) async {
+  /// อัปเดตสถานะ Delivered จากรายการ ACK (ESP32/Cloud/Hybrid ACK)
+  Future<void> markMessagesDelivered(
+    List<String> ids,
+    DateTime ts,
+  ) async {
     if (ids.isEmpty) return;
-    final placeholders = List.filled(ids.length, '?').join(',');
-    await _database.update(
+    await _database.transaction((txn) async {
+      for (final id in ids) {
+        await txn.update(
+          'messages',
+          {
+            'status': MessageStatus.delivered.name,
+            'deliveredAt': ts.millisecondsSinceEpoch,
+          },
+          where: 'id = ? AND status != ?',
+          whereArgs: [id, MessageStatus.read.name],
+        );
+      }
+    });
+  }
+
+  /// Legacy helper — ใช้ timestamp ปัจจุบัน
+  Future<void> markMessagesDeliveredNow(List<String> ids) =>
+      markMessagesDelivered(ids, DateTime.now());
+
+  /// อัปเดตสถานะ Read จากรายการ ACK
+  Future<void> markMessagesRead(List<String> ids, DateTime ts) async {
+    if (ids.isEmpty) return;
+    await _database.transaction((txn) async {
+      for (final id in ids) {
+        await txn.update(
+          'messages',
+          {
+            'status': MessageStatus.read.name,
+            'readAt': ts.millisecondsSinceEpoch,
+            'deliveredAt': ts.millisecondsSinceEpoch,
+          },
+          where: 'id = ?',
+          whereArgs: [id],
+        );
+      }
+    });
+  }
+
+  /// ข้อความที่ยังไม่ได้อ่านในบทสนทนา (ฝั่งผู้รับ)
+  Future<List<ChatMessage>> getUnreadIncomingMessages(
+    String myUserId,
+    String peerId,
+  ) async {
+    final rows = await _database.query(
       'messages',
-      {'status': MessageStatus.delivered.name},
-      where: 'id IN ($placeholders)',
-      whereArgs: ids,
+      where:
+          'senderId = ? AND receiverId = ? AND status IN (?, ?)',
+      whereArgs: [
+        peerId,
+        myUserId,
+        MessageStatus.delivered.name,
+        MessageStatus.sent.name,
+      ],
+      orderBy: 'timestamp ASC',
     );
+    return rows.map(ChatMessage.fromMap).toList();
+  }
+
+  /// บันทึก pending ACK ลง SQLite (persist ก่อน background/terminate)
+  Future<void> savePendingAcks(List<Map<String, Object?>> rows) async {
+    final batch = _database.batch();
+    for (final row in rows) {
+      batch.insert(
+        'pending_acks',
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
+  }
+
+  Future<List<Map<String, Object?>>> loadPendingAcks() async {
+    return _database.query('pending_acks');
+  }
+
+  Future<void> clearPendingAcksByKeys(List<String> dedupKeys) async {
+    if (dedupKeys.isEmpty) return;
+    final placeholders = List.filled(dedupKeys.length, '?').join(',');
+    await _database.delete(
+      'pending_acks',
+      where: 'dedupKey IN ($placeholders)',
+      whereArgs: dedupKeys,
+    );
+  }
+
+  Future<void> clearAllPendingAcks() async {
+    await _database.delete('pending_acks');
+  }
+
+  Future<Map<String, Object?>?> getMessageRowById(String id) async {
+    final rows = await _database.query(
+      'messages',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return rows.first;
   }
 
   Future<void> setCloudIdForLocalMessage({

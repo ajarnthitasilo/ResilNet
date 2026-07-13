@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart' as crypto;
 
 import '../models/chat_message.dart';
+import 'resilnet_payload_type.dart';
 import 'resilnet_radio_codec.dart';
 
 /// สถานะความคืบหน้าการส่ง/รับ Chunk
@@ -77,7 +78,10 @@ class ResilNetChunkCodec {
   }
 
   /// สร้าง ciphertext bundle จากข้อความที่เข้ารหัสแล้ว (Encrypt-then-Chunk ขั้นที่ 1)
-  static Uint8List ciphertextFromMessage(ChatMessage msg) {
+  static Uint8List ciphertextFromMessage(
+    ChatMessage msg, {
+    ResilNetPayloadType payloadType = ResilNetPayloadType.text,
+  }) {
     final json = jsonEncode({
       'id': msg.id,
       'senderId': msg.senderId,
@@ -85,22 +89,69 @@ class ResilNetChunkCodec {
       'timestamp': msg.timestamp,
       'ttl': msg.ttl,
       'type': msg.type.name,
+      'payloadKind': payloadType.messageKind,
       'encryptedPayload': msg.encryptedPayload,
       'encryptedKey': msg.encryptedKey,
       if (msg.signature != null) 'signature': msg.signature,
     });
-    return Uint8List.fromList(utf8.encode(json));
+    return wrapWithPayloadTag(
+      Uint8List.fromList(utf8.encode(json)),
+      payloadType,
+    );
+  }
+
+  /// ใส่ wire tag นำหน้า ciphertext (0x01–0x04)
+  static Uint8List wrapWithPayloadTag(
+    Uint8List inner,
+    ResilNetPayloadType type,
+  ) {
+    return Uint8List.fromList([type.wireTag, ...inner]);
+  }
+
+  /// ถอด wire tag จาก ciphertext ที่ประกอบครบแล้ว
+  static ({ResilNetPayloadType type, Uint8List inner}) unwrapPayloadTag(
+    Uint8List bundled,
+  ) {
+    if (bundled.isEmpty) {
+      return (type: ResilNetPayloadType.text, inner: bundled);
+    }
+    final tag = bundled[0];
+    final known = ResilNetPayloadType.values
+        .any((t) => t.wireTag == tag);
+    if (!known) {
+      return (type: ResilNetPayloadType.text, inner: bundled);
+    }
+    return (
+      type: ResilNetPayloadType.fromWireTag(tag),
+      inner: Uint8List.sublistView(bundled, 1),
+    );
   }
 
   /// ถอด ciphertext bundle กลับเป็น [ChatMessage] (หลัง Reassemble)
   static ChatMessage? chatMessageFromCiphertext(Uint8List ciphertext) {
     try {
+      final unwrapped = unwrapPayloadTag(ciphertext);
       final map =
-          jsonDecode(utf8.decode(ciphertext)) as Map<String, Object?>;
+          jsonDecode(utf8.decode(unwrapped.inner)) as Map<String, Object?>;
       return ChatMessage.fromMap(map);
     } catch (_) {
       return null;
     }
+  }
+
+  /// ดึง payload type จาก ciphertext bundle
+  static ResilNetPayloadType payloadTypeFromCiphertext(Uint8List ciphertext) {
+    return unwrapPayloadTag(ciphertext).type;
+  }
+
+  /// แบ่ง ciphertext พร้อม tag เป็น radio frames
+  static List<Uint8List> encodeChunksForMessage(
+    ChatMessage msg, {
+    ResilNetPayloadType? payloadType,
+  }) {
+    final type = payloadType ??
+        ResilNetPayloadType.fromMessageKind(msg.payloadKind);
+    return encodeChunks(ciphertextFromMessage(msg, payloadType: type));
   }
 
   /// ดึง msg_id จาก chunk list (ใช้ลง OutboundChunkCache)

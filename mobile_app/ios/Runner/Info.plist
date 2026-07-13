@@ -26,6 +26,8 @@
 	<string>แอปใช้ตำแหน่ง GPS เพื่อคัดกรองประกาศเตือนภัยในพื้นที่ของคุณ และเชื่อมต่อเครือข่าย BLE ชุมชน</string>
 	<key>NSCameraUsageDescription</key>
 	<string>แอปใช้กล้องเพื่อสแกน QR Code สำหรับแลกเปลี่ยน Public Key กับเพื่อนในชุมชน</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>แอปใช้ไมโครโฟนเพื่อบันทึกข้อความเสียงแบบ Push-to-Talk ในแชตชุมชน</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>แอปบันทึก QR Code ตัวตนลงคลังภาพ เพื่อแชร์ให้เพื่อนสแกนได้</string>
 	<key>NSPhotoLibraryUsageDescription</key>

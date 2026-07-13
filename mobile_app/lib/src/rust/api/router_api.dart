@@ -40,10 +40,26 @@ Future<int> offlineQueueLen() =>
 
 /// สร้าง Stream ข้อความเข้าแบบ real-time ไปยัง Flutter UI
 ///
-/// อ่านจาก MPSC channel ภายใน router แล้ว push ผ่าน `StreamSink`
+/// ฟัง `RouterEvent::IncomingMessage` จาก broadcast channel — เรียกซ้ำได้เมื่อแอป resume
+/// (abort task เก่าแล้วสมัครใหม่ ไม่ต้อง take MPSC receiver ครั้งเดียว)
 Stream<MessagePacketDto> subscribeIncomingMessages() =>
     ResilNetCore.instance.api.crateApiRouterApiSubscribeIncomingMessages();
 
 /// ตรวจว่า router ถูก init แล้วหรือยัง
 bool isRouterInitialized() =>
     ResilNetCore.instance.api.crateApiRouterApiIsRouterInitialized();
+
+/// กรอง chunk frame ซ้ำระหว่าง reassembly (audio/firmware binary streams)
+bool checkChunkDedup({required int msgId, required int chunkIndex}) =>
+    ResilNetCore.instance.api.crateApiRouterApiCheckChunkDedup(
+      msgId: msgId,
+      chunkIndex: chunkIndex,
+    );
+
+/// ล้าง chunk dedup cache เมื่อประกอบ binary stream เสร็จ
+void clearChunkStream({required int msgId}) =>
+    ResilNetCore.instance.api.crateApiRouterApiClearChunkStream(msgId: msgId);
+
+/// แปลง wire tag (1–4) เป็น [PayloadTagDto]
+PayloadTagDto? payloadTagFromU8({required int value}) =>
+    ResilNetCore.instance.api.crateApiRouterApiPayloadTagFromU8(value: value);

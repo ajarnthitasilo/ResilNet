@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:resilnet/core/resilnet_chunk_codec.dart';
 import 'package:resilnet/core/resilnet_nack_codec.dart';
+import 'package:resilnet/core/resilnet_payload_type.dart';
 import 'package:resilnet/core/resilnet_radio_codec.dart';
 import 'package:resilnet/models/chat_message.dart';
 import 'package:resilnet/services/chunk_arq_service.dart';
@@ -199,6 +200,60 @@ void main() {
           expect(restored?.id, msg.id);
         }
       }
+    });
+
+    test('payload tag prefix round-trip', () {
+      final msg = ChatMessage(
+        id: 'audio-msg',
+        senderId: 'a',
+        receiverId: 'b',
+        encryptedPayload: 'ep',
+        encryptedKey: 'ek',
+        ttl: 5,
+        timestamp: 1,
+        status: MessageStatus.pending,
+        type: MessageType.direct,
+        payloadKind: 'audio',
+      );
+
+      final bundled = ResilNetChunkCodec.ciphertextFromMessage(
+        msg,
+        payloadType: ResilNetPayloadType.audio,
+      );
+      expect(bundled[0], 0x03);
+      expect(
+        ResilNetChunkCodec.payloadTypeFromCiphertext(bundled),
+        ResilNetPayloadType.audio,
+      );
+
+      final chunks = ResilNetChunkCodec.encodeChunks(bundled);
+      final reassembler = ChunkReassembler();
+      Uint8List? assembled;
+      for (final chunk in chunks) {
+        final result = reassembler.ingest(chunk);
+        assembled = result.complete ?? assembled;
+      }
+      expect(assembled, isNotNull);
+      final restored = ResilNetChunkCodec.chatMessageFromCiphertext(assembled!);
+      expect(restored?.payloadKind, 'audio');
+    });
+
+    test('multi-chunk binary stream with firmware payload tag', () {
+      final data = Uint8List.fromList([
+        ResilNetPayloadType.firmware.wireTag,
+        ...List.filled(800, 0xFE),
+      ]);
+      final chunks = ResilNetChunkCodec.encodeChunks(data);
+      expect(chunks.length, greaterThan(1));
+
+      final reassembler = ChunkReassembler();
+      Uint8List? complete;
+      for (final chunk in chunks) {
+        final r = reassembler.ingest(chunk);
+        complete = r.complete ?? complete;
+      }
+      expect(complete, isNotNull);
+      expect(complete!.first, ResilNetPayloadType.firmware.wireTag);
     });
   });
 

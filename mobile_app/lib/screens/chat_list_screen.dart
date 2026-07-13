@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/chat_message.dart';
 import '../state/app_state.dart';
 import '../widgets/mesh_status_bar.dart';
 import 'broadcast_screen.dart';
@@ -148,6 +149,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             Column(
               children: [
                 const MeshStatusBar(),
+                _VillageAnnouncementsBanner(appState: s),
                 Padding(
                   padding: const EdgeInsets.all(14),
                   child: Row(
@@ -228,6 +230,79 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// ส่วนประกาศข่าวสารหมู่บ้าน — แสดงประกาศฉุกเฉินและ mesh notices ล่าสุด
+class _VillageAnnouncementsBanner extends StatelessWidget {
+  const _VillageAnnouncementsBanner({required this.appState});
+
+  final AppState appState;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<ChatMessage>>(
+      future: appState.db.getBroadcastFeed(
+        trustedSenderIds: appState.trustedKeys.trustedIds,
+      ),
+      builder: (context, snap) {
+        final raw = snap.data ?? const <ChatMessage>[];
+        return FutureBuilder<List<ChatMessage>>(
+          future: appState.broadcastFilter.filterDisplayable(raw),
+          builder: (context, filteredSnap) {
+            final items = (filteredSnap.data ?? const <ChatMessage>[]).take(3).toList();
+            return Card(
+              margin: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+              color: const Color(0xFF1E3A2F),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.campaign_outlined, color: Color(0xFF10B981)),
+                        const SizedBox(width: 8),
+                        Text(
+                          'ประกาศข่าวสารหมู่บ้าน',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: const Color(0xFF10B981),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    if (items.isEmpty)
+                      Text(
+                        'ยังไม่มีประกาศ — ดูแท็บ “ประกาศ” เพื่อส่งหรือรับข่าวชุมชน',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.7),
+                        ),
+                      )
+                    else
+                      ...items.map((m) {
+                        final preview = m.content?.trim();
+                        final text = preview != null && preview.isNotEmpty
+                            ? preview
+                            : (m.alertLat != null ? '⚠️ แจ้งเตือนฉุกเฉิน' : 'ประกาศหมู่บ้าน');
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Text(
+                            '• $text',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        );
+                      }),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

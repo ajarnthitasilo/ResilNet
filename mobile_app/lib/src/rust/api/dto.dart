@@ -14,6 +14,7 @@ class MessagePacketDto {
   final Uint8List payload;
   final BigInt timestamp;
   final int ttl;
+  final PayloadTagDto payloadTag;
 
   const MessagePacketDto({
     required this.id,
@@ -22,6 +23,7 @@ class MessagePacketDto {
     required this.payload,
     required this.timestamp,
     required this.ttl,
+    required this.payloadTag,
   });
 
   @override
@@ -31,7 +33,8 @@ class MessagePacketDto {
       receiver.hashCode ^
       payload.hashCode ^
       timestamp.hashCode ^
-      ttl.hashCode;
+      ttl.hashCode ^
+      payloadTag.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -43,7 +46,8 @@ class MessagePacketDto {
           receiver == other.receiver &&
           payload == other.payload &&
           timestamp == other.timestamp &&
-          ttl == other.ttl;
+          ttl == other.ttl &&
+          payloadTag == other.payloadTag;
 }
 
 /// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE scan)
@@ -68,6 +72,9 @@ class NetworkStatusDto {
           isInternetAvailable == other.isInternetAvailable &&
           activeBlePeersCount == other.activeBlePeersCount;
 }
+
+/// ประเภท payload (wire tag: Text=1, Image=2, Audio=3, Firmware=4, Ack=5)
+enum PayloadTagDto { text, image, audio, firmware, ack }
 
 /// ผลการ route ส่งกลับไปยัง Flutter
 class RoutedPacketDto {

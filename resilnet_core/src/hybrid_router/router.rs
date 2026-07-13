@@ -5,7 +5,7 @@ use parking_lot::RwLock;
 use tokio::sync::{broadcast, mpsc, Mutex};
 
 use super::dedup::{DedupCache, DedupDecision};
-use super::types::{MessagePacket, NetworkStatus, TransportType};
+use super::types::{MessagePacket, NetworkStatus, PayloadTag, TransportType};
 
 /// ค่า TTL เริ่มต้นเมื่อส่งผ่าน Internet (สอดคล้องกับ Flutter BLE mesh)
 pub const DEFAULT_MESH_TTL: u8 = 5;
@@ -127,9 +127,28 @@ impl HybridRouterHandle {
     }
 
     /// ดึงข้อความจาก offline queue เพื่อส่งซ้ำเมื่อมีสัญญาณ
+    ///
+    /// เรียงตาม priority: Text/Alerts > Audio > Image > Firmware แล้วตาม timestamp
     pub async fn drain_offline_queue(&self) -> Vec<MessagePacket> {
         let mut q = self.inner.offline_queue.lock().await;
-        std::mem::take(&mut *q)
+        let mut items = std::mem::take(&mut *q);
+        items.sort_by(|a, b| {
+            b.payload_tag
+                .routing_weight()
+                .cmp(&a.payload_tag.routing_weight())
+                .then_with(|| a.timestamp.cmp(&b.timestamp))
+        });
+        items
+    }
+
+    /// กรอง chunk frame ซ้ำระหว่าง reassembly (audio/firmware streams)
+    pub fn check_and_record_chunk(&self, msg_id: u16, chunk_index: u8) -> DedupDecision {
+        self.inner.dedup.check_and_record_chunk(msg_id, chunk_index)
+    }
+
+    /// ล้าง chunk dedup cache เมื่อประกอบ binary stream เสร็จ
+    pub fn clear_chunk_stream(&self, msg_id: u16) {
+        self.inner.dedup.clear_chunk_stream(msg_id);
     }
 }
 
@@ -290,15 +309,32 @@ impl ResilNetRouterInner {
     }
 
     /// จำลองการบันทึกลง SQLite/RocksDB ฝั่ง Flutter
+    ///
+    /// คิวเรียง priority เมื่อ drain — Text/Alerts > Audio > Image/Firmware
     async fn enqueue_offline(
         &self,
         packet: &MessagePacket,
     ) -> Result<TransportType, RouterError> {
         let mut queue = self.offline_queue.lock().await;
         if queue.len() >= self.config.offline_queue_capacity {
-            return Err(RouterError::OfflineQueueFull(
-                self.config.offline_queue_capacity,
-            ));
+            // ทิ้ง low-priority เก่าสุดก่อน evict เพื่อให้ emergency/audio ไม่ถูกบีบออก
+            if let Some(lowest_idx) = queue
+                .iter()
+                .enumerate()
+                .min_by_key(|(_, p)| {
+                    (
+                        p.payload_tag.routing_weight(),
+                        std::cmp::Reverse(p.timestamp),
+                    )
+                })
+                .map(|(i, _)| i)
+            {
+                queue.remove(lowest_idx);
+            } else {
+                return Err(RouterError::OfflineQueueFull(
+                    self.config.offline_queue_capacity,
+                ));
+            }
         }
         queue.push(packet.clone());
         let queue_len = queue.len();
@@ -407,5 +443,73 @@ mod tests {
         handle.ingest_packet(pkt.clone()).await.unwrap();
         let received = incoming.recv().await.unwrap();
         assert_eq!(received.id, pkt.id);
+    }
+
+    fn tagged_packet(id: &str, tag: PayloadTag, ts: u64) -> MessagePacket {
+        MessagePacket::with_id_and_tag(
+            id,
+            "sender",
+            "receiver",
+            b"chunked-binary".to_vec(),
+            ts,
+            5,
+            tag,
+        )
+    }
+
+    #[tokio::test]
+    async fn offline_queue_drains_by_payload_priority() {
+        let (_router, handle, _incoming) = ResilNetRouter::new(RouterConfig::default());
+        handle.update_network_status(NetworkStatus::new(false, 0));
+
+        for (id, tag, ts) in [
+            ("fw-1", PayloadTag::Firmware, 100),
+            ("audio-1", PayloadTag::Audio, 200),
+            ("text-1", PayloadTag::Text, 300),
+            ("img-1", PayloadTag::Image, 400),
+        ] {
+            handle
+                .route_packet(tagged_packet(id, tag, ts))
+                .await
+                .unwrap();
+        }
+
+        let drained = handle.drain_offline_queue().await;
+        let ids: Vec<_> = drained.iter().map(|p| p.id.as_str()).collect();
+        assert_eq!(ids, vec!["text-1", "audio-1", "img-1", "fw-1"]);
+    }
+
+    #[tokio::test]
+    async fn multi_chunk_stream_dedup_and_routing() {
+        let (_router, handle, _incoming) = ResilNetRouter::new(RouterConfig::default());
+        handle.update_network_status(NetworkStatus::new(false, 0));
+
+        let msg_id = 0xBEEF_u16;
+        for i in 0..12u8 {
+            assert_eq!(
+                handle.check_and_record_chunk(msg_id, i),
+                DedupDecision::Accept
+            );
+            assert_eq!(
+                handle.check_and_record_chunk(msg_id, i),
+                DedupDecision::Duplicate
+            );
+        }
+
+        let audio_pkt = tagged_packet("voice-note", PayloadTag::Audio, 1);
+        let fw_pkt = tagged_packet("ota-bin", PayloadTag::Firmware, 2);
+        handle.route_packet(audio_pkt).await.unwrap();
+        handle.route_packet(fw_pkt).await.unwrap();
+
+        let drained = handle.drain_offline_queue().await;
+        assert_eq!(drained.len(), 2);
+        assert_eq!(drained[0].payload_tag, PayloadTag::Audio);
+        assert_eq!(drained[1].payload_tag, PayloadTag::Firmware);
+
+        handle.clear_chunk_stream(msg_id);
+        assert_eq!(
+            handle.check_and_record_chunk(msg_id, 0),
+            DedupDecision::Accept
+        );
     }
 }

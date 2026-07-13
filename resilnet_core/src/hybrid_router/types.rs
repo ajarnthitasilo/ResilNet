@@ -42,6 +42,47 @@ impl NetworkStatus {
     }
 }
 
+/// ประเภท payload สำหรับ routing priority (ค่าตัวเลขสอดคล้อง wire tag)
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[repr(u8)]
+pub enum PayloadTag {
+    #[default]
+    Text = 1,
+    Image = 2,
+    Audio = 3,
+    Firmware = 4,
+    Ack = 5,
+}
+
+impl PayloadTag {
+    pub const fn from_u8(value: u8) -> Option<Self> {
+        match value {
+            1 => Some(Self::Text),
+            2 => Some(Self::Image),
+            3 => Some(Self::Audio),
+            4 => Some(Self::Firmware),
+            5 => Some(Self::Ack),
+            _ => None,
+        }
+    }
+
+    pub const fn as_u8(self) -> u8 {
+        self as u8
+    }
+
+    /// น้ำหนักสำหรับ priority queue (สูง = ส่งก่อน)
+    /// Emergency Text/Alerts > ACK > Audio > Image > Firmware
+    pub const fn routing_weight(self) -> u8 {
+        match self {
+            Self::Text => 4,
+            Self::Ack => 4,
+            Self::Audio => 3,
+            Self::Image => 2,
+            Self::Firmware => 1,
+        }
+    }
+}
+
 /// แพ็กเก็ตข้อความมาตรฐานของ ResilNet
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MessagePacket {
@@ -51,6 +92,7 @@ pub struct MessagePacket {
     pub payload: Vec<u8>,
     pub timestamp: u64,
     pub ttl: u8,
+    pub payload_tag: PayloadTag,
 }
 
 impl MessagePacket {
@@ -62,6 +104,25 @@ impl MessagePacket {
         timestamp: u64,
         ttl: u8,
     ) -> Self {
+        Self::with_tag(
+            sender,
+            receiver,
+            payload,
+            timestamp,
+            ttl,
+            PayloadTag::Text,
+        )
+    }
+
+    /// สร้างแพ็กเก็ตใหม่พร้อมระบุ payload tag
+    pub fn with_tag(
+        sender: impl Into<String>,
+        receiver: impl Into<String>,
+        payload: Vec<u8>,
+        timestamp: u64,
+        ttl: u8,
+        payload_tag: PayloadTag,
+    ) -> Self {
         Self {
             id: Uuid::new_v4().to_string(),
             sender: sender.into(),
@@ -69,6 +130,7 @@ impl MessagePacket {
             payload,
             timestamp,
             ttl,
+            payload_tag,
         }
     }
 
@@ -81,6 +143,27 @@ impl MessagePacket {
         timestamp: u64,
         ttl: u8,
     ) -> Self {
+        Self::with_id_and_tag(
+            id,
+            sender,
+            receiver,
+            payload,
+            timestamp,
+            ttl,
+            PayloadTag::Text,
+        )
+    }
+
+    /// สร้างจากข้อมูลที่มี id และ payload tag
+    pub fn with_id_and_tag(
+        id: impl Into<String>,
+        sender: impl Into<String>,
+        receiver: impl Into<String>,
+        payload: Vec<u8>,
+        timestamp: u64,
+        ttl: u8,
+        payload_tag: PayloadTag,
+    ) -> Self {
         Self {
             id: id.into(),
             sender: sender.into(),
@@ -88,6 +171,28 @@ impl MessagePacket {
             payload,
             timestamp,
             ttl,
+            payload_tag,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn payload_tag_round_trip() {
+        assert_eq!(PayloadTag::from_u8(1), Some(PayloadTag::Text));
+        assert_eq!(PayloadTag::from_u8(3), Some(PayloadTag::Audio));
+        assert_eq!(PayloadTag::from_u8(99), None);
+        assert_eq!(PayloadTag::Firmware.as_u8(), 4);
+        assert_eq!(PayloadTag::Ack.as_u8(), 5);
+    }
+
+    #[test]
+    fn routing_weight_ordering() {
+        assert!(PayloadTag::Text.routing_weight() > PayloadTag::Audio.routing_weight());
+        assert!(PayloadTag::Audio.routing_weight() > PayloadTag::Image.routing_weight());
+        assert!(PayloadTag::Image.routing_weight() > PayloadTag::Firmware.routing_weight());
     }
 }

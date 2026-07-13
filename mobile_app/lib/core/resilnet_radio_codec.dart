@@ -180,6 +180,7 @@ class ResilNetRadioCodec {
         payload: packet.payload,
         timestamp: BigInt.from((map['timestamp'] as num?)?.toInt() ?? 0),
         ttl: packet.ttl,
+        payloadTag: PayloadTagDto.text,
       );
     } catch (e, st) {
       debugPrint('[ResilNetRadioCodec] payload JSON parse failed: $e\n$st');

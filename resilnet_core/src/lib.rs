@@ -7,12 +7,13 @@ pub mod hybrid_router;
 
 // Re-export เฉพาะสัญลักษณ์ที่ Flutter เรียกใช้ผ่าน FFI
 pub use api::{
-    init_resilnet_core, init_router, ingest_packet, is_router_initialized, route_packet,
-    subscribe_incoming_messages, update_network_status, get_network_status, offline_queue_len,
-    MessagePacketDto, NetworkStatusDto, RoutedPacketDto, RouterConfigDto, TransportTypeDto,
+    check_chunk_dedup, clear_chunk_stream, get_network_status, init_resilnet_core, init_router,
+    ingest_packet, is_router_initialized, offline_queue_len, payload_tag_from_u8, route_packet,
+    subscribe_incoming_messages, update_network_status, MessagePacketDto, NetworkStatusDto,
+    PayloadTagDto, RoutedPacketDto, RouterConfigDto, TransportTypeDto,
 };
 pub use hybrid_router::{
-    DedupDecision, HybridRouterHandle, MessagePacket, NetworkStatus, ResilNetRouter,
+    DedupDecision, HybridRouterHandle, MessagePacket, NetworkStatus, PayloadTag, ResilNetRouter,
     RoutedPacket, RouterConfig, RouterError, RouterEvent, TransportType,
 };
 

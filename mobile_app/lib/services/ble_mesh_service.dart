@@ -6,8 +6,11 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
+import '../core/resilnet_ack_codec.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
+import '../services/ack_handler_service.dart';
+import '../services/ack_queue_manager.dart';
 import '../src/rust/api/dto.dart';
 import 'broadcast_intake_service.dart';
 import 'database_service.dart';
@@ -23,10 +26,14 @@ class BleMeshService extends ChangeNotifier {
     required this.myUserId,
     this._broadcastIntake,
     this.resilnet,
+    this.ackQueue,
+    this.ackHandler,
   }) : _db = database;
 
   final BroadcastIntakeService? _broadcastIntake;
   final ResilNetService? resilnet;
+  final AckQueueManager? ackQueue;
+  final AckHandlerService? ackHandler;
 
   static final serviceUuid = Uuid.parse('9d2f3bb2-3a5a-4f6e-a0c2-9d62c2d4d2a1');
   static final characteristicUuid = Uuid.parse('ef8a0f1a-7b27-46d8-9e2a-7d66c1f1d9b1');
@@ -284,6 +291,12 @@ class BleMeshService extends ChangeNotifier {
       }
     }
 
+    final ackPacket = ResilNetAckCodec.decodeBatchPacket(bytes);
+    if (ackPacket != null) {
+      await ackHandler?.handleBatchPacket(ackPacket);
+      return;
+    }
+
     final msg = _decodeMessage(bytes);
     await handleIncoming(msg);
   }
@@ -342,7 +355,15 @@ class BleMeshService extends ChangeNotifier {
         await _db.saveMessage(relayed);
       }
     } else if (msg.receiverId == myUserId) {
-      await _db.updateMessageStatus(msg.id, MessageStatus.delivered.name);
+      final now = DateTime.now();
+      await _db.markMessagesDelivered([msg.id], now);
+      if (msg.type == MessageType.direct && msg.senderId != myUserId) {
+        await ackQueue?.enqueueDelivered(
+          msgId: msg.id,
+          targetSenderId: msg.senderId,
+          at: now,
+        );
+      }
     } else if (msg.ttl > 0) {
       final relayed = msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed);
       await _db.saveMessage(relayed);
@@ -368,13 +389,20 @@ class BleMeshService extends ChangeNotifier {
         ChatMessage toSend = msg;
         final rust = resilnet;
         if (rust != null && rust.isInitialized) {
+          final piggyback =
+              ackQueue?.drainPiggybackFor(msg.receiverId) ?? const [];
+          final dto = ResilNetPacketCodec.toDto(
+            msg,
+            piggybackAcks: piggyback,
+          );
           final routed = await rust.routeMessage(
             id: msg.id,
             sender: msg.senderId,
             receiver: msg.receiverId,
-            payload: ResilNetPacketCodec.toDto(msg).payload,
+            payload: dto.payload,
             timestampMs: msg.timestamp,
             ttl: msg.ttl,
+            payloadTag: dto.payloadTag,
           );
           if (routed.transport == TransportTypeDto.offlineQueue) {
             continue;

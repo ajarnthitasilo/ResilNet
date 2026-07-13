@@ -1,4 +1,4 @@
-enum MessageStatus { pending, sent, delivered, relayed }
+enum MessageStatus { pending, sent, relayed, delivered, read }
 
 enum MessageType { direct, broadcast }
 
@@ -26,6 +26,9 @@ class ChatMessage {
     this.alertLat,
     this.alertLon,
     this.alertRadiusM,
+    this.payloadKind = 'text',
+    this.deliveredAt,
+    this.readAt,
   });
 
   final String id;
@@ -46,6 +49,9 @@ class ChatMessage {
   final double? alertLat;
   final double? alertLon;
   final double? alertRadiusM;
+  final String payloadKind;
+  final DateTime? deliveredAt;
+  final DateTime? readAt;
 
   bool get isBroadcast =>
       type == MessageType.broadcast ||
@@ -70,6 +76,9 @@ class ChatMessage {
     double? alertLat,
     double? alertLon,
     double? alertRadiusM,
+    String? payloadKind,
+    DateTime? deliveredAt,
+    DateTime? readAt,
   }) {
     return ChatMessage(
       id: id ?? this.id,
@@ -90,6 +99,9 @@ class ChatMessage {
       alertLat: alertLat ?? this.alertLat,
       alertLon: alertLon ?? this.alertLon,
       alertRadiusM: alertRadiusM ?? this.alertRadiusM,
+      payloadKind: payloadKind ?? this.payloadKind,
+      deliveredAt: deliveredAt ?? this.deliveredAt,
+      readAt: readAt ?? this.readAt,
     );
   }
 
@@ -111,9 +123,12 @@ class ChatMessage {
       'alertLat': alertLat,
       'alertLon': alertLon,
       'alertRadiusM': alertRadiusM,
+      'payloadKind': payloadKind,
       'ttl': ttl,
       'timestamp': timestamp,
       'status': status.name,
+      'deliveredAt': deliveredAt?.millisecondsSinceEpoch,
+      'readAt': readAt?.millisecondsSinceEpoch,
     };
   }
 
@@ -129,6 +144,9 @@ class ChatMessage {
       (e) => e.name == typeName,
       orElse: () => MessageType.direct,
     );
+
+    final deliveredMs = map['deliveredAt'] as int?;
+    final readMs = map['readAt'] as int?;
 
     return ChatMessage(
       id: map['id'] as String,
@@ -149,6 +167,10 @@ class ChatMessage {
       alertLat: (map['alertLat'] as num?)?.toDouble(),
       alertLon: (map['alertLon'] as num?)?.toDouble(),
       alertRadiusM: (map['alertRadiusM'] as num?)?.toDouble(),
+      payloadKind: (map['payloadKind'] as String?) ?? 'text',
+      deliveredAt:
+          deliveredMs != null ? DateTime.fromMillisecondsSinceEpoch(deliveredMs) : null,
+      readAt: readMs != null ? DateTime.fromMillisecondsSinceEpoch(readMs) : null,
     );
   }
 }

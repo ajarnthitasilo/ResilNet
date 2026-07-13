@@ -22,4 +22,4 @@ pub use dedup::DedupDecision;
 pub use router::{
     HybridRouterHandle, ResilNetRouter, RoutedPacket, RouterConfig, RouterError, RouterEvent,
 };
-pub use types::{MessagePacket, NetworkStatus, TransportType};
+pub use types::{MessagePacket, NetworkStatus, PayloadTag, TransportType};

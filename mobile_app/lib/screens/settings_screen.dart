@@ -108,9 +108,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Card(
             child: ListTile(
               leading: const Icon(Icons.download_outlined),
-              title: const Text('ดาวน์โหลดเฟิร์มแวร์ ESP32'),
+              title: const Text('ดาวน์โหลด/อัปเดตเฟิร์มแวร์ ESP32'),
               subtitle: const Text(
-                'ดาวน์โหลดไฟล์ .bin สำหรับ Standalone Node และ LoRa Gateway',
+                'ดาวน์โหลดไฟล์ .bin และอัปเดตแอป/บอร์ด ESP32 ผ่าน OTA',
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
@@ -177,6 +177,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: _confirmClearMessages,
             ),
           ),
+          const SizedBox(height: 32),
+          Center(
+            child: Text(
+              'version 1.2.0',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Colors.white.withValues(alpha: 0.45),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
         ],
       ),
     );
