@@ -13,6 +13,8 @@ class SupabaseConfig {
   /// ตาราง Postgres สำหรับระบบเตือนภัย
   static const committeeKeysTable = 'committee_keys';
   static const emergencyBroadcastsTable = 'emergency_broadcasts';
+  static const usersProfilesTable = 'users_profiles';
+  static const sendPushSignalFunction = 'send-push-signal';
 
   /// Legacy: Supabase Storage (fallback ถ้าดึงจากตารางไม่ได้)
   static const trustedKeysBucket = 'config';

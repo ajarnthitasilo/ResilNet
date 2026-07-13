@@ -378,6 +378,17 @@ class DatabaseService {
     return rows.first;
   }
 
+  Future<ChatMessage?> getMessageByCloudId(int cloudId) async {
+    final rows = await _database.query(
+      'messages',
+      where: 'cloudId = ?',
+      whereArgs: [cloudId],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return ChatMessage.fromMap(rows.first);
+  }
+
   Future<void> setCloudIdForLocalMessage({
     required String localId,
     required int cloudId,

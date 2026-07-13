@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../core/app_version.dart';
 import '../state/app_state.dart';
 import 'esp32_firmware_screen.dart';
 
@@ -180,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 32),
           Center(
             child: Text(
-              'version 1.2.0',
+              'version $kAppVersion',
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Colors.white.withValues(alpha: 0.45),
               ),

@@ -23,8 +23,11 @@ import '../services/crypto_service.dart';
 import '../services/database_service.dart';
 import '../services/esp32_sync_service.dart';
 import '../services/firmware_service.dart';
+import '../services/fcm_token_service.dart';
 import '../services/init_supabase.dart';
 import '../services/notification_service.dart';
+import '../services/push_notification_service.dart';
+import '../services/push_signal_processor.dart';
 import '../services/sqs_cloud_service.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../services/resilnet_service.dart';
@@ -40,6 +43,10 @@ class AppState extends ChangeNotifier {
   late final TrustedKeysService trustedKeys = TrustedKeysService(database: db);
   final _storage = const FlutterSecureStorage();
   final notifications = NotificationService();
+  final pushNotifications = PushNotificationService();
+
+  PushSignalProcessor? _pushProcessor;
+  FcmTokenService? _fcmTokenService;
 
   BleMeshService? _mesh;
   Esp32SyncService? _esp32;
@@ -235,8 +242,17 @@ class AppState extends ChangeNotifier {
 
       await trustedKeys.init();
       await notifications.init();
-      // อย่าบล็อก startup ด้วย notification permission dialog
       unawaited(notifications.requestPermissions());
+
+      _pushProcessor = PushSignalProcessor(
+        database: db,
+        crypto: crypto,
+        notifications: notifications,
+        myUserId: crypto.myUserId,
+        notificationsEnabled: _notificationsEnabled,
+        isAppInForeground: () =>
+            _lifecycleState == AppLifecycleState.resumed,
+      );
 
       _broadcastFilter = BroadcastFilterService(trustedKeys: trustedKeys);
       _broadcastIntake = BroadcastIntakeService(
@@ -284,6 +300,20 @@ class AppState extends ChangeNotifier {
             supabase: Supabase.instance.client,
             myUserId: crypto.myUserId,
             broadcastIntake: _broadcastIntake,
+          );
+          _supabaseSync!.onDirectMessageIngested = (msg) {
+            unawaited(_pushProcessor?.handleIngestedDirectMessage(msg));
+          };
+          _fcmTokenService = FcmTokenService(
+            supabase: Supabase.instance.client,
+          );
+          _pushProcessor!.supabaseSync = _supabaseSync;
+          unawaited(
+            pushNotifications.init(
+              processor: _pushProcessor!,
+              tokenService: _fcmTokenService,
+              myUserId: crypto.myUserId,
+            ),
           );
           _supabaseSync!.addListener(notifyListeners);
           // realtime subscribe อาจค้างบนเน็ตช้า — อย่า await ยาว
@@ -392,6 +422,10 @@ class AppState extends ChangeNotifier {
 
     try {
       await _reconnectSupabase();
+      await pushNotifications.updateUserContext(
+        myUserId: myUserId,
+        tokenService: _fcmTokenService,
+      );
     } catch (e) {
       debugPrint('[ResilNet] Supabase reconnect failed: $e');
     }
@@ -432,6 +466,10 @@ class AppState extends ChangeNotifier {
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     _notificationsEnabled = enabled;
+    final processor = _pushProcessor;
+    if (processor != null) {
+      processor.notificationsEnabled = enabled;
+    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kNotificationsEnabled, enabled);
     notifyListeners();
@@ -482,6 +520,7 @@ class AppState extends ChangeNotifier {
     switch (routed.transport) {
       case TransportTypeDto.internet:
         unawaited(cloud.syncNow());
+        unawaited(_supabaseSync?.syncNow());
         await db.updateMessageStatus(msg.id, MessageStatus.sent.name);
       case TransportTypeDto.bluetoothMesh:
         await db.saveMessage(msg.copyWith(ttl: routed.packet.ttl, status: MessageStatus.pending));

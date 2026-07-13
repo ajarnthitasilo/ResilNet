@@ -9,6 +9,7 @@ import '../models/chat_message.dart';
 import 'broadcast_alert_codec.dart';
 import 'broadcast_intake_service.dart';
 import 'database_service.dart';
+import 'fcm_token_service.dart';
 import 'init_supabase.dart';
 import 'supabase_config.dart';
 import 'supabase_row_mapper.dart';
@@ -26,6 +27,11 @@ class SupabaseSyncService extends ChangeNotifier {
   final SupabaseClient supabase;
   final String myUserId;
   final BroadcastIntakeService? _broadcastIntake;
+
+  /// Called after a direct message is ingested (Realtime / fetch).
+  void Function(ChatMessage msg)? onDirectMessageIngested;
+
+  late final PushTriggerService _pushTrigger = PushTriggerService(supabase: supabase);
 
   RealtimeChannel? _channel;
   bool _running = false;
@@ -89,6 +95,11 @@ class SupabaseSyncService extends ChangeNotifier {
     await start();
   }
 
+  Future<void> syncNow() async {
+    await pushPending(myUserId: myUserId);
+    await pushPendingBroadcasts();
+  }
+
   Future<void> pushPending({required String myUserId}) async {
     final pending = await _db.getPendingMessagesForSupabase();
     for (final m in pending) {
@@ -120,6 +131,33 @@ class SupabaseSyncService extends ChangeNotifier {
       final cloudId = (inserted['id'] as num).toInt();
       await _db.setCloudIdForLocalMessage(localId: m.id, cloudId: cloudId);
       await _db.updateMessageStatus(m.id, MessageStatus.sent.name);
+
+      if (m.receiverId.isNotEmpty && m.receiverId != ResilNetIds.broadcastReceiverId) {
+        unawaited(
+          _pushTrigger.sendMessageSignal(
+            receiverId: m.receiverId,
+            senderId: m.senderId,
+            messageId: cloudId.toString(),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Fetch encrypted row from Supabase by cloud id and ingest locally.
+  Future<ChatMessage?> fetchAndIngestDirectMessage(int cloudId) async {
+    try {
+      final row = await supabase
+          .from('messages')
+          .select()
+          .eq('id', cloudId)
+          .maybeSingle();
+      if (row == null) return null;
+      await _ingestSupabaseRecord(Map<String, dynamic>.from(row));
+      return _db.getMessageByCloudId(cloudId);
+    } catch (e) {
+      debugPrint('[SupabaseSync] fetch cloud message failed: $e');
+      return null;
     }
   }
 
@@ -226,6 +264,7 @@ class SupabaseSyncService extends ChangeNotifier {
 
       await _db.saveMessage(msg);
       await _db.setCloudIdForLocalMessage(localId: id, cloudId: cloudId);
+      onDirectMessageIngested?.call(msg);
     } catch (e) {
       debugPrint('[SupabaseSync] ingest error: $e');
     }
