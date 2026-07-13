@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-import 'firebase_config.dart';
+import 'core/firebase_config.dart';
 
 /// Firebase options for ResilNet — sync with `google-services.json` /
 /// `GoogleService-Info.plist` after `flutterfire configure`.
