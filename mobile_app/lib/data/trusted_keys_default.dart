@@ -1,5 +1,5 @@
 /// ค่าเริ่มต้นฝังในแอป (Zero-setup สำหรับชาวบ้าน)
-/// อัปเดตรายชื่อจริงได้จาก Supabase Storage → trusted_keys.json
+/// อัปเดตผ่าน bundled defaults / SecureStorage (Nostr era)
 const kDefaultTrustedKeysJson = '''
 {
   "version": 1,

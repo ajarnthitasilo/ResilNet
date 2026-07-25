@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'app_launcher.dart' deferred as launcher;
 import 'boot_splash.dart';
 
-/// Entry เบาที่สุด — ไม่โหลด Rust/Firebase/Supabase ก่อน paint เฟรมแรก
+/// Entry เบาที่สุด — ไม่โหลด Rust/Nostr/Rust ก่อน paint เฟรมแรก
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const BootSplashApp());

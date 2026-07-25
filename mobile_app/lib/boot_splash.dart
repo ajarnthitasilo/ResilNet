@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Boot UI เบาที่สุด — ไม่ import AppState / Rust / Firebase / Supabase
+/// Boot UI เบาที่สุด — ไม่ import AppState / Rust / Nostr
 class BootSplashApp extends StatelessWidget {
   const BootSplashApp({super.key, this.errorMessage, this.onRetry});
 

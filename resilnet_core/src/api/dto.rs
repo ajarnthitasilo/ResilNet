@@ -5,21 +5,24 @@ use flutter_rust_bridge::frb;
 use crate::hybrid_router::{
     MessagePacket, NetworkStatus, PayloadTag, RoutedPacket, RouterConfig, TransportType,
 };
+use crate::nostr::{NostrPoolStatus, RelayStatus, ResilNetEnvelope};
 
 /// ช่องทางส่งข้อมูล (mirror ของ `TransportType`)
 #[frb]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TransportTypeDto {
-    Internet,
+    Nostr,
     BluetoothMesh,
+    LoRa,
     OfflineQueue,
 }
 
 impl From<TransportType> for TransportTypeDto {
     fn from(t: TransportType) -> Self {
         match t {
-            TransportType::Internet => Self::Internet,
+            TransportType::Nostr => Self::Nostr,
             TransportType::BluetoothMesh => Self::BluetoothMesh,
+            TransportType::LoRa => Self::LoRa,
             TransportType::OfflineQueue => Self::OfflineQueue,
         }
     }
@@ -84,17 +87,22 @@ impl PayloadTagDto {
     }
 }
 
-/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE scan)
+/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + LoRa)
 #[frb]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NetworkStatusDto {
     pub is_internet_available: bool,
     pub active_ble_peers_count: u32,
+    pub lora_available: bool,
 }
 
 impl From<NetworkStatusDto> for NetworkStatus {
     fn from(d: NetworkStatusDto) -> Self {
-        NetworkStatus::new(d.is_internet_available, d.active_ble_peers_count as usize)
+        NetworkStatus::with_lora(
+            d.is_internet_available,
+            d.active_ble_peers_count as usize,
+            d.lora_available,
+        )
     }
 }
 
@@ -103,6 +111,7 @@ impl From<NetworkStatus> for NetworkStatusDto {
         Self {
             is_internet_available: s.is_internet_available,
             active_ble_peers_count: s.active_ble_peers_count as u32,
+            lora_available: s.lora_available,
         }
     }
 }
@@ -153,6 +162,7 @@ impl From<MessagePacketDto> for MessagePacket {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RoutedPacketDto {
     pub transport: TransportTypeDto,
+    pub transports: Vec<TransportTypeDto>,
     pub packet: MessagePacketDto,
 }
 
@@ -160,6 +170,7 @@ impl From<RoutedPacket> for RoutedPacketDto {
     fn from(r: RoutedPacket) -> Self {
         Self {
             transport: r.transport.into(),
+            transports: r.transports.into_iter().map(Into::into).collect(),
             packet: r.packet.into(),
         }
     }
@@ -200,6 +211,99 @@ impl From<RouterConfigDto> for RouterConfig {
             offline_queue_capacity: d.offline_queue_capacity as usize,
             event_channel_capacity: d.event_channel_capacity as usize,
             incoming_channel_capacity: d.incoming_channel_capacity as usize,
+        }
+    }
+}
+
+#[frb]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RelayStatusDto {
+    pub url: String,
+    pub connected: bool,
+}
+
+impl From<RelayStatus> for RelayStatusDto {
+    fn from(r: RelayStatus) -> Self {
+        Self {
+            url: r.url,
+            connected: r.connected,
+        }
+    }
+}
+
+#[frb]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NostrPoolStatusDto {
+    pub initialized: bool,
+    pub pubkey_hex: String,
+    pub npub: String,
+    pub connected_relays: u32,
+    pub total_relays: u32,
+    pub relays: Vec<RelayStatusDto>,
+}
+
+impl From<NostrPoolStatus> for NostrPoolStatusDto {
+    fn from(s: NostrPoolStatus) -> Self {
+        Self {
+            initialized: s.initialized,
+            pubkey_hex: s.pubkey_hex,
+            npub: s.npub,
+            connected_relays: s.connected_relays,
+            total_relays: s.total_relays,
+            relays: s.relays.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+/// Result of first-time / restore Nostr identity init
+#[frb]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NostrInitResultDto {
+    pub status: NostrPoolStatusDto,
+    /// Persist in Flutter secure storage; empty if restore failed mid-flight
+    pub secret_key_hex: String,
+}
+
+#[frb]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ResilNetEnvelopeDto {
+    pub id: String,
+    pub sender: String,
+    pub receiver: String,
+    pub payload_b64: String,
+    pub timestamp: u64,
+    pub ttl: u8,
+    pub payload_tag: u8,
+    pub kind: String,
+}
+
+impl From<ResilNetEnvelope> for ResilNetEnvelopeDto {
+    fn from(e: ResilNetEnvelope) -> Self {
+        Self {
+            id: e.id,
+            sender: e.sender,
+            receiver: e.receiver,
+            payload_b64: e.payload_b64,
+            timestamp: e.timestamp,
+            ttl: e.ttl,
+            payload_tag: e.payload_tag,
+            kind: e.kind,
+        }
+    }
+}
+
+impl From<ResilNetEnvelopeDto> for ResilNetEnvelope {
+    fn from(d: ResilNetEnvelopeDto) -> Self {
+        Self {
+            v: 1,
+            id: d.id,
+            sender: d.sender,
+            receiver: d.receiver,
+            payload_b64: d.payload_b64,
+            timestamp: d.timestamp,
+            ttl: d.ttl,
+            payload_tag: d.payload_tag,
+            kind: d.kind,
         }
     }
 }

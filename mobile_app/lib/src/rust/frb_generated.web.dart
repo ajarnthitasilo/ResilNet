@@ -7,6 +7,7 @@
 // ignore_for_file: argument_type_not_assignable
 
 import 'api/dto.dart';
+import 'api/nostr_api.dart';
 import 'api/router_api.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -43,13 +44,27 @@ abstract class ResilNetCoreApiImplPlatform
   PayloadTagDto dco_decode_box_autoadd_payload_tag_dto(dynamic raw);
 
   @protected
+  ResilNetEnvelopeDto dco_decode_box_autoadd_resil_net_envelope_dto(
+    dynamic raw,
+  );
+
+  @protected
   RouterConfigDto dco_decode_box_autoadd_router_config_dto(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
 
   @protected
+  List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<RelayStatusDto> dco_decode_list_relay_status_dto(dynamic raw);
+
+  @protected
+  List<TransportTypeDto> dco_decode_list_transport_type_dto(dynamic raw);
 
   @protected
   MessagePacketDto dco_decode_message_packet_dto(dynamic raw);
@@ -58,10 +73,28 @@ abstract class ResilNetCoreApiImplPlatform
   NetworkStatusDto dco_decode_network_status_dto(dynamic raw);
 
   @protected
+  NostrInitResultDto dco_decode_nostr_init_result_dto(dynamic raw);
+
+  @protected
+  NostrPoolStatusDto dco_decode_nostr_pool_status_dto(dynamic raw);
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw);
+
+  @protected
   PayloadTagDto? dco_decode_opt_box_autoadd_payload_tag_dto(dynamic raw);
 
   @protected
+  List<String>? dco_decode_opt_list_String(dynamic raw);
+
+  @protected
   PayloadTagDto dco_decode_payload_tag_dto(dynamic raw);
+
+  @protected
+  RelayStatusDto dco_decode_relay_status_dto(dynamic raw);
+
+  @protected
+  ResilNetEnvelopeDto dco_decode_resil_net_envelope_dto(dynamic raw);
 
   @protected
   RoutedPacketDto dco_decode_routed_packet_dto(dynamic raw);
@@ -112,6 +145,11 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  ResilNetEnvelopeDto sse_decode_box_autoadd_resil_net_envelope_dto(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   RouterConfigDto sse_decode_box_autoadd_router_config_dto(
     SseDeserializer deserializer,
   );
@@ -120,7 +158,20 @@ abstract class ResilNetCoreApiImplPlatform
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<RelayStatusDto> sse_decode_list_relay_status_dto(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  List<TransportTypeDto> sse_decode_list_transport_type_dto(
+    SseDeserializer deserializer,
+  );
 
   @protected
   MessagePacketDto sse_decode_message_packet_dto(SseDeserializer deserializer);
@@ -129,12 +180,36 @@ abstract class ResilNetCoreApiImplPlatform
   NetworkStatusDto sse_decode_network_status_dto(SseDeserializer deserializer);
 
   @protected
+  NostrInitResultDto sse_decode_nostr_init_result_dto(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  NostrPoolStatusDto sse_decode_nostr_pool_status_dto(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
   PayloadTagDto? sse_decode_opt_box_autoadd_payload_tag_dto(
     SseDeserializer deserializer,
   );
 
   @protected
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
+
+  @protected
   PayloadTagDto sse_decode_payload_tag_dto(SseDeserializer deserializer);
+
+  @protected
+  RelayStatusDto sse_decode_relay_status_dto(SseDeserializer deserializer);
+
+  @protected
+  ResilNetEnvelopeDto sse_decode_resil_net_envelope_dto(
+    SseDeserializer deserializer,
+  );
 
   @protected
   RoutedPacketDto sse_decode_routed_packet_dto(SseDeserializer deserializer);
@@ -191,6 +266,12 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  void sse_encode_box_autoadd_resil_net_envelope_dto(
+    ResilNetEnvelopeDto self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_box_autoadd_router_config_dto(
     RouterConfigDto self,
     SseSerializer serializer,
@@ -200,8 +281,23 @@ abstract class ResilNetCoreApiImplPlatform
   void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
     Uint8List self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_relay_status_dto(
+    List<RelayStatusDto> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_transport_type_dto(
+    List<TransportTypeDto> self,
     SseSerializer serializer,
   );
 
@@ -218,13 +314,43 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  void sse_encode_nostr_init_result_dto(
+    NostrInitResultDto self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_nostr_pool_status_dto(
+    NostrPoolStatusDto self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_payload_tag_dto(
     PayloadTagDto? self,
     SseSerializer serializer,
   );
 
   @protected
+  void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_payload_tag_dto(PayloadTagDto self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_relay_status_dto(
+    RelayStatusDto self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_resil_net_envelope_dto(
+    ResilNetEnvelopeDto self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_routed_packet_dto(

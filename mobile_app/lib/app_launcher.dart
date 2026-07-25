@@ -8,34 +8,23 @@ import 'app/theme.dart';
 import 'screens/chat_list_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/permission_screen.dart';
-import 'services/init_supabase.dart';
 import 'state/app_state.dart';
 import 'widgets/app_lifecycle_handler.dart';
 
-/// โหลดหลังเฟรม BootSplash — มีการ import หนัก (Rust/Firebase/Supabase)
+/// โหลดหลังเฟรม BootSplash — Rust / Nostr / BLE
 Future<void> launchFullApp() async {
   final appState = AppState();
   runApp(ResilNetApp(appState: appState));
-  // ให้เฟรม ResilNetApp วาดก่อน แล้วค่อย bootstrap
   await Future<void>.delayed(Duration.zero);
   await _bootstrap(appState);
 }
 
 Future<void> _bootstrap(AppState appState) async {
   try {
-    final supabaseOk = await initSupabase().timeout(
-      const Duration(seconds: 3),
+    await appState.init().timeout(
+      const Duration(seconds: 25),
       onTimeout: () {
-        debugPrint('[ResilNet] initSupabase timed out (3s) — offline mode');
-        return false;
-      },
-    );
-    debugPrint('[ResilNet] initSupabase done ok=$supabaseOk');
-
-    await appState.init(enableSupabase: supabaseOk).timeout(
-      const Duration(seconds: 20),
-      onTimeout: () {
-        debugPrint('[ResilNet] AppState.init timed out (20s)');
+        debugPrint('[ResilNet] AppState.init timed out (25s)');
         throw TimeoutException('AppState.init');
       },
     );
@@ -103,13 +92,6 @@ class _BootScreen extends StatelessWidget {
               height: 28,
               child: CircularProgressIndicator(strokeWidth: 2.5),
             ),
-            const SizedBox(height: 14),
-            Text(
-              'กำลังเตรียมระบบ…',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
-                  ),
-            ),
           ],
         ),
       ),
@@ -124,17 +106,16 @@ class _BootErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = context.read<AppState>();
     return Scaffold(
       backgroundColor: const Color(0xFF0B1224),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Center(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, color: Colors.orangeAccent, size: 40),
-              const SizedBox(height: 12),
+              const Icon(Icons.error_outline, color: Colors.orangeAccent, size: 42),
+              const SizedBox(height: 16),
               Text(
                 'เริ่มระบบไม่สำเร็จ',
                 style: Theme.of(context).textTheme.titleLarge,
@@ -143,14 +124,11 @@ class _BootErrorScreen extends StatelessWidget {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.white70),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 20),
               FilledButton(
-                onPressed: () => s.retryInit(),
+                onPressed: () => context.read<AppState>().retryInit(),
                 child: const Text('ลองอีกครั้ง'),
               ),
             ],

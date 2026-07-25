@@ -26,8 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: const Text('ล้างข้อความทั้งหมด?'),
           content: const Text(
             'การดำเนินการนี้จะลบข้อความแชตและประกาศทั้งหมดในเครื่องนี้\n'
-            'รายชื่อเพื่อน (peers) และชื่อเล่นจะไม่ถูกลบ\n\n'
-            'หากเชื่อมต่อ Supabase ข้อความที่คุณส่งขึ้น cloud จะถูกลบด้วย',
+            'รายชื่อเพื่อน (peers) และชื่อเล่นจะไม่ถูกลบ',
           ),
           actions: [
             TextButton(
@@ -63,23 +62,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _updatingTrusted = true);
     try {
       final s = context.read<AppState>();
-      if (s.supabaseSync == null) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ต้องเชื่อมต่ออินเทอร์เน็ตและ Supabase ก่อนอัปเดต'),
-          ),
-        );
-        return;
-      }
-      final ok = await s.refreshTrustedKeysFromSupabase();
+      final ok = await s.refreshTrustedKeys();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             ok
-                ? 'อัปเดตรายชื่อสิทธิ์ประกาศเรียบร้อยแล้ว'
-                : 'ไม่มีการอัปเดต (ไฟล์ไม่ใหม่กว่าที่มีอยู่)',
+                ? 'โหลดรายชื่อสิทธิ์ประกาศจากค่าเริ่มต้นแล้ว'
+                : 'มีรายชื่ออยู่แล้ว — ไม่ต้องโหลดซ้ำ',
           ),
         ),
       );

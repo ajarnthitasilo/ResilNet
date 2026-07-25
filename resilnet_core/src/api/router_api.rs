@@ -25,13 +25,14 @@ pub fn init_router(config: RouterConfigDto) -> Result<(), String> {
     init_router_state(config.into())
 }
 
-/// อัปเดตสถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE peer count)
+/// อัปเดตสถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + LoRa)
 #[frb]
 pub fn update_network_status(
     is_internet_available: bool,
     active_ble_peers_count: u32,
+    lora_available: bool,
 ) -> Result<(), String> {
-    update_network_status_mapped(is_internet_available, active_ble_peers_count)
+    update_network_status_mapped(is_internet_available, active_ble_peers_count, lora_available)
 }
 
 /// อ่านสถานะเครือข่ายล่าสุดที่ router เก็บไว้
@@ -154,12 +155,12 @@ mod tests {
     #[tokio::test]
     async fn ffi_api_smoke_test() {
         init_router(RouterConfigDto::default()).unwrap();
-        update_network_status(true, 0).unwrap();
+        update_network_status(true, 0, false).unwrap();
 
         let routed = route_packet(sample_dto("pkt-1", 1)).await.unwrap();
         assert_eq!(
             routed.transport,
-            crate::api::dto::TransportTypeDto::Internet
+            crate::api::dto::TransportTypeDto::Nostr
         );
         assert_eq!(routed.packet.ttl, 5);
 

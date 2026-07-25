@@ -6,6 +6,8 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
+
 /// แพ็กเก็ตข้อความข้าม FFI (mirror ของ `MessagePacket`)
 class MessagePacketDto {
   final String id;
@@ -50,19 +52,23 @@ class MessagePacketDto {
           payloadTag == other.payloadTag;
 }
 
-/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE scan)
+/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + LoRa)
 class NetworkStatusDto {
   final bool isInternetAvailable;
   final int activeBlePeersCount;
+  final bool loraAvailable;
 
   const NetworkStatusDto({
     required this.isInternetAvailable,
     required this.activeBlePeersCount,
+    required this.loraAvailable,
   });
 
   @override
   int get hashCode =>
-      isInternetAvailable.hashCode ^ activeBlePeersCount.hashCode;
+      isInternetAvailable.hashCode ^
+      activeBlePeersCount.hashCode ^
+      loraAvailable.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -70,21 +76,168 @@ class NetworkStatusDto {
       other is NetworkStatusDto &&
           runtimeType == other.runtimeType &&
           isInternetAvailable == other.isInternetAvailable &&
-          activeBlePeersCount == other.activeBlePeersCount;
+          activeBlePeersCount == other.activeBlePeersCount &&
+          loraAvailable == other.loraAvailable;
+}
+
+/// Result of first-time / restore Nostr identity init
+class NostrInitResultDto {
+  final NostrPoolStatusDto status;
+
+  /// Persist in Flutter secure storage; empty if restore failed mid-flight
+  final String secretKeyHex;
+
+  const NostrInitResultDto({required this.status, required this.secretKeyHex});
+
+  @override
+  int get hashCode => status.hashCode ^ secretKeyHex.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NostrInitResultDto &&
+          runtimeType == other.runtimeType &&
+          status == other.status &&
+          secretKeyHex == other.secretKeyHex;
+}
+
+class NostrPoolStatusDto {
+  final bool initialized;
+  final String pubkeyHex;
+  final String npub;
+  final int connectedRelays;
+  final int totalRelays;
+  final List<RelayStatusDto> relays;
+
+  const NostrPoolStatusDto({
+    required this.initialized,
+    required this.pubkeyHex,
+    required this.npub,
+    required this.connectedRelays,
+    required this.totalRelays,
+    required this.relays,
+  });
+
+  @override
+  int get hashCode =>
+      initialized.hashCode ^
+      pubkeyHex.hashCode ^
+      npub.hashCode ^
+      connectedRelays.hashCode ^
+      totalRelays.hashCode ^
+      relays.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NostrPoolStatusDto &&
+          runtimeType == other.runtimeType &&
+          initialized == other.initialized &&
+          pubkeyHex == other.pubkeyHex &&
+          npub == other.npub &&
+          connectedRelays == other.connectedRelays &&
+          totalRelays == other.totalRelays &&
+          relays == other.relays;
 }
 
 /// ประเภท payload (wire tag: Text=1, Image=2, Audio=3, Firmware=4, Ack=5)
-enum PayloadTagDto { text, image, audio, firmware, ack }
+enum PayloadTagDto {
+  text,
+  image,
+  audio,
+  firmware,
+  ack;
+
+  Future<int> asU8() =>
+      ResilNetCore.instance.api.crateApiDtoPayloadTagDtoAsU8(that: this);
+
+  static Future<PayloadTagDto> default_() =>
+      ResilNetCore.instance.api.crateApiDtoPayloadTagDtoDefault();
+
+  static Future<PayloadTagDto?> fromU8({required int value}) =>
+      ResilNetCore.instance.api.crateApiDtoPayloadTagDtoFromU8(value: value);
+}
+
+class RelayStatusDto {
+  final String url;
+  final bool connected;
+
+  const RelayStatusDto({required this.url, required this.connected});
+
+  @override
+  int get hashCode => url.hashCode ^ connected.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RelayStatusDto &&
+          runtimeType == other.runtimeType &&
+          url == other.url &&
+          connected == other.connected;
+}
+
+class ResilNetEnvelopeDto {
+  final String id;
+  final String sender;
+  final String receiver;
+  final String payloadB64;
+  final BigInt timestamp;
+  final int ttl;
+  final int payloadTag;
+  final String kind;
+
+  const ResilNetEnvelopeDto({
+    required this.id,
+    required this.sender,
+    required this.receiver,
+    required this.payloadB64,
+    required this.timestamp,
+    required this.ttl,
+    required this.payloadTag,
+    required this.kind,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      sender.hashCode ^
+      receiver.hashCode ^
+      payloadB64.hashCode ^
+      timestamp.hashCode ^
+      ttl.hashCode ^
+      payloadTag.hashCode ^
+      kind.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ResilNetEnvelopeDto &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          sender == other.sender &&
+          receiver == other.receiver &&
+          payloadB64 == other.payloadB64 &&
+          timestamp == other.timestamp &&
+          ttl == other.ttl &&
+          payloadTag == other.payloadTag &&
+          kind == other.kind;
+}
 
 /// ผลการ route ส่งกลับไปยัง Flutter
 class RoutedPacketDto {
   final TransportTypeDto transport;
+  final List<TransportTypeDto> transports;
   final MessagePacketDto packet;
 
-  const RoutedPacketDto({required this.transport, required this.packet});
+  const RoutedPacketDto({
+    required this.transport,
+    required this.transports,
+    required this.packet,
+  });
 
   @override
-  int get hashCode => transport.hashCode ^ packet.hashCode;
+  int get hashCode =>
+      transport.hashCode ^ transports.hashCode ^ packet.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -92,6 +245,7 @@ class RoutedPacketDto {
       other is RoutedPacketDto &&
           runtimeType == other.runtimeType &&
           transport == other.transport &&
+          transports == other.transports &&
           packet == other.packet;
 }
 
@@ -112,6 +266,9 @@ class RouterConfigDto {
     required this.eventChannelCapacity,
     required this.incomingChannelCapacity,
   });
+
+  static Future<RouterConfigDto> default_() =>
+      ResilNetCore.instance.api.crateApiDtoRouterConfigDtoDefault();
 
   @override
   int get hashCode =>
@@ -136,4 +293,4 @@ class RouterConfigDto {
 }
 
 /// ช่องทางส่งข้อมูล (mirror ของ `TransportType`)
-enum TransportTypeDto { internet, bluetoothMesh, offlineQueue }
+enum TransportTypeDto { nostr, bluetoothMesh, loRa, offlineQueue }

@@ -136,7 +136,7 @@ class _BroadcastScreenState extends State<BroadcastScreen> {
     );
 
     await s.db.saveMessage(msg);
-    unawaited(s.supabaseSync?.pushPendingBroadcasts());
+    // Broadcast also fans out via Nostr when internet is available (routeOutbound).
     if (!mounted) return;
     setState(() {});
     ScaffoldMessenger.of(context).showSnackBar(

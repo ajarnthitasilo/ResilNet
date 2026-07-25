@@ -80,10 +80,13 @@ pub enum RouterEvent {
     QueuedOffline { packet_id: String, queue_len: usize },
 }
 
-/// ผลการ route — รวมแพ็กเก็ตที่อาจถูกปรับ TTL แล้ว
+/// ผลการ route — อาจมีหลายช่องทาง (fan-out: Nostr + BLE + LoRa)
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RoutedPacket {
+    /// Primary transport (first in list) — kept for backwards-compatible FFI field
     pub transport: TransportType,
+    /// All selected transports for this outbound packet
+    pub transports: Vec<TransportType>,
     pub packet: MessagePacket,
 }
 
@@ -107,13 +110,21 @@ impl HybridRouterHandle {
         self.inner.ingest_packet(packet).await
     }
 
-    /// ตัดสินใจเส้นทางส่งออก (Hybrid Logic) — คืน transport + แพ็กเก็ตที่ปรับ TTL แล้ว
+    /// ตัดสินใจเส้นทางส่งออก (fan-out เมื่อทำได้) — คืน transports + แพ็กเก็ตที่ปรับ TTL แล้ว
     pub async fn route_packet(
         &self,
         mut packet: MessagePacket,
     ) -> Result<RoutedPacket, RouterError> {
-        let transport = self.inner.route_packet(&mut packet).await?;
-        Ok(RoutedPacket { transport, packet })
+        let transports = self.inner.route_packet(&mut packet).await?;
+        let transport = transports
+            .first()
+            .copied()
+            .unwrap_or(TransportType::OfflineQueue);
+        Ok(RoutedPacket {
+            transport,
+            transports,
+            packet,
+        })
     }
 
     /// Subscribe เหตุการณ์แบบ broadcast (หลาย consumer ได้)
@@ -256,68 +267,64 @@ impl ResilNetRouterInner {
         Ok(())
     }
 
-    /// ขาออก: State Machine เลือกช่องทางตามสถานะเครือข่าย
+    /// ขาออก: fan-out ตามสถานะเครือข่าย
     ///
     /// ```text
-    /// Internet OK?  ──yes──► Internet (TTL := internet_ttl_reset)
-    ///      │
-    ///      no
-    ///      ▼
-    /// BLE peers > 0? ──yes──► TTL > 0? ──yes──► BluetoothMesh (TTL -= 1)
-    ///      │                      no ──► OfflineQueue หรือ error
-    ///      no
-    ///      ▼
-    /// OfflineQueue
+    /// Internet? ──yes──► Nostr (+ TTL reset)
+    /// BLE peers? ──yes──► BluetoothMesh (TTL -= 1)   // พร้อมกับ Nostr ได้
+    /// LoRa?      ──yes──► LoRa
+    /// ไม่มีช่องใดเลย ──► OfflineQueue
     /// ```
     async fn route_packet(
         &self,
         packet: &mut MessagePacket,
-    ) -> Result<TransportType, RouterError> {
+    ) -> Result<Vec<TransportType>, RouterError> {
         Self::validate_id(packet)?;
 
         let status = self.network_status();
+        let mut transports = Vec::with_capacity(3);
 
-        // ลำดับที่ 1: Internet — เร็วและครอบคลุม
         if status.is_internet_available {
             packet.ttl = self.config.internet_ttl_reset;
-            let transport = TransportType::Internet;
-            self.emit(RouterEvent::PacketRouted {
-                packet_id: packet.id.clone(),
-                transport,
-            })?;
-            return Ok(transport);
+            transports.push(TransportType::Nostr);
         }
 
-        // ลำดับที่ 2: BLE Mesh — ลด TTL ป้องกันวนลูป
-        if status.active_ble_peers_count > 0 {
-            if packet.ttl == 0 {
-                // TTL หมดแล้ว — ไม่ส่งต่อ mesh อีก เก็บลงคิวแทน
-                return self.enqueue_offline(packet).await;
+        if status.active_ble_peers_count > 0 && packet.ttl > 0 {
+            // ลด TTL เฉพาะเมื่อส่ง mesh (ถ้า Nostr รีเซ็ตไว้แล้ว ใช้ค่าหลังรีเซ็ต)
+            if !status.is_internet_available {
+                packet.ttl = packet.ttl.saturating_sub(1);
+            } else if packet.ttl > 0 {
+                // มีทั้ง Nostr + BLE: เก็บ TTL สำหรับ mesh hop โดยไม่ลดซ้ำเกิน
+                packet.ttl = packet.ttl.saturating_sub(1).max(1);
             }
+            transports.push(TransportType::BluetoothMesh);
+        }
 
-            packet.ttl = packet.ttl.saturating_sub(1);
-            let transport = TransportType::BluetoothMesh;
+        if status.lora_available {
+            transports.push(TransportType::LoRa);
+        }
+
+        if transports.is_empty() {
+            return self.enqueue_offline(packet).await;
+        }
+
+        for &transport in &transports {
             self.emit(RouterEvent::PacketRouted {
                 packet_id: packet.id.clone(),
                 transport,
             })?;
-            return Ok(transport);
         }
 
-        // ลำดับที่ 3: ไม่มีสัญญาณ — คิวท้องถิ่น
-        self.enqueue_offline(packet).await
+        Ok(transports)
     }
 
-    /// จำลองการบันทึกลง SQLite/RocksDB ฝั่ง Flutter
-    ///
-    /// คิวเรียง priority เมื่อ drain — Text/Alerts > Audio > Image/Firmware
+    /// คิวท้องถิ่นเมื่อไม่มี Nostr / BLE / LoRa
     async fn enqueue_offline(
         &self,
         packet: &MessagePacket,
-    ) -> Result<TransportType, RouterError> {
+    ) -> Result<Vec<TransportType>, RouterError> {
         let mut queue = self.offline_queue.lock().await;
         if queue.len() >= self.config.offline_queue_capacity {
-            // ทิ้ง low-priority เก่าสุดก่อน evict เพื่อให้ emergency/audio ไม่ถูกบีบออก
             if let Some(lowest_idx) = queue
                 .iter()
                 .enumerate()
@@ -349,7 +356,7 @@ impl ResilNetRouterInner {
             transport: TransportType::OfflineQueue,
         })?;
 
-        Ok(TransportType::OfflineQueue)
+        Ok(vec![TransportType::OfflineQueue])
     }
 }
 
@@ -369,15 +376,28 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn routes_via_internet_and_resets_ttl() {
+    async fn routes_via_nostr_and_resets_ttl() {
         let (_router, handle, _incoming) = ResilNetRouter::new(RouterConfig::default());
         handle.update_network_status(NetworkStatus::new(true, 0));
 
         let pkt = sample_packet(1);
         let routed = handle.route_packet(pkt).await.unwrap();
 
-        assert_eq!(routed.transport, TransportType::Internet);
+        assert_eq!(routed.transport, TransportType::Nostr);
+        assert_eq!(routed.transports, vec![TransportType::Nostr]);
         assert_eq!(routed.packet.ttl, DEFAULT_MESH_TTL);
+    }
+
+    #[tokio::test]
+    async fn fan_out_nostr_and_ble() {
+        let (_router, handle, _incoming) = ResilNetRouter::new(RouterConfig::default());
+        handle.update_network_status(NetworkStatus::new(true, 2));
+
+        let pkt = sample_packet(5);
+        let routed = handle.route_packet(pkt).await.unwrap();
+
+        assert!(routed.transports.contains(&TransportType::Nostr));
+        assert!(routed.transports.contains(&TransportType::BluetoothMesh));
     }
 
     #[tokio::test]

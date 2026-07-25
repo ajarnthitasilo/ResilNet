@@ -393,8 +393,12 @@ class UdpTransportService extends ChangeNotifier {
           if (routed.transport == TransportTypeDto.offlineQueue) {
             continue;
           }
-          if (routed.transport == TransportTypeDto.internet) {
-            await _db.updateMessageStatus(msg.id, MessageStatus.sent.name);
+          if (routed.transports.contains(TransportTypeDto.nostr) &&
+              !routed.transports.contains(TransportTypeDto.bluetoothMesh) &&
+              !routed.transports.contains(TransportTypeDto.loRa)) {
+            debugPrint(
+              '[UdpTransport] nostr-only id=${msg.id} — skip UDP hop',
+            );
             continue;
           }
         }

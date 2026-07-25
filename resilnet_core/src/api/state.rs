@@ -7,6 +7,7 @@ use tokio::task::JoinHandle;
 use crate::hybrid_router::{
     HybridRouterHandle, MessagePacket, ResilNetRouter, RoutedPacket, RouterConfig, RouterError,
 };
+use crate::nostr::NostrPoolHandle;
 
 /// เก็บ router + incoming channel ไว้ตลอดอายุ process
 struct RouterState {
@@ -18,6 +19,7 @@ struct RouterState {
 }
 
 static ROUTER_STATE: OnceLock<Mutex<RouterState>> = OnceLock::new();
+static NOSTR_POOL: OnceLock<NostrPoolHandle> = OnceLock::new();
 
 /// เริ่มต้น router ครั้งเดียวต่อ process (เก็บ handle ไว้ใน `ROUTER_STATE`)
 pub(crate) fn init_router_state(config: RouterConfig) -> Result<(), String> {
@@ -34,6 +36,8 @@ pub(crate) fn init_router_state(config: RouterConfig) -> Result<(), String> {
         .set(Mutex::new(state))
         .map_err(|_| "ResilNet router already initialized".to_string())?;
 
+    let _ = NOSTR_POOL.set(NostrPoolHandle::new());
+
     Ok(())
 }
 
@@ -47,6 +51,17 @@ pub(crate) fn get_handle() -> Result<HybridRouterHandle, String> {
         .get()
         .ok_or_else(|| "Router not initialized — call init_router() first".to_string())?;
     Ok(guard.lock().handle.clone())
+}
+
+pub(crate) fn get_nostr_pool() -> Result<NostrPoolHandle, String> {
+    // Ensure pool exists even if router init raced
+    if NOSTR_POOL.get().is_none() {
+        let _ = NOSTR_POOL.set(NostrPoolHandle::new());
+    }
+    NOSTR_POOL
+        .get()
+        .cloned()
+        .ok_or_else(|| "Nostr pool not available".to_string())
 }
 
 /// ดึง incoming receiver (ครั้งเดียว) สำหรับ subscribe stream
@@ -91,14 +106,21 @@ pub(crate) async fn offline_queue_len_async() -> Result<usize, String> {
     Ok(handle.offline_queue_len().await)
 }
 
+pub(crate) async fn drain_offline_queue_async() -> Result<Vec<MessagePacket>, String> {
+    let handle = get_handle()?;
+    Ok(handle.drain_offline_queue().await)
+}
+
 pub(crate) fn update_network_status_mapped(
     is_internet_available: bool,
     active_ble_peers_count: u32,
+    lora_available: bool,
 ) -> Result<(), String> {
     let handle = get_handle()?;
-    handle.update_network_status(crate::hybrid_router::NetworkStatus::new(
+    handle.update_network_status(crate::hybrid_router::NetworkStatus::with_lora(
         is_internet_available,
         active_ble_peers_count as usize,
+        lora_available,
     ));
     Ok(())
 }

@@ -401,18 +401,26 @@ class DatabaseService {
     );
   }
 
-  /// ใช้สำหรับอัปโหลดขึ้น Supabase: status=Pending และยังไม่เคย sync cloud
+  /// Direct messages ยังไม่ขึ้น cloud — ใช้ `isSyncedWithCloud` เป็นหลัก
+  /// (รองรับข้อความที่เคยถูกมาร์ก sent ผิดพลาดก่อนอัปโหลดสำเร็จ)
   Future<List<ChatMessage>> getPendingMessagesForSupabase({
     int limit = 100,
   }) async {
     final rows = await _database.query(
       'messages',
-      where: "status = ? AND isSyncedWithCloud = 0 AND type != ?",
-      whereArgs: [MessageStatus.pending.name, MessageType.broadcast.name],
+      where: 'isSyncedWithCloud = 0 AND type != ?',
+      whereArgs: [MessageType.broadcast.name],
       orderBy: 'timestamp ASC',
       limit: limit,
     );
     return rows.map(ChatMessage.fromMap).toList();
+  }
+
+  /// ตรวจว่าข้อความถูก sync ขึ้น cloud สำเร็จแล้วหรือยัง
+  Future<bool> isMessageCloudSynced(String msgId) async {
+    final row = await getMessageRowById(msgId);
+    if (row == null) return false;
+    return (row['isSyncedWithCloud'] as int? ?? 0) == 1;
   }
 
   /// Broadcast alerts รออัปโหลด Supabase (dual-channel)

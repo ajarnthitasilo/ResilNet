@@ -1,31 +1,35 @@
 use uuid::Uuid;
 
-/// ช่องทางส่งข้อมูลที่ Router เลือกใช้
+/// ช่องทางส่งข้อมูลที่ Router เลือกใช้ (อาจเลือกหลายช่องพร้อมกัน)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TransportType {
-    /// Supabase / TCP — ความเร็วสูง ครอบคลุมกว้าง
-    Internet,
+    /// Nostr relays (decentralized cloud replacement)
+    Nostr,
     /// BLE Mesh store-and-forward — ทนทานเมื่อเน็ตล่ม
     BluetoothMesh,
-    /// คิวท้องถิ่น (SQLite/RocksDB ฝั่ง Flutter) รอสัญญาณกลับมา
+    /// LoRa via ESP32 mule / radio bridge
+    LoRa,
+    /// คิวท้องถิ่น รอ Nostr/mesh กลับมา
     OfflineQueue,
 }
 
 impl std::fmt::Display for TransportType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Internet => write!(f, "Internet"),
+            Self::Nostr => write!(f, "Nostr"),
             Self::BluetoothMesh => write!(f, "BluetoothMesh"),
+            Self::LoRa => write!(f, "LoRa"),
             Self::OfflineQueue => write!(f, "OfflineQueue"),
         }
     }
 }
 
-/// สถานะเครือข่ายปัจจุบัน — อัปเดตจาก Flutter (connectivity + BLE scan)
+/// สถานะเครือข่ายปัจจุบัน — อัปเดตจาก Flutter (connectivity + BLE + LoRa)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct NetworkStatus {
     pub is_internet_available: bool,
     pub active_ble_peers_count: usize,
+    pub lora_available: bool,
 }
 
 impl NetworkStatus {
@@ -33,12 +37,27 @@ impl NetworkStatus {
         Self {
             is_internet_available,
             active_ble_peers_count,
+            lora_available: false,
+        }
+    }
+
+    pub const fn with_lora(
+        is_internet_available: bool,
+        active_ble_peers_count: usize,
+        lora_available: bool,
+    ) -> Self {
+        Self {
+            is_internet_available,
+            active_ble_peers_count,
+            lora_available,
         }
     }
 
     /// มีช่องทางส่งออกอย่างน้อยหนึ่งช่องทาง (ไม่รวม offline queue)
     pub const fn has_live_transport(&self) -> bool {
-        self.is_internet_available || self.active_ble_peers_count > 0
+        self.is_internet_available
+            || self.active_ble_peers_count > 0
+            || self.lora_available
     }
 }
 

@@ -1,5 +1,5 @@
 # flutter_rust_bridge v2 — สร้าง Dart/Rust bindings สำหรับ resilnet_core
-rust_input: crate::api::router_api
+rust_input: crate::api
 rust_root: ../resilnet_core/
 dart_output: lib/src/rust
 dart_entrypoint_class_name: ResilNetCore

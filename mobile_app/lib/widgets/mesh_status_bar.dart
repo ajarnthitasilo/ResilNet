@@ -5,8 +5,7 @@ import '../app/theme.dart';
 import '../core/resilnet_protocol.dart';
 import '../state/app_state.dart';
 
-/// แถบสถานะ BLE + Cloud Sync
-/// แสดง: ค้นหา / กำลังซิงก์ / สแตนด์บาย + สถานะอินเทอร์เน็ต
+/// แถบสถานะ BLE + LoRa + Nostr relays
 class MeshStatusBar extends StatelessWidget {
   const MeshStatusBar({super.key});
 
@@ -17,7 +16,7 @@ class MeshStatusBar extends StatelessWidget {
       case SyncPhase.syncing:
         return 'BLE: กำลังซิงก์กับ ESP32';
       case SyncPhase.cloudSync:
-        return 'Cloud: กำลังซิงก์';
+        return 'Nostr: กำลังเผยแพร่';
       case SyncPhase.idle:
         return 'BLE: สแตนด์บาย';
     }
@@ -43,10 +42,11 @@ class MeshStatusBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final phase = s.syncPhase;
-    final online = s.cloud.isOnline;
+    final nostrOnline = s.nostr.isOnline;
     final meshRunning = s.mesh.running;
     final activePeers = s.mesh.nearbyPeers.length;
     final chunkProgress = s.chunkTransferState;
+    final relays = '${s.nostr.connectedRelays}/${s.nostr.totalRelays}';
 
     return Container(
       decoration: BoxDecoration(
@@ -77,22 +77,22 @@ class MeshStatusBar extends StatelessWidget {
                 ),
               ),
               Icon(
-                online ? Icons.wifi : Icons.wifi_off,
+                nostrOnline ? Icons.hub_outlined : Icons.cloud_off,
                 size: 18,
-                color: online ? ResilNetTheme.emerald : Colors.white38,
+                color: nostrOnline ? ResilNetTheme.emerald : Colors.white38,
               ),
               const SizedBox(width: 6),
               Text(
-                online ? 'ออนไลน์' : 'ออฟไลน์',
+                nostrOnline ? 'Nostr $relays' : 'Nostr ออฟไลน์',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: online ? ResilNetTheme.emerald : Colors.white38,
+                  color: nostrOnline ? ResilNetTheme.emerald : Colors.white38,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 4),
           Text(
-            '$activePeers เพื่อนใกล้เคียง • รัศมีซิงก์ ~${ResilNetProtocol.syncRangeMeters}m',
+            '$activePeers เพื่อนใกล้เคียง • LoRa ${s.resilnet.loraAvailable ? "พร้อม" : "ไม่พร้อม"} • รัศมีซิงก์ ~${ResilNetProtocol.syncRangeMeters}m',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: Colors.white.withValues(alpha: 0.55),
             ),

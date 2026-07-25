@@ -407,8 +407,12 @@ class BleMeshService extends ChangeNotifier {
           if (routed.transport == TransportTypeDto.offlineQueue) {
             continue;
           }
-          if (routed.transport == TransportTypeDto.internet) {
-            await _db.updateMessageStatus(msg.id, MessageStatus.sent.name);
+          if (routed.transports.contains(TransportTypeDto.nostr) &&
+              !routed.transports.contains(TransportTypeDto.bluetoothMesh) &&
+              !routed.transports.contains(TransportTypeDto.loRa)) {
+            debugPrint(
+              '[BleMesh] nostr-only id=${msg.id} — skip BLE hop',
+            );
             continue;
           }
           toSend = msg.copyWith(ttl: routed.packet.ttl);

@@ -2,16 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/trusted_keys_default.dart';
 import '../models/peer.dart';
 import '../models/trusted_keys_manifest.dart';
 import 'database_service.dart';
-import 'supabase_config.dart';
-import 'supabase_row_mapper.dart';
 
 /// จัดการ Trusted List ของคณะกรรมการหมู่บ้าน (Verified Issuers)
+///
+/// แหล่งข้อมูล: bundled defaults + SecureStorage (ไม่มี cloud registry แล้ว)
 class TrustedKeysService extends ChangeNotifier {
   TrustedKeysService({required DatabaseService database}) : _db = database;
 
@@ -41,6 +40,18 @@ class TrustedKeysService extends ChangeNotifier {
     }
     await _syncIssuersToPeers();
     notifyListeners();
+  }
+
+  /// Reload bundled defaults when local list is empty.
+  Future<bool> reloadDefaultsIfEmpty() async {
+    if (_manifest.issuers.isNotEmpty) return false;
+    _manifest = TrustedKeysManifest.fromJson(
+      jsonDecode(kDefaultTrustedKeysJson) as Map<String, dynamic>,
+    );
+    await _storage.write(key: _kTrustedKeysJson, value: kDefaultTrustedKeysJson);
+    await _syncIssuersToPeers();
+    notifyListeners();
+    return true;
   }
 
   TrustedKeysManifest _parseAndValidate(String raw) {
@@ -99,89 +110,11 @@ class TrustedKeysService extends ChangeNotifier {
     return true;
   }
 
-  /// ดึงรายชื่อกรรมการจากตาราง `committee_keys` (หลัก)
-  /// fallback: trusted_keys.json ใน Storage
-  Future<bool> fetchFromSupabase(SupabaseClient supabase) async {
-    try {
-      final rows = await supabase
-          .from(SupabaseConfig.committeeKeysTable)
-          .select();
-      final list = (rows as List).cast<Map<String, dynamic>>();
-      if (list.isNotEmpty) {
-        return applyRemoteManifest(_manifestFromCommitteeRows(list));
-      }
-      debugPrint(
-        '[TrustedKeys] committee_keys empty — trying Storage fallback',
-      );
-    } catch (e) {
-      debugPrint('[TrustedKeys] committee_keys fetch failed: $e');
-    }
-
-    try {
-      final bucket = SupabaseConfig.trustedKeysBucket;
-      final path = SupabaseConfig.trustedKeysPath;
-      final bytes = await supabase.storage.from(bucket).download(path);
-      final raw = utf8.decode(bytes);
-      return applyRemoteJson(raw);
-    } catch (e) {
-      debugPrint('[TrustedKeys] Storage fallback failed: $e');
-      return false;
-    }
-  }
-
-  TrustedKeysManifest _manifestFromCommitteeRows(
-    List<Map<String, dynamic>> rows,
-  ) {
-    final issuers = <TrustedIssuer>[];
-    var maxTs = 0;
-
-    for (final row in rows) {
-      if (!SupabaseRowMapper.isActive(row)) continue;
-
-      final id = SupabaseRowMapper.pickString(row, [
-        'public_key_hash',
-        'key_hash',
-        'sender_id',
-      ]);
-      if (id.isEmpty) continue;
-
-      final name = SupabaseRowMapper.pickString(row, [
-        'display_name',
-        'name',
-        'sender_name',
-      ]);
-      final pem = SupabaseRowMapper.pickString(row, [
-        'public_key_pem',
-        'public_key',
-        'pub_key',
-      ]);
-
-      issuers.add(
-        TrustedIssuer(
-          id: id,
-          name: name.isEmpty ? null : name,
-          publicKeyPem: pem.isEmpty ? null : pem,
-        ),
-      );
-
-      final ts = SupabaseRowMapper.updatedAtMs(row);
-      if (ts > maxTs) maxTs = ts;
-    }
-
-    return TrustedKeysManifest(
-      version: 2,
-      timestamp: maxTs > 0 ? maxTs : DateTime.now().millisecondsSinceEpoch,
-      issuers: issuers,
-    );
-  }
-
   Future<bool> applyRemoteManifest(TrustedKeysManifest remote) async {
-    final raw = jsonEncode(remote.toJson());
-    return applyRemoteJson(raw);
+    return applyRemoteJson(jsonEncode(remote.toJson()));
   }
 
   Future<void> _syncIssuersToPeers() async {
-    final now = DateTime.now().millisecondsSinceEpoch;
     for (final issuer in _manifest.issuers) {
       final existing = await _db.getPeer(issuer.id);
       var pub = issuer.publicKeyPem?.trim() ?? '';
@@ -190,11 +123,10 @@ class TrustedKeysService extends ChangeNotifier {
         Peer(
           id: issuer.id,
           publicKey: pub,
-          displayName: issuer.name ?? existing?.displayName,
-          isVerifiedIssuer: true,
+          displayName: issuer.name,
+          lastSeen: DateTime.now().millisecondsSinceEpoch,
           isBlocked: existing?.isBlocked ?? false,
-          lastSeen: existing?.lastSeen ?? now,
-          deviceId: existing?.deviceId,
+          isVerifiedIssuer: true,
         ),
       );
     }

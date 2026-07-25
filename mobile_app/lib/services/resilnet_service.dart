@@ -46,10 +46,19 @@ class ResilNetService extends ChangeNotifier {
   bool _initialized = false;
   bool _internetAvailable = false;
   int _blePeerCount = 0;
+  bool _loraAvailable = false;
 
   bool get isInitialized => _initialized;
   bool get isInternetAvailable => _internetAvailable;
   int get blePeerCount => _blePeerCount;
+  bool get loraAvailable => _loraAvailable;
+
+  void setLoraAvailable(bool value) {
+    if (_loraAvailable == value) return;
+    _loraAvailable = value;
+    unawaited(_pushNetworkStatus());
+  }
+
   bool get isGatewayWifiActive => _udpTransport?.isActive ?? false;
   String? get gatewayWifiSsid => _udpTransport?.connectedSsid;
 
@@ -389,6 +398,7 @@ class ResilNetService extends ChangeNotifier {
       await updateNetworkStatus(
         isInternetAvailable: _internetAvailable,
         activeBlePeersCount: _blePeerCount,
+        loraAvailable: _loraAvailable,
       );
       notifyListeners();
     } catch (e, st) {

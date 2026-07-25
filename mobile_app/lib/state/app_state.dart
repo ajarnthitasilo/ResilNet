@@ -6,8 +6,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
@@ -18,20 +16,14 @@ import '../services/ack_queue_manager.dart';
 import '../services/ble_mesh_service.dart';
 import '../services/broadcast_filter_service.dart';
 import '../services/broadcast_intake_service.dart';
-import '../services/cloud_sync_service.dart';
 import '../services/crypto_service.dart';
 import '../services/database_service.dart';
 import '../services/esp32_sync_service.dart';
 import '../services/firmware_service.dart';
-import '../services/fcm_token_service.dart';
-import '../services/init_supabase.dart';
 import '../services/notification_service.dart';
-import '../services/push_notification_service.dart';
-import '../services/push_signal_processor.dart';
-import '../services/sqs_cloud_service.dart';
+import '../services/nostr_sync_service.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../services/resilnet_service.dart';
-import '../services/supabase_sync_service.dart';
 import '../services/trusted_keys_service.dart';
 import '../services/udp_transport_service.dart';
 import '../src/rust/api/dto.dart';
@@ -43,17 +35,11 @@ class AppState extends ChangeNotifier {
   late final TrustedKeysService trustedKeys = TrustedKeysService(database: db);
   final _storage = const FlutterSecureStorage();
   final notifications = NotificationService();
-  final pushNotifications = PushNotificationService();
-
-  PushSignalProcessor? _pushProcessor;
-  FcmTokenService? _fcmTokenService;
 
   BleMeshService? _mesh;
   Esp32SyncService? _esp32;
   UdpTransportService? _udp;
-  CloudSyncService? _cloud;
-  SqsCloudService? _sqs;
-  SupabaseSyncService? _supabaseSync;
+  NostrSyncService? _nostr;
   BroadcastFilterService? _broadcastFilter;
   BroadcastIntakeService? _broadcastIntake;
   FirmwareService? _firmware;
@@ -102,19 +88,15 @@ class AppState extends ChangeNotifier {
   bool get isGatewayWifiActive => resilnet.isGatewayWifiActive;
   ChunkTransferState? get chunkTransferState => _udp?.transferState;
 
-  CloudSyncService get cloud {
-    final c = _cloud;
-    if (c == null) throw StateError('CloudSync not initialized');
-    return c;
+  NostrSyncService get nostr {
+    final n = _nostr;
+    if (n == null) throw StateError('NostrSync not initialized');
+    return n;
   }
 
-  SqsCloudService get sqs {
-    final s = _sqs;
-    if (s == null) throw StateError('SqsCloud not initialized');
-    return s;
-  }
-
-  SupabaseSyncService? get supabaseSync => _supabaseSync;
+  /// Compatibility: online = Nostr relays connected or device has internet
+  bool get isCloudOnline =>
+      (_nostr?.isOnline ?? false) || resilnet.isInternetAvailable;
 
   bool get canSendBroadcast => trustedKeys.isTrustedIssuer(myUserId);
 
@@ -169,18 +151,17 @@ class AppState extends ChangeNotifier {
   bool get isReady =>
       _mesh != null &&
       _esp32 != null &&
-      _cloud != null &&
-      _sqs != null &&
+      _nostr != null &&
       _firmware != null;
 
-  /// สถานะรวมของระบบซิงก์ (BLE + Cloud)
+  /// สถานะรวมของระบบซิงก์ (BLE + Nostr)
   SyncPhase get syncPhase {
     final e = _esp32;
-    final c = _cloud;
-    if (e == null || c == null) return SyncPhase.idle;
+    final n = _nostr;
+    if (e == null || n == null) return SyncPhase.idle;
     if (_radioPaused) return SyncPhase.idle;
     if (e.phase == SyncPhase.syncing) return SyncPhase.syncing;
-    if (c.phase == SyncPhase.cloudSync) return SyncPhase.cloudSync;
+    if (n.phase == SyncPhase.cloudSync) return SyncPhase.cloudSync;
     if (e.phase == SyncPhase.scanning) return SyncPhase.scanning;
     return SyncPhase.idle;
   }
@@ -196,18 +177,14 @@ class AppState extends ChangeNotifier {
     _initError = null;
     notifyListeners();
     try {
-      final supabaseOk = await initSupabase().timeout(
-        const Duration(seconds: 3),
-        onTimeout: () => false,
-      );
-      await init(enableSupabase: supabaseOk);
+      await init();
     } catch (e, st) {
       debugPrint('[ResilNet] retryInit failed: $e\n$st');
       markInitFailed(e.toString());
     }
   }
 
-  Future<void> init({bool enableSupabase = false}) async {
+  Future<void> init() async {
     _initError = null;
     try {
       await db.init();
@@ -237,22 +214,13 @@ class AppState extends ChangeNotifier {
       resilnet.addListener(() {
         if (resilnet.isInternetAvailable || resilnet.isGatewayWifiActive) {
           _ackQueue?.onTransportUpgraded();
+          unawaited(_nostr?.flushOfflineQueue());
         }
       });
 
       await trustedKeys.init();
       await notifications.init();
       unawaited(notifications.requestPermissions());
-
-      _pushProcessor = PushSignalProcessor(
-        database: db,
-        crypto: crypto,
-        notifications: notifications,
-        myUserId: crypto.myUserId,
-        notificationsEnabled: _notificationsEnabled,
-        isAppInForeground: () =>
-            _lifecycleState == AppLifecycleState.resumed,
-      );
 
       _broadcastFilter = BroadcastFilterService(trustedKeys: trustedKeys);
       _broadcastIntake = BroadcastIntakeService(
@@ -287,53 +255,31 @@ class AppState extends ChangeNotifier {
       );
       _udp = UdpTransportService(database: db, resilnet: resilnet);
       resilnet.attachUdpTransport(_udp!, crypto: crypto);
-      _cloud = CloudSyncService(database: db);
-      _sqs = SqsCloudService(database: db);
       _firmware = FirmwareService();
       await _firmware!.refreshLocalInfo();
 
-      if (enableSupabase) {
-        try {
-          await ensureSupabaseAuthSession();
-          _supabaseSync = SupabaseSyncService(
-            database: db,
-            supabase: Supabase.instance.client,
-            myUserId: crypto.myUserId,
-            broadcastIntake: _broadcastIntake,
-          );
-          _supabaseSync!.onDirectMessageIngested = (msg) {
-            unawaited(_pushProcessor?.handleIngestedDirectMessage(msg));
-          };
-          _fcmTokenService = FcmTokenService(
-            supabase: Supabase.instance.client,
-          );
-          _pushProcessor!.supabaseSync = _supabaseSync;
-          unawaited(
-            pushNotifications.init(
-              processor: _pushProcessor!,
-              tokenService: _fcmTokenService,
-              myUserId: crypto.myUserId,
-            ),
-          );
-          _supabaseSync!.addListener(notifyListeners);
-          // realtime subscribe อาจค้างบนเน็ตช้า — อย่า await ยาว
-          unawaited(_supabaseSync!.start());
-        } catch (e, st) {
-          debugPrint('[ResilNet] SupabaseSync start failed: $e\n$st');
-          _supabaseSync = null;
-        }
+      _nostr = NostrSyncService();
+      try {
+        await _nostr!.start();
+      } catch (e, st) {
+        debugPrint('[ResilNet] Nostr start failed (offline ok): $e\n$st');
       }
 
       trustedKeys.addListener(notifyListeners);
 
       _esp32!.addListener(notifyListeners);
       _udp!.addListener(notifyListeners);
-      _cloud!.addListener(notifyListeners);
-      _sqs!.addListener(notifyListeners);
+      _nostr!.addListener(notifyListeners);
       _mesh!.addListener(notifyListeners);
 
       resilnet.startNetworkMonitoring(blePeerCount: () => _mesh?.nearbyPeerCount ?? 0);
-      resilnet.addListener(notifyListeners);
+      resilnet.addListener(() {
+        if (resilnet.isInternetAvailable) {
+          unawaited(_nostr?.flushOfflineQueue());
+          unawaited(_nostr?.reconnect());
+        }
+        notifyListeners();
+      });
 
       final storedName = await _storage.read(key: _kDisplayName);
       if (storedName != null) {
@@ -386,7 +332,7 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  /// กลับมาจาก background — reconnect BLE, Supabase และ Rust stream
+  /// กลับมาจาก background — reconnect BLE, Nostr และ Rust stream
   Future<void> onAppResumed() async {
     if (!isReady) return;
     debugPrint('[ResilNet] onAppResumed — reconnecting services');
@@ -421,13 +367,10 @@ class AppState extends ChangeNotifier {
     }
 
     try {
-      await _reconnectSupabase();
-      await pushNotifications.updateUserContext(
-        myUserId: myUserId,
-        tokenService: _fcmTokenService,
-      );
+      await _reconnectNostr();
+      unawaited(_nostr?.flushOfflineQueue());
     } catch (e) {
-      debugPrint('[ResilNet] Supabase reconnect failed: $e');
+      debugPrint('[ResilNet] Nostr reconnect failed: $e');
     }
 
     notifyListeners();
@@ -452,10 +395,11 @@ class AppState extends ChangeNotifier {
     await _startRadios();
   }
 
-  Future<void> _reconnectSupabase() async {
-    final sync = _supabaseSync;
+  Future<void> _reconnectNostr() async {
+    final sync = _nostr;
     if (sync == null) return;
     await sync.reconnect();
+    await sync.flushOfflineQueue();
   }
 
   Future<void> setNotificationFilter(NotificationFilter f) async {
@@ -466,10 +410,6 @@ class AppState extends ChangeNotifier {
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     _notificationsEnabled = enabled;
-    final processor = _pushProcessor;
-    if (processor != null) {
-      processor.notificationsEnabled = enabled;
-    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kNotificationsEnabled, enabled);
     notifyListeners();
@@ -482,27 +422,22 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> refreshTrustedKeysFromSupabase() async {
-    final sync = _supabaseSync;
-    if (sync == null) {
-      debugPrint('[ResilNet] Supabase not available for trusted keys update');
-      return false;
-    }
-    final ok = await trustedKeys.fetchFromSupabase(sync.supabase);
+  /// Trusted issuer list is local/bundled (no centralized cloud registry).
+  Future<bool> refreshTrustedKeys() async {
+    await trustedKeys.reloadDefaultsIfEmpty();
     notifyListeners();
-    return ok;
+    return true;
   }
 
-  /// ล้างข้อความทั้งหมด (local + Supabase ถ้ามี) แล้วคืนพื้นที่ดิสก์ด้วย VACUUM
+  /// ล้างข้อความทั้งหมดในเครื่อง แล้วคืนพื้นที่ดิสก์ด้วย VACUUM
   Future<int> clearAllMessages() async {
-    await _supabaseSync?.clearCloudMessagesForUser();
     final deleted = await db.clearAllMessages();
     debugPrint('[ResilNet] clearAllMessages: deleted $deleted local rows');
     notifyListeners();
     return deleted;
   }
 
-  /// ส่งข้อความออกผ่าน Rust Hybrid Router แล้ว dispatch ตามช่องทางที่เลือก
+  /// ส่งข้อความออกผ่าน Rust Hybrid Router แล้ว fan-out ตาม transports
   Future<RoutedPacketDto> routeOutbound(ChatMessage msg) async {
     final piggyback =
         _ackQueue?.drainPiggybackFor(msg.receiverId) ?? const <AckEntry>[];
@@ -517,25 +452,64 @@ class AppState extends ChangeNotifier {
       payloadTag: dto.payloadTag,
     );
 
-    switch (routed.transport) {
-      case TransportTypeDto.internet:
-        unawaited(cloud.syncNow());
-        unawaited(_supabaseSync?.syncNow());
-        await db.updateMessageStatus(msg.id, MessageStatus.sent.name);
-      case TransportTypeDto.bluetoothMesh:
-        await db.saveMessage(msg.copyWith(ttl: routed.packet.ttl, status: MessageStatus.pending));
-        if (resilnet.isGatewayWifiActive) {
-          unawaited(_udp?.pumpSendQueue());
-        }
-      case TransportTypeDto.offlineQueue:
-        await db.saveMessage(msg.copyWith(status: MessageStatus.pending));
-        if (resilnet.isGatewayWifiActive) {
-          unawaited(_udp?.pumpSendQueue());
-        }
+    final transports = routed.transports.isNotEmpty
+        ? routed.transports
+        : <TransportTypeDto>[routed.transport];
+
+    var markedSent = false;
+    for (final transport in transports) {
+      switch (transport) {
+        case TransportTypeDto.nostr:
+          final ok = await _publishOutboundViaNostr(routed.packet);
+          if (ok) {
+            await db.saveMessage(
+              msg.copyWith(
+                ttl: routed.packet.ttl,
+                status: MessageStatus.sent,
+                isSyncedWithCloud: true,
+              ),
+            );
+            markedSent = true;
+          } else {
+            await db.saveMessage(
+              msg.copyWith(status: MessageStatus.pending),
+            );
+          }
+        case TransportTypeDto.bluetoothMesh:
+        case TransportTypeDto.loRa:
+          await db.saveMessage(
+            msg.copyWith(
+              ttl: routed.packet.ttl,
+              status: markedSent ? MessageStatus.sent : MessageStatus.pending,
+            ),
+          );
+          if (resilnet.isGatewayWifiActive) {
+            unawaited(_udp?.pumpSendQueue());
+          }
+        case TransportTypeDto.offlineQueue:
+          await db.saveMessage(msg.copyWith(status: MessageStatus.pending));
+          if (resilnet.isGatewayWifiActive) {
+            unawaited(_udp?.pumpSendQueue());
+          }
+      }
     }
 
     notifyListeners();
     return routed;
+  }
+
+  Future<bool> _publishOutboundViaNostr(MessagePacketDto packet) async {
+    final sync = _nostr;
+    if (sync == null || !sync.running) {
+      debugPrint('[ResilNet] Nostr unavailable — keep pending id=${packet.id}');
+      return false;
+    }
+    try {
+      return await sync.publishPacket(packet);
+    } catch (e, st) {
+      debugPrint('[ResilNet] Nostr publish failed id=${packet.id}: $e\n$st');
+      return false;
+    }
   }
 
   /// รับข้อความจาก Rust stream หลัง dedup แล้วบันทึกลง DB + อัปเดต UI
@@ -602,7 +576,8 @@ class AppState extends ChangeNotifier {
       ttl: dto.ttl,
       payloadTag: PayloadTagDto.ack,
     );
-    return routed.transport != TransportTypeDto.offlineQueue;
+    final ts = routed.transports.isNotEmpty ? routed.transports : [routed.transport];
+    return !ts.every((t) => t == TransportTypeDto.offlineQueue);
   }
 
   Future<void> refreshPermissions() async {
@@ -677,18 +652,10 @@ class AppState extends ChangeNotifier {
       debugPrint('[ResilNet] udp.start failed: $e');
     }
     try {
-      await cloud.start();
+      await _nostr?.reconnect();
     } catch (e) {
-      debugPrint('[ResilNet] cloud.start failed: $e');
+      debugPrint('[ResilNet] nostr.reconnect failed: $e');
     }
-    try {
-      await sqs.start();
-    } catch (e) {
-      debugPrint('[ResilNet] sqs.start failed: $e');
-    }
-    try {
-      await _supabaseSync?.start();
-    } catch (_) {}
   }
 
   Future<void> _stopRadios() async {
@@ -702,10 +669,7 @@ class AppState extends ChangeNotifier {
       await _udp?.stop();
     } catch (_) {}
     try {
-      await _cloud?.stop();
-    } catch (_) {}
-    try {
-      await _sqs?.stop();
+      await _nostr?.stop();
     } catch (_) {}
   }
 

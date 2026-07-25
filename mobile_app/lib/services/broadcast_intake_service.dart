@@ -4,7 +4,7 @@ import '../models/chat_message.dart';
 import 'broadcast_filter_service.dart';
 import 'database_service.dart';
 
-/// ประมวลผล Broadcast หลังบันทึก (ทุกช่องทาง: Mesh / Supabase)
+/// ประมวลผล Broadcast หลังบันทึก (ทุกช่องทาง: Mesh / Nostr)
 class BroadcastIntakeService {
   BroadcastIntakeService({
     required DatabaseService database,
