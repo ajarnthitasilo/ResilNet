@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../l10n/l10n_ext.dart';
 import '../models/peer.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
@@ -22,20 +23,22 @@ class _PeerListScreenState extends State<PeerListScreen> {
     if (mounted) setState(() {});
   }
 
-  String _connectionLabel(Peer peer, Set<String> nearbyIds) {
-    if (peer.isBlocked) return 'บล็อกแล้ว';
-    if (nearbyIds.contains(peer.id)) return 'ใกล้เคียง (BLE)';
+  String _connectionLabel(AppLocalizations l10n, Peer peer, Set<String> nearbyIds) {
+    if (peer.isBlocked) return l10n.peersBlocked;
+    if (nearbyIds.contains(peer.id)) return l10n.peersNearbyBle;
     final age = DateTime.now().millisecondsSinceEpoch - peer.lastSeen;
-    if (age <= _activeWindowMs) return 'ออนไลน์ล่าสุด';
-    if (age < 5 * 60 * 1000)
-      return 'เห็นเมื่อ ${(age / 60000).ceil()} นาทีที่แล้ว';
-    return 'ออฟไลน์';
+    if (age <= _activeWindowMs) return l10n.peersRecentlyOnline;
+    if (age < 5 * 60 * 1000) {
+      return l10n.peersSeenMinutesAgo((age / 60000).ceil());
+    }
+    return l10n.peersOffline;
   }
 
-  Color _connectionColor(String label) {
-    if (label.contains('บล็อก')) return Colors.redAccent;
-    if (label.contains('ใกล้เคียง') || label.contains('ออนไลน์'))
+  Color _connectionColor(AppLocalizations l10n, String label) {
+    if (label == l10n.peersBlocked) return Colors.redAccent;
+    if (label == l10n.peersNearbyBle || label == l10n.peersRecentlyOnline) {
       return ResilNetTheme.emerald;
+    }
     return Colors.white54;
   }
 
@@ -43,8 +46,13 @@ class _PeerListScreenState extends State<PeerListScreen> {
     final next = !peer.isBlocked;
     await s.db.setPeerBlocked(peer.id, next);
     if (!mounted) return;
+    final l10n = context.l10n;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(next ? 'บล็อก ${peer.id} แล้ว' : 'ปลดบล็อกแล้ว')),
+      SnackBar(
+        content: Text(
+          next ? l10n.peersBlockedSnack(peer.id) : l10n.peersUnblockedSnack,
+        ),
+      ),
     );
     await _refresh();
   }
@@ -60,12 +68,14 @@ class _PeerListScreenState extends State<PeerListScreen> {
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
 
+    final l10n = context.l10n;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('สมาชิกเครือข่าย'),
+        title: Text(l10n.peersTitle),
         actions: [
           IconButton(
-            tooltip: 'รีเฟรช',
+            tooltip: l10n.peersRefreshTooltip,
             onPressed: _refresh,
             icon: const Icon(Icons.refresh),
           ),
@@ -104,7 +114,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
             separatorBuilder: (_, _) => const SizedBox(height: 10),
             itemBuilder: (context, i) {
               final peer = peers[i];
-              final conn = _connectionLabel(peer, nearbyIds);
+              final conn = _connectionLabel(l10n, peer, nearbyIds);
               return Card(
                 child: ListTile(
                   leading: Identicon(id: peer.id),
@@ -132,7 +142,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
                       Text(
                         conn,
                         style: TextStyle(
-                          color: _connectionColor(conn),
+                          color: _connectionColor(l10n, conn),
                           fontWeight: FontWeight.w600,
                         ),
                       ),

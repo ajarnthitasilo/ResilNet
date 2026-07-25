@@ -3,22 +3,23 @@ import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
 import '../core/resilnet_protocol.dart';
+import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 
 /// แถบสถานะ BLE + LoRa + Nostr relays
 class MeshStatusBar extends StatelessWidget {
   const MeshStatusBar({super.key});
 
-  String _phaseLabel(SyncPhase phase) {
+  String _phaseLabel(AppLocalizations l10n, SyncPhase phase) {
     switch (phase) {
       case SyncPhase.scanning:
-        return 'BLE: กำลังค้นหา Node';
+        return l10n.meshBleScanning;
       case SyncPhase.syncing:
-        return 'BLE: กำลังซิงก์กับ ESP32';
+        return l10n.meshBleSyncing;
       case SyncPhase.cloudSync:
-        return 'Nostr: กำลังเผยแพร่';
+        return l10n.meshNostrPublishing;
       case SyncPhase.idle:
-        return 'BLE: สแตนด์บาย';
+        return l10n.meshBleIdle;
     }
   }
 
@@ -38,6 +39,7 @@ class MeshStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
+    final l10n = context.l10n;
     if (!s.isReady) {
       return const SizedBox.shrink();
     }
@@ -47,6 +49,9 @@ class MeshStatusBar extends StatelessWidget {
     final activePeers = s.mesh.nearbyPeers.length;
     final chunkProgress = s.chunkTransferState;
     final relays = '${s.nostr.connectedRelays}/${s.nostr.totalRelays}';
+    final lora = s.resilnet.loraAvailable
+        ? l10n.meshLoraReady
+        : l10n.meshLoraNotReady;
 
     return Container(
       decoration: BoxDecoration(
@@ -72,7 +77,9 @@ class MeshStatusBar extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  meshRunning ? _phaseLabel(phase) : 'BLE: ต้องขอสิทธิ์ก่อน',
+                  meshRunning
+                      ? _phaseLabel(l10n, phase)
+                      : l10n.meshBleNeedsPermission,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
@@ -83,31 +90,38 @@ class MeshStatusBar extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                nostrOnline ? 'Nostr $relays' : 'Nostr ออฟไลน์',
+                nostrOnline
+                    ? l10n.meshNostrOnline(relays)
+                    : l10n.meshNostrOffline,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: nostrOnline ? ResilNetTheme.emerald : Colors.white38,
-                ),
+                      color:
+                          nostrOnline ? ResilNetTheme.emerald : Colors.white38,
+                    ),
               ),
             ],
           ),
           const SizedBox(height: 4),
           Text(
-            '$activePeers เพื่อนใกล้เคียง • LoRa ${s.resilnet.loraAvailable ? "พร้อม" : "ไม่พร้อม"} • รัศมีซิงก์ ~${ResilNetProtocol.syncRangeMeters}m',
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.55),
+            l10n.meshFooter(
+              activePeers,
+              lora,
+              ResilNetProtocol.syncRangeMeters,
             ),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.55),
+                ),
           ),
           if (s.isGatewayWifiActive) ...[
             const SizedBox(height: 4),
             Text(
               chunkProgress != null
-                  ? 'Gateway UDP: ${chunkProgress.label}'
-                  : 'Gateway UDP: พร้อมส่ง',
+                  ? l10n.meshGatewayProgress(chunkProgress.label)
+                  : l10n.meshGatewayReady,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: chunkProgress != null
-                    ? ResilNetTheme.emerald
-                    : Colors.white.withValues(alpha: 0.45),
-              ),
+                    color: chunkProgress != null
+                        ? ResilNetTheme.emerald
+                        : Colors.white.withValues(alpha: 0.45),
+                  ),
             ),
           ],
         ],

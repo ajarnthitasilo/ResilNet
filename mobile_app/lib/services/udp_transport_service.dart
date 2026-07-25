@@ -371,6 +371,22 @@ class UdpTransportService extends ChangeNotifier {
     );
   }
 
+  /// Send a sealed message over UDP immediately (no SQLite pending queue).
+  Future<void> sendDirectNow(ChatMessage msg) async {
+    if (!_active || _socket == null) {
+      debugPrint('[UdpTransport] sendDirectNow skipped — inactive id=${msg.id}');
+      return;
+    }
+    try {
+      final sent = await _resilnet.sendChunkedMessageUdp(msg);
+      if (!sent) {
+        debugPrint('[UdpTransport] sendDirectNow failed id=${msg.id}');
+      }
+    } catch (e) {
+      debugPrint('[UdpTransport] sendDirectNow error id=${msg.id}: $e');
+    }
+  }
+
   /// ส่งคิวข้อความผ่าน UDP เมื่ออยู่บน Gateway Wi-Fi (ช่องทางเสริม/หลัก)
   Future<void> pumpSendQueue() async {
     if (!_active || _socket == null) return;

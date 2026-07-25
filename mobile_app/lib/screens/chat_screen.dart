@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../models/chat_message.dart';
 import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
@@ -70,6 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _setAlias() async {
     final s = context.read<AppState>();
+    final l10n = context.l10n;
     final existing = await s.db.getContactAlias(widget.peerId) ?? '';
     final controller = TextEditingController(text: existing);
 
@@ -78,19 +80,19 @@ class _ChatScreenState extends State<ChatScreen> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('ตั้งชื่อเล่น (Contact Alias)'),
+          title: Text(l10n.aliasTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Alias นี้เก็บในเครื่องเท่านั้น (Local-only)\nไม่ถูกส่งออกไปกับระบบ E2EE',
+                l10n.aliasHintBody,
                 style: Theme.of(ctx).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: controller,
-                decoration: const InputDecoration(labelText: 'ชื่อเล่น'),
+                decoration: InputDecoration(labelText: l10n.aliasLabel),
                 autofocus: true,
               ),
             ],
@@ -98,11 +100,11 @@ class _ChatScreenState extends State<ChatScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('ยกเลิก'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('บันทึก'),
+              child: Text(l10n.save),
             ),
           ],
         );
@@ -144,11 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (receiverPub.isEmpty) {
       if (!mounted) return null;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'กรุณาวาง Public Key (PEM) ของผู้รับก่อน เพื่อเข้ารหัส E2EE',
-          ),
-        ),
+        SnackBar(content: Text(context.l10n.chatNeedPeerKey)),
       );
       return null;
     }
@@ -163,7 +161,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('ไม่สามารถอัดเสียงได้: $e')),
+        SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
       );
     }
   }
@@ -190,7 +188,8 @@ class _ChatScreenState extends State<ChatScreen> {
       id: _uuid.v4(),
       senderId: s.myUserId,
       receiverId: widget.peerId,
-      content: '🎤 ข้อความเสียง',
+      // Opaque label only — never store audio plaintext or decryptable body.
+      content: null,
       encryptedPayload: pkg.encryptedPayload,
       encryptedKey: pkg.encryptedKey,
       signature: pkg.signature,
@@ -201,7 +200,7 @@ class _ChatScreenState extends State<ChatScreen> {
       payloadKind: 'audio',
     );
 
-    await s.db.saveMessage(msg);
+    await s.persistChatMessage(msg);
     await s.routeOutbound(msg);
     if (mounted) setState(() {});
   }
@@ -237,7 +236,7 @@ class _ChatScreenState extends State<ChatScreen> {
       type: MessageType.direct,
     );
 
-    await s.db.saveMessage(msg);
+    await s.persistChatMessage(msg);
     await s.routeOutbound(msg);
     _text.clear();
     if (_showEmojiPicker) setState(() => _showEmojiPicker = false);
@@ -245,13 +244,13 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {});
   }
 
-  String _statusLabel(MessageStatus s) {
+  String _statusLabel(AppLocalizations l10n, MessageStatus s) {
     return switch (s) {
-      MessageStatus.pending => 'Pending',
-      MessageStatus.sent => 'Transmitted',
-      MessageStatus.relayed => 'Relayed',
-      MessageStatus.delivered => 'Delivered',
-      MessageStatus.read => 'Read',
+      MessageStatus.pending => l10n.statusPending,
+      MessageStatus.sent => l10n.statusSent,
+      MessageStatus.relayed => l10n.statusRelayed,
+      MessageStatus.delivered => l10n.statusDelivered,
+      MessageStatus.read => l10n.statusRead,
     };
   }
 
@@ -282,10 +281,15 @@ class _ChatScreenState extends State<ChatScreen> {
     };
   }
 
-  String _tryDecrypt(AppState s, ChatMessage m) {
-    if (m.receiverId != s.myUserId && m.senderId != s.myUserId) return '...';
+  String _tryDecrypt(AppState s, AppLocalizations l10n, ChatMessage m) {
+    // Zero-knowledge: only the intended recipient's private key can unwrap AES.
+    if (m.receiverId != s.myUserId && m.senderId != s.myUserId) {
+      return '…';
+    }
     if (m.payloadKind == 'audio') {
-      return m.senderId == s.myUserId ? '🎤 ข้อความเสียง (ส่งแล้ว)' : '🎤 ข้อความเสียง';
+      return m.senderId == s.myUserId
+          ? l10n.chatVoiceLabelSent
+          : l10n.chatVoiceLabel;
     }
     if (m.receiverId == s.myUserId) {
       try {
@@ -294,13 +298,18 @@ class _ChatScreenState extends State<ChatScreen> {
           encryptedKey: m.encryptedKey,
         );
       } catch (_) {
-        return '[ถอดรหัสไม่สำเร็จ]';
+        return l10n.chatDecryptFailed;
       }
     }
-    // Sender side: show local plaintext is not stored; show encrypted preview
-    final decoded = utf8.decode(base64Decode(m.encryptedPayload));
-    final obj = jsonDecode(decoded) as Map<String, dynamic>;
-    return '[ส่งแล้ว • ct=${(obj['ct'] as String).substring(0, 16)}…]';
+    try {
+      final decoded = utf8.decode(base64Decode(m.encryptedPayload));
+      final obj = jsonDecode(decoded) as Map<String, dynamic>;
+      final ct = (obj['ct'] as String?) ?? '';
+      final preview = ct.length > 16 ? '${ct.substring(0, 16)}…' : ct;
+      return l10n.chatSentSealed(preview);
+    } catch (_) {
+      return l10n.chatSentSealedShort;
+    }
   }
 
   Future<void> _playVoiceNote(AppState s, ChatMessage m) async {
@@ -314,7 +323,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('เล่นเสียงไม่สำเร็จ: $e')),
+        SnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
       );
     }
   }
@@ -322,14 +331,15 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
+    final l10n = context.l10n;
     final myId = s.myUserId;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('แชต (E2EE)'),
+        title: Text(l10n.chatTitle),
         actions: [
           IconButton(
-            tooltip: 'สแกน QR เพิ่มเพื่อน/ผู้นำชุมชน',
+            tooltip: l10n.chatScanTooltip,
             onPressed: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const QrScannerScreen()),
@@ -347,7 +357,7 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.qr_code_scanner),
           ),
           IconButton(
-            tooltip: 'บล็อกผู้ส่งนี้',
+            tooltip: l10n.chatBlockTooltip,
             onPressed: () async {
               await context.read<AppState>().db.setPeerBlocked(
                 widget.peerId,
@@ -355,15 +365,13 @@ class _ChatScreenState extends State<ChatScreen> {
               );
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('บล็อกแล้ว: จะไม่แจ้งเตือน/ไม่ relay'),
-                ),
+                SnackBar(content: Text(context.l10n.chatBlockedSnack)),
               );
             },
             icon: const Icon(Icons.block),
           ),
           IconButton(
-            tooltip: 'ตั้งชื่อเล่น',
+            tooltip: l10n.chatAliasTooltip,
             onPressed: _setAlias,
             icon: const Icon(Icons.edit_outlined),
           ),
@@ -412,9 +420,9 @@ class _ChatScreenState extends State<ChatScreen> {
               controller: _peerPublicPem,
               minLines: 2,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Public Key (PEM) ของผู้รับ',
-                hintText: 'วาง Public Key ของเพื่อนที่นี่ (ได้จาก QR/แชร์ไฟล์)',
+              decoration: InputDecoration(
+                labelText: l10n.chatReceiverPemLabel,
+                hintText: l10n.chatReceiverPemHint,
               ),
             ),
           ),
@@ -423,13 +431,13 @@ class _ChatScreenState extends State<ChatScreen> {
               listenable: s,
               builder: (context, _) {
                 return FutureBuilder<List<ChatMessage>>(
-                  future: s.db.getConversation(myId, widget.peerId),
+                  future: s.messagesForConversation(myId, widget.peerId),
                   builder: (context, snap) {
                     final items = snap.data ?? const [];
                 if (items.isEmpty) {
                   return Center(
                     child: Text(
-                      'ยังไม่มีข้อความ\nพิมพ์ข้อความด้านล่างเพื่อส่งผ่าน Mesh',
+                      l10n.chatEmptyThread,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.7),
@@ -445,7 +453,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, i) {
                     final m = items[i];
                     final isMe = m.senderId == myId;
-                    final text = _tryDecrypt(s, m);
+                    final text = _tryDecrypt(s, l10n, m);
                     return Align(
                       alignment: isMe
                           ? Alignment.centerRight
@@ -467,7 +475,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   FilledButton.tonalIcon(
                                     onPressed: () => _playVoiceNote(s, m),
                                     icon: const Icon(Icons.play_arrow),
-                                    label: const Text('เล่นข้อความเสียง'),
+                                    label: Text(l10n.chatPlayVoice),
                                   ),
                                 ],
                                 const SizedBox(height: 8),
@@ -479,7 +487,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       const SizedBox(width: 6),
                                     ],
                                     Text(
-                                      _statusLabel(m.status),
+                                      _statusLabel(l10n, m.status),
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelSmall
@@ -548,7 +556,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       IconButton(
-                        tooltip: 'อิโมจิ',
+                        tooltip: l10n.chatEmojiTooltip,
                         onPressed: _toggleEmojiPicker,
                         icon: Icon(
                           _showEmojiPicker
@@ -567,13 +575,13 @@ class _ChatScreenState extends State<ChatScreen> {
                             if (_showEmojiPicker)
                               setState(() => _showEmojiPicker = false);
                           },
-                          decoration: const InputDecoration(
-                            hintText: 'พิมพ์ข้อความ… (เข้ารหัสทันทีเมื่อกดส่ง)',
+                          decoration: InputDecoration(
+                            hintText: l10n.chatComposeHint,
                           ),
                         ),
                       ),
                       const SizedBox(width: 10),
-                      FilledButton(onPressed: _send, child: const Text('ส่ง')),
+                      FilledButton(onPressed: _send, child: Text(l10n.send)),
                     ],
                   ),
                 ),

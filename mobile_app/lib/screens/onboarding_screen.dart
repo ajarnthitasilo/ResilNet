@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 import '../widgets/onboarding/onboarding_illustrations.dart';
 
 class _OnboardingPage {
   const _OnboardingPage({
-    required this.title,
-    required this.body,
+    required this.titleOf,
+    required this.bodyOf,
     required this.builder,
   });
 
-  final String title;
-  final String body;
+  final String Function(AppLocalizations l10n) titleOf;
+  final String Function(AppLocalizations l10n) bodyOf;
   final Widget Function(double t) builder;
 }
 
@@ -31,20 +32,18 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   static final _pages = <_OnboardingPage>[
     _OnboardingPage(
-      title: 'ยินดีต้อนรับสู่ ResilNet',
-      body: 'สื่อสารในชุมชนบ้านปู่คำผ่านเครือข่าย Mesh แม้ไม่มีอินเทอร์เน็ต',
+      titleOf: (l) => l.onboardingWelcomeTitle,
+      bodyOf: (l) => l.onboardingWelcomeBody,
       builder: (t) => MeshNetworkIllustration(t: t),
     ),
     _OnboardingPage(
-      title: 'เพิ่มเพื่อนได้ง่าย',
-      body:
-          'แชร์ QR จากหน้า “ตัวตน” หรือสแกน QR ของเพื่อนเพื่อแลกเปลี่ยน Public Key',
+      titleOf: (l) => l.onboardingFriendsTitle,
+      bodyOf: (l) => l.onboardingFriendsBody,
       builder: (t) => QrFriendIllustration(t: t),
     ),
     _OnboardingPage(
-      title: 'แชทแบบเข้ารหัส',
-      body:
-          'ส่งข้อความส่วนตัวแบบ E2EE ผ่าน Bluetooth Mesh และ Nostr — ทำงานได้แม้ไม่มีเน็ตในพื้นที่',
+      titleOf: (l) => l.onboardingChannelsTitle,
+      bodyOf: (l) => l.onboardingChannelsBody,
       builder: (t) => ChatMessageIllustration(t: t),
     ),
   ];
@@ -82,6 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       body: DecoratedBox(
         decoration: const BoxDecoration(
@@ -99,7 +99,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 child: TextButton(
                   onPressed: _finish,
                   child: Text(
-                    'ข้าม',
+                    l10n.onboardingSkip,
                     style: TextStyle(
                       color: OnboardingPalette.navySoft.withValues(alpha: 0.85),
                     ),
@@ -124,7 +124,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           ),
                           const SizedBox(height: 36),
                           Text(
-                            p.title,
+                            p.titleOf(l10n),
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(
@@ -134,7 +134,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            p.body,
+                            p.bodyOf(l10n),
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(
@@ -184,8 +184,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     onPressed: _next,
                     child: Text(
                       _page == _pages.length - 1
-                          ? 'เริ่มต้นการใช้งาน'
-                          : 'ถัดไป',
+                          ? l10n.onboardingStart
+                          : l10n.onboardingNext,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,

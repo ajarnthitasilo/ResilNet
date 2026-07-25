@@ -1,13 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../core/geohash.dart';
+import '../l10n/l10n_ext.dart';
+import '../models/feed_channel.dart';
+import '../models/peer.dart';
 import '../state/app_state.dart';
+import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
 import 'chat_screen.dart';
 import 'identity_screen.dart';
 import 'peer_list_screen.dart';
 import 'settings_screen.dart';
 
+String _feedSubtitle(AppLocalizations l10n, FeedChannel channel) {
+  return switch (channel) {
+    FeedChannel.directs => l10n.feedDirectsSubtitle,
+    FeedChannel.mesh => l10n.feedMeshSubtitle,
+    FeedChannel.geo => l10n.feedGeoSubtitle,
+  };
+}
+
+String _geoPrecisionLabel(AppLocalizations l10n, GeoPrecision p) {
+  return switch (p) {
+    GeoPrecision.region => l10n.geoPrecisionRegion,
+    GeoPrecision.province => l10n.geoPrecisionProvince,
+    GeoPrecision.city => l10n.geoPrecisionCity,
+    GeoPrecision.neighborhood => l10n.geoPrecisionNeighborhood,
+    GeoPrecision.block => l10n.geoPrecisionBlock,
+  };
+}
+
+/// Home feed with Bitchat-inspired channel switching.
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
@@ -20,6 +44,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   Future<void> _setAlias(BuildContext context, String peerId) async {
     final s = context.read<AppState>();
+    final l10n = context.l10n;
     final existing = await s.db.getContactAlias(peerId) ?? '';
     final controller = TextEditingController(text: existing);
 
@@ -28,21 +53,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('ตั้งชื่อเล่น (Contact Alias)'),
+          title: Text(l10n.aliasTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Alias นี้เก็บในเครื่องเท่านั้น (Local-only)\nไม่ถูกส่งออกไปกับระบบ E2EE',
+                l10n.aliasHintBody,
                 style: Theme.of(ctx).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: controller,
-                decoration: const InputDecoration(
-                  labelText: 'ชื่อเล่น',
-                  hintText: 'เช่น “ผู้ใหญ่บ้าน”, “พี่สมชาย”…',
+                decoration: InputDecoration(
+                  labelText: l10n.aliasLabel,
+                  hintText: l10n.aliasHint,
                 ),
                 autofocus: true,
               ),
@@ -51,11 +76,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('ยกเลิก'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('บันทึก'),
+              child: Text(l10n.save),
             ),
           ],
         );
@@ -86,13 +111,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
+    final l10n = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('สื่อสารชุมชนบ้านปู่คำ'),
+        title: Text(l10n.communityTitle),
         actions: [
           PopupMenuButton<String>(
-            tooltip: 'การตั้งค่าแจ้งเตือน',
+            tooltip: l10n.notificationsTooltip,
             icon: Icon(
               s.notificationsEnabled
                   ? Icons.notifications_active_outlined
@@ -102,7 +128,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               CheckedPopupMenuItem(
                 value: 'enabled',
                 checked: s.notificationsEnabled,
-                child: const Text('เปิดแจ้งเตือนข้อความ'),
+                child: Text(l10n.enableMessageNotifications),
               ),
             ],
             onSelected: (v) {
@@ -112,21 +138,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
             },
           ),
           IconButton(
-            tooltip: 'สมาชิกเครือข่าย',
+            tooltip: l10n.networkMembersTooltip,
             onPressed: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const PeerListScreen())),
             icon: const Icon(Icons.groups_outlined),
           ),
           IconButton(
-            tooltip: 'การตั้งค่า',
+            tooltip: l10n.settings,
             onPressed: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
             icon: const Icon(Icons.settings_outlined),
           ),
           IconButton(
-            tooltip: 'ตัวตน/QR',
+            tooltip: l10n.identityQrTooltip,
             onPressed: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const IdentityScreen())),
@@ -138,78 +164,337 @@ class _ChatListScreenState extends State<ChatListScreen> {
         children: [
           const MeshStatusBar(),
           Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _peerController,
-                    decoration: const InputDecoration(
-                      hintText:
-                          'วาง Receiver ID (Public Key Hash) เพื่อเริ่มแชต',
-                    ),
-                  ),
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+            child: SegmentedButton<FeedChannel>(
+              segments: [
+                ButtonSegment(
+                  value: FeedChannel.directs,
+                  label: Text(l10n.feedDirects),
+                  icon: const Icon(Icons.lock_outline, size: 16),
                 ),
-                const SizedBox(width: 10),
-                FilledButton(
-                  onPressed: () {
-                    final peer = _peerController.text.trim();
-                    if (peer.isEmpty) return;
-                    _openPeer(context, peer);
-                  },
-                  child: const Text('เริ่ม'),
+                ButtonSegment(
+                  value: FeedChannel.mesh,
+                  label: Text(l10n.feedMesh),
+                  icon: const Icon(Icons.bluetooth, size: 16),
+                ),
+                ButtonSegment(
+                  value: FeedChannel.geo,
+                  label: Text(l10n.feedGeo),
+                  icon: const Icon(Icons.public, size: 16),
                 ),
               ],
+              selected: {s.feedChannel},
+              onSelectionChanged: (set) {
+                s.setFeedChannel(set.first);
+              },
             ),
           ),
-          Expanded(
-            child: FutureBuilder<List<String>>(
-              future: s.db.getChatPeersFor(s.myUserId),
-              builder: (context, snap) {
-                final peers = snap.data ?? const <String>[];
-                if (peers.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'ยังไม่มีแชต — สแกน QR หรือวาง Receiver ID เพื่อเริ่ม',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.65),
-                          ),
-                      textAlign: TextAlign.center,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                _feedSubtitle(l10n, s.feedChannel),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.55),
                     ),
-                  );
-                }
-                return ListView.separated(
+              ),
+            ),
+          ),
+          if (s.feedChannel == FeedChannel.directs) ...[
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _peerController,
+                      decoration: InputDecoration(hintText: l10n.peerIdHint),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  FilledButton(
+                    onPressed: () {
+                      final peer = _peerController.text.trim();
+                      if (peer.isEmpty) return;
+                      _openPeer(context, peer);
+                    },
+                    child: Text(l10n.start),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: _DirectsBody(onOpen: _openPeer, onAlias: _setAlias)),
+          ] else if (s.feedChannel == FeedChannel.mesh)
+            Expanded(child: _MeshBody(onOpen: _openPeer))
+          else
+            Expanded(child: _GeoBody(onOpen: _openPeer)),
+        ],
+      ),
+    );
+  }
+}
+
+class _DirectsBody extends StatelessWidget {
+  const _DirectsBody({required this.onOpen, required this.onAlias});
+
+  final Future<void> Function(BuildContext context, String peerId) onOpen;
+  final Future<void> Function(BuildContext context, String peerId) onAlias;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.watch<AppState>();
+    final l10n = context.l10n;
+    return FutureBuilder<List<String>>(
+      future: s.chatPeerIds(),
+      builder: (context, snap) {
+        final peers = snap.data ?? const <String>[];
+        if (peers.isEmpty) {
+          return Center(
+            child: Text(
+              l10n.directsEmpty,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.65),
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+        return ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          itemCount: peers.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 10),
+          itemBuilder: (context, i) {
+            final peerId = peers[i];
+            return Card(
+              child: ListTile(
+                title: FutureBuilder<String>(
+                  future: s.db.resolveDisplayName(peerId),
+                  builder: (context, nameSnap) {
+                    final name = nameSnap.data ?? peerId;
+                    return Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
+                ),
+                subtitle: Text(l10n.directsSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => onOpen(context, peerId),
+                onLongPress: () => onAlias(context, peerId),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _MeshBody extends StatelessWidget {
+  const _MeshBody({required this.onOpen});
+
+  final Future<void> Function(BuildContext context, String peerId) onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.watch<AppState>();
+    final l10n = context.l10n;
+    if (!s.isReady) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    final nearby = s.mesh.nearbyPeers;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+          child: Text(
+            l10n.meshIntro,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.6),
+                ),
+          ),
+        ),
+        Expanded(
+          child: nearby.isEmpty
+              ? Center(
+                  child: Text(
+                    s.mesh.running
+                        ? l10n.meshEmptyRunning
+                        : l10n.meshEmptyStopped,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.65),
+                        ),
+                  ),
+                )
+              : ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 14),
-                  itemCount: peers.length,
+                  itemCount: nearby.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, i) {
-                    final peerId = peers[i];
+                    final Peer peer = nearby[i];
+                    final shortId = peer.id.length > 12
+                        ? '${peer.id.substring(0, 12)}…'
+                        : peer.id;
                     return Card(
                       child: ListTile(
+                        leading: Identicon(id: peer.id),
                         title: FutureBuilder<String>(
-                          future: s.db.resolveDisplayName(peerId),
+                          future: s.db.resolveDisplayName(peer.id),
                           builder: (context, nameSnap) {
-                            final name = nameSnap.data ?? peerId;
                             return Text(
-                              name,
+                              nameSnap.data ?? peer.displayName ?? peer.id,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             );
                           },
                         ),
-                        subtitle: const Text('แตะเพื่อเปิดแชต'),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => _openPeer(context, peerId),
-                        onLongPress: () => _setAlias(context, peerId),
+                        subtitle: Text('${l10n.meshNearbyPrefix} • $shortId'),
+                        trailing: const Icon(Icons.lock_outline),
+                        onTap: () => onOpen(context, peer.id),
                       ),
                     );
                   },
-                );
-              },
-            ),
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _GeoBody extends StatelessWidget {
+  const _GeoBody({required this.onOpen});
+
+  final Future<void> Function(BuildContext context, String peerId) onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.watch<AppState>();
+    final l10n = context.l10n;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      s.geoChannelLabel,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontFamily: 'monospace',
+                            letterSpacing: 0.5,
+                          ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: l10n.refreshLocationTooltip,
+                    onPressed:
+                        s.geoRefreshing ? null : () => s.refreshGeohash(),
+                    icon: s.geoRefreshing
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.my_location),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final p in GeoPrecision.values)
+                    ChoiceChip(
+                      label: Text(
+                        '${_geoPrecisionLabel(l10n, p)} (${p.length})',
+                      ),
+                      selected: s.geoPrecision == p,
+                      onSelected: (_) => s.setGeoPrecision(p),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                l10n.geoIntro,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.55),
+                    ),
+              ),
+              if (s.geoNeedsPermission) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.geoErrorPermission,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.orangeAccent,
+                      ),
+                ),
+              ],
+              if (s.geoError != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  s.geoError!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.orangeAccent,
+                      ),
+                ),
+              ],
+            ],
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: FutureBuilder<List<String>>(
+            future: s.chatPeerIds(),
+            builder: (context, snap) {
+              final peers = snap.data ?? const <String>[];
+              if (peers.isEmpty) {
+                return Center(
+                  child: Text(
+                    l10n.geoEmpty(s.geoChannelLabel),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.65),
+                        ),
+                  ),
+                );
+              }
+              return ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                itemCount: peers.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
+                itemBuilder: (context, i) {
+                  final peerId = peers[i];
+                  return Card(
+                    child: ListTile(
+                      leading: Identicon(id: peerId),
+                      title: FutureBuilder<String>(
+                        future: s.db.resolveDisplayName(peerId),
+                        builder: (context, nameSnap) {
+                          return Text(
+                            nameSnap.data ?? peerId,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        },
+                      ),
+                      subtitle: Text(l10n.geoPeerSubtitle(s.geoChannelLabel)),
+                      trailing: const Icon(Icons.lock_outline),
+                      onTap: () => onOpen(context, peerId),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

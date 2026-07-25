@@ -26,11 +26,17 @@ class BleMeshService extends ChangeNotifier {
     this.resilnet,
     this.ackQueue,
     this.ackHandler,
-  }) : _db = database;
+    bool Function()? shouldPersistHistory,
+    void Function(ChatMessage message)? onEphemeralMessage,
+  })  : _db = database,
+        _shouldPersistHistory = shouldPersistHistory ?? (() => true),
+        _onEphemeralMessage = onEphemeralMessage;
 
   final ResilNetService? resilnet;
   final AckQueueManager? ackQueue;
   final AckHandlerService? ackHandler;
+  final bool Function() _shouldPersistHistory;
+  final void Function(ChatMessage message)? _onEphemeralMessage;
 
   static final serviceUuid = Uuid.parse('9d2f3bb2-3a5a-4f6e-a0c2-9d62c2d4d2a1');
   static final characteristicUuid = Uuid.parse('ef8a0f1a-7b27-46d8-9e2a-7d66c1f1d9b1');
@@ -339,11 +345,18 @@ class BleMeshService extends ChangeNotifier {
       return;
     }
 
-    await _db.saveMessage(msg);
+    final persist = _shouldPersistHistory();
+    if (persist) {
+      await _db.saveMessage(msg);
+    } else {
+      _onEphemeralMessage?.call(msg);
+    }
 
     if (msg.receiverId == myUserId) {
       final now = DateTime.now();
-      await _db.markMessagesDelivered([msg.id], now);
+      if (persist) {
+        await _db.markMessagesDelivered([msg.id], now);
+      }
       if (msg.type == MessageType.direct && msg.senderId != myUserId) {
         await ackQueue?.enqueueDelivered(
           msgId: msg.id,
@@ -352,15 +365,34 @@ class BleMeshService extends ChangeNotifier {
         );
       }
     } else if (msg.ttl > 0) {
-      final relayed = msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed);
-      await _db.saveMessage(relayed);
-      await _db.updateMessageStatus(msg.id, MessageStatus.relayed.name);
+      final relayed =
+          msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed);
+      if (persist) {
+        await _db.saveMessage(relayed);
+        await _db.updateMessageStatus(msg.id, MessageStatus.relayed.name);
+      } else {
+        // Store-and-forward without history: one-shot BLE retransmit if linked.
+        unawaited(sendDirectNow(relayed));
+      }
     } else {
       debugPrint(
         '[BleMesh] drop no-relay ttl=0 id=${msg.id} sender=${msg.senderId} receiver=${msg.receiverId}',
       );
     }
     notifyListeners();
+  }
+
+  /// Send a sealed message over BLE immediately (no SQLite pending queue).
+  Future<void> sendDirectNow(ChatMessage msg) async {
+    if (_connectedDeviceId == null) {
+      debugPrint('[BleMesh] sendDirectNow skipped — no connection id=${msg.id}');
+      return;
+    }
+    try {
+      await _sendBleChunkedMessage(msg);
+    } catch (e) {
+      debugPrint('[BleMesh] sendDirectNow failed id=${msg.id}: $e');
+    }
   }
 
   /// ส่งคิวข้อความ — ใช้ Rust Hybrid Router เลือกช่องทางก่อนส่ง BLE

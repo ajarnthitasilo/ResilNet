@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../models/peer.dart';
 import '../services/crypto_service.dart';
+import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 
 class QrScannerScreen extends StatefulWidget {
@@ -147,7 +148,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       } catch (_) {}
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('สแกนไม่สำเร็จ: QR ไม่ถูกต้อง')),
+        SnackBar(content: Text(context.l10n.qrInvalid)),
       );
     }
   }
@@ -162,7 +163,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('สแกน QR เพิ่มเพื่อน'),
+          title: Text(context.l10n.qrScanTitle),
           leading: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () => _safeClose(false),
@@ -193,12 +194,12 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                   await _prepareCamera();
                 }
               },
-              child: const Text('ลองอีกครั้ง / เปิด Settings'),
+              child: Text(context.l10n.qrRetrySettings),
             ),
             const SizedBox(height: 8),
             TextButton(
               onPressed: () => _safeClose(false),
-              child: const Text('ปิด'),
+              child: Text(context.l10n.close),
             ),
           ],
         ),
@@ -207,7 +208,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 
     final controller = _controller;
     if (controller == null) {
-      return const Center(child: Text('กล้องยังไม่พร้อม'));
+      return Center(child: Text(context.l10n.qrCameraNotReady));
     }
 
     return Stack(

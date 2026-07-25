@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../services/firmware_config.dart';
 import '../services/firmware_service.dart';
 import '../state/app_state.dart';
+import '../l10n/l10n_ext.dart';
 import 'esp32_ota_screen.dart';
 
 /// ดาวน์โหลดและจัดการไฟล์เฟิร์มแวร์ ESP32
@@ -155,7 +156,7 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
     final fw = context.watch<AppState>().firmware;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('ดาวน์โหลดเฟิร์มแวร์ ESP32')),
+      appBar: AppBar(title: Text(context.l10n.firmwareDownloadTitle)),
       body: ListView(
         padding: const EdgeInsets.all(18),
         children: [

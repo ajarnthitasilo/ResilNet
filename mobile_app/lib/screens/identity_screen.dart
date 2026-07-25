@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../app/theme.dart';
+import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 import 'qr_scanner_screen.dart';
 
@@ -50,7 +51,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
     await Clipboard.setData(ClipboardData(text: userId));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('คัดลอก Public Key Hash เรียบร้อยแล้ว')),
+      SnackBar(content: Text(context.l10n.identityCopiedHash)),
     );
   }
 
@@ -68,7 +69,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
     if (ok == true) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('บันทึกเพื่อนจาก QR แล้ว')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.identityPeerSaved)));
     }
   }
 
@@ -82,7 +83,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
         if (!granted) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ไม่ได้รับสิทธิ์บันทึกลงคลังภาพ')),
+            SnackBar(content: Text(context.l10n.identityGalleryDenied)),
           );
           return;
         }
@@ -118,13 +119,13 @@ class _IdentityScreenState extends State<IdentityScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('บันทึก QR ลงคลังภาพแล้ว')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.identityQrSaved)));
     } catch (e, st) {
       debugPrint('[ResilNet] save QR failed: $e\n$st');
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('บันทึก QR ไม่สำเร็จ: $e')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.identityQrSaveFailed('$e'))));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -146,10 +147,10 @@ class _IdentityScreenState extends State<IdentityScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ตัวตน (Identity)'),
+        title: Text(context.l10n.identityTitle),
         actions: [
           IconButton(
-            tooltip: 'สแกน QR ด้วยกล้อง',
+            tooltip: context.l10n.identityScanTooltip,
             onPressed: _openScanner,
             icon: const Icon(Icons.qr_code_scanner),
           ),

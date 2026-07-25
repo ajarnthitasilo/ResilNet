@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'app/theme.dart';
+import 'l10n/l10n_ext.dart';
 import 'screens/chat_list_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/permission_screen.dart';
@@ -45,23 +47,41 @@ class ResilNetApp extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: appState,
       child: AppLifecycleHandler(
-        child: MaterialApp(
-          title: 'ResilNet',
-          debugShowCheckedModeBanner: false,
-          theme: ResilNetTheme.dark(),
-          home: Consumer<AppState>(
-            builder: (context, s, _) {
-              if (!s.initDone) {
-                return const _BootScreen();
-              }
-              if (s.initError != null && !s.isReady) {
-                return _BootErrorScreen(message: s.initError!);
-              }
-              if (!s.permissionsGranted) return const PermissionScreen();
-              if (!s.onboardingCompleted) return const OnboardingScreen();
-              return const ChatListScreen();
-            },
-          ),
+        child: Consumer<AppState>(
+          builder: (context, s, _) {
+            return MaterialApp(
+              onGenerateTitle: (context) => context.l10n.appTitle,
+              debugShowCheckedModeBanner: false,
+              theme: ResilNetTheme.dark(),
+              locale: s.localeOverride,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              localeResolutionCallback: (deviceLocale, supported) {
+                if (s.localeOverride != null) return s.localeOverride;
+                if (deviceLocale == null) return supported.first;
+                for (final locale in supported) {
+                  if (locale.languageCode == deviceLocale.languageCode) {
+                    return locale;
+                  }
+                }
+                return supported.first;
+              },
+              home: !s.initDone
+                  ? const _BootScreen()
+                  : (s.initError != null && !s.isReady)
+                      ? _BootErrorScreen(message: s.initError!)
+                      : !s.permissionsGranted
+                          ? const PermissionScreen()
+                          : !s.onboardingCompleted
+                              ? const OnboardingScreen()
+                              : const ChatListScreen(),
+            );
+          },
         ),
       ),
     );
@@ -73,6 +93,7 @@ class _BootScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: const Color(0xFF0B1224),
       body: Center(
@@ -80,7 +101,7 @@ class _BootScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'ResilNet',
+              l10n.appTitle,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: const Color(0xFF10B981),
                     fontWeight: FontWeight.w700,
@@ -106,6 +127,7 @@ class _BootErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: const Color(0xFF0B1224),
       body: SafeArea(
@@ -117,7 +139,7 @@ class _BootErrorScreen extends StatelessWidget {
               const Icon(Icons.error_outline, color: Colors.orangeAccent, size: 42),
               const SizedBox(height: 16),
               Text(
-                'เริ่มระบบไม่สำเร็จ',
+                l10n.bootFailedTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
@@ -129,7 +151,7 @@ class _BootErrorScreen extends StatelessWidget {
               const SizedBox(height: 20),
               FilledButton(
                 onPressed: () => context.read<AppState>().retryInit(),
-                child: const Text('ลองอีกครั้ง'),
+                child: Text(l10n.retry),
               ),
             ],
           ),

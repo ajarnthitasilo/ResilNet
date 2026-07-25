@@ -1,0 +1,236 @@
+{
+  "@@locale": "en",
+  "appTitle": "ResilNet",
+  "communityTitle": "Ban Pu Kham community chat",
+  "preparingSystem": "Preparing system…",
+  "bootFailedTitle": "Could not start",
+  "retry": "Try again",
+  "cancel": "Cancel",
+  "save": "Save",
+  "close": "Close",
+  "start": "Start",
+  "send": "Send",
+  "settings": "Settings",
+  "language": "Language",
+  "languageSubtitle": "Follow system language, or choose Thai / English",
+  "languageSystem": "System default",
+  "languageThai": "Thai",
+  "languageEnglish": "English",
+  "notificationsTooltip": "Notification settings",
+  "enableMessageNotifications": "Enable message notifications",
+  "networkMembersTooltip": "Network members",
+  "identityQrTooltip": "Identity / QR",
+  "feedDirects": "Chat",
+  "feedMesh": "#mesh",
+  "feedGeo": "Area",
+  "feedDirectsSubtitle": "Private E2EE messages",
+  "feedMeshSubtitle": "Nearby peers (BLE)",
+  "feedGeoSubtitle": "Geohash discovery channel",
+  "peerIdHint": "Paste Receiver ID (Public Key Hash) to start a chat",
+  "directsEmpty": "No chats yet — scan a QR or paste a Receiver ID to start\nMessages are sealed with E2EE before send (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • tap to open chat",
+  "meshIntro": "Peers in BLE range — tap to open an E2EE chat\nSends via hybrid router (BLE + LoRa + Nostr when online)",
+  "meshEmptyRunning": "No nearby peers yet — open the app on another device within BLE range",
+  "meshEmptyStopped": "BLE is not running — grant Bluetooth / Location permission",
+  "meshNearbyPrefix": "Nearby",
+  "refreshLocationTooltip": "Refresh location",
+  "geoIntro": "Geohash scopes discovery only — messaging stays 1:1 E2EE through the hybrid router (not a public plaintext room)",
+  "geoEmpty": "No chat peers yet\nSwitch to #mesh or scan a QR, then return to {channel}",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "E2EE within {channel}",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoErrorPermission": "Could not read location — check location permission",
+  "geoPrecisionRegion": "Region",
+  "geoPrecisionProvince": "Province",
+  "geoPrecisionCity": "City",
+  "geoPrecisionNeighborhood": "Neighborhood",
+  "geoPrecisionBlock": "Block",
+  "aliasTitle": "Set nickname (Contact Alias)",
+  "aliasHintBody": "This alias is stored on this device only (local-only)\nIt is never sent with E2EE traffic",
+  "aliasLabel": "Nickname",
+  "aliasHint": "e.g. “village head”, “P’Somchai”…",
+  "settingsDevices": "Devices",
+  "settingsFirmwareTitle": "Download / update ESP32 firmware",
+  "settingsFirmwareSubtitle": "Download .bin files and update the ESP32 board via OTA",
+  "settingsData": "Data",
+  "settingsDataHint": "Delete local messages to shrink the database — identity, keys, and peers are kept",
+  "settingsSaveHistoryTitle": "Save message history",
+  "settingsSaveHistorySubtitle": "When off, messages are still E2EE-sealed and sent, but not stored in local chat history (ephemeral)",
+  "settingsClearTitle": "Clear all messages",
+  "settingsClearSubtitle": "Delete all chats on this device",
+  "settingsClearConfirmTitle": "Clear all messages?",
+  "settingsClearConfirmBody": "This deletes all chat messages on this device.\nPeers and nicknames are not removed.",
+  "settingsClearAction": "Clear data",
+  "settingsClearedSnack": "Data cleared",
+  "settingsVersion": "version {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: scanning for nodes",
+  "meshBleSyncing": "BLE: syncing with ESP32",
+  "meshNostrPublishing": "Nostr: publishing",
+  "meshBleIdle": "BLE: standby",
+  "meshBleNeedsPermission": "BLE: permission required",
+  "meshNostrOffline": "Nostr offline",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} nearby peers • LoRa {lora} • sync ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "ready",
+  "meshLoraNotReady": "not ready",
+  "meshGatewayProgress": "Gateway UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Gateway UDP: ready",
+  "permissionTitle": "Allow access to start the BLE mesh network",
+  "permissionBody": "The app needs Bluetooth (scan / connect / advertise) and Location (for older Android devices) for offline community messaging.",
+  "permissionE2ee": "End-to-End Encryption (E2EE)\nRelay nodes cannot read message contents",
+  "permissionReady": "Permissions ready",
+  "permissionRequest": "Allow and continue",
+  "permissionNotReadySnack": "System not ready yet — wait a moment and try again",
+  "permissionDeniedSnack": "Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location",
+  "permissionFailedSnack": "Permission request failed: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet Architecture • Store-and-Forward Multi-hop",
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingStart": "Get started",
+  "onboardingWelcomeTitle": "Welcome to ResilNet",
+  "onboardingWelcomeBody": "Chat in Ban Pu Kham over a mesh network — even without the internet",
+  "onboardingFriendsTitle": "Add friends easily",
+  "onboardingFriendsBody": "Share a QR from Identity, or scan a friend’s QR to exchange public keys",
+  "onboardingChannelsTitle": "Encrypted chat + nearby channels",
+  "onboardingChannelsBody": "Switch #mesh / Area (geohash) to find nearby peers — messages stay E2EE over BLE mesh and Nostr",
+  "chatTitle": "Chat (E2EE)",
+  "chatScanTooltip": "Scan QR to add a peer",
+  "chatBlockTooltip": "Block this sender",
+  "chatBlockedSnack": "Blocked: no notifications / no relay",
+  "chatAliasTooltip": "Set nickname",
+  "chatReceiverPemLabel": "Recipient public key (PEM)",
+  "chatReceiverPemHint": "Paste your friend’s public key (from QR / shared file)",
+  "chatNeedPeerKey": "Scan a peer QR or paste their public key first",
+  "chatVoiceFailed": "Could not record audio: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Could not play voice note: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Play voice note",
+  "chatVoiceLabelSent": "🎤 Voice note (sealed)",
+  "chatVoiceLabel": "🎤 Voice note",
+  "chatDecryptFailed": "[decryption failed]",
+  "chatSentSealed": "[sealed • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[sealed]",
+  "chatComposeHint": "Type a message… (sealed on send)",
+  "chatEmptyThread": "No messages yet\nType below to send over the mesh",
+  "chatEmojiTooltip": "Emoji",
+  "statusPending": "Pending",
+  "statusSent": "Transmitted",
+  "statusRelayed": "Relayed",
+  "statusDelivered": "Delivered",
+  "statusRead": "Read",
+  "identityTitle": "Identity",
+  "identityScanTooltip": "Scan QR with camera",
+  "identityCopiedHash": "Public key hash copied",
+  "identityPeerSaved": "Peer saved from QR",
+  "identityGalleryDenied": "Photo library permission denied",
+  "identityQrSaved": "QR saved to photo library",
+  "identityQrSaveFailed": "Could not save QR: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Network members",
+  "qrScanTitle": "Scan QR to add a friend",
+  "qrInvalid": "Scan failed: invalid QR",
+  "qrCameraNotReady": "Camera not ready",
+  "qrRetrySettings": "Try again / open Settings",
+  "firmwareDownloadTitle": "Download ESP32 firmware",
+  "peersRefreshTooltip": "Refresh",
+  "peersBlocked": "Blocked",
+  "peersNearbyBle": "Nearby (BLE)",
+  "peersRecentlyOnline": "Recently online",
+  "peersSeenMinutesAgo": "Seen {minutes} min ago",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Offline",
+  "peersBlockedSnack": "Blocked {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Unblocked"
+}

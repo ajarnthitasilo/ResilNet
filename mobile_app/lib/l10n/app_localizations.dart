@@ -1,0 +1,950 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_th.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('th'),
+  ];
+
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ResilNet'**
+  String get appTitle;
+
+  /// No description provided for @communityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban Pu Kham community chat'**
+  String get communityTitle;
+
+  /// No description provided for @preparingSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing system…'**
+  String get preparingSystem;
+
+  /// No description provided for @bootFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start'**
+  String get bootFailedTitle;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retry;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @languageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow system language, or choose Thai / English'**
+  String get languageSubtitle;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get languageSystem;
+
+  /// No description provided for @languageThai.
+  ///
+  /// In en, this message translates to:
+  /// **'Thai'**
+  String get languageThai;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @notificationsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings'**
+  String get notificationsTooltip;
+
+  /// No description provided for @enableMessageNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable message notifications'**
+  String get enableMessageNotifications;
+
+  /// No description provided for @networkMembersTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Network members'**
+  String get networkMembersTooltip;
+
+  /// No description provided for @identityQrTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity / QR'**
+  String get identityQrTooltip;
+
+  /// No description provided for @feedDirects.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get feedDirects;
+
+  /// No description provided for @feedMesh.
+  ///
+  /// In en, this message translates to:
+  /// **'#mesh'**
+  String get feedMesh;
+
+  /// No description provided for @feedGeo.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get feedGeo;
+
+  /// No description provided for @feedDirectsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Private E2EE messages'**
+  String get feedDirectsSubtitle;
+
+  /// No description provided for @feedMeshSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby peers (BLE)'**
+  String get feedMeshSubtitle;
+
+  /// No description provided for @feedGeoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Geohash discovery channel'**
+  String get feedGeoSubtitle;
+
+  /// No description provided for @peerIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste Receiver ID (Public Key Hash) to start a chat'**
+  String get peerIdHint;
+
+  /// No description provided for @directsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No chats yet — scan a QR or paste a Receiver ID to start\nMessages are sealed with E2EE before send (BLE / LoRa / Nostr)'**
+  String get directsEmpty;
+
+  /// No description provided for @directsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'E2EE • tap to open chat'**
+  String get directsSubtitle;
+
+  /// No description provided for @meshIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Peers in BLE range — tap to open an E2EE chat\nSends via hybrid router (BLE + LoRa + Nostr when online)'**
+  String get meshIntro;
+
+  /// No description provided for @meshEmptyRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'No nearby peers yet — open the app on another device within BLE range'**
+  String get meshEmptyRunning;
+
+  /// No description provided for @meshEmptyStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE is not running — grant Bluetooth / Location permission'**
+  String get meshEmptyStopped;
+
+  /// No description provided for @meshNearbyPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby'**
+  String get meshNearbyPrefix;
+
+  /// No description provided for @refreshLocationTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh location'**
+  String get refreshLocationTooltip;
+
+  /// No description provided for @geoIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Geohash scopes discovery only — messaging stays 1:1 E2EE through the hybrid router (not a public plaintext room)'**
+  String get geoIntro;
+
+  /// No description provided for @geoEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No chat peers yet\nSwitch to #mesh or scan a QR, then return to {channel}'**
+  String geoEmpty(String channel);
+
+  /// No description provided for @geoPeerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'E2EE within {channel}'**
+  String geoPeerSubtitle(String channel);
+
+  /// No description provided for @geoErrorPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read location — check location permission'**
+  String get geoErrorPermission;
+
+  /// No description provided for @geoPrecisionRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get geoPrecisionRegion;
+
+  /// No description provided for @geoPrecisionProvince.
+  ///
+  /// In en, this message translates to:
+  /// **'Province'**
+  String get geoPrecisionProvince;
+
+  /// No description provided for @geoPrecisionCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get geoPrecisionCity;
+
+  /// No description provided for @geoPrecisionNeighborhood.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighborhood'**
+  String get geoPrecisionNeighborhood;
+
+  /// No description provided for @geoPrecisionBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get geoPrecisionBlock;
+
+  /// No description provided for @aliasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set nickname (Contact Alias)'**
+  String get aliasTitle;
+
+  /// No description provided for @aliasHintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This alias is stored on this device only (local-only)\nIt is never sent with E2EE traffic'**
+  String get aliasHintBody;
+
+  /// No description provided for @aliasLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname'**
+  String get aliasLabel;
+
+  /// No description provided for @aliasHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. “village head”, “P’Somchai”…'**
+  String get aliasHint;
+
+  /// No description provided for @settingsDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get settingsDevices;
+
+  /// No description provided for @settingsFirmwareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download / update ESP32 firmware'**
+  String get settingsFirmwareTitle;
+
+  /// No description provided for @settingsFirmwareSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download .bin files and update the ESP32 board via OTA'**
+  String get settingsFirmwareSubtitle;
+
+  /// No description provided for @settingsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get settingsData;
+
+  /// No description provided for @settingsDataHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete local messages to shrink the database — identity, keys, and peers are kept'**
+  String get settingsDataHint;
+
+  /// No description provided for @settingsSaveHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save message history'**
+  String get settingsSaveHistoryTitle;
+
+  /// No description provided for @settingsSaveHistorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When off, messages are still E2EE-sealed and sent, but not stored in local chat history (ephemeral)'**
+  String get settingsSaveHistorySubtitle;
+
+  /// No description provided for @settingsClearTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all messages'**
+  String get settingsClearTitle;
+
+  /// No description provided for @settingsClearSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all chats on this device'**
+  String get settingsClearSubtitle;
+
+  /// No description provided for @settingsClearConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all messages?'**
+  String get settingsClearConfirmTitle;
+
+  /// No description provided for @settingsClearConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes all chat messages on this device.\nPeers and nicknames are not removed.'**
+  String get settingsClearConfirmBody;
+
+  /// No description provided for @settingsClearAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear data'**
+  String get settingsClearAction;
+
+  /// No description provided for @settingsClearedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Data cleared'**
+  String get settingsClearedSnack;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'version {version}'**
+  String settingsVersion(String version);
+
+  /// No description provided for @meshBleScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE: scanning for nodes'**
+  String get meshBleScanning;
+
+  /// No description provided for @meshBleSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE: syncing with ESP32'**
+  String get meshBleSyncing;
+
+  /// No description provided for @meshNostrPublishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr: publishing'**
+  String get meshNostrPublishing;
+
+  /// No description provided for @meshBleIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE: standby'**
+  String get meshBleIdle;
+
+  /// No description provided for @meshBleNeedsPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE: permission required'**
+  String get meshBleNeedsPermission;
+
+  /// No description provided for @meshNostrOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr offline'**
+  String get meshNostrOffline;
+
+  /// No description provided for @meshNostrOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr {relays}'**
+  String meshNostrOnline(String relays);
+
+  /// No description provided for @meshFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} nearby peers • LoRa {lora} • sync ~{meters}m'**
+  String meshFooter(int count, String lora, int meters);
+
+  /// No description provided for @meshLoraReady.
+  ///
+  /// In en, this message translates to:
+  /// **'ready'**
+  String get meshLoraReady;
+
+  /// No description provided for @meshLoraNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'not ready'**
+  String get meshLoraNotReady;
+
+  /// No description provided for @meshGatewayProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway UDP: {label}'**
+  String meshGatewayProgress(String label);
+
+  /// No description provided for @meshGatewayReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway UDP: ready'**
+  String get meshGatewayReady;
+
+  /// No description provided for @permissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access to start the BLE mesh network'**
+  String get permissionTitle;
+
+  /// No description provided for @permissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The app needs Bluetooth (scan / connect / advertise) and Location (for older Android devices) for offline community messaging.'**
+  String get permissionBody;
+
+  /// No description provided for @permissionE2ee.
+  ///
+  /// In en, this message translates to:
+  /// **'End-to-End Encryption (E2EE)\nRelay nodes cannot read message contents'**
+  String get permissionE2ee;
+
+  /// No description provided for @permissionReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions ready'**
+  String get permissionReady;
+
+  /// No description provided for @permissionRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow and continue'**
+  String get permissionRequest;
+
+  /// No description provided for @permissionNotReadySnack.
+  ///
+  /// In en, this message translates to:
+  /// **'System not ready yet — wait a moment and try again'**
+  String get permissionNotReadySnack;
+
+  /// No description provided for @permissionDeniedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location'**
+  String get permissionDeniedSnack;
+
+  /// No description provided for @permissionFailedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission request failed: {error}'**
+  String permissionFailedSnack(String error);
+
+  /// No description provided for @permissionFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'ResilNet Architecture • Store-and-Forward Multi-hop'**
+  String get permissionFooter;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to ResilNet'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat in Ban Pu Kham over a mesh network — even without the internet'**
+  String get onboardingWelcomeBody;
+
+  /// No description provided for @onboardingFriendsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add friends easily'**
+  String get onboardingFriendsTitle;
+
+  /// No description provided for @onboardingFriendsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a QR from Identity, or scan a friend’s QR to exchange public keys'**
+  String get onboardingFriendsBody;
+
+  /// No description provided for @onboardingChannelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted chat + nearby channels'**
+  String get onboardingChannelsTitle;
+
+  /// No description provided for @onboardingChannelsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch #mesh / Area (geohash) to find nearby peers — messages stay E2EE over BLE mesh and Nostr'**
+  String get onboardingChannelsBody;
+
+  /// No description provided for @chatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat (E2EE)'**
+  String get chatTitle;
+
+  /// No description provided for @chatScanTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR to add a peer'**
+  String get chatScanTooltip;
+
+  /// No description provided for @chatBlockTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Block this sender'**
+  String get chatBlockTooltip;
+
+  /// No description provided for @chatBlockedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked: no notifications / no relay'**
+  String get chatBlockedSnack;
+
+  /// No description provided for @chatAliasTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Set nickname'**
+  String get chatAliasTooltip;
+
+  /// No description provided for @chatReceiverPemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient public key (PEM)'**
+  String get chatReceiverPemLabel;
+
+  /// No description provided for @chatReceiverPemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste your friend’s public key (from QR / shared file)'**
+  String get chatReceiverPemHint;
+
+  /// No description provided for @chatNeedPeerKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a peer QR or paste their public key first'**
+  String get chatNeedPeerKey;
+
+  /// No description provided for @chatVoiceFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not record audio: {error}'**
+  String chatVoiceFailed(String error);
+
+  /// No description provided for @chatPlayVoiceFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not play voice note: {error}'**
+  String chatPlayVoiceFailed(String error);
+
+  /// No description provided for @chatPlayVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Play voice note'**
+  String get chatPlayVoice;
+
+  /// No description provided for @chatVoiceLabelSent.
+  ///
+  /// In en, this message translates to:
+  /// **'🎤 Voice note (sealed)'**
+  String get chatVoiceLabelSent;
+
+  /// No description provided for @chatVoiceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'🎤 Voice note'**
+  String get chatVoiceLabel;
+
+  /// No description provided for @chatDecryptFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'[decryption failed]'**
+  String get chatDecryptFailed;
+
+  /// No description provided for @chatSentSealed.
+  ///
+  /// In en, this message translates to:
+  /// **'[sealed • ct={preview}]'**
+  String chatSentSealed(String preview);
+
+  /// No description provided for @chatSentSealedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'[sealed]'**
+  String get chatSentSealedShort;
+
+  /// No description provided for @chatComposeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message… (sealed on send)'**
+  String get chatComposeHint;
+
+  /// No description provided for @chatEmptyThread.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet\nType below to send over the mesh'**
+  String get chatEmptyThread;
+
+  /// No description provided for @chatEmojiTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Emoji'**
+  String get chatEmojiTooltip;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Transmitted'**
+  String get statusSent;
+
+  /// No description provided for @statusRelayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Relayed'**
+  String get statusRelayed;
+
+  /// No description provided for @statusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get statusDelivered;
+
+  /// No description provided for @statusRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get statusRead;
+
+  /// No description provided for @identityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity'**
+  String get identityTitle;
+
+  /// No description provided for @identityScanTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR with camera'**
+  String get identityScanTooltip;
+
+  /// No description provided for @identityCopiedHash.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key hash copied'**
+  String get identityCopiedHash;
+
+  /// No description provided for @identityPeerSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Peer saved from QR'**
+  String get identityPeerSaved;
+
+  /// No description provided for @identityGalleryDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library permission denied'**
+  String get identityGalleryDenied;
+
+  /// No description provided for @identityQrSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'QR saved to photo library'**
+  String get identityQrSaved;
+
+  /// No description provided for @identityQrSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save QR: {error}'**
+  String identityQrSaveFailed(String error);
+
+  /// No description provided for @peersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Network members'**
+  String get peersTitle;
+
+  /// No description provided for @qrScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR to add a friend'**
+  String get qrScanTitle;
+
+  /// No description provided for @qrInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan failed: invalid QR'**
+  String get qrInvalid;
+
+  /// No description provided for @qrCameraNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera not ready'**
+  String get qrCameraNotReady;
+
+  /// No description provided for @qrRetrySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again / open Settings'**
+  String get qrRetrySettings;
+
+  /// No description provided for @firmwareDownloadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download ESP32 firmware'**
+  String get firmwareDownloadTitle;
+
+  /// No description provided for @peersRefreshTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get peersRefreshTooltip;
+
+  /// No description provided for @peersBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get peersBlocked;
+
+  /// No description provided for @peersNearbyBle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby (BLE)'**
+  String get peersNearbyBle;
+
+  /// No description provided for @peersRecentlyOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently online'**
+  String get peersRecentlyOnline;
+
+  /// No description provided for @peersSeenMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Seen {minutes} min ago'**
+  String peersSeenMinutesAgo(int minutes);
+
+  /// No description provided for @peersOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get peersOffline;
+
+  /// No description provided for @peersBlockedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked {id}'**
+  String peersBlockedSnack(String id);
+
+  /// No description provided for @peersUnblockedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblocked'**
+  String get peersUnblockedSnack;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'th'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'th':
+      return AppLocalizationsTh();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

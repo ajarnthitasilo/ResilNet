@@ -1,0 +1,464 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Thai (`th`).
+class AppLocalizationsTh extends AppLocalizations {
+  AppLocalizationsTh([String locale = 'th']) : super(locale);
+
+  @override
+  String get appTitle => 'ResilNet';
+
+  @override
+  String get communityTitle => 'สื่อสารชุมชนบ้านปู่คำ';
+
+  @override
+  String get preparingSystem => 'กำลังเตรียมระบบ…';
+
+  @override
+  String get bootFailedTitle => 'เริ่มระบบไม่สำเร็จ';
+
+  @override
+  String get retry => 'ลองอีกครั้ง';
+
+  @override
+  String get cancel => 'ยกเลิก';
+
+  @override
+  String get save => 'บันทึก';
+
+  @override
+  String get close => 'ปิด';
+
+  @override
+  String get start => 'เริ่ม';
+
+  @override
+  String get send => 'ส่ง';
+
+  @override
+  String get settings => 'การตั้งค่า';
+
+  @override
+  String get language => 'ภาษา';
+
+  @override
+  String get languageSubtitle => 'ตามภาษาของระบบ หรือเลือกไทย / อังกฤษ';
+
+  @override
+  String get languageSystem => 'ตามระบบ';
+
+  @override
+  String get languageThai => 'ไทย';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get notificationsTooltip => 'การตั้งค่าแจ้งเตือน';
+
+  @override
+  String get enableMessageNotifications => 'เปิดแจ้งเตือนข้อความ';
+
+  @override
+  String get networkMembersTooltip => 'สมาชิกเครือข่าย';
+
+  @override
+  String get identityQrTooltip => 'ตัวตน/QR';
+
+  @override
+  String get feedDirects => 'แชท';
+
+  @override
+  String get feedMesh => '#mesh';
+
+  @override
+  String get feedGeo => 'พื้นที่';
+
+  @override
+  String get feedDirectsSubtitle => 'ข้อความส่วนตัว E2EE';
+
+  @override
+  String get feedMeshSubtitle => 'เพื่อนใกล้ตัว (BLE)';
+
+  @override
+  String get feedGeoSubtitle => 'ช่องตาม geohash (ค้นพบ)';
+
+  @override
+  String get peerIdHint => 'วาง Receiver ID (Public Key Hash) เพื่อเริ่มแชต';
+
+  @override
+  String get directsEmpty =>
+      'ยังไม่มีแชต — สแกน QR หรือวาง Receiver ID เพื่อเริ่ม\nข้อความถูกผนึก E2EE ก่อนส่ง (BLE / LoRa / Nostr)';
+
+  @override
+  String get directsSubtitle => 'E2EE • แตะเพื่อเปิดแชต';
+
+  @override
+  String get meshIntro =>
+      'เพื่อนในรัศมี BLE — แตะเพื่อเปิดแชต E2EE\nส่งผ่าน hybrid router (BLE + LoRa + Nostr เมื่อออนไลน์)';
+
+  @override
+  String get meshEmptyRunning =>
+      'ยังไม่พบเพื่อนใกล้ตัว — เปิดแอปคู่อีกเครื่องในระยะ BLE';
+
+  @override
+  String get meshEmptyStopped =>
+      'BLE ยังไม่ทำงาน — ขอสิทธิ์ Bluetooth / Location';
+
+  @override
+  String get meshNearbyPrefix => 'ใกล้ตัว';
+
+  @override
+  String get refreshLocationTooltip => 'รีเฟรชพิกัด';
+
+  @override
+  String get geoIntro =>
+      'ช่อง geohash ใช้จัดกลุ่มการค้นพบในพื้นที่ — การส่งข้อความยังเป็น E2EE 1:1 ผ่าน hybrid router เท่านั้น (ไม่ใช่ประกาศสาธารณะแบบ plaintext)';
+
+  @override
+  String geoEmpty(String channel) {
+    return 'ยังไม่มีเพื่อนในรายการแชต\nสลับไป #mesh หรือสแกน QR แล้วกลับมาที่ $channel';
+  }
+
+  @override
+  String geoPeerSubtitle(String channel) {
+    return 'E2EE ในขอบเขต $channel';
+  }
+
+  @override
+  String get geoErrorPermission => 'ไม่สามารถอ่านพิกัดได้ — ตรวจสิทธิ์ตำแหน่ง';
+
+  @override
+  String get geoPrecisionRegion => 'ภูมิภาค';
+
+  @override
+  String get geoPrecisionProvince => 'จังหวัด';
+
+  @override
+  String get geoPrecisionCity => 'เมือง';
+
+  @override
+  String get geoPrecisionNeighborhood => 'ย่าน';
+
+  @override
+  String get geoPrecisionBlock => 'บล็อก';
+
+  @override
+  String get aliasTitle => 'ตั้งชื่อเล่น (Contact Alias)';
+
+  @override
+  String get aliasHintBody =>
+      'Alias นี้เก็บในเครื่องเท่านั้น (Local-only)\nไม่ถูกส่งออกไปกับระบบ E2EE';
+
+  @override
+  String get aliasLabel => 'ชื่อเล่น';
+
+  @override
+  String get aliasHint => 'เช่น “ผู้ใหญ่บ้าน”, “พี่สมชาย”…';
+
+  @override
+  String get settingsDevices => 'อุปกรณ์';
+
+  @override
+  String get settingsFirmwareTitle => 'ดาวน์โหลด/อัปเดตเฟิร์มแวร์ ESP32';
+
+  @override
+  String get settingsFirmwareSubtitle =>
+      'ดาวน์โหลดไฟล์ .bin และอัปเดตแอป/บอร์ด ESP32 ผ่าน OTA';
+
+  @override
+  String get settingsData => 'จัดการข้อมูล';
+
+  @override
+  String get settingsDataHint =>
+      'ลบข้อความในเครื่องเพื่อลดขนาดฐานข้อมูล — ไม่กระทบตัวตน คีย์ หรือรายชื่อเพื่อน';
+
+  @override
+  String get settingsSaveHistoryTitle => 'บันทึกประวัติข้อความ';
+
+  @override
+  String get settingsSaveHistorySubtitle =>
+      'เมื่อปิด ข้อความยังถูกเข้ารหัส E2EE และส่งตามปกติ แต่จะไม่เก็บในประวัติแชตบนเครื่อง (โหมดชั่วคราว)';
+
+  @override
+  String get settingsClearTitle => 'ล้างข้อความทั้งหมด';
+
+  @override
+  String get settingsClearSubtitle => 'ลบแชตทั้งหมดในเครื่อง';
+
+  @override
+  String get settingsClearConfirmTitle => 'ล้างข้อความทั้งหมด?';
+
+  @override
+  String get settingsClearConfirmBody =>
+      'การดำเนินการนี้จะลบข้อความแชตทั้งหมดในเครื่องนี้\nรายชื่อเพื่อน (peers) และชื่อเล่นจะไม่ถูกลบ';
+
+  @override
+  String get settingsClearAction => 'ล้างข้อมูล';
+
+  @override
+  String get settingsClearedSnack => 'ล้างข้อมูลเรียบร้อยแล้ว';
+
+  @override
+  String settingsVersion(String version) {
+    return 'version $version';
+  }
+
+  @override
+  String get meshBleScanning => 'BLE: กำลังค้นหา Node';
+
+  @override
+  String get meshBleSyncing => 'BLE: กำลังซิงก์กับ ESP32';
+
+  @override
+  String get meshNostrPublishing => 'Nostr: กำลังเผยแพร่';
+
+  @override
+  String get meshBleIdle => 'BLE: สแตนด์บาย';
+
+  @override
+  String get meshBleNeedsPermission => 'BLE: ต้องขอสิทธิ์ก่อน';
+
+  @override
+  String get meshNostrOffline => 'Nostr ออฟไลน์';
+
+  @override
+  String meshNostrOnline(String relays) {
+    return 'Nostr $relays';
+  }
+
+  @override
+  String meshFooter(int count, String lora, int meters) {
+    return '$count เพื่อนใกล้เคียง • LoRa $lora • รัศมีซิงก์ ~${meters}m';
+  }
+
+  @override
+  String get meshLoraReady => 'พร้อม';
+
+  @override
+  String get meshLoraNotReady => 'ไม่พร้อม';
+
+  @override
+  String meshGatewayProgress(String label) {
+    return 'Gateway UDP: $label';
+  }
+
+  @override
+  String get meshGatewayReady => 'Gateway UDP: พร้อมส่ง';
+
+  @override
+  String get permissionTitle => 'ขอสิทธิ์เพื่อเริ่มใช้งานเครือข่าย BLE Mesh';
+
+  @override
+  String get permissionBody =>
+      'แอปต้องใช้ Bluetooth (สแกน/เชื่อมต่อ/โฆษณาตัวตน) และ Location (รองรับอุปกรณ์ Android รุ่นเก่า) เพื่อสื่อสารแบบออฟไลน์ในชุมชน';
+
+  @override
+  String get permissionE2ee =>
+      'End-to-End Encryption (E2EE)\nโหนดทางผ่านจะไม่สามารถอ่านเนื้อหาข้อความได้';
+
+  @override
+  String get permissionReady => 'สิทธิ์พร้อมใช้งาน';
+
+  @override
+  String get permissionRequest => 'ขอสิทธิ์และเริ่มใช้งาน';
+
+  @override
+  String get permissionNotReadySnack =>
+      'ระบบยังไม่พร้อม — รอสักครู่แล้วลองใหม่';
+
+  @override
+  String get permissionDeniedSnack =>
+      'ยังไม่ได้สิทธิ์ครบ — เปิด Settings > ResilNet แล้วอนุญาต Bluetooth/Location';
+
+  @override
+  String permissionFailedSnack(String error) {
+    return 'ขอสิทธิ์ล้มเหลว: $error';
+  }
+
+  @override
+  String get permissionFooter =>
+      'ResilNet Architecture • Store-and-Forward Multi-hop';
+
+  @override
+  String get onboardingSkip => 'ข้าม';
+
+  @override
+  String get onboardingNext => 'ถัดไป';
+
+  @override
+  String get onboardingStart => 'เริ่มใช้งาน';
+
+  @override
+  String get onboardingWelcomeTitle => 'ยินดีต้อนรับสู่ ResilNet';
+
+  @override
+  String get onboardingWelcomeBody =>
+      'สื่อสารในชุมชนบ้านปู่คำผ่านเครือข่าย Mesh แม้ไม่มีอินเทอร์เน็ต';
+
+  @override
+  String get onboardingFriendsTitle => 'เพิ่มเพื่อนได้ง่าย';
+
+  @override
+  String get onboardingFriendsBody =>
+      'แชร์ QR จากหน้า “ตัวตน” หรือสแกน QR ของเพื่อนเพื่อแลกเปลี่ยน Public Key';
+
+  @override
+  String get onboardingChannelsTitle => 'แชทแบบเข้ารหัส + ช่องใกล้ตัว';
+
+  @override
+  String get onboardingChannelsBody =>
+      'สลับ #mesh / พื้นที่ (geohash) เพื่อค้นหาเพื่อนใกล้ตัว — ส่งข้อความยังเป็น E2EE ผ่าน BLE Mesh และ Nostr เสมอ';
+
+  @override
+  String get chatTitle => 'แชต (E2EE)';
+
+  @override
+  String get chatScanTooltip => 'สแกน QR เพิ่มเพื่อน';
+
+  @override
+  String get chatBlockTooltip => 'บล็อกผู้ส่งนี้';
+
+  @override
+  String get chatBlockedSnack => 'บล็อกแล้ว: จะไม่แจ้งเตือน/ไม่ relay';
+
+  @override
+  String get chatAliasTooltip => 'ตั้งชื่อเล่น';
+
+  @override
+  String get chatReceiverPemLabel => 'Public Key (PEM) ของผู้รับ';
+
+  @override
+  String get chatReceiverPemHint =>
+      'วาง Public Key ของเพื่อนที่นี่ (ได้จาก QR/แชร์ไฟล์)';
+
+  @override
+  String get chatNeedPeerKey => 'สแกน QR เพื่อน หรือวาง Public Key ก่อน';
+
+  @override
+  String chatVoiceFailed(String error) {
+    return 'ไม่สามารถอัดเสียงได้: $error';
+  }
+
+  @override
+  String chatPlayVoiceFailed(String error) {
+    return 'เล่นเสียงไม่สำเร็จ: $error';
+  }
+
+  @override
+  String get chatPlayVoice => 'เล่นข้อความเสียง';
+
+  @override
+  String get chatVoiceLabelSent => '🎤 ข้อความเสียง (ผนึกแล้ว)';
+
+  @override
+  String get chatVoiceLabel => '🎤 ข้อความเสียง';
+
+  @override
+  String get chatDecryptFailed => '[ถอดรหัสไม่สำเร็จ]';
+
+  @override
+  String chatSentSealed(String preview) {
+    return '[ผนึกแล้ว • ct=$preview]';
+  }
+
+  @override
+  String get chatSentSealedShort => '[ผนึกแล้ว]';
+
+  @override
+  String get chatComposeHint => 'พิมพ์ข้อความ… (เข้ารหัสทันทีเมื่อกดส่ง)';
+
+  @override
+  String get chatEmptyThread =>
+      'ยังไม่มีข้อความ\nพิมพ์ข้อความด้านล่างเพื่อส่งผ่าน Mesh';
+
+  @override
+  String get chatEmojiTooltip => 'อิโมจิ';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusSent => 'Transmitted';
+
+  @override
+  String get statusRelayed => 'Relayed';
+
+  @override
+  String get statusDelivered => 'Delivered';
+
+  @override
+  String get statusRead => 'Read';
+
+  @override
+  String get identityTitle => 'ตัวตน (Identity)';
+
+  @override
+  String get identityScanTooltip => 'สแกน QR ด้วยกล้อง';
+
+  @override
+  String get identityCopiedHash => 'คัดลอก Public Key Hash เรียบร้อยแล้ว';
+
+  @override
+  String get identityPeerSaved => 'บันทึกเพื่อนจาก QR แล้ว';
+
+  @override
+  String get identityGalleryDenied => 'ไม่ได้รับสิทธิ์บันทึกลงคลังภาพ';
+
+  @override
+  String get identityQrSaved => 'บันทึก QR ลงคลังภาพแล้ว';
+
+  @override
+  String identityQrSaveFailed(String error) {
+    return 'บันทึก QR ไม่สำเร็จ: $error';
+  }
+
+  @override
+  String get peersTitle => 'สมาชิกเครือข่าย';
+
+  @override
+  String get qrScanTitle => 'สแกน QR เพิ่มเพื่อน';
+
+  @override
+  String get qrInvalid => 'สแกนไม่สำเร็จ: QR ไม่ถูกต้อง';
+
+  @override
+  String get qrCameraNotReady => 'กล้องยังไม่พร้อม';
+
+  @override
+  String get qrRetrySettings => 'ลองอีกครั้ง / เปิด Settings';
+
+  @override
+  String get firmwareDownloadTitle => 'ดาวน์โหลดเฟิร์มแวร์ ESP32';
+
+  @override
+  String get peersRefreshTooltip => 'รีเฟรช';
+
+  @override
+  String get peersBlocked => 'บล็อกแล้ว';
+
+  @override
+  String get peersNearbyBle => 'ใกล้เคียง (BLE)';
+
+  @override
+  String get peersRecentlyOnline => 'ออนไลน์ล่าสุด';
+
+  @override
+  String peersSeenMinutesAgo(int minutes) {
+    return 'เห็นเมื่อ $minutes นาทีที่แล้ว';
+  }
+
+  @override
+  String get peersOffline => 'ออฟไลน์';
+
+  @override
+  String peersBlockedSnack(String id) {
+    return 'บล็อก $id แล้ว';
+  }
+
+  @override
+  String get peersUnblockedSnack => 'ปลดบล็อกแล้ว';
+}

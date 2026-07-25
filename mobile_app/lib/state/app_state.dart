@@ -9,8 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
+import '../core/geohash.dart';
 import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
+import '../models/feed_channel.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
 import '../services/ble_mesh_service.dart';
@@ -18,6 +20,7 @@ import '../services/crypto_service.dart';
 import '../services/database_service.dart';
 import '../services/esp32_sync_service.dart';
 import '../services/firmware_service.dart';
+import '../services/geo_service.dart';
 import '../services/notification_service.dart';
 import '../services/nostr_sync_service.dart';
 import '../services/resilnet_packet_codec.dart';
@@ -120,9 +123,53 @@ class AppState extends ChangeNotifier {
   bool _notificationsEnabled = true;
   bool get notificationsEnabled => _notificationsEnabled;
 
+  /// When false (ephemeral mode), sealed payloads are not written to SQLite.
+  static const _kSaveMessageHistory = 'resilnet_save_message_history';
+  bool _saveMessageHistory = true;
+  bool get saveMessageHistory => _saveMessageHistory;
+
+  /// In-memory sealed envelopes for the current process only (ephemeral UI).
+  final List<ChatMessage> _sessionMessages = <ChatMessage>[];
+
   static const _kOnboardingDone = 'resilnet_onboarding_done';
   bool _onboardingCompleted = false;
   bool get onboardingCompleted => _onboardingCompleted;
+
+  /// `null` = follow device locale; otherwise an explicit `en` / `th` override.
+  static const _kLocaleOverride = 'resilnet_locale_override';
+  String? _localeOverrideCode;
+  String? get localeOverrideCode => _localeOverrideCode;
+
+  Locale? get localeOverride {
+    final code = _localeOverrideCode;
+    if (code == null || code.isEmpty || code == 'system') return null;
+    return Locale(code);
+  }
+
+  static const _kFeedChannel = 'resilnet_feed_channel';
+  static const _kGeoPrecision = 'resilnet_geo_precision';
+
+  FeedChannel _feedChannel = FeedChannel.directs;
+  FeedChannel get feedChannel => _feedChannel;
+
+  GeoPrecision _geoPrecision = GeoPrecision.neighborhood;
+  GeoPrecision get geoPrecision => _geoPrecision;
+
+  String? _currentGeohash;
+  String? get currentGeohash => _currentGeohash;
+  bool _geoRefreshing = false;
+  bool get geoRefreshing => _geoRefreshing;
+  bool _geoNeedsPermission = false;
+  bool get geoNeedsPermission => _geoNeedsPermission;
+  String? _geoError;
+  String? get geoError => _geoError;
+
+  /// IRC-style label for the active geo channel (empty when unknown).
+  String get geoChannelLabel {
+    final h = _currentGeohash;
+    if (h == null || h.isEmpty) return Geohash.channelLabel('');
+    return Geohash.channelLabel(Geohash.atPrecision(h, _geoPrecision));
+  }
 
   bool get isReady =>
       _mesh != null &&
@@ -203,6 +250,8 @@ class AppState extends ChangeNotifier {
         resilnet: resilnet,
         ackQueue: _ackQueue,
         ackHandler: _ackHandler,
+        shouldPersistHistory: () => _saveMessageHistory,
+        onEphemeralMessage: _rememberSessionMessage,
       );
       _esp32 = Esp32SyncService(database: db);
       _udp = UdpTransportService(database: db, resilnet: resilnet);
@@ -242,7 +291,19 @@ class AppState extends ChangeNotifier {
       }
       final prefs = await SharedPreferences.getInstance();
       _notificationsEnabled = prefs.getBool(_kNotificationsEnabled) ?? true;
+      _saveMessageHistory = prefs.getBool(_kSaveMessageHistory) ?? true;
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
+      final loc = prefs.getString(_kLocaleOverride);
+      _localeOverrideCode =
+          (loc == null || loc.isEmpty || loc == 'system') ? null : loc;
+      _feedChannel = FeedChannel.values.firstWhere(
+        (e) => e.name == prefs.getString(_kFeedChannel),
+        orElse: () => FeedChannel.directs,
+      );
+      _geoPrecision = GeoPrecision.values.firstWhere(
+        (e) => e.name == prefs.getString(_kGeoPrecision),
+        orElse: () => GeoPrecision.neighborhood,
+      );
 
       // ตรวจสิทธิ์ที่มีอยู่แล้ว (ไม่ขึ้น dialog) แล้วค่อยสตาร์ท radio
       _permissionsGranted = await _hasAllRequiredPermissions();
@@ -354,11 +415,143 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setSaveMessageHistory(bool enabled) async {
+    _saveMessageHistory = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kSaveMessageHistory, enabled);
+    if (!enabled) {
+      // Leaving messages already on disk alone; new traffic stays ephemeral.
+      debugPrint('[ResilNet] message history persistence disabled (ephemeral)');
+    }
+    notifyListeners();
+  }
+
+  void _rememberSessionMessage(ChatMessage msg) {
+    if (_saveMessageHistory) return;
+    final i = _sessionMessages.indexWhere((m) => m.id == msg.id);
+    if (i >= 0) {
+      _sessionMessages[i] = msg;
+    } else {
+      _sessionMessages.add(msg);
+      if (_sessionMessages.length > 200) {
+        _sessionMessages.removeRange(0, _sessionMessages.length - 200);
+      }
+    }
+  }
+
+  /// Conversation view: SQLite history (if enabled) + sealed session-only envelopes.
+  Future<List<ChatMessage>> messagesForConversation(
+    String a,
+    String b,
+  ) async {
+    final persisted = _saveMessageHistory
+        ? await db.getConversation(a, b)
+        : const <ChatMessage>[];
+    final session = _sessionMessages.where((m) {
+      return (m.senderId == a && m.receiverId == b) ||
+          (m.senderId == b && m.receiverId == a);
+    });
+    final byId = <String, ChatMessage>{
+      for (final m in persisted) m.id: m,
+      for (final m in session) m.id: m,
+    };
+    final items = byId.values.toList()
+      ..sort((x, y) => x.timestamp.compareTo(y.timestamp));
+    return items;
+  }
+
+  /// Peer IDs for the home chat list (disk + ephemeral session).
+  Future<List<String>> chatPeerIds() async {
+    final fromDb =
+        _saveMessageHistory ? await db.getChatPeersFor(myUserId) : <String>[];
+    final fromSession = <String>{};
+    for (final m in _sessionMessages) {
+      if (m.senderId == myUserId) {
+        fromSession.add(m.receiverId);
+      } else if (m.receiverId == myUserId) {
+        fromSession.add(m.senderId);
+      }
+    }
+    final merged = <String>{...fromDb, ...fromSession};
+    return merged.toList();
+  }
+
+  /// Persist sealed chat envelope only when history saving is enabled.
+  Future<void> persistChatMessage(ChatMessage msg) async {
+    if (_saveMessageHistory) {
+      await db.saveMessage(msg);
+    } else {
+      _rememberSessionMessage(msg);
+    }
+  }
+
   Future<void> completeOnboarding() async {
     _onboardingCompleted = true;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kOnboardingDone, true);
     notifyListeners();
+  }
+
+  /// Persist language override. Pass `null` to follow the device locale.
+  Future<void> setLocaleOverride(Locale? locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (locale == null) {
+      _localeOverrideCode = null;
+      await prefs.setString(_kLocaleOverride, 'system');
+    } else {
+      _localeOverrideCode = locale.languageCode;
+      await prefs.setString(_kLocaleOverride, locale.languageCode);
+    }
+    notifyListeners();
+  }
+
+  Future<void> setFeedChannel(FeedChannel channel) async {
+    if (_feedChannel == channel) return;
+    _feedChannel = channel;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kFeedChannel, channel.name);
+    if (channel == FeedChannel.geo &&
+        (_currentGeohash == null || _currentGeohash!.isEmpty)) {
+      unawaited(refreshGeohash());
+    }
+    notifyListeners();
+  }
+
+  Future<void> setGeoPrecision(GeoPrecision precision) async {
+    if (_geoPrecision == precision) return;
+    _geoPrecision = precision;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kGeoPrecision, precision.name);
+    notifyListeners();
+  }
+
+  /// Resolve device location → geohash for the geo channel label.
+  /// Location stays on-device; it is not stamped onto Nostr/mesh ciphertext.
+  Future<void> refreshGeohash() async {
+    if (_geoRefreshing) return;
+    _geoRefreshing = true;
+    _geoError = null;
+    _geoNeedsPermission = false;
+    notifyListeners();
+    try {
+      final pos = await GeoService.getCurrentPosition();
+      if (pos == null) {
+        _geoNeedsPermission = true;
+        _currentGeohash = null;
+      } else {
+        _currentGeohash = Geohash.encode(
+          pos.latitude,
+          pos.longitude,
+          precision: GeoPrecision.block.length,
+        );
+      }
+    } catch (e) {
+      _geoError = e.toString();
+      debugPrint('[ResilNet] refreshGeohash failed: $e');
+    } finally {
+      _geoRefreshing = false;
+      notifyListeners();
+    }
   }
 
   /// ล้างข้อความทั้งหมดในเครื่อง แล้วคืนพื้นที่ดิสก์ด้วย VACUUM
@@ -370,6 +563,9 @@ class AppState extends ChangeNotifier {
   }
 
   /// ส่งข้อความออกผ่าน Rust Hybrid Router แล้ว fan-out ตาม transports
+  ///
+  /// Privacy: [msg] must already be sealed (RSA-OAEP + AES-GCM). The router and
+  /// transports only see opaque bytes — plaintext must not be persisted in [msg.content].
   Future<RoutedPacketDto> routeOutbound(ChatMessage msg) async {
     final piggyback =
         _ackQueue?.drainPiggybackFor(msg.receiverId) ?? const <AckEntry>[];
@@ -394,7 +590,7 @@ class AppState extends ChangeNotifier {
         case TransportTypeDto.nostr:
           final ok = await _publishOutboundViaNostr(routed.packet);
           if (ok) {
-            await db.saveMessage(
+            await persistChatMessage(
               msg.copyWith(
                 ttl: routed.packet.ttl,
                 status: MessageStatus.sent,
@@ -402,26 +598,46 @@ class AppState extends ChangeNotifier {
               ),
             );
             markedSent = true;
+          } else if (_saveMessageHistory) {
+            // Offline retry needs a pending row; ephemeral mode skips disk.
+            await db.saveMessage(msg.copyWith(status: MessageStatus.pending));
           } else {
-            await db.saveMessage(
+            await persistChatMessage(
               msg.copyWith(status: MessageStatus.pending),
             );
           }
         case TransportTypeDto.bluetoothMesh:
         case TransportTypeDto.loRa:
-          await db.saveMessage(
-            msg.copyWith(
-              ttl: routed.packet.ttl,
-              status: markedSent ? MessageStatus.sent : MessageStatus.pending,
-            ),
+          final outgoing = msg.copyWith(
+            ttl: routed.packet.ttl,
+            status: markedSent ? MessageStatus.sent : MessageStatus.pending,
           );
-          if (resilnet.isGatewayWifiActive) {
-            unawaited(_udp?.pumpSendQueue());
+          if (_saveMessageHistory) {
+            await db.saveMessage(outgoing);
+            if (resilnet.isGatewayWifiActive) {
+              unawaited(_udp?.pumpSendQueue());
+            }
+          } else {
+            await persistChatMessage(
+              outgoing.copyWith(status: MessageStatus.sent),
+            );
+            // Fan-out without SQLite queue — send sealed bytes immediately.
+            unawaited(_mesh?.sendDirectNow(outgoing));
+            if (resilnet.isGatewayWifiActive) {
+              unawaited(_udp?.sendDirectNow(outgoing));
+            }
           }
         case TransportTypeDto.offlineQueue:
-          await db.saveMessage(msg.copyWith(status: MessageStatus.pending));
-          if (resilnet.isGatewayWifiActive) {
-            unawaited(_udp?.pumpSendQueue());
+          if (_saveMessageHistory) {
+            await db.saveMessage(msg.copyWith(status: MessageStatus.pending));
+            if (resilnet.isGatewayWifiActive) {
+              unawaited(_udp?.pumpSendQueue());
+            }
+          } else {
+            // Rust offline queue still holds opaque bytes; no SQLite history.
+            await persistChatMessage(
+              msg.copyWith(status: MessageStatus.pending),
+            );
           }
       }
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 
 class PermissionScreen extends StatefulWidget {
@@ -25,9 +26,10 @@ class _PermissionScreenState extends State<PermissionScreen> {
   Future<void> _request() async {
     debugPrint('[ResilNet] PermissionScreen: button pressed');
     final s = context.read<AppState>();
+    final l10n = context.l10n;
     if (!s.isReady) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('ระบบยังไม่พร้อม — รอสักครู่แล้วลองใหม่')),
+        SnackBar(content: Text(l10n.permissionNotReadySnack)),
       );
       return;
     }
@@ -40,19 +42,15 @@ class _PermissionScreenState extends State<PermissionScreen> {
       if (!mounted) return;
       if (!granted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'ยังไม่ได้สิทธิ์ครบ — เปิด Settings > ResilNet แล้วอนุญาต Bluetooth/Location',
-            ),
-          ),
+          SnackBar(content: Text(context.l10n.permissionDeniedSnack)),
         );
       }
     } catch (e, st) {
       debugPrint('[ResilNet] PermissionScreen: request ERROR $e\n$st');
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('ขอสิทธิ์ล้มเหลว: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.permissionFailedSnack('$e'))),
+      );
     } finally {
       if (mounted) setState(() => _requesting = false);
     }
@@ -61,8 +59,9 @@ class _PermissionScreenState extends State<PermissionScreen> {
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('สื่อสารชุมชนบ้านปู่คำ')),
+      appBar: AppBar(title: Text(l10n.communityTitle)),
       body: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
@@ -70,16 +69,16 @@ class _PermissionScreenState extends State<PermissionScreen> {
           children: [
             const SizedBox(height: 8),
             Text(
-              'ขอสิทธิ์เพื่อเริ่มใช้งานเครือข่าย BLE Mesh',
+              l10n.permissionTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 10),
             Text(
-              'แอปต้องใช้ Bluetooth (สแกน/เชื่อมต่อ/โฆษณาตัวตน) และ Location (รองรับอุปกรณ์ Android รุ่นเก่า) เพื่อสื่อสารแบบออฟไลน์ในชุมชนบ้านปู่คำ',
+              l10n.permissionBody,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withValues(alpha: 0.78),
-                height: 1.4,
-              ),
+                    color: Colors.white.withValues(alpha: 0.78),
+                    height: 1.4,
+                  ),
             ),
             const SizedBox(height: 18),
             Card(
@@ -91,7 +90,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'End-to-End Encryption (E2EE)\nโหนดทางผ่านจะไม่สามารถอ่านเนื้อหาข้อความได้',
+                        l10n.permissionE2ee,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -112,18 +111,18 @@ class _PermissionScreenState extends State<PermissionScreen> {
                       )
                     : Text(
                         s.permissionsGranted
-                            ? 'สิทธิ์พร้อมใช้งาน'
-                            : 'ขอสิทธิ์และเริ่มใช้งาน',
+                            ? l10n.permissionReady
+                            : l10n.permissionRequest,
                       ),
               ),
             ),
             const SizedBox(height: 10),
             Center(
               child: Text(
-                'ResilNet Architecture • Store-and-Forward Multi-hop',
+                l10n.permissionFooter,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.55),
-                ),
+                      color: Colors.white.withValues(alpha: 0.55),
+                    ),
               ),
             ),
             const SizedBox(height: 8),
