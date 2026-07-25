@@ -6,7 +6,6 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import '../core/resilnet_protocol.dart';
 import '../models/chat_message.dart';
-import 'broadcast_intake_service.dart';
 import 'database_service.dart';
 
 /// บริการซิงก์ข้อมูลกับ ESP32 Data Mule Node
@@ -16,11 +15,9 @@ import 'database_service.dart';
 /// 2) เชื่อมต่ออัตโนมัติเมื่ออยู่ในรัศมี
 /// 3) Handshake ID → Push ข้อความใหม่ → Pull ข้อความที่ขาด → Disconnect
 class Esp32SyncService extends ChangeNotifier {
-  Esp32SyncService({required DatabaseService database, this._broadcastIntake})
-    : _db = database;
+  Esp32SyncService({required DatabaseService database}) : _db = database;
 
   final DatabaseService _db;
-  final BroadcastIntakeService? _broadcastIntake;
   final _ble = FlutterReactiveBle();
 
   SyncPhase _phase = SyncPhase.idle;
@@ -152,8 +149,10 @@ class Esp32SyncService extends ChangeNotifier {
       await _db.markMessagesDeliveredNow(acks);
     }
 
-    // b) Push — ส่งข้อความที่ยังไม่ได้ซิงก์กับ ESP32
-    final toPush = await _db.getMessagesNotSyncedWithEsp32();
+    // b) Push — ส่งข้อความที่ยังไม่ได้ซิงก์กับ ESP32 (direct only)
+    final toPush = (await _db.getMessagesNotSyncedWithEsp32())
+        .where((m) => !m.isBroadcast)
+        .toList();
     final pushMsgs = toPush.map(_toMule).toList();
     if (pushMsgs.isNotEmpty) {
       final pushReq = jsonEncode({
@@ -211,31 +210,16 @@ class Esp32SyncService extends ChangeNotifier {
     final msgs = resp['msgs'] as List<dynamic>? ?? [];
     for (final raw in msgs) {
       final mule = MuleMessage.fromJson(raw as Map<String, dynamic>);
-      if (await _db.isMessageDuplicate(mule.id)) continue;
-      final saved = await _db.saveMuleMessage(mule);
-      if (saved.isBroadcast) {
-        await _broadcastIntake?.processSaved(saved);
+      if (mule.isBroadcast) {
+        debugPrint('[Esp32Sync] drop legacy broadcast id=${mule.id}');
+        continue;
       }
+      if (await _db.isMessageDuplicate(mule.id)) continue;
+      await _db.saveMuleMessage(mule);
     }
   }
 
   MuleMessage _toMule(ChatMessage msg) {
-    if (msg.isBroadcast) {
-      return MuleMessage(
-        id: msg.id,
-        sender: msg.senderId,
-        timestamp: msg.timestamp,
-        payload: msg.content ?? '',
-        ttl: msg.ttl,
-        type: 'broadcast',
-        signedPayload: msg.encryptedPayload,
-        signature: msg.signature,
-        lat: msg.alertLat,
-        lon: msg.alertLon,
-        radiusM: msg.alertRadiusM,
-        senderName: msg.senderName,
-      );
-    }
     return MuleMessage(
       id: msg.id,
       sender: msg.senderId,

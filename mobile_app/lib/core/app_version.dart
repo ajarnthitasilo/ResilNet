@@ -1,2 +1,2 @@
-/// ซิงก์กับ `version` ใน pubspec.yaml (ส่วนก่อน +)
-const String kAppVersion = '1.4.0';
+/// App marketing version (keep in sync with pubspec.yaml).
+const String kAppVersion = '1.5.0';

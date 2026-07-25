@@ -401,40 +401,11 @@ class DatabaseService {
     );
   }
 
-  /// Direct messages ยังไม่ขึ้น cloud — ใช้ `isSyncedWithCloud` เป็นหลัก
-  /// (รองรับข้อความที่เคยถูกมาร์ก sent ผิดพลาดก่อนอัปโหลดสำเร็จ)
-  Future<List<ChatMessage>> getPendingMessagesForSupabase({
-    int limit = 100,
-  }) async {
-    final rows = await _database.query(
-      'messages',
-      where: 'isSyncedWithCloud = 0 AND type != ?',
-      whereArgs: [MessageType.broadcast.name],
-      orderBy: 'timestamp ASC',
-      limit: limit,
-    );
-    return rows.map(ChatMessage.fromMap).toList();
-  }
-
   /// ตรวจว่าข้อความถูก sync ขึ้น cloud สำเร็จแล้วหรือยัง
   Future<bool> isMessageCloudSynced(String msgId) async {
     final row = await getMessageRowById(msgId);
     if (row == null) return false;
     return (row['isSyncedWithCloud'] as int? ?? 0) == 1;
-  }
-
-  /// Broadcast alerts รออัปโหลด Supabase (dual-channel)
-  Future<List<ChatMessage>> getPendingBroadcastsForSupabase({
-    int limit = 50,
-  }) async {
-    final rows = await _database.query(
-      'messages',
-      where: "type = ? AND isSyncedWithCloud = 0",
-      whereArgs: [MessageType.broadcast.name],
-      orderBy: 'timestamp ASC',
-      limit: limit,
-    );
-    return rows.map(ChatMessage.fromMap).toList();
   }
 
   Future<List<ChatMessage>> getConversation(String a, String b) async {
@@ -457,14 +428,24 @@ class DatabaseService {
           ELSE senderId
         END AS peerId
       FROM messages
-      WHERE senderId = ? OR receiverId = ?
+      WHERE (senderId = ? OR receiverId = ?)
+        AND type != ?
+        AND receiverId != ?
       ORDER BY MAX(timestamp) DESC
     ''',
-      [myId, myId, myId],
+      [
+        myId,
+        myId,
+        myId,
+        MessageType.broadcast.name,
+        ResilNetIds.broadcastReceiverId,
+      ],
     );
     return rows
         .map((e) => e['peerId'] as String)
-        .where((e) => e.isNotEmpty)
+        .where(
+          (e) => e.isNotEmpty && e != ResilNetIds.broadcastReceiverId,
+        )
         .toList();
   }
 
@@ -474,42 +455,6 @@ class DatabaseService {
       peer.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-  }
-
-  /// Broadcast-driven discovery: เพิ่ม/อัปเดต displayName จาก senderName ในประกาศ
-  /// คืน true เมื่อมีการ insert หรือ update displayName (ข้ามถ้าชื่อเดิมแล้ว — ลด I/O)
-  Future<bool> upsertPeerDisplayNameFromBroadcast({
-    required String senderId,
-    required String senderName,
-  }) async {
-    final name = senderName.trim();
-    if (name.isEmpty) return false;
-
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final existing = await getPeer(senderId);
-
-    if (existing == null) {
-      await _database.insert('peers', {
-        'id': senderId,
-        'displayName': name,
-        'publicKey': '',
-        'isVerifiedIssuer': 0,
-        'isBlocked': 0,
-        'lastSeen': now,
-      }, conflictAlgorithm: ConflictAlgorithm.ignore);
-      return true;
-    }
-
-    final current = existing.displayName?.trim() ?? '';
-    if (current == name) return false;
-
-    await _database.update(
-      'peers',
-      {'displayName': name, 'lastSeen': now},
-      where: 'id = ?',
-      whereArgs: [senderId],
-    );
-    return true;
   }
 
   Future<Peer?> getPeer(String peerId) async {
@@ -555,15 +500,6 @@ class DatabaseService {
     return rows.map(Peer.fromMap).toList();
   }
 
-  Future<List<Peer>> getVerifiedIssuers() async {
-    final rows = await _database.query(
-      'peers',
-      where: 'isVerifiedIssuer = 1 AND isBlocked = 0',
-      orderBy: 'displayName ASC',
-    );
-    return rows.map(Peer.fromMap).toList();
-  }
-
   Future<void> setPeerBlocked(String peerId, bool blocked) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     await _database.update(
@@ -597,39 +533,6 @@ class DatabaseService {
     if (rows.isNotEmpty) return true;
     final p = await getPeer(peerId);
     return p?.isBlocked == true;
-  }
-
-  /// Rate limit: max 1 broadcast / 2 minutes per sender.
-  Future<bool> isBroadcastRateLimited(String senderId, int nowMs) async {
-    final minTs = nowMs - 2 * 60 * 1000;
-    final rows = await _database.query(
-      'messages',
-      columns: ['id'],
-      where: 'senderId = ? AND isBroadcast = 1 AND timestamp >= ?',
-      whereArgs: [senderId, minTs],
-      limit: 1,
-    );
-    return rows.isNotEmpty;
-  }
-
-  Future<List<ChatMessage>> getBroadcastFeed({
-    int limit = 200,
-    Set<String>? trustedSenderIds,
-  }) async {
-    final rows = await _database.query(
-      'messages',
-      where: 'type = ?',
-      whereArgs: [MessageType.broadcast.name],
-      orderBy: 'timestamp DESC',
-      limit: limit,
-    );
-    var items = rows.map(ChatMessage.fromMap).toList();
-    if (trustedSenderIds != null && trustedSenderIds.isNotEmpty) {
-      items = items
-          .where((m) => trustedSenderIds.contains(m.senderId))
-          .toList();
-    }
-    return items;
   }
 
   /// รายการ Message ID ทั้งหมด (ใช้ Handshake กับ ESP32)

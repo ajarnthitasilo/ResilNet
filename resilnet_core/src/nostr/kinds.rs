@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// Encrypted direct message (ciphertext already E2EE'd by Flutter RSA/AES layer).
 pub const KIND_DIRECT: u16 = 31_234;
-/// Signed emergency / community broadcast (content may be signed plaintext envelope).
+/// Signed emergency / community broadcast (legacy; no longer published).
 pub const KIND_BROADCAST: u16 = 31_235;
 /// Optional node health / geo heartbeat.
 pub const KIND_NODE_HEALTH: u16 = 31_236;

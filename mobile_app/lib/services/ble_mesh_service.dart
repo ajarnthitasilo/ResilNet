@@ -12,7 +12,6 @@ import '../models/peer.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
 import '../src/rust/api/dto.dart';
-import 'broadcast_intake_service.dart';
 import 'database_service.dart';
 import 'resilnet_packet_codec.dart';
 import 'resilnet_service.dart';
@@ -24,13 +23,11 @@ class BleMeshService extends ChangeNotifier {
   BleMeshService({
     required DatabaseService database,
     required this.myUserId,
-    this._broadcastIntake,
     this.resilnet,
     this.ackQueue,
     this.ackHandler,
   }) : _db = database;
 
-  final BroadcastIntakeService? _broadcastIntake;
   final ResilNetService? resilnet;
   final AckQueueManager? ackQueue;
   final AckHandlerService? ackHandler;
@@ -336,25 +333,15 @@ class BleMeshService extends ChangeNotifier {
 
   /// บันทึกข้อความที่ผ่าน dedup แล้วจาก Rust router
   Future<void> applyIncomingFromRouter(ChatMessage msg) async {
-    final isBroadcast = msg.type == MessageType.broadcast || msg.receiverId == ResilNetIds.broadcastReceiverId;
-    if (isBroadcast && msg.senderId == myUserId) {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      if (await _db.isBroadcastRateLimited(msg.senderId, now)) {
-        debugPrint('[BleMesh] drop rate-limited (own broadcast) sender=${msg.senderId} id=${msg.id}');
-        return;
-      }
+    // Legacy village-broadcast product removed — drop quietly (no UI / no crash).
+    if (msg.isBroadcast) {
+      debugPrint('[BleMesh] drop legacy broadcast id=${msg.id}');
+      return;
     }
 
     await _db.saveMessage(msg);
 
-    if (isBroadcast) {
-      await _broadcastIntake?.processSaved(msg);
-      await _db.updateMessageStatus(msg.id, MessageStatus.delivered.name);
-      if (msg.ttl > 0) {
-        final relayed = msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed);
-        await _db.saveMessage(relayed);
-      }
-    } else if (msg.receiverId == myUserId) {
+    if (msg.receiverId == myUserId) {
       final now = DateTime.now();
       await _db.markMessagesDelivered([msg.id], now);
       if (msg.type == MessageType.direct && msg.senderId != myUserId) {

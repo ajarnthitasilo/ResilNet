@@ -20,16 +20,9 @@ class NotificationService {
       description: 'แจ้งเตือนข้อความส่วนตัว (E2EE)',
       importance: Importance.high,
     );
-    const broadcastChannel = AndroidNotificationChannel(
-      'resilnet_broadcast',
-      'Community Broadcast',
-      description: 'ประกาศหมู่บ้าน',
-      importance: Importance.high,
-    );
     final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     await androidPlugin?.createNotificationChannel(directChannel);
-    await androidPlugin?.createNotificationChannel(broadcastChannel);
 
     _initialized = true;
   }
@@ -40,20 +33,6 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>();
     await ios?.requestPermissions(alert: true, badge: true, sound: true);
-  }
-
-  Future<void> showBroadcast({
-    required int id,
-    required String title,
-    required String body,
-  }) async {
-    await _show(
-      id: id,
-      title: title,
-      body: body,
-      channelId: 'resilnet_broadcast',
-      channelName: 'Community Broadcast',
-    );
   }
 
   /// Direct message — body is produced on-device after local decryption.

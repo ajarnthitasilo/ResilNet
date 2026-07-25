@@ -14,7 +14,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _clearing = false;
-  bool _updatingTrusted = false;
 
   Future<void> _confirmClearMessages() async {
     if (_clearing) return;
@@ -25,7 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return AlertDialog(
           title: const Text('ล้างข้อความทั้งหมด?'),
           content: const Text(
-            'การดำเนินการนี้จะลบข้อความแชตและประกาศทั้งหมดในเครื่องนี้\n'
+            'การดำเนินการนี้จะลบข้อความแชตทั้งหมดในเครื่องนี้\n'
             'รายชื่อเพื่อน (peers) และชื่อเล่นจะไม่ถูกลบ',
           ),
           actions: [
@@ -57,38 +56,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<void> _updateTrustedKeys() async {
-    if (_updatingTrusted) return;
-    setState(() => _updatingTrusted = true);
-    try {
-      final s = context.read<AppState>();
-      final ok = await s.refreshTrustedKeys();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            ok
-                ? 'โหลดรายชื่อสิทธิ์ประกาศจากค่าเริ่มต้นแล้ว'
-                : 'มีรายชื่ออยู่แล้ว — ไม่ต้องโหลดซ้ำ',
-          ),
-        ),
-      );
-      setState(() {});
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('อัปเดตไม่สำเร็จ: $e')));
-    } finally {
-      if (mounted) setState(() => _updatingTrusted = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final s = context.watch<AppState>();
-    final m = s.trustedKeys.manifest;
-
     return Scaffold(
       appBar: AppBar(title: const Text('การตั้งค่า')),
       body: ListView(
@@ -112,34 +81,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            'รายชื่อสิทธิ์ประกาศอย่างเป็นทางการ',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'เวอร์ชัน ${m.version} · อัปเดต ${m.timestamp > 0 ? DateTime.fromMillisecondsSinceEpoch(m.timestamp).toLocal() : 'ค่าเริ่มต้นในแอป'} · ${m.issuers.length} รายชื่อ',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.55),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Card(
-            child: ListTile(
-              leading: _updatingTrusted
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.verified_user_outlined),
-              title: const Text('ตรวจสอบรายชื่อสิทธิ์ประกาศอย่างเป็นทางการ'),
-              trailing: const Icon(Icons.cloud_download_outlined),
-              enabled: !_updatingTrusted,
-              onTap: _updateTrustedKeys,
-            ),
-          ),
-          const SizedBox(height: 24),
           Text('จัดการข้อมูล', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           Text(
@@ -156,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: _clearing ? Colors.white38 : Colors.redAccent,
               ),
               title: const Text('ล้างข้อความทั้งหมด'),
-              subtitle: const Text('ลบแชตและประกาศทั้งหมด'),
+              subtitle: const Text('ลบแชตทั้งหมดในเครื่อง'),
               trailing: _clearing
                   ? const SizedBox(
                       width: 22,

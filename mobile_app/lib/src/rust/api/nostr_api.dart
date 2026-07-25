@@ -25,7 +25,7 @@ Future<NostrPoolStatusDto> getNostrStatus() =>
 Future<void> nostrReconnect() =>
     ResilNetCore.instance.api.crateApiNostrApiNostrReconnect();
 
-/// Publish ResilNet envelope to Nostr relays (kind = direct | broadcast | health)
+/// Publish ResilNet envelope to Nostr relays (kind = direct | health)
 Future<String> nostrPublish({
   required ResilNetEnvelopeDto envelope,
   required String kind,
@@ -34,7 +34,7 @@ Future<String> nostrPublish({
   kind: kind,
 );
 
-/// Publish a routed MessagePacketDto as a Nostr direct/broadcast envelope
+/// Publish a routed MessagePacketDto as a Nostr direct envelope
 Future<String> nostrPublishPacket({required MessagePacketDto packet}) =>
     ResilNetCore.instance.api.crateApiNostrApiNostrPublishPacket(
       packet: packet,
@@ -45,6 +45,7 @@ Future<int> flushOfflineQueueToNostr() =>
     ResilNetCore.instance.api.crateApiNostrApiFlushOfflineQueueToNostr();
 
 /// Convert a Nostr envelope into a MessagePacket and ingest through router dedup
+/// (legacy broadcast envelopes are dropped).
 Future<void> ingestNostrEnvelope({required ResilNetEnvelopeDto envelope}) =>
     ResilNetCore.instance.api.crateApiNostrApiIngestNostrEnvelope(
       envelope: envelope,

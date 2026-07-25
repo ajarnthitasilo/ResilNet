@@ -9,9 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pointycastle/asn1.dart' as asn1;
 import 'package:pointycastle/export.dart' as pc;
 
-import '../models/broadcast_alert.dart';
-import 'broadcast_alert_codec.dart';
-
 class CryptoService {
   static const _kPrivatePem = 'resilnet_rsa_private_pem';
   static const _kPublicPem = 'resilnet_rsa_public_pem';
@@ -164,76 +161,6 @@ class CryptoService {
       encryptedKey: encryptedKey,
       signature: signature,
     );
-  }
-
-  /// Broadcast alert v2: ลงนาม envelope ที่มี location
-  ({String payload, String signature}) signBroadcastAlert({
-    required BroadcastAlertEnvelope envelope,
-  }) {
-    final canonical = jsonEncode(envelope.toJson());
-    final payload = base64Encode(utf8.encode(canonical));
-    final signature = signText(
-      senderId: envelope.senderId,
-      receiverId: 'BROADCAST',
-      timestamp: envelope.timestamp,
-      payload: payload,
-    );
-    return (payload: payload, signature: signature);
-  }
-
-  BroadcastAlertEnvelope? verifyAndDecodeBroadcastAlert({
-    required String senderPublicPem,
-    required String senderId,
-    required int timestamp,
-    required String payload,
-    required String signature,
-  }) {
-    final ok = verifyText(
-      senderPublicPem: senderPublicPem,
-      senderId: senderId,
-      receiverId: 'BROADCAST',
-      timestamp: timestamp,
-      payload: payload,
-      signature: signature,
-    );
-    if (!ok) return null;
-    final decoded = BroadcastAlertCodec.decodeEnvelopeFromPayload(payload);
-    return decoded;
-  }
-
-  /// Broadcast is plaintext (not E2EE) but always signed (RSA-SHA256).
-  ({String payload, String signature}) signBroadcast({
-    required String plaintext,
-    required String senderId,
-    required int timestamp,
-  }) {
-    final payload = base64Encode(utf8.encode(plaintext));
-    final signature = signText(
-      senderId: senderId,
-      receiverId: 'BROADCAST',
-      timestamp: timestamp,
-      payload: payload,
-    );
-    return (payload: payload, signature: signature);
-  }
-
-  String verifyAndDecodeBroadcast({
-    required String senderPublicPem,
-    required String senderId,
-    required int timestamp,
-    required String payload,
-    required String signature,
-  }) {
-    final ok = verifyText(
-      senderPublicPem: senderPublicPem,
-      senderId: senderId,
-      receiverId: 'BROADCAST',
-      timestamp: timestamp,
-      payload: payload,
-      signature: signature,
-    );
-    if (!ok) throw StateError('Invalid broadcast signature');
-    return utf8.decode(base64Decode(payload));
   }
 
   String signText({

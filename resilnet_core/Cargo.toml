@@ -1,6 +1,6 @@
 [package]
 name = "resilnet_core"
-version = "1.4.0"
+version = "1.5.0"
 edition = "2021"
 description = "ResilNet hybrid routing core — BLE/LoRa mesh + Nostr relays (offline-first, FFI-ready)"
 license = "MIT OR Apache-2.0"

@@ -42,9 +42,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       builder: (t) => QrFriendIllustration(t: t),
     ),
     _OnboardingPage(
-      title: 'รับประกาศหมู่บ้าน',
+      title: 'แชทแบบเข้ารหัส',
       body:
-          'ประกาศจากคณะกรรมการที่ได้รับการรับรองจะแสดงในแอป — ส่งผ่านเครือข่าย Bluetooth แม้ไม่มีเน็ต',
+          'ส่งข้อความส่วนตัวแบบ E2EE ผ่าน Bluetooth Mesh และ Nostr — ทำงานได้แม้ไม่มีเน็ตในพื้นที่',
       builder: (t) => ChatMessageIllustration(t: t),
     ),
   ];

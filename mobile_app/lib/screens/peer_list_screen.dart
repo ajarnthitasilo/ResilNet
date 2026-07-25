@@ -121,15 +121,6 @@ class _PeerListScreenState extends State<PeerListScreen> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          if (s.trustedKeys.isTrustedIssuer(peer.id))
-                            const Padding(
-                              padding: EdgeInsets.only(left: 6),
-                              child: Icon(
-                                Icons.verified,
-                                color: Colors.greenAccent,
-                                size: 18,
-                              ),
-                            ),
                         ],
                       );
                     },

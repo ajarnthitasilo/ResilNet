@@ -14,8 +14,6 @@ import '../models/chat_message.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
 import '../services/ble_mesh_service.dart';
-import '../services/broadcast_filter_service.dart';
-import '../services/broadcast_intake_service.dart';
 import '../services/crypto_service.dart';
 import '../services/database_service.dart';
 import '../services/esp32_sync_service.dart';
@@ -24,7 +22,6 @@ import '../services/notification_service.dart';
 import '../services/nostr_sync_service.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../services/resilnet_service.dart';
-import '../services/trusted_keys_service.dart';
 import '../services/udp_transport_service.dart';
 import '../src/rust/api/dto.dart';
 
@@ -32,7 +29,6 @@ class AppState extends ChangeNotifier {
   final crypto = CryptoService();
   final db = DatabaseService();
   final resilnet = ResilNetService();
-  late final TrustedKeysService trustedKeys = TrustedKeysService(database: db);
   final _storage = const FlutterSecureStorage();
   final notifications = NotificationService();
 
@@ -40,8 +36,6 @@ class AppState extends ChangeNotifier {
   Esp32SyncService? _esp32;
   UdpTransportService? _udp;
   NostrSyncService? _nostr;
-  BroadcastFilterService? _broadcastFilter;
-  BroadcastIntakeService? _broadcastIntake;
   FirmwareService? _firmware;
   late final AckHandlerService _ackHandler;
   AckQueueManager? _ackQueue;
@@ -54,18 +48,6 @@ class AppState extends ChangeNotifier {
     final f = _firmware;
     if (f == null) throw StateError('FirmwareService not initialized');
     return f;
-  }
-
-  BroadcastFilterService get broadcastFilter {
-    final f = _broadcastFilter;
-    if (f == null) throw StateError('BroadcastFilter not initialized');
-    return f;
-  }
-
-  BroadcastIntakeService get broadcastIntake {
-    final i = _broadcastIntake;
-    if (i == null) throw StateError('BroadcastIntake not initialized');
-    return i;
   }
 
   BleMeshService get mesh {
@@ -97,8 +79,6 @@ class AppState extends ChangeNotifier {
   /// Compatibility: online = Nostr relays connected or device has internet
   bool get isCloudOnline =>
       (_nostr?.isOnline ?? false) || resilnet.isInternetAvailable;
-
-  bool get canSendBroadcast => trustedKeys.isTrustedIssuer(myUserId);
 
   bool _initDone = false;
   bool get initDone => _initDone;
@@ -135,10 +115,6 @@ class AppState extends ChangeNotifier {
 
   String _displayName = '';
   String get displayName => effectiveDisplayName(_displayName);
-
-  static const _kNotifFilter = 'resilnet_notif_filter';
-  NotificationFilter _notifFilter = NotificationFilter.allBroadcasts;
-  NotificationFilter get notificationFilter => _notifFilter;
 
   static const _kNotificationsEnabled = 'resilnet_notifications_enabled';
   bool _notificationsEnabled = true;
@@ -218,41 +194,17 @@ class AppState extends ChangeNotifier {
         }
       });
 
-      await trustedKeys.init();
       await notifications.init();
       unawaited(notifications.requestPermissions());
-
-      _broadcastFilter = BroadcastFilterService(trustedKeys: trustedKeys);
-      _broadcastIntake = BroadcastIntakeService(
-        database: db,
-        filter: _broadcastFilter!,
-      );
-      _broadcastIntake!.onDisplayable = (msg) async {
-        if (!_notificationsEnabled) {
-          debugPrint('[ResilNet] notification skipped (disabled globally)');
-          return;
-        }
-        if (await db.isPeerBlocked(msg.senderId)) return;
-
-        await notifications.showBroadcast(
-          id: msg.timestamp % 2147483647,
-          title: 'เตือนภัยฉุกเฉิน ✓',
-          body: 'มีประกาศเตือนภัยในพื้นที่ของคุณ',
-        );
-      };
 
       _mesh = BleMeshService(
         database: db,
         myUserId: crypto.myUserId,
-        broadcastIntake: _broadcastIntake,
         resilnet: resilnet,
         ackQueue: _ackQueue,
         ackHandler: _ackHandler,
       );
-      _esp32 = Esp32SyncService(
-        database: db,
-        broadcastIntake: _broadcastIntake,
-      );
+      _esp32 = Esp32SyncService(database: db);
       _udp = UdpTransportService(database: db, resilnet: resilnet);
       resilnet.attachUdpTransport(_udp!, crypto: crypto);
       _firmware = FirmwareService();
@@ -264,8 +216,6 @@ class AppState extends ChangeNotifier {
       } catch (e, st) {
         debugPrint('[ResilNet] Nostr start failed (offline ok): $e\n$st');
       }
-
-      trustedKeys.addListener(notifyListeners);
 
       _esp32!.addListener(notifyListeners);
       _udp!.addListener(notifyListeners);
@@ -290,11 +240,6 @@ class AppState extends ChangeNotifier {
           _displayName = trimmed;
         }
       }
-      final nf = await _storage.read(key: _kNotifFilter);
-      _notifFilter = nf == NotificationFilter.verifiedOnly.name
-          ? NotificationFilter.verifiedOnly
-          : NotificationFilter.allBroadcasts;
-
       final prefs = await SharedPreferences.getInstance();
       _notificationsEnabled = prefs.getBool(_kNotificationsEnabled) ?? true;
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
@@ -402,12 +347,6 @@ class AppState extends ChangeNotifier {
     await sync.flushOfflineQueue();
   }
 
-  Future<void> setNotificationFilter(NotificationFilter f) async {
-    _notifFilter = f;
-    await _storage.write(key: _kNotifFilter, value: f.name);
-    notifyListeners();
-  }
-
   Future<void> setNotificationsEnabled(bool enabled) async {
     _notificationsEnabled = enabled;
     final prefs = await SharedPreferences.getInstance();
@@ -420,13 +359,6 @@ class AppState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kOnboardingDone, true);
     notifyListeners();
-  }
-
-  /// Trusted issuer list is local/bundled (no centralized cloud registry).
-  Future<bool> refreshTrustedKeys() async {
-    await trustedKeys.reloadDefaultsIfEmpty();
-    notifyListeners();
-    return true;
   }
 
   /// ล้างข้อความทั้งหมดในเครื่อง แล้วคืนพื้นที่ดิสก์ด้วย VACUUM
@@ -706,5 +638,3 @@ class AppState extends ChangeNotifier {
     super.dispose();
   }
 }
-
-enum NotificationFilter { allBroadcasts, verifiedOnly }

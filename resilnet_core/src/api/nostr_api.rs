@@ -63,31 +63,36 @@ pub async fn nostr_reconnect() -> Result<(), String> {
     pool.reconnect().await.map_err(|e| e.to_string())
 }
 
-/// Publish ResilNet envelope to Nostr relays (kind = direct | broadcast | health)
+/// Publish ResilNet envelope to Nostr relays (kind = direct | health).
+/// `"broadcast"` is rejected (legacy village-announcement product removed).
 #[frb]
 pub async fn nostr_publish(
     envelope: ResilNetEnvelopeDto,
     kind: String,
 ) -> Result<String, String> {
-    let pool = get_nostr_pool()?;
     let event_kind = match kind.as_str() {
-        "broadcast" => ResilNetEventKind::Broadcast,
+        "broadcast" => {
+            return Err("KIND_BROADCAST (31235) is no longer published".into());
+        }
         "health" => ResilNetEventKind::NodeHealth,
         _ => ResilNetEventKind::Direct,
     };
+    let pool = get_nostr_pool()?;
     pool.publish_envelope(envelope.into(), event_kind)
         .await
         .map_err(|e| e.to_string())
 }
 
-/// Publish a routed MessagePacketDto as a Nostr direct/broadcast envelope
+/// Publish a routed MessagePacketDto as a Nostr direct envelope.
+/// Legacy village-broadcast packets (`receiver == BROADCAST`) are skipped
+/// (not published as kind 31235).
 #[frb]
 pub async fn nostr_publish_packet(packet: MessagePacketDto) -> Result<String, String> {
-    let kind = if packet.receiver == "BROADCAST" {
-        ResilNetEventKind::Broadcast
-    } else {
-        ResilNetEventKind::Direct
-    };
+    if packet.receiver == "BROADCAST" {
+        tracing::debug!("skip nostr publish of legacy broadcast id={}", packet.id);
+        return Ok(String::new());
+    }
+    let kind = ResilNetEventKind::Direct;
     let envelope = ResilNetEnvelope {
         v: 1,
         id: packet.id.clone(),
@@ -97,11 +102,7 @@ pub async fn nostr_publish_packet(packet: MessagePacketDto) -> Result<String, St
         timestamp: packet.timestamp,
         ttl: packet.ttl,
         payload_tag: packet.payload_tag.as_u8(),
-        kind: match kind {
-            ResilNetEventKind::Broadcast => "broadcast".into(),
-            ResilNetEventKind::NodeHealth => "health".into(),
-            ResilNetEventKind::Direct => "direct".into(),
-        },
+        kind: "direct".into(),
     };
     let pool = get_nostr_pool()?;
     pool.publish_envelope(envelope, kind)
@@ -124,9 +125,16 @@ pub async fn flush_offline_queue_to_nostr() -> Result<u32, String> {
     Ok(published)
 }
 
-/// Convert a Nostr envelope into a MessagePacket and ingest through router dedup
+/// Convert a Nostr envelope into a MessagePacket and ingest through router dedup.
+/// Legacy broadcast envelopes are ignored (do not crash / do not enter chat).
 #[frb]
 pub async fn ingest_nostr_envelope(envelope: ResilNetEnvelopeDto) -> Result<(), String> {
+    if envelope.receiver == "BROADCAST"
+        || envelope.kind.eq_ignore_ascii_case("broadcast")
+    {
+        tracing::debug!("drop legacy broadcast envelope id={}", envelope.id);
+        return Ok(());
+    }
     let payload = base64::engine::general_purpose::STANDARD
         .decode(envelope.payload_b64.as_bytes())
         .map_err(|e| e.to_string())?;

@@ -17,7 +17,7 @@ class ResilNetProtocol {
   /// ชื่อโฆษณา ESP32 Node
   static const nodeAdvName = 'RN-MULE';
 
-  /// โปรโตคอลซิงก์ Mule v2 (รองรับ emergency broadcast + geofence)
+  /// โปรโตคอลซิงก์ Mule v2 (ESP32 data mule; legacy broadcast fields ignored)
   static const muleProtocolVersion = 2;
 
   /// รัศมีซิงก์โดยประมาณ (เมตร) — ใช้เป็น heuristic ใน UI

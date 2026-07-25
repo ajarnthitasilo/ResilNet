@@ -198,7 +198,7 @@ class _QrPainter extends CustomPainter {
   bool shouldRepaint(covariant _QrPainter old) => old.t != t;
 }
 
-/// หน้า 3: ส่งข้อความและประกาศ
+/// หน้า 3: ส่งข้อความเข้ารหัส
 class ChatMessageIllustration extends StatelessWidget {
   const ChatMessageIllustration({super.key, required this.t});
 
