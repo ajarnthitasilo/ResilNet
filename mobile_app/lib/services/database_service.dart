@@ -26,7 +26,7 @@ class DatabaseService {
   Future<Database> _openDatabaseAt(String path) async {
     return openDatabase(
       path,
-      version: 10,
+      version: 11,
       onCreate: (db, _) async {
         await db.execute('''
           CREATE TABLE messages (
@@ -76,6 +76,7 @@ class DatabaseService {
             deviceId TEXT,
             publicKey TEXT NOT NULL,
             displayName TEXT,
+            geohash TEXT,
             isVerifiedIssuer INTEGER NOT NULL DEFAULT 0,
             isBlocked INTEGER NOT NULL DEFAULT 0,
             lastSeen INTEGER NOT NULL
@@ -83,6 +84,7 @@ class DatabaseService {
         ''');
         await db.execute('CREATE INDEX idx_peers_lastSeen ON peers(lastSeen)');
         await db.execute('CREATE INDEX idx_peers_deviceId ON peers(deviceId)');
+        await db.execute('CREATE INDEX idx_peers_geohash ON peers(geohash)');
 
         await db.execute('''
           CREATE TABLE blocked_peers (
@@ -221,6 +223,13 @@ class DatabaseService {
               targetSenderId TEXT NOT NULL
             )
           ''');
+        }
+
+        if (oldVersion < 11) {
+          await db.execute('ALTER TABLE peers ADD COLUMN geohash TEXT');
+          await db.execute(
+            'CREATE INDEX IF NOT EXISTS idx_peers_geohash ON peers(geohash)',
+          );
         }
       },
     );
@@ -412,7 +421,8 @@ class DatabaseService {
     final rows = await _database.query(
       'messages',
       where:
-          '(senderId = ? AND receiverId = ?) OR (senderId = ? AND receiverId = ?)',
+          '((senderId = ? AND receiverId = ?) OR (senderId = ? AND receiverId = ?))'
+          " AND IFNULL(payloadKind, 'text') != 'presence'",
       whereArgs: [a, b, b, a],
       orderBy: 'timestamp ASC',
     );
@@ -431,6 +441,7 @@ class DatabaseService {
       WHERE (senderId = ? OR receiverId = ?)
         AND type != ?
         AND receiverId != ?
+        AND IFNULL(payloadKind, 'text') != 'presence'
       ORDER BY MAX(timestamp) DESC
     ''',
       [
@@ -450,10 +461,40 @@ class DatabaseService {
   }
 
   Future<void> upsertPeer(Peer peer) async {
+    final existing = await getPeer(peer.id);
+    final merged = existing == null
+        ? peer
+        : peer.copyWith(
+            // Preserve presence / name when a BLE scan omits them.
+            geohash: peer.geohash ?? existing.geohash,
+            displayName: peer.displayName ?? existing.displayName,
+            deviceId: peer.deviceId ?? existing.deviceId,
+          );
     await _database.insert(
       'peers',
-      peer.toMap(),
+      merged.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> updatePeerGeohash(String peerId, String geohash) async {
+    final h = geohash.trim().toLowerCase();
+    if (peerId.isEmpty || h.isEmpty) return;
+    final existing = await getPeer(peerId);
+    if (existing == null) {
+      // Presence may arrive before identity — skip until peer row exists.
+      return;
+    }
+    if (existing.geohash == h) return;
+    await upsertPeer(existing.copyWith(geohash: h));
+  }
+
+  /// Delete sealed chat rows older than [cutoffMs] (epoch millis).
+  Future<int> deleteMessagesOlderThan(int cutoffMs) async {
+    return _database.delete(
+      'messages',
+      where: 'timestamp < ?',
+      whereArgs: [cutoffMs],
     );
   }
 

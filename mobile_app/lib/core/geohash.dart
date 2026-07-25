@@ -1,7 +1,7 @@
 /// Geohash encode/decode (Bitchat-compatible precision ladder).
 ///
-/// Used for **local channel scoping / discovery UX only**.
-/// ResilNet messages remain 1:1 E2EE — geohash is never a plaintext broadcast room.
+/// Used for Area channel scoping and presence matching.
+/// Area “public” messages are still sealed 1:1 fan-out — never plaintext rooms.
 library;
 
 /// Bitchat-style geographic channel precision (character length of geohash).

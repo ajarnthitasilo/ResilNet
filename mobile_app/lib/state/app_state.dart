@@ -6,13 +6,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/geohash.dart';
+import '../core/payload_kinds.dart';
 import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
+import '../models/mesh_retention.dart';
+import '../models/peer.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
 import '../services/ble_mesh_service.dart';
@@ -44,6 +49,9 @@ class AppState extends ChangeNotifier {
   AckQueueManager? _ackQueue;
   StreamSubscription<MessagePacketDto>? _rustIncomingSub;
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
+  Timer? _retentionTimer;
+  DateTime _lastPresenceAnnounce = DateTime.fromMillisecondsSinceEpoch(0);
+  final _uuid = const Uuid();
 
   AppLifecycleState get lifecycleState => _lifecycleState;
 
@@ -127,6 +135,11 @@ class AppState extends ChangeNotifier {
   static const _kSaveMessageHistory = 'resilnet_save_message_history';
   bool _saveMessageHistory = true;
   bool get saveMessageHistory => _saveMessageHistory;
+
+  /// Mesh tab auto-delete window for local message history.
+  static const _kMeshRetentionDays = 'resilnet_mesh_retention_days';
+  MeshRetention _meshRetention = MeshRetention.keep;
+  MeshRetention get meshRetention => _meshRetention;
 
   /// In-memory sealed envelopes for the current process only (ephemeral UI).
   final List<ChatMessage> _sessionMessages = <ChatMessage>[];
@@ -292,6 +305,9 @@ class AppState extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       _notificationsEnabled = prefs.getBool(_kNotificationsEnabled) ?? true;
       _saveMessageHistory = prefs.getBool(_kSaveMessageHistory) ?? true;
+      _meshRetention = MeshRetention.fromDays(
+        prefs.getInt(_kMeshRetentionDays),
+      );
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
       final loc = prefs.getString(_kLocaleOverride);
       _localeOverrideCode =
@@ -310,6 +326,8 @@ class AppState extends ChangeNotifier {
       if (_permissionsGranted) {
         unawaited(_startRadios());
       }
+      _startRetentionTimer();
+      unawaited(purgeExpiredMessages());
     } finally {
       _initDone = true;
       notifyListeners();
@@ -379,6 +397,11 @@ class AppState extends ChangeNotifier {
       debugPrint('[ResilNet] Nostr reconnect failed: $e');
     }
 
+    unawaited(purgeExpiredMessages());
+    if (_feedChannel == FeedChannel.geo) {
+      unawaited(announceGeohashPresence());
+    }
+
     notifyListeners();
   }
 
@@ -426,8 +449,48 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setMeshRetention(MeshRetention retention) async {
+    if (_meshRetention == retention) return;
+    _meshRetention = retention;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kMeshRetentionDays, retention.days);
+    _startRetentionTimer();
+    unawaited(purgeExpiredMessages());
+    notifyListeners();
+  }
+
+  void _startRetentionTimer() {
+    _retentionTimer?.cancel();
+    if (_meshRetention.duration == null) {
+      _retentionTimer = null;
+      return;
+    }
+    _retentionTimer = Timer.periodic(const Duration(minutes: 15), (_) {
+      unawaited(purgeExpiredMessages());
+    });
+  }
+
+  /// Purge local history older than the mesh retention window.
+  Future<int> purgeExpiredMessages() async {
+    final window = _meshRetention.duration;
+    if (window == null) return 0;
+    final cutoff =
+        DateTime.now().millisecondsSinceEpoch - window.inMilliseconds;
+    var deleted = 0;
+    if (_saveMessageHistory) {
+      deleted = await db.deleteMessagesOlderThan(cutoff);
+    }
+    _sessionMessages.removeWhere((m) => m.timestamp < cutoff);
+    if (deleted > 0) {
+      debugPrint('[ResilNet] mesh retention purged $deleted rows');
+      notifyListeners();
+    }
+    return deleted;
+  }
+
   void _rememberSessionMessage(ChatMessage msg) {
     if (_saveMessageHistory) return;
+    if (!PayloadKinds.isChatVisible(msg.payloadKind)) return;
     final i = _sessionMessages.indexWhere((m) => m.id == msg.id);
     if (i >= 0) {
       _sessionMessages[i] = msg;
@@ -448,6 +511,7 @@ class AppState extends ChangeNotifier {
         ? await db.getConversation(a, b)
         : const <ChatMessage>[];
     final session = _sessionMessages.where((m) {
+      if (!PayloadKinds.isChatVisible(m.payloadKind)) return false;
       return (m.senderId == a && m.receiverId == b) ||
           (m.senderId == b && m.receiverId == a);
     });
@@ -466,6 +530,7 @@ class AppState extends ChangeNotifier {
         _saveMessageHistory ? await db.getChatPeersFor(myUserId) : <String>[];
     final fromSession = <String>{};
     for (final m in _sessionMessages) {
+      if (!PayloadKinds.isChatVisible(m.payloadKind)) continue;
       if (m.senderId == myUserId) {
         fromSession.add(m.receiverId);
       } else if (m.receiverId == myUserId) {
@@ -510,9 +575,12 @@ class AppState extends ChangeNotifier {
     _feedChannel = channel;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kFeedChannel, channel.name);
-    if (channel == FeedChannel.geo &&
-        (_currentGeohash == null || _currentGeohash!.isEmpty)) {
-      unawaited(refreshGeohash());
+    if (channel == FeedChannel.geo) {
+      if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+        unawaited(refreshGeohash());
+      } else {
+        unawaited(announceGeohashPresence());
+      }
     }
     notifyListeners();
   }
@@ -522,11 +590,14 @@ class AppState extends ChangeNotifier {
     _geoPrecision = precision;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kGeoPrecision, precision.name);
+    if (_feedChannel == FeedChannel.geo) {
+      unawaited(announceGeohashPresence(force: true));
+    }
     notifyListeners();
   }
 
   /// Resolve device location → geohash for the geo channel label.
-  /// Location stays on-device; it is not stamped onto Nostr/mesh ciphertext.
+  /// Also announces truncated geohash presence to nearby peers for Area UX.
   Future<void> refreshGeohash() async {
     if (_geoRefreshing) return;
     _geoRefreshing = true;
@@ -544,6 +615,7 @@ class AppState extends ChangeNotifier {
           pos.longitude,
           precision: GeoPrecision.block.length,
         );
+        unawaited(announceGeohashPresence(force: true));
       }
     } catch (e) {
       _geoError = e.toString();
@@ -554,9 +626,115 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  /// Active channel hash at current precision (without `#`).
+  String? get selectedAreaHash {
+    final h = _currentGeohash;
+    if (h == null || h.isEmpty) return null;
+    return Geohash.atPrecision(h, _geoPrecision);
+  }
+
+  /// Nearby BLE peers considered online in the selected geohash area.
+  ///
+  /// Matching rules:
+  /// - Peer with matching geohash presence → include
+  /// - Peer with unknown geohash → include (BLE proximity bootstrap)
+  /// - Peer with non-matching geohash → exclude
+  List<Peer> peersOnlineInSelectedArea() {
+    final channel = selectedAreaHash;
+    final nearby = _mesh?.nearbyPeers ?? const <Peer>[];
+    if (channel == null || channel.isEmpty) return nearby;
+    return nearby.where((p) {
+      final geo = p.geohash?.trim();
+      if (geo == null || geo.isEmpty) return true;
+      return Geohash.matchesChannel(geo, channel);
+    }).toList();
+  }
+
+  /// Share our geohash cell with nearby peers (not shown as chat).
+  Future<void> announceGeohashPresence({bool force = false}) async {
+    final full = _currentGeohash;
+    if (full == null || full.isEmpty) return;
+    final channel = Geohash.atPrecision(full, _geoPrecision);
+    if (channel.isEmpty) return;
+    final since = DateTime.now().difference(_lastPresenceAnnounce);
+    if (!force && since < const Duration(seconds: 45)) return;
+
+    final peers = _mesh?.nearbyPeers ?? const <Peer>[];
+    if (peers.isEmpty) return;
+    _lastPresenceAnnounce = DateTime.now();
+
+    for (final peer in peers) {
+      if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
+      try {
+        final ts = DateTime.now().millisecondsSinceEpoch;
+        final msg = ChatMessage(
+          id: _uuid.v4(),
+          senderId: myUserId,
+          receiverId: peer.id,
+          content: channel,
+          encryptedPayload: PayloadKinds.presence,
+          encryptedKey: PayloadKinds.presence,
+          ttl: 2,
+          timestamp: ts,
+          status: MessageStatus.pending,
+          type: MessageType.direct,
+          payloadKind: PayloadKinds.presence,
+        );
+        await routeOutbound(msg);
+      } catch (e) {
+        debugPrint('[ResilNet] presence announce to ${peer.id} failed: $e');
+      }
+    }
+  }
+
+  /// Fan-out sealed 1:1 messages to every peer online in the selected area.
+  /// Returns how many envelopes were queued.
+  Future<int> sendAreaPublicText(String text) async {
+    final body = text.trim();
+    if (body.isEmpty) return 0;
+    final peers = peersOnlineInSelectedArea();
+    if (peers.isEmpty) return 0;
+
+    var sent = 0;
+    for (final peer in peers) {
+      if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
+      try {
+        final ts = DateTime.now().millisecondsSinceEpoch;
+        final pkg = crypto.encryptForRecipient(
+          plaintext: body,
+          receiverPublicPem: peer.publicKey,
+          senderId: myUserId,
+          receiverId: peer.id,
+          timestamp: ts,
+        );
+        final msg = ChatMessage(
+          id: _uuid.v4(),
+          senderId: myUserId,
+          receiverId: peer.id,
+          encryptedPayload: pkg.encryptedPayload,
+          encryptedKey: pkg.encryptedKey,
+          signature: pkg.signature,
+          ttl: 5,
+          timestamp: ts,
+          status: MessageStatus.pending,
+          type: MessageType.direct,
+          payloadKind: PayloadKinds.areaPublic,
+        );
+        await persistChatMessage(msg);
+        await routeOutbound(msg);
+        sent++;
+      } catch (e) {
+        debugPrint('[ResilNet] area public to ${peer.id} failed: $e');
+      }
+    }
+    notifyListeners();
+    return sent;
+  }
+
   /// ล้างข้อความทั้งหมดในเครื่อง แล้วคืนพื้นที่ดิสก์ด้วย VACUUM
   Future<int> clearAllMessages() async {
     final deleted = await db.clearAllMessages();
+    _sessionMessages.clear();
     debugPrint('[ResilNet] clearAllMessages: deleted $deleted local rows');
     notifyListeners();
     return deleted;
@@ -566,9 +744,13 @@ class AppState extends ChangeNotifier {
   ///
   /// Privacy: [msg] must already be sealed (RSA-OAEP + AES-GCM). The router and
   /// transports only see opaque bytes — plaintext must not be persisted in [msg.content].
+  /// Exception: [PayloadKinds.presence] carries a truncated geohash cell for Area UX
+  /// and is never written to chat history.
   Future<RoutedPacketDto> routeOutbound(ChatMessage msg) async {
-    final piggyback =
-        _ackQueue?.drainPiggybackFor(msg.receiverId) ?? const <AckEntry>[];
+    final isPresence = msg.payloadKind == PayloadKinds.presence;
+    final piggyback = isPresence
+        ? const <AckEntry>[]
+        : (_ackQueue?.drainPiggybackFor(msg.receiverId) ?? const <AckEntry>[]);
     final dto = ResilNetPacketCodec.toDto(msg, piggybackAcks: piggyback);
     final routed = await resilnet.routeMessage(
       id: dto.id,
@@ -579,6 +761,15 @@ class AppState extends ChangeNotifier {
       ttl: dto.ttl,
       payloadTag: dto.payloadTag,
     );
+
+    if (isPresence) {
+      // Presence is fire-and-forget metadata — skip chat persistence.
+      unawaited(_mesh?.sendDirectNow(msg));
+      if (resilnet.isGatewayWifiActive) {
+        unawaited(_udp?.sendDirectNow(msg));
+      }
+      return routed;
+    }
 
     final transports = routed.transports.isNotEmpty
         ? routed.transports
@@ -847,6 +1038,7 @@ class AppState extends ChangeNotifier {
 
   @override
   void dispose() {
+    _retentionTimer?.cancel();
     _rustIncomingSub?.cancel();
     _ackQueue?.dispose();
     _udp?.dispose();

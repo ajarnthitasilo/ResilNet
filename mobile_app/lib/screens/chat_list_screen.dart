@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../core/geohash.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
+import '../models/mesh_retention.dart';
 import '../models/peer.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
@@ -28,6 +29,15 @@ String _geoPrecisionLabel(AppLocalizations l10n, GeoPrecision p) {
     GeoPrecision.city => l10n.geoPrecisionCity,
     GeoPrecision.neighborhood => l10n.geoPrecisionNeighborhood,
     GeoPrecision.block => l10n.geoPrecisionBlock,
+  };
+}
+
+String _meshRetentionLabel(AppLocalizations l10n, MeshRetention r) {
+  return switch (r) {
+    MeshRetention.keep => l10n.meshRetentionKeep,
+    MeshRetention.oneDay => l10n.meshRetention1Day,
+    MeshRetention.threeDays => l10n.meshRetention3Days,
+    MeshRetention.sevenDays => l10n.meshRetention7Days,
   };
 }
 
@@ -309,11 +319,41 @@ class _MeshBody extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-          child: Text(
-            l10n.meshIntro,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.6),
-                ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.meshIntro,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.6),
+                    ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                l10n.meshRetentionTitle,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.meshRetentionSubtitle,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.55),
+                    ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final r in MeshRetention.values)
+                    ChoiceChip(
+                      label: Text(_meshRetentionLabel(l10n, r)),
+                      selected: s.meshRetention == r,
+                      onSelected: (_) => s.setMeshRetention(r),
+                    ),
+                ],
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -364,15 +404,47 @@ class _MeshBody extends StatelessWidget {
   }
 }
 
-class _GeoBody extends StatelessWidget {
+class _GeoBody extends StatefulWidget {
   const _GeoBody({required this.onOpen});
 
   final Future<void> Function(BuildContext context, String peerId) onOpen;
 
   @override
+  State<_GeoBody> createState() => _GeoBodyState();
+}
+
+class _GeoBodyState extends State<_GeoBody> {
+  final _publicController = TextEditingController();
+  bool _sendingPublic = false;
+
+  @override
+  void dispose() {
+    _publicController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendPublic(AppState s) async {
+    final text = _publicController.text.trim();
+    if (text.isEmpty || _sendingPublic) return;
+    setState(() => _sendingPublic = true);
+    try {
+      final n = await s.sendAreaPublicText(text);
+      if (!mounted) return;
+      _publicController.clear();
+      final l10n = context.l10n;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.geoPublicSent(n))),
+      );
+    } finally {
+      if (mounted) setState(() => _sendingPublic = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
+    final online = s.peersOnlineInSelectedArea();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -449,13 +521,51 @@ class _GeoBody extends StatelessWidget {
             ],
           ),
         ),
+        if (online.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _publicController,
+                    enabled: !_sendingPublic,
+                    decoration: InputDecoration(
+                      hintText: l10n.geoPublicHint,
+                    ),
+                    minLines: 1,
+                    maxLines: 3,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => _sendPublic(s),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: _sendingPublic ? null : () => _sendPublic(s),
+                  child: _sendingPublic
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(l10n.geoPublicSend),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+            child: Text(
+              l10n.geoPublicHelp(online.length),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.5),
+                  ),
+            ),
+          ),
+        ],
         Expanded(
-          child: FutureBuilder<List<String>>(
-            future: s.chatPeerIds(),
-            builder: (context, snap) {
-              final peers = snap.data ?? const <String>[];
-              if (peers.isEmpty) {
-                return Center(
+          child: online.isEmpty
+              ? Center(
                   child: Text(
                     l10n.geoEmpty(s.geoChannelLabel),
                     textAlign: TextAlign.center,
@@ -463,36 +573,37 @@ class _GeoBody extends StatelessWidget {
                           color: Colors.white.withValues(alpha: 0.65),
                         ),
                   ),
-                );
-              }
-              return ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                itemCount: peers.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (context, i) {
-                  final peerId = peers[i];
-                  return Card(
-                    child: ListTile(
-                      leading: Identicon(id: peerId),
-                      title: FutureBuilder<String>(
-                        future: s.db.resolveDisplayName(peerId),
-                        builder: (context, nameSnap) {
-                          return Text(
-                            nameSnap.data ?? peerId,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          );
-                        },
+                )
+              : ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                  itemCount: online.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  itemBuilder: (context, i) {
+                    final peer = online[i];
+                    return Card(
+                      child: ListTile(
+                        leading: Identicon(id: peer.id),
+                        title: FutureBuilder<String>(
+                          future: s.db.resolveDisplayName(peer.id),
+                          builder: (context, nameSnap) {
+                            return Text(
+                              nameSnap.data ?? peer.displayName ?? peer.id,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          },
+                        ),
+                        subtitle: Text(
+                          peer.geohash == null || peer.geohash!.isEmpty
+                              ? l10n.geoPeerNearbySubtitle
+                              : l10n.geoPeerSubtitle(s.geoChannelLabel),
+                        ),
+                        trailing: const Icon(Icons.lock_outline),
+                        onTap: () => widget.onOpen(context, peer.id),
                       ),
-                      subtitle: Text(l10n.geoPeerSubtitle(s.geoChannelLabel)),
-                      trailing: const Icon(Icons.lock_outline),
-                      onTap: () => onOpen(context, peerId),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+                    );
+                  },
+                ),
         ),
       ],
     );

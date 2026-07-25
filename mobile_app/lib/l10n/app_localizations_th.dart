@@ -98,7 +98,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get meshIntro =>
-      'เพื่อนในรัศมี BLE — แตะเพื่อเปิดแชต E2EE\nส่งผ่าน hybrid router (BLE + LoRa + Nostr เมื่อออนไลน์)';
+      'เพื่อนในรัศมี BLE — แตะเพื่อแชตส่วนตัว E2EE (ไม่มีช่องพิมพ์สาธารณะใน #mesh)\nส่งผ่าน hybrid router (BLE + LoRa + Nostr เมื่อออนไลน์)';
 
   @override
   String get meshEmptyRunning =>
@@ -112,21 +112,63 @@ class AppLocalizationsTh extends AppLocalizations {
   String get meshNearbyPrefix => 'ใกล้ตัว';
 
   @override
+  String get meshRetentionTitle => 'ลบข้อความอัตโนมัติ';
+
+  @override
+  String get meshRetentionSubtitle =>
+      'ลบประวัติแชตในเครื่องที่เก่ากว่าช่วงที่เลือก';
+
+  @override
+  String get meshRetentionKeep => 'เก็บไว้';
+
+  @override
+  String get meshRetention1Day => '1 วัน';
+
+  @override
+  String get meshRetention3Days => '3 วัน';
+
+  @override
+  String get meshRetention7Days => '7 วัน';
+
+  @override
   String get refreshLocationTooltip => 'รีเฟรชพิกัด';
 
   @override
   String get geoIntro =>
-      'ช่อง geohash ใช้จัดกลุ่มการค้นพบในพื้นที่ — การส่งข้อความยังเป็น E2EE 1:1 ผ่าน hybrid router เท่านั้น (ไม่ใช่ประกาศสาธารณะแบบ plaintext)';
+      'คนที่ออนไลน์ใน geohash นี้ ส่งได้ทั้ง 1:1 และสาธารณะในพื้นที่ (ยังผนึก E2EE รายคน — ไม่ใช่ plaintext)';
 
   @override
   String geoEmpty(String channel) {
-    return 'ยังไม่มีเพื่อนในรายการแชต\nสลับไป #mesh หรือสแกน QR แล้วกลับมาที่ $channel';
+    return 'ยังไม่มีใครออนไลน์ใน $channel\nสลับไป #mesh ใกล้ตัว รีเฟรชพิกัด หรือรอการประกาศพื้นที่';
   }
 
   @override
   String geoPeerSubtitle(String channel) {
-    return 'E2EE ในขอบเขต $channel';
+    return 'ออนไลน์ใน $channel • แตะเพื่อแชต 1:1 E2EE';
   }
+
+  @override
+  String get geoPeerNearbySubtitle =>
+      'ใกล้ตัว (รอ presence พื้นที่) • แตะเพื่อแชต 1:1 E2EE';
+
+  @override
+  String get geoPublicHint => 'ข้อความสาธารณะถึงทุกคนที่ออนไลน์ในพื้นที่นี้';
+
+  @override
+  String get geoPublicSend => 'สาธารณะ';
+
+  @override
+  String geoPublicHelp(int count) {
+    return 'ส่งแบบผนึกถึง $count คนที่ออนไลน์ — แต่ละคนได้ซองส่วนตัว';
+  }
+
+  @override
+  String geoPublicSent(int count) {
+    return 'ส่งแล้วถึง $count คนในพื้นที่';
+  }
+
+  @override
+  String get areaPublicBadge => 'สาธารณะในพื้นที่';
 
   @override
   String get geoErrorPermission => 'ไม่สามารถอ่านพิกัดได้ — ตรวจสิทธิ์ตำแหน่ง';

@@ -4,6 +4,7 @@ class Peer {
     this.deviceId,
     required this.publicKey,
     this.displayName,
+    this.geohash,
     required this.isVerifiedIssuer,
     required this.isBlocked,
     required this.lastSeen,
@@ -13,6 +14,9 @@ class Peer {
   final String? deviceId;
   final String publicKey;
   final String? displayName;
+
+  /// Last known geohash cell from presence (optional).
+  final String? geohash;
   final bool isVerifiedIssuer;
   final bool isBlocked;
   final int lastSeen;
@@ -22,6 +26,8 @@ class Peer {
     String? deviceId,
     String? publicKey,
     String? displayName,
+    String? geohash,
+    bool clearGeohash = false,
     bool? isVerifiedIssuer,
     bool? isBlocked,
     int? lastSeen,
@@ -31,6 +37,7 @@ class Peer {
       deviceId: deviceId ?? this.deviceId,
       publicKey: publicKey ?? this.publicKey,
       displayName: displayName ?? this.displayName,
+      geohash: clearGeohash ? null : (geohash ?? this.geohash),
       isVerifiedIssuer: isVerifiedIssuer ?? this.isVerifiedIssuer,
       isBlocked: isBlocked ?? this.isBlocked,
       lastSeen: lastSeen ?? this.lastSeen,
@@ -42,6 +49,7 @@ class Peer {
     'deviceId': deviceId,
     'publicKey': publicKey,
     'displayName': displayName,
+    'geohash': geohash,
     'isVerifiedIssuer': isVerifiedIssuer ? 1 : 0,
     'isBlocked': isBlocked ? 1 : 0,
     'lastSeen': lastSeen,
@@ -53,6 +61,7 @@ class Peer {
       deviceId: map['deviceId'] as String?,
       publicKey: map['publicKey'] as String,
       displayName: map['displayName'] as String?,
+      geohash: map['geohash'] as String?,
       isVerifiedIssuer: (map['isVerifiedIssuer'] as int? ?? 0) == 1,
       isBlocked: (map['isBlocked'] as int? ?? 0) == 1,
       lastSeen: map['lastSeen'] as int? ?? 0,

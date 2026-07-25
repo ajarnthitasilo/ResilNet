@@ -275,7 +275,7 @@ abstract class AppLocalizations {
   /// No description provided for @meshIntro.
   ///
   /// In en, this message translates to:
-  /// **'Peers in BLE range — tap to open an E2EE chat\nSends via hybrid router (BLE + LoRa + Nostr when online)'**
+  /// **'Peers in BLE range — tap for a private E2EE chat (no public compose on #mesh)\nSends via hybrid router (BLE + LoRa + Nostr when online)'**
   String get meshIntro;
 
   /// No description provided for @meshEmptyRunning.
@@ -296,6 +296,42 @@ abstract class AppLocalizations {
   /// **'Nearby'**
   String get meshNearbyPrefix;
 
+  /// No description provided for @meshRetentionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-delete messages'**
+  String get meshRetentionTitle;
+
+  /// No description provided for @meshRetentionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Older local chat history is removed automatically'**
+  String get meshRetentionSubtitle;
+
+  /// No description provided for @meshRetentionKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get meshRetentionKeep;
+
+  /// No description provided for @meshRetention1Day.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day'**
+  String get meshRetention1Day;
+
+  /// No description provided for @meshRetention3Days.
+  ///
+  /// In en, this message translates to:
+  /// **'3 days'**
+  String get meshRetention3Days;
+
+  /// No description provided for @meshRetention7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get meshRetention7Days;
+
   /// No description provided for @refreshLocationTooltip.
   ///
   /// In en, this message translates to:
@@ -305,20 +341,56 @@ abstract class AppLocalizations {
   /// No description provided for @geoIntro.
   ///
   /// In en, this message translates to:
-  /// **'Geohash scopes discovery only — messaging stays 1:1 E2EE through the hybrid router (not a public plaintext room)'**
+  /// **'People online in this geohash can be messaged 1:1 or with an area public fan-out (still sealed E2EE per peer — not plaintext)'**
   String get geoIntro;
 
   /// No description provided for @geoEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No chat peers yet\nSwitch to #mesh or scan a QR, then return to {channel}'**
+  /// **'No one online in {channel} yet\nOpen #mesh nearby, refresh location, or wait for area presence'**
   String geoEmpty(String channel);
 
   /// No description provided for @geoPeerSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'E2EE within {channel}'**
+  /// **'Online in {channel} • tap for 1:1 E2EE'**
   String geoPeerSubtitle(String channel);
+
+  /// No description provided for @geoPeerNearbySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby (awaiting area presence) • tap for 1:1 E2EE'**
+  String get geoPeerNearbySubtitle;
+
+  /// No description provided for @geoPublicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Public message to everyone online in this area'**
+  String get geoPublicHint;
+
+  /// No description provided for @geoPublicSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get geoPublicSend;
+
+  /// No description provided for @geoPublicHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sealed fan-out to {count} online peer(s) — each receives a private envelope'**
+  String geoPublicHelp(int count);
+
+  /// No description provided for @geoPublicSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {count} peer(s) in this area'**
+  String geoPublicSent(int count);
+
+  /// No description provided for @areaPublicBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Area public'**
+  String get areaPublicBadge;
 
   /// No description provided for @geoErrorPermission.
   ///

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+import '../core/payload_kinds.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/chat_message.dart';
 import '../services/audio_recorder_service.dart';
@@ -466,6 +467,19 @@ class _ChatScreenState extends State<ChatScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if (m.payloadKind == PayloadKinds.areaPublic) ...[
+                                  Text(
+                                    l10n.areaPublicBadge,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          color: Colors.tealAccent
+                                              .withValues(alpha: 0.9),
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                ],
                                 Text(
                                   text,
                                   style: Theme.of(context).textTheme.bodyMedium,

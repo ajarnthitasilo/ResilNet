@@ -7,6 +7,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
 import '../core/resilnet_ack_codec.dart';
+import '../core/payload_kinds.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
 import '../services/ack_handler_service.dart';
@@ -145,6 +146,7 @@ class BleMeshService extends ChangeNotifier {
         id: id,
         publicKey: pub,
         displayName: name,
+        geohash: (obj['geo'] as String?)?.trim().toLowerCase(),
         isVerifiedIssuer: false,
         isBlocked: false,
         lastSeen: now,
@@ -172,6 +174,7 @@ class BleMeshService extends ChangeNotifier {
       id: id,
       publicKey: pubKey,
       displayName: name,
+      geohash: (obj['geo'] as String?)?.trim().toLowerCase(),
       isVerifiedIssuer: false,
       isBlocked: false,
       lastSeen: DateTime.now().millisecondsSinceEpoch,
@@ -342,6 +345,16 @@ class BleMeshService extends ChangeNotifier {
     // Legacy village-broadcast product removed — drop quietly (no UI / no crash).
     if (msg.isBroadcast) {
       debugPrint('[BleMesh] drop legacy broadcast id=${msg.id}');
+      return;
+    }
+
+    // Geohash presence — update peer cell, never surface as chat.
+    if (msg.payloadKind == PayloadKinds.presence) {
+      final geo = (msg.content ?? '').trim().toLowerCase();
+      if (geo.isNotEmpty) {
+        await _db.updatePeerGeohash(msg.senderId, geo);
+      }
+      notifyListeners();
       return;
     }
 

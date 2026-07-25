@@ -100,7 +100,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get meshIntro =>
-      'Peers in BLE range — tap to open an E2EE chat\nSends via hybrid router (BLE + LoRa + Nostr when online)';
+      'Peers in BLE range — tap for a private E2EE chat (no public compose on #mesh)\nSends via hybrid router (BLE + LoRa + Nostr when online)';
 
   @override
   String get meshEmptyRunning =>
@@ -114,21 +114,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get meshNearbyPrefix => 'Nearby';
 
   @override
+  String get meshRetentionTitle => 'Auto-delete messages';
+
+  @override
+  String get meshRetentionSubtitle =>
+      'Older local chat history is removed automatically';
+
+  @override
+  String get meshRetentionKeep => 'Keep';
+
+  @override
+  String get meshRetention1Day => '1 day';
+
+  @override
+  String get meshRetention3Days => '3 days';
+
+  @override
+  String get meshRetention7Days => '7 days';
+
+  @override
   String get refreshLocationTooltip => 'Refresh location';
 
   @override
   String get geoIntro =>
-      'Geohash scopes discovery only — messaging stays 1:1 E2EE through the hybrid router (not a public plaintext room)';
+      'People online in this geohash can be messaged 1:1 or with an area public fan-out (still sealed E2EE per peer — not plaintext)';
 
   @override
   String geoEmpty(String channel) {
-    return 'No chat peers yet\nSwitch to #mesh or scan a QR, then return to $channel';
+    return 'No one online in $channel yet\nOpen #mesh nearby, refresh location, or wait for area presence';
   }
 
   @override
   String geoPeerSubtitle(String channel) {
-    return 'E2EE within $channel';
+    return 'Online in $channel • tap for 1:1 E2EE';
   }
+
+  @override
+  String get geoPeerNearbySubtitle =>
+      'Nearby (awaiting area presence) • tap for 1:1 E2EE';
+
+  @override
+  String get geoPublicHint => 'Public message to everyone online in this area';
+
+  @override
+  String get geoPublicSend => 'Public';
+
+  @override
+  String geoPublicHelp(int count) {
+    return 'Sealed fan-out to $count online peer(s) — each receives a private envelope';
+  }
+
+  @override
+  String geoPublicSent(int count) {
+    return 'Sent to $count peer(s) in this area';
+  }
+
+  @override
+  String get areaPublicBadge => 'Area public';
 
   @override
   String get geoErrorPermission =>

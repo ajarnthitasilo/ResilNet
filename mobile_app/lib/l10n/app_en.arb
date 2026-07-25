@@ -29,13 +29,19 @@
   "peerIdHint": "Paste Receiver ID (Public Key Hash) to start a chat",
   "directsEmpty": "No chats yet — scan a QR or paste a Receiver ID to start\nMessages are sealed with E2EE before send (BLE / LoRa / Nostr)",
   "directsSubtitle": "E2EE • tap to open chat",
-  "meshIntro": "Peers in BLE range — tap to open an E2EE chat\nSends via hybrid router (BLE + LoRa + Nostr when online)",
+  "meshIntro": "Peers in BLE range — tap for a private E2EE chat (no public compose on #mesh)\nSends via hybrid router (BLE + LoRa + Nostr when online)",
   "meshEmptyRunning": "No nearby peers yet — open the app on another device within BLE range",
   "meshEmptyStopped": "BLE is not running — grant Bluetooth / Location permission",
   "meshNearbyPrefix": "Nearby",
+  "meshRetentionTitle": "Auto-delete messages",
+  "meshRetentionSubtitle": "Older local chat history is removed automatically",
+  "meshRetentionKeep": "Keep",
+  "meshRetention1Day": "1 day",
+  "meshRetention3Days": "3 days",
+  "meshRetention7Days": "7 days",
   "refreshLocationTooltip": "Refresh location",
-  "geoIntro": "Geohash scopes discovery only — messaging stays 1:1 E2EE through the hybrid router (not a public plaintext room)",
-  "geoEmpty": "No chat peers yet\nSwitch to #mesh or scan a QR, then return to {channel}",
+  "geoIntro": "People online in this geohash can be messaged 1:1 or with an area public fan-out (still sealed E2EE per peer — not plaintext)",
+  "geoEmpty": "No one online in {channel} yet\nOpen #mesh nearby, refresh location, or wait for area presence",
   "@geoEmpty": {
     "placeholders": {
       "channel": {
@@ -43,7 +49,7 @@
       }
     }
   },
-  "geoPeerSubtitle": "E2EE within {channel}",
+  "geoPeerSubtitle": "Online in {channel} • tap for 1:1 E2EE",
   "@geoPeerSubtitle": {
     "placeholders": {
       "channel": {
@@ -51,6 +57,26 @@
       }
     }
   },
+  "geoPeerNearbySubtitle": "Nearby (awaiting area presence) • tap for 1:1 E2EE",
+  "geoPublicHint": "Public message to everyone online in this area",
+  "geoPublicSend": "Public",
+  "geoPublicHelp": "Sealed fan-out to {count} online peer(s) — each receives a private envelope",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Sent to {count} peer(s) in this area",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "areaPublicBadge": "Area public",
   "geoErrorPermission": "Could not read location — check location permission",
   "geoPrecisionRegion": "Region",
   "geoPrecisionProvince": "Province",
