@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'ResilNet';
 
   @override
-  String get communityTitle => 'Ban Pu Kham community chat';
+  String get communityTitle => 'ResilNet';
 
   @override
   String get preparingSystem => 'Preparing system…';
@@ -316,6 +316,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatImageLabel => 'Image';
 
   @override
+  String get chatImageTooLarge => 'Image too large (max ~180KB)';
+
+  @override
   String get chatNostrExpiry => 'Nostr keep';
 
   @override
@@ -437,7 +440,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingWelcomeBody =>
-      'Chat in Ban Pu Kham over a mesh network — even without the internet';
+      'Chat on ResilNet over a mesh network — even without the internet';
 
   @override
   String get onboardingFriendsTitle => 'Add friends easily';
@@ -602,4 +605,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get peersUnblockedSnack => 'Unblocked';
+
+  @override
+  String get peersEmpty =>
+      'No members in the database yet\nScan a QR or wait for BLE mesh discovery';
+
+  @override
+  String get peersOpenChat => 'Open chat';
+
+  @override
+  String get peersBlockAction => 'Block';
+
+  @override
+  String get peersUnblockAction => 'Unblock';
+
+  @override
+  String get channelPickerTooltip => 'Chat / #mesh / Area';
+
+  @override
+  String get locationPickerTooltip => 'Location channel';
+
+  @override
+  String get transportPickerTooltip => 'Mesh / Internet / Auto';
+
+  @override
+  String get onlinePeopleTooltip => 'People online';
+
+  @override
+  String get onlinePeopleTitle => 'people';
+
+  @override
+  String get onlinePeopleEmpty => 'No one online here yet';
+
+  @override
+  String onlinePeopleCount(int count) {
+    return '$count online';
+  }
+
+  @override
+  String get locationSheetTitle => '#location channels';
+
+  @override
+  String get locationSheetIntro =>
+      'Chat with people nearby using coarse geohash — not precise GPS. Presence on Internet uses anonymous Nostr keys.';
+
+  @override
+  String get locationMeshSubtitle => '#bluetooth • ~10–50 m';
+
+  @override
+  String get locationTeleportHint => '#geohash';
+
+  @override
+  String get locationTeleport => 'Teleport';
+
+  @override
+  String homeComposeHint(String channel) {
+    return 'Message $channel';
+  }
+
+  @override
+  String homeComposePublicHint(String channel) {
+    return 'Send to $channel — public';
+  }
+
+  @override
+  String get messageExpiryTitle => 'expires in';
+
+  @override
+  String get voicePttHold => 'Hold to record voice (PTT)';
+
+  @override
+  String get voicePttRelease => 'Release to send voice note';
+
+  @override
+  String get identityDisplayNameTitle => 'Display name';
+
+  @override
+  String get identitySaveName => 'Save name';
 }

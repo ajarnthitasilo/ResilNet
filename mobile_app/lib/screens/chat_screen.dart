@@ -623,8 +623,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     children: [
                       Tooltip(
                         message: _recordingVoice
-                            ? 'ปล่อยเพื่อส่งข้อความเสียง'
-                            : 'กดค้างเพื่ออัดเสียง (PTT)',
+                            ? l10n.voicePttRelease
+                            : l10n.voicePttHold,
                         child: GestureDetector(
                           onLongPressStart: (_) {
                             if (!_recordingVoice) unawaited(_startVoiceNote());

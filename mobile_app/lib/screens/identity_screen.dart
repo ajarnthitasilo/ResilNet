@@ -188,8 +188,8 @@ class _IdentityScreenState extends State<IdentityScreen> {
             TextField(
               controller: _name,
               focusNode: _nameFocus,
-              decoration: const InputDecoration(
-                labelText: 'ชื่อที่แสดงในชุมชน',
+              decoration: InputDecoration(
+                labelText: context.l10n.identityDisplayNameTitle,
               ),
               onSubmitted: (v) =>
                   context.read<AppState>().setDisplayName(v.trim()),
@@ -200,7 +200,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
               child: TextButton(
                 onPressed: () =>
                     context.read<AppState>().setDisplayName(_name.text.trim()),
-                child: const Text('บันทึกชื่อ'),
+                child: Text(context.l10n.identitySaveName),
               ),
             ),
             const SizedBox(height: 8),

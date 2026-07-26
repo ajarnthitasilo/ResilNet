@@ -14,6 +14,26 @@ enum GeoPrecision {
 
   const GeoPrecision(this.length);
   final int length;
+
+  /// Approximate cell size (km) at the equator — bitchat-style radius label.
+  double get approxRadiusKm => switch (this) {
+        GeoPrecision.region => 1250,
+        GeoPrecision.province => 39,
+        GeoPrecision.city => 4.9,
+        GeoPrecision.neighborhood => 1.2,
+        GeoPrecision.block => 0.2,
+      };
+
+  String get approxRadiusLabel {
+    final km = approxRadiusKm;
+    if (km < 1) {
+      return '~${(km * 1000).round()} m';
+    }
+    if (km >= 100) {
+      return '~${km.round()} km';
+    }
+    return '~${km.toStringAsFixed(km < 10 ? 1 : 0)} km';
+  }
 }
 
 /// Pure Dart geohash (base32) without third-party deps.

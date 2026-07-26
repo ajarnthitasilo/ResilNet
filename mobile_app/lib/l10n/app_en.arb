@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "appTitle": "ResilNet",
-  "communityTitle": "Ban Pu Kham community chat",
+  "communityTitle": "ResilNet",
   "preparingSystem": "Preparing system…",
   "bootFailedTitle": "Could not start",
   "retry": "Try again",
@@ -127,6 +127,7 @@
   "screenshotTaken": "* you took a screenshot *",
   "chatAttachImage": "Attach image",
   "chatImageLabel": "Image",
+  "chatImageTooLarge": "Image too large (max ~180KB)",
   "chatNostrExpiry": "Nostr keep",
   "geoPublicComposeHint": "Send to {channel} — public",
   "@geoPublicComposeHint": {
@@ -207,7 +208,7 @@
   "onboardingNext": "Next",
   "onboardingStart": "Get started",
   "onboardingWelcomeTitle": "Welcome to ResilNet",
-  "onboardingWelcomeBody": "Chat in Ban Pu Kham over a mesh network — even without the internet",
+  "onboardingWelcomeBody": "Chat on ResilNet over a mesh network — even without the internet",
   "onboardingFriendsTitle": "Add friends easily",
   "onboardingFriendsBody": "Share a QR from Identity, or scan a friend’s QR to exchange public keys",
   "onboardingChannelsTitle": "Encrypted chat + nearby channels",
@@ -293,10 +294,46 @@
   "peersBlockedSnack": "Blocked {id}",
   "@peersBlockedSnack": {
     "placeholders": {
-      "id": {
-        "type": "String"
-      }
+      "id": { "type": "String" }
     }
   },
-  "peersUnblockedSnack": "Unblocked"
+  "peersUnblockedSnack": "Unblocked",
+  "peersEmpty": "No members in the database yet\nScan a QR or wait for BLE mesh discovery",
+  "peersOpenChat": "Open chat",
+  "peersBlockAction": "Block",
+  "peersUnblockAction": "Unblock",
+  "channelPickerTooltip": "Chat / #mesh / Area",
+  "locationPickerTooltip": "Location channel",
+  "transportPickerTooltip": "Mesh / Internet / Auto",
+  "onlinePeopleTooltip": "People online",
+  "onlinePeopleTitle": "people",
+  "onlinePeopleEmpty": "No one online here yet",
+  "onlinePeopleCount": "{count} online",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "locationSheetTitle": "#location channels",
+  "locationSheetIntro": "Chat with people nearby using coarse geohash — not precise GPS. Presence on Internet uses anonymous Nostr keys.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "Teleport",
+  "homeComposeHint": "Message {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": { "type": "String" }
+    }
+  },
+  "homeComposePublicHint": "Send to {channel} — public",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": { "type": "String" }
+    }
+  },
+  "messageExpiryTitle": "expires in",
+  "voicePttHold": "Hold to record voice (PTT)",
+  "voicePttRelease": "Release to send voice note",
+  "identityDisplayNameTitle": "Display name",
+  "identitySaveName": "Save name"
 }

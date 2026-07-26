@@ -1,50 +1,31 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
-import '../core/geohash.dart';
+import '../core/payload_kinds.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
 import '../models/mesh_retention.dart';
+import '../models/notice_expiry.dart';
 import '../models/peer.dart';
-import '../models/transport_mode.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
 import 'chat_screen.dart';
+import 'feed_channel_sheet.dart';
 import 'identity_screen.dart';
+import 'location_channel_sheet.dart';
 import 'notices_sheet.dart';
+import 'online_people_sheet.dart';
 import 'peer_list_screen.dart';
 import 'settings_screen.dart';
 
-String _feedSubtitle(AppLocalizations l10n, FeedChannel channel) {
-  return switch (channel) {
-    FeedChannel.directs => l10n.feedDirectsSubtitle,
-    FeedChannel.mesh => l10n.feedMeshSubtitle,
-    FeedChannel.geo => l10n.feedGeoSubtitle,
-  };
-}
-
-String _geoPrecisionLabel(AppLocalizations l10n, GeoPrecision p) {
-  return switch (p) {
-    GeoPrecision.region => l10n.geoPrecisionRegion,
-    GeoPrecision.province => l10n.geoPrecisionProvince,
-    GeoPrecision.city => l10n.geoPrecisionCity,
-    GeoPrecision.neighborhood => l10n.geoPrecisionNeighborhood,
-    GeoPrecision.block => l10n.geoPrecisionBlock,
-  };
-}
-
-String _meshRetentionLabel(AppLocalizations l10n, MeshRetention r) {
-  return switch (r) {
-    MeshRetention.keep => l10n.meshRetentionKeep,
-    MeshRetention.oneDay => l10n.meshRetention1Day,
-    MeshRetention.threeDays => l10n.meshRetention3Days,
-    MeshRetention.sevenDays => l10n.meshRetention7Days,
-  };
-}
-
-/// Home feed with Bitchat-inspired channel switching.
+/// Home feed — clean bitchat-style chrome with sheets for mode pickers.
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
@@ -54,50 +35,61 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   final _peerController = TextEditingController();
+  final _compose = TextEditingController();
+  NoticeExpiry _expiry = NoticeExpiry.sevenDays;
+  bool _sending = false;
+
+  @override
+  void dispose() {
+    _peerController.dispose();
+    _compose.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openPeer(BuildContext context, String peerId) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ChatScreen(peerId: peerId)),
+    );
+    if (mounted) setState(() {});
+  }
 
   Future<void> _setAlias(BuildContext context, String peerId) async {
     final s = context.read<AppState>();
     final l10n = context.l10n;
     final existing = await s.db.getContactAlias(peerId) ?? '';
     final controller = TextEditingController(text: existing);
-
     if (!context.mounted) return;
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(l10n.aliasTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.aliasHintBody,
-                style: Theme.of(ctx).textTheme.bodySmall,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.aliasTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.aliasHintBody, style: Theme.of(ctx).textTheme.bodySmall),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: l10n.aliasLabel,
+                hintText: l10n.aliasHint,
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  labelText: l10n.aliasLabel,
-                  hintText: l10n.aliasHint,
-                ),
-                autofocus: true,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(l10n.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: Text(l10n.save),
+              autofocus: true,
             ),
           ],
-        );
-      },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
     );
     if (ok != true) return;
     await s.db.setContactAlias(
@@ -107,32 +99,145 @@ class _ChatListScreenState extends State<ChatListScreen> {
     if (mounted) setState(() {});
   }
 
-  @override
-  void dispose() {
-    _peerController.dispose();
-    super.dispose();
+  String _channelLabel(AppState s) {
+    return switch (s.feedChannel) {
+      FeedChannel.directs => context.l10n.feedDirects,
+      FeedChannel.mesh => '#mesh',
+      FeedChannel.geo => s.geoChannelLabel,
+    };
   }
 
-  Future<void> _openPeer(BuildContext context, String peerId) async {
-    if (!mounted) return;
-    await Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => ChatScreen(peerId: peerId)));
-    setState(() {});
+  Future<void> _sendPublic(AppState s) async {
+    final text = _compose.text.trim();
+    if (text.isEmpty || _sending) return;
+    if (!s.e2eeEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+      );
+      return;
+    }
+    setState(() => _sending = true);
+    try {
+      if (s.feedChannel == FeedChannel.mesh) {
+        await s.setNostrExpiry(_expiry);
+        await s.postNotice(
+          scope: 'mesh',
+          channelLabel: '#mesh',
+          text: text,
+          expiry: _expiry == NoticeExpiry.forever
+              ? NoticeExpiry.sevenDays
+              : _expiry,
+        );
+      } else if (s.feedChannel == FeedChannel.geo) {
+        await s.setNostrExpiry(_expiry);
+        final n = await s.sendAreaPublicText(text);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
+        );
+      }
+      _compose.clear();
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
+  }
+
+  Future<void> _sendPublicImage(AppState s) async {
+    if (!s.e2eeEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+      );
+      return;
+    }
+    final file = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1280,
+      imageQuality: 75,
+    );
+    if (file == null) return;
+    final bytes = await File(file.path).readAsBytes();
+    if (bytes.length > 180000) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chatImageTooLarge)),
+      );
+      return;
+    }
+    final b64 = base64Encode(bytes);
+    setState(() => _sending = true);
+    try {
+      if (s.feedChannel == FeedChannel.geo) {
+        final n = await s.sendAreaPublicText(
+          b64,
+          kind: PayloadKinds.image,
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
+        );
+      } else if (s.feedChannel == FeedChannel.mesh) {
+        await s.postNotice(
+          scope: 'mesh',
+          channelLabel: '#mesh',
+          text: '[image]',
+          expiry: _expiry == NoticeExpiry.forever
+              ? NoticeExpiry.sevenDays
+              : _expiry,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
+  }
+
+  void _onPeoplePressed(AppState s) {
+    if (s.feedChannel == FeedChannel.directs) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const PeerListScreen()),
+      );
+    } else {
+      showOnlinePeopleSheet(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
+    final onlineCount = s.feedChannel == FeedChannel.mesh
+        ? (s.isReady ? s.mesh.nearbyPeers.length : 0)
+        : s.areaPresenceOnline().length;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(l10n.communityTitle),
         actions: [
-          if (s.feedChannel == FeedChannel.mesh ||
-              s.feedChannel == FeedChannel.geo)
+          IconButton(
+            tooltip: l10n.channelPickerTooltip,
+            onPressed: () => showFeedChannelSheet(context),
+            icon: Icon(switch (s.feedChannel) {
+              FeedChannel.directs => Icons.lock_outline,
+              FeedChannel.mesh => Icons.bluetooth,
+              FeedChannel.geo => Icons.tag,
+            }),
+          ),
+          IconButton(
+            tooltip: l10n.locationPickerTooltip,
+            onPressed: () => showLocationChannelSheet(context),
+            icon: const Icon(Icons.place_outlined),
+          ),
+          if (s.feedChannel != FeedChannel.directs)
+            IconButton(
+              tooltip: l10n.transportPickerTooltip,
+              onPressed: () => showTransportModeSheet(context),
+              icon: Icon(switch (s.transportMode.name) {
+                'mesh' => Icons.bluetooth_searching,
+                'internet' => Icons.wifi,
+                _ => Icons.sync_alt,
+              }),
+            ),
+          if (s.feedChannel != FeedChannel.directs)
             IconButton(
               tooltip: l10n.noticesOpen,
               onPressed: () => showNoticesSheet(
@@ -142,51 +247,37 @@ class _ChatListScreenState extends State<ChatListScreen> {
               ),
               icon: const Icon(Icons.campaign_outlined),
             ),
-          PopupMenuButton<String>(
-            tooltip: l10n.notificationsTooltip,
-            icon: Icon(
-              s.notificationsEnabled
-                  ? Icons.notifications_active_outlined
-                  : Icons.notifications_off_outlined,
-            ),
-            itemBuilder: (context) => [
-              CheckedPopupMenuItem(
-                value: 'enabled',
-                checked: s.notificationsEnabled,
-                child: Text(l10n.enableMessageNotifications),
-              ),
-            ],
-            onSelected: (v) {
-              if (v == 'enabled') {
-                s.setNotificationsEnabled(!s.notificationsEnabled);
-              }
-            },
-          ),
           IconButton(
-            tooltip: l10n.networkMembersTooltip,
-            onPressed: () => Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const PeerListScreen())),
-            icon: const Icon(Icons.groups_outlined),
+            tooltip: s.feedChannel == FeedChannel.directs
+                ? l10n.networkMembersTooltip
+                : '${l10n.onlinePeopleTooltip} ($onlineCount)',
+            onPressed: () => _onPeoplePressed(s),
+            icon: Badge(
+              isLabelVisible: s.feedChannel != FeedChannel.directs &&
+                  onlineCount > 0,
+              label: Text('$onlineCount'),
+              child: const Icon(Icons.groups_outlined),
+            ),
           ),
           IconButton(
             tooltip: l10n.settings,
-            onPressed: () => Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
             icon: const Icon(Icons.settings_outlined),
           ),
           IconButton(
             tooltip: l10n.identityQrTooltip,
-            onPressed: () => Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const IdentityScreen())),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const IdentityScreen()),
+            ),
             icon: const Icon(Icons.badge_outlined),
           ),
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        decoration:
+            const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
         child: Column(
           children: [
             const MeshStatusBar(),
@@ -203,73 +294,129 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
-              child: SegmentedButton<FeedChannel>(
-                segments: [
-                  ButtonSegment(
-                    value: FeedChannel.directs,
-                    label: Text(l10n.feedDirects),
-                    icon: const Icon(Icons.lock_outline, size: 16),
-                  ),
-                  ButtonSegment(
-                    value: FeedChannel.mesh,
-                    label: Text(l10n.feedMesh),
-                    icon: const Icon(Icons.bluetooth, size: 16),
-                  ),
-                  ButtonSegment(
-                    value: FeedChannel.geo,
-                    label: Text(l10n.feedGeo),
-                    icon: const Icon(Icons.public, size: 16),
-                  ),
-                ],
-                selected: {s.feedChannel},
-                onSelectionChanged: (set) {
-                  s.setFeedChannel(set.first);
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  _feedSubtitle(l10n, s.feedChannel),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.45),
+                  _channelLabel(s),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontFamily: s.feedChannel == FeedChannel.geo
+                            ? 'monospace'
+                            : null,
+                        color: s.feedChannel == FeedChannel.geo
+                            ? ResilNetTheme.channelGreen
+                            : null,
                       ),
                 ),
               ),
             ),
-            if (s.feedChannel == FeedChannel.directs) ...[
+            Expanded(child: _bodyFor(s)),
+            if (s.feedChannel != FeedChannel.directs) _bottomCompose(s),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bodyFor(AppState s) {
+    return switch (s.feedChannel) {
+      FeedChannel.directs => _DirectsBody(
+          peerController: _peerController,
+          onOpen: _openPeer,
+          onAlias: _setAlias,
+        ),
+      FeedChannel.mesh => _MeshListBody(onOpen: _openPeer),
+      FeedChannel.geo => _GeoListBody(onOpen: _openPeer),
+    };
+  }
+
+  Widget _bottomCompose(AppState s) {
+    final l10n = context.l10n;
+    final channel = _channelLabel(s);
+    final messageable = s.feedChannel == FeedChannel.geo
+        ? s.peersOnlineInSelectedArea().length
+        : (s.isReady ? s.mesh.nearbyPeers.length : 0);
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (messageable > 0)
               Padding(
-                padding: const EdgeInsets.all(14),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _peerController,
-                        decoration: InputDecoration(hintText: l10n.peerIdHint),
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  l10n.geoPublicHelp(messageable),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.white38,
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    FilledButton(
-                      onPressed: () {
-                        final peer = _peerController.text.trim();
-                        if (peer.isEmpty) return;
-                        _openPeer(context, peer);
-                      },
-                      child: Text(l10n.start),
-                    ),
-                  ],
                 ),
               ),
-              Expanded(
-                child: _DirectsBody(onOpen: _openPeer, onAlias: _setAlias),
-              ),
-            ] else if (s.feedChannel == FeedChannel.mesh)
-              Expanded(child: _MeshBody(onOpen: _openPeer))
-            else
-              Expanded(child: _GeoBody(onOpen: _openPeer)),
+            Row(
+              children: [
+                IconButton(
+                  tooltip: l10n.chatAttachImage,
+                  onPressed: _sending ? null : () => _sendPublicImage(s),
+                  icon: const Icon(Icons.image_outlined),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _compose,
+                    enabled: !_sending,
+                    minLines: 1,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      hintText: l10n.homeComposePublicHint(channel),
+                    ),
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => unawaited(_sendPublic(s)),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                IconButton.filled(
+                  onPressed: _sending ? null : () => unawaited(_sendPublic(s)),
+                  icon: _sending
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.arrow_upward),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text(
+                  l10n.messageExpiryTitle,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.white54,
+                      ),
+                ),
+                const SizedBox(width: 10),
+                for (final e in NoticeExpiry.values)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: ChoiceChip(
+                      visualDensity: VisualDensity.compact,
+                      label: Text(
+                        e == NoticeExpiry.forever
+                            ? '∞'
+                            : e == NoticeExpiry.oneDay
+                                ? '1d'
+                                : e == NoticeExpiry.threeDays
+                                    ? '3d'
+                                    : '7d',
+                      ),
+                      selected: _expiry == e,
+                      onSelected: (_) => setState(() => _expiry = e),
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
@@ -278,152 +425,165 @@ class _ChatListScreenState extends State<ChatListScreen> {
 }
 
 class _DirectsBody extends StatelessWidget {
-  const _DirectsBody({required this.onOpen, required this.onAlias});
+  const _DirectsBody({
+    required this.peerController,
+    required this.onOpen,
+    required this.onAlias,
+  });
 
-  final Future<void> Function(BuildContext context, String peerId) onOpen;
-  final Future<void> Function(BuildContext context, String peerId) onAlias;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = context.watch<AppState>();
-    final l10n = context.l10n;
-    return FutureBuilder<List<String>>(
-      future: s.chatPeerIds(),
-      builder: (context, snap) {
-        final peers = snap.data ?? const <String>[];
-        if (peers.isEmpty) {
-          return Center(
-            child: Text(
-              l10n.directsEmpty,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.65),
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          );
-        }
-        return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          itemCount: peers.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 10),
-          itemBuilder: (context, i) {
-            final peerId = peers[i];
-            return ListTile(
-                title: FutureBuilder<String>(
-                  future: s.db.resolveDisplayName(peerId),
-                  builder: (context, nameSnap) {
-                    final name = nameSnap.data ?? peerId;
-                    return Text(
-                      name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    );
-                  },
-                ),
-                subtitle: Text(l10n.directsSubtitle),
-                trailing: const Icon(Icons.chevron_right, size: 18),
-                onTap: () => onOpen(context, peerId),
-                onLongPress: () => onAlias(context, peerId),
-              );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _MeshBody extends StatelessWidget {
-  const _MeshBody({required this.onOpen});
-
-  final Future<void> Function(BuildContext context, String peerId) onOpen;
+  final TextEditingController peerController;
+  final Future<void> Function(BuildContext, String) onOpen;
+  final Future<void> Function(BuildContext, String) onAlias;
 
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
-    if (!s.isReady) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    final nearby = s.mesh.nearbyPeers;
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          padding: const EdgeInsets.all(14),
+          child: Row(
             children: [
-              Text(
-                l10n.meshIntro,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.6),
-                    ),
+              Expanded(
+                child: TextField(
+                  controller: peerController,
+                  decoration: InputDecoration(hintText: l10n.peerIdHint),
+                ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                l10n.meshRetentionTitle,
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.meshRetentionSubtitle,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.55),
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final r in MeshRetention.values)
-                    ChoiceChip(
-                      label: Text(_meshRetentionLabel(l10n, r)),
-                      selected: s.meshRetention == r,
-                      onSelected: (_) => s.setMeshRetention(r),
-                    ),
-                ],
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: () {
+                  final id = peerController.text.trim();
+                  if (id.isEmpty) return;
+                  onOpen(context, id);
+                },
+                child: Text(l10n.start),
               ),
             ],
           ),
         ),
         Expanded(
-          child: nearby.isEmpty
+          child: FutureBuilder<List<Peer>>(
+            future: s.db.getAllPeers(),
+            builder: (context, snap) {
+              final peers = snap.data ?? const <Peer>[];
+              if (peers.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      l10n.directsEmpty,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white60,
+                          ),
+                    ),
+                  ),
+                );
+              }
+              return ListView.separated(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                itemCount: peers.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
+                itemBuilder: (context, i) {
+                  final peer = peers[i];
+                  return ListTile(
+                    leading: Identicon(id: peer.id),
+                    title: FutureBuilder<String>(
+                      future: s.db.resolveDisplayName(peer.id),
+                      builder: (context, nameSnap) => Text(
+                        nameSnap.data ?? peer.displayName ?? peer.id,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    subtitle: Text(
+                      peer.id,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontFamily: 'monospace'),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 18),
+                      onPressed: () => onAlias(context, peer.id),
+                    ),
+                    onTap: () => onOpen(context, peer.id),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MeshListBody extends StatelessWidget {
+  const _MeshListBody({required this.onOpen});
+
+  final Future<void> Function(BuildContext, String) onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.watch<AppState>();
+    final l10n = context.l10n;
+    final peers = s.isReady ? s.mesh.nearbyPeers : const <Peer>[];
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+          child: Row(
+            children: [
+              Text(
+                l10n.meshRetentionTitle,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.white54,
+                    ),
+              ),
+              const Spacer(),
+              for (final r in MeshRetention.values)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: ChoiceChip(
+                    visualDensity: VisualDensity.compact,
+                    label: Text(switch (r) {
+                      MeshRetention.keep => l10n.meshRetentionKeep,
+                      MeshRetention.oneDay => '1d',
+                      MeshRetention.threeDays => '3d',
+                      MeshRetention.sevenDays => '7d',
+                    }),
+                    selected: s.meshRetention == r,
+                    onSelected: (_) => s.setMeshRetention(r),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: peers.isEmpty
               ? Center(
                   child: Text(
-                    s.mesh.running
-                        ? l10n.meshEmptyRunning
-                        : l10n.meshEmptyStopped,
+                    l10n.meshIntro,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.65),
+                          color: Colors.white54,
                         ),
                   ),
                 )
               : ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  itemCount: nearby.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                  itemCount: peers.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (context, i) {
-                    final Peer peer = nearby[i];
-                    final shortId = peer.id.length > 12
-                        ? '${peer.id.substring(0, 12)}…'
-                        : peer.id;
+                    final peer = peers[i];
                     return ListTile(
-                        leading: Identicon(id: peer.id),
-                        title: FutureBuilder<String>(
-                          future: s.db.resolveDisplayName(peer.id),
-                          builder: (context, nameSnap) {
-                            return Text(
-                              nameSnap.data ?? peer.displayName ?? peer.id,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          },
-                        ),
-                        subtitle: Text('${l10n.meshNearbyPrefix} • $shortId'),
-                        trailing: const Icon(Icons.lock_outline, size: 18),
-                        onTap: () => onOpen(context, peer.id),
-                      );
+                      leading: Identicon(id: peer.id),
+                      title: Text(peer.displayName ?? peer.id),
+                      trailing: const Icon(Icons.lock_outline, size: 18),
+                      onTap: () => onOpen(context, peer.id),
+                    );
                   },
                 ),
         ),
@@ -432,243 +592,70 @@ class _MeshBody extends StatelessWidget {
   }
 }
 
-class _GeoBody extends StatefulWidget {
-  const _GeoBody({required this.onOpen});
+class _GeoListBody extends StatelessWidget {
+  const _GeoListBody({required this.onOpen});
 
-  final Future<void> Function(BuildContext context, String peerId) onOpen;
-
-  @override
-  State<_GeoBody> createState() => _GeoBodyState();
-}
-
-class _GeoBodyState extends State<_GeoBody> {
-  final _publicController = TextEditingController();
-  bool _sendingPublic = false;
-
-  @override
-  void dispose() {
-    _publicController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _sendPublic(AppState s) async {
-    final text = _publicController.text.trim();
-    if (text.isEmpty || _sendingPublic) return;
-    setState(() => _sendingPublic = true);
-    try {
-      final n = await s.sendAreaPublicText(text);
-      if (!mounted) return;
-      _publicController.clear();
-      final l10n = context.l10n;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.geoPublicSent(n))),
-      );
-    } finally {
-      if (mounted) setState(() => _sendingPublic = false);
-    }
-  }
+  final Future<void> Function(BuildContext, String) onOpen;
 
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
     final presence = s.areaPresenceOnline();
-    final messageable = presence.where((e) => e.canMessage).length;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      s.geoChannelLabel,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontFamily: 'monospace',
-                            letterSpacing: 0.5,
-                          ),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: l10n.refreshLocationTooltip,
-                    onPressed:
-                        s.geoRefreshing ? null : () => s.refreshGeohash(),
-                    icon: s.geoRefreshing
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.my_location),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              SegmentedButton<TransportMode>(
-                style: const ButtonStyle(
-                  visualDensity: VisualDensity.compact,
-                ),
-                segments: [
-                  ButtonSegment(
-                    value: TransportMode.mesh,
-                    label: Text(l10n.transportModeMesh),
-                  ),
-                  ButtonSegment(
-                    value: TransportMode.internet,
-                    label: Text(l10n.transportModeInternet),
-                  ),
-                  ButtonSegment(
-                    value: TransportMode.auto,
-                    label: Text(l10n.transportModeAuto),
-                  ),
-                ],
-                selected: {s.transportMode},
-                onSelectionChanged: (set) => s.setTransportMode(set.first),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final p in GeoPrecision.values)
-                    ChoiceChip(
-                      label: Text(
-                        '${_geoPrecisionLabel(l10n, p)} (${p.length})',
-                      ),
-                      selected: s.geoPrecision == p,
-                      onSelected: (_) => s.setGeoPrecision(p),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                l10n.geoIntro,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.55),
-                    ),
-              ),
-              if (s.geoNeedsPermission) ...[
-                const SizedBox(height: 8),
-                Text(
-                  l10n.geoErrorPermission,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.orangeAccent,
-                      ),
-                ),
-              ],
-              if (s.geoError != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  s.geoError!,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.orangeAccent,
-                      ),
-                ),
-              ],
-            ],
-          ),
+
+    if (s.geoNeedsPermission) {
+      return Center(
+        child: Text(
+          l10n.geoErrorPermission,
+          style: const TextStyle(color: Colors.orangeAccent),
         ),
-        if (messageable > 0) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _publicController,
-                    enabled: !_sendingPublic,
-                    decoration: InputDecoration(
-                      hintText: l10n.geoPublicComposeHint(s.geoChannelLabel),
+      );
+    }
+
+    return presence.isEmpty
+        ? Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                l10n.geoEmpty(s.geoChannelLabel),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white54,
                     ),
-                    minLines: 1,
-                    maxLines: 3,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _sendPublic(s),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton(
-                  onPressed: _sendingPublic ? null : () => _sendPublic(s),
-                  child: _sendingPublic
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(l10n.geoPublicSend),
-                ),
-              ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
-            child: Text(
-              l10n.geoPublicHelp(messageable),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.5),
-                  ),
-            ),
-          ),
-        ],
-        Expanded(
-          child: presence.isEmpty
-              ? Center(
-                  child: Text(
-                    l10n.geoEmpty(s.geoChannelLabel),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.65),
-                        ),
-                  ),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-                  itemCount: presence.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 10),
-                  itemBuilder: (context, i) {
-                    final entry = presence[i];
-                    final subtitle = !entry.canMessage
-                        ? l10n.geoPeerNostrSubtitle(s.geoChannelLabel)
-                        : (entry.geohash == null || entry.geohash!.isEmpty)
-                            ? l10n.geoPeerNearbySubtitle
-                            : l10n.geoPeerSubtitle(s.geoChannelLabel);
-                    return ListTile(
-                      leading: Identicon(id: entry.id),
-                      title: Text(
-                        entry.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(subtitle),
-                      trailing: Icon(
-                        entry.canMessage
-                            ? Icons.lock_outline
-                            : Icons.travel_explore_outlined,
-                        size: 18,
-                        color: entry.source.isInternet
-                            ? ResilNetTheme.channelGreen
-                            : null,
-                      ),
-                      onTap: () {
-                        if (!entry.canMessage) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.geoPeerDiscoverOnlySnack),
-                            ),
-                          );
-                          return;
-                        }
-                        widget.onOpen(context, entry.peer!.id);
-                      },
+          )
+        : ListView.separated(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 14),
+            itemCount: presence.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 8),
+            itemBuilder: (context, i) {
+              final e = presence[i];
+              return ListTile(
+                leading: Identicon(id: e.id),
+                title: Text(e.label),
+                subtitle: Text(
+                  e.canMessage
+                      ? l10n.geoPeerSubtitle(s.geoChannelLabel)
+                      : l10n.geoPeerNostrSubtitle(s.geoChannelLabel),
+                ),
+                trailing: Icon(
+                  e.canMessage
+                      ? Icons.lock_outline
+                      : Icons.travel_explore_outlined,
+                  size: 18,
+                ),
+                onTap: () {
+                  if (!e.canMessage) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.geoPeerDiscoverOnlySnack)),
                     );
-                  },
-                ),
-        ),
-      ],
-    );
+                    return;
+                  }
+                  onOpen(context, e.peer!.id);
+                },
+              );
+            },
+          );
   }
 }

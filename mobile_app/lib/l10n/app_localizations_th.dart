@@ -12,7 +12,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get appTitle => 'ResilNet';
 
   @override
-  String get communityTitle => 'สื่อสารชุมชนบ้านปู่คำ';
+  String get communityTitle => 'ResilNet';
 
   @override
   String get preparingSystem => 'กำลังเตรียมระบบ…';
@@ -275,7 +275,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'ระยะที่ซองข้อความควรคงอยู่บนเครื่องเมื่อส่งผ่าน Nostr';
 
   @override
-  String get noticeExpiresIn => 'expires in';
+  String get noticeExpiresIn => 'หมดอายุใน';
 
   @override
   String get noticesTitle => 'ประกาศ';
@@ -289,16 +289,16 @@ class AppLocalizationsTh extends AppLocalizations {
       'เพิ่มบันทึกถาวรสั้น ๆ ให้สถานที่นี้เพื่อให้ผู้มาเยือนคนอื่นพบได้';
 
   @override
-  String get noticesEmpty => 'no notices yet';
+  String get noticesEmpty => 'ยังไม่มีประกาศ';
 
   @override
-  String get noticesEmptyHint => 'pin the first notice for people around here.';
+  String get noticesEmptyHint => 'ปักประกาศแรกให้คนรอบนี้';
 
   @override
-  String get noticesComposeHint => 'post a notice...';
+  String get noticesComposeHint => 'เขียนประกาศ...';
 
   @override
-  String get noticesUrgent => 'urgent';
+  String get noticesUrgent => 'ด่วน';
 
   @override
   String get noticesOpen => 'ประกาศ';
@@ -311,6 +311,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get chatImageLabel => 'รูปภาพ';
+
+  @override
+  String get chatImageTooLarge => 'รูปใหญ่เกินไป (สูงสุด ~180KB)';
 
   @override
   String get chatNostrExpiry => 'เก็บบน Nostr';
@@ -341,7 +344,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String settingsVersion(String version) {
-    return 'version $version';
+    return 'เวอร์ชัน $version';
   }
 
   @override
@@ -434,7 +437,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get onboardingWelcomeBody =>
-      'สื่อสารในชุมชนบ้านปู่คำผ่านเครือข่าย Mesh แม้ไม่มีอินเทอร์เน็ต';
+      'สื่อสารบน ResilNet ผ่านเครือข่าย Mesh แม้ไม่มีอินเทอร์เน็ต';
 
   @override
   String get onboardingFriendsTitle => 'เพิ่มเพื่อนได้ง่าย';
@@ -598,4 +601,81 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get peersUnblockedSnack => 'ปลดบล็อกแล้ว';
+
+  @override
+  String get peersEmpty =>
+      'ยังไม่มีสมาชิกในฐานข้อมูล\nสแกน QR หรือรอค้นพบผ่าน BLE Mesh';
+
+  @override
+  String get peersOpenChat => 'เปิดแชต';
+
+  @override
+  String get peersBlockAction => 'บล็อก';
+
+  @override
+  String get peersUnblockAction => 'ปลดบล็อก';
+
+  @override
+  String get channelPickerTooltip => 'แชท / #mesh / พื้นที่';
+
+  @override
+  String get locationPickerTooltip => 'ช่องตามตำแหน่ง';
+
+  @override
+  String get transportPickerTooltip => 'Mesh / Internet / Auto';
+
+  @override
+  String get onlinePeopleTooltip => 'คนออนไลน์';
+
+  @override
+  String get onlinePeopleTitle => 'คนออนไลน์';
+
+  @override
+  String get onlinePeopleEmpty => 'ยังไม่มีใครออนไลน์ที่นี่';
+
+  @override
+  String onlinePeopleCount(int count) {
+    return 'ออนไลน์ $count คน';
+  }
+
+  @override
+  String get locationSheetTitle => '#ช่องตามตำแหน่ง';
+
+  @override
+  String get locationSheetIntro =>
+      'คุยกับคนใกล้ตัวผ่าน geohash แบบหยาบ — ไม่ใช่ GPS แม่นยำ Presence บน Internet ใช้นามแฝง Nostr';
+
+  @override
+  String get locationMeshSubtitle => '#bluetooth • ~10–50 ม.';
+
+  @override
+  String get locationTeleportHint => '#geohash';
+
+  @override
+  String get locationTeleport => 'เทเลพอร์ต';
+
+  @override
+  String homeComposeHint(String channel) {
+    return 'ข้อความถึง $channel';
+  }
+
+  @override
+  String homeComposePublicHint(String channel) {
+    return 'ส่งข้อความถึง $channel — สาธารณะ';
+  }
+
+  @override
+  String get messageExpiryTitle => 'หมดอายุใน';
+
+  @override
+  String get voicePttHold => 'กดค้างเพื่ออัดเสียง (PTT)';
+
+  @override
+  String get voicePttRelease => 'ปล่อยเพื่อส่งข้อความเสียง';
+
+  @override
+  String get identityDisplayNameTitle => 'ชื่อที่แสดง';
+
+  @override
+  String get identitySaveName => 'บันทึกชื่อ';
 }

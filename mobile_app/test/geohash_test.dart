@@ -37,5 +37,11 @@ void main() {
       expect(Geohash.channelLabel('w5q6u'), '#w5q6u');
       expect(Geohash.channelLabel('#abc'), '#abc');
     });
+
+    test('precision approx radius labels', () {
+      expect(GeoPrecision.block.approxRadiusLabel, '~200 m');
+      expect(GeoPrecision.neighborhood.approxRadiusLabel, '~1.2 km');
+      expect(GeoPrecision.region.approxRadiusLabel, '~1250 km');
+    });
   });
 }

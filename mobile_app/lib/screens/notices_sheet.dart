@@ -5,6 +5,7 @@ import '../app/theme.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/notice_expiry.dart';
 import '../state/app_state.dart';
+import 'online_people_sheet.dart';
 
 /// Bitchat-style public notices for #mesh or Area.
 Future<void> showNoticesSheet(
@@ -103,6 +104,24 @@ class _NoticesSheetState extends State<_NoticesSheet> {
                   '${l10n.noticesTitle} @ $channel',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
+              ),
+              Text(
+                l10n.onlinePeopleCount(
+                  _scope == 'mesh'
+                      ? (s.isReady ? s.mesh.nearbyPeers.length : 0)
+                      : s.areaPresenceOnline().length,
+                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: ResilNetTheme.channelGreen,
+                    ),
+              ),
+              IconButton(
+                tooltip: l10n.onlinePeopleTooltip,
+                onPressed: () {
+                  Navigator.pop(context);
+                  showOnlinePeopleSheet(context);
+                },
+                icon: const Icon(Icons.groups_outlined),
               ),
               IconButton(
                 onPressed: () => Navigator.pop(context),

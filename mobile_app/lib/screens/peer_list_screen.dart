@@ -93,7 +93,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'ยังไม่มีสมาชิกในฐานข้อมูล\nสแกน QR หรือรอค้นพบผ่าน BLE Mesh',
+                  l10n.peersEmpty,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.white70,
@@ -167,13 +167,17 @@ class _PeerListScreenState extends State<PeerListScreen> {
                       }
                     },
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'chat',
-                        child: Text('เปิดแชต'),
+                        child: Text(l10n.peersOpenChat),
                       ),
                       PopupMenuItem(
                         value: 'block',
-                        child: Text(peer.isBlocked ? 'ปลดบล็อก' : 'บล็อก'),
+                        child: Text(
+                          peer.isBlocked
+                              ? l10n.peersUnblockAction
+                              : l10n.peersBlockAction,
+                        ),
                       ),
                     ],
                   ),

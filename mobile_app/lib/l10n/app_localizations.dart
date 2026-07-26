@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @communityTitle.
   ///
   /// In en, this message translates to:
-  /// **'Ban Pu Kham community chat'**
+  /// **'ResilNet'**
   String get communityTitle;
 
   /// No description provided for @preparingSystem.
@@ -650,6 +650,12 @@ abstract class AppLocalizations {
   /// **'Image'**
   String get chatImageLabel;
 
+  /// No description provided for @chatImageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Image too large (max ~180KB)'**
+  String get chatImageTooLarge;
+
   /// No description provided for @chatNostrExpiry.
   ///
   /// In en, this message translates to:
@@ -857,7 +863,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeBody.
   ///
   /// In en, this message translates to:
-  /// **'Chat in Ban Pu Kham over a mesh network — even without the internet'**
+  /// **'Chat on ResilNet over a mesh network — even without the internet'**
   String get onboardingWelcomeBody;
 
   /// No description provided for @onboardingFriendsTitle.
@@ -1153,6 +1159,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unblocked'**
   String get peersUnblockedSnack;
+
+  /// No description provided for @peersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No members in the database yet\nScan a QR or wait for BLE mesh discovery'**
+  String get peersEmpty;
+
+  /// No description provided for @peersOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open chat'**
+  String get peersOpenChat;
+
+  /// No description provided for @peersBlockAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get peersBlockAction;
+
+  /// No description provided for @peersUnblockAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get peersUnblockAction;
+
+  /// No description provided for @channelPickerTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat / #mesh / Area'**
+  String get channelPickerTooltip;
+
+  /// No description provided for @locationPickerTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Location channel'**
+  String get locationPickerTooltip;
+
+  /// No description provided for @transportPickerTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh / Internet / Auto'**
+  String get transportPickerTooltip;
+
+  /// No description provided for @onlinePeopleTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'People online'**
+  String get onlinePeopleTooltip;
+
+  /// No description provided for @onlinePeopleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'people'**
+  String get onlinePeopleTitle;
+
+  /// No description provided for @onlinePeopleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No one online here yet'**
+  String get onlinePeopleEmpty;
+
+  /// No description provided for @onlinePeopleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} online'**
+  String onlinePeopleCount(int count);
+
+  /// No description provided for @locationSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'#location channels'**
+  String get locationSheetTitle;
+
+  /// No description provided for @locationSheetIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with people nearby using coarse geohash — not precise GPS. Presence on Internet uses anonymous Nostr keys.'**
+  String get locationSheetIntro;
+
+  /// No description provided for @locationMeshSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'#bluetooth • ~10–50 m'**
+  String get locationMeshSubtitle;
+
+  /// No description provided for @locationTeleportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'#geohash'**
+  String get locationTeleportHint;
+
+  /// No description provided for @locationTeleport.
+  ///
+  /// In en, this message translates to:
+  /// **'Teleport'**
+  String get locationTeleport;
+
+  /// No description provided for @homeComposeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Message {channel}'**
+  String homeComposeHint(String channel);
+
+  /// No description provided for @homeComposePublicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to {channel} — public'**
+  String homeComposePublicHint(String channel);
+
+  /// No description provided for @messageExpiryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'expires in'**
+  String get messageExpiryTitle;
+
+  /// No description provided for @voicePttHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to record voice (PTT)'**
+  String get voicePttHold;
+
+  /// No description provided for @voicePttRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Release to send voice note'**
+  String get voicePttRelease;
+
+  /// No description provided for @identityDisplayNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name'**
+  String get identityDisplayNameTitle;
+
+  /// No description provided for @identitySaveName.
+  ///
+  /// In en, this message translates to:
+  /// **'Save name'**
+  String get identitySaveName;
 }
 
 class _AppLocalizationsDelegate
