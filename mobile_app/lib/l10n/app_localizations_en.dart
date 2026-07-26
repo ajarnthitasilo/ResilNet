@@ -682,4 +682,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get identitySaveName => 'Save name';
+
+  @override
+  String get identityUserIdLabel => 'User ID (Public Key Hash)';
+
+  @override
+  String get identityCopyHashTooltip => 'Copy public key hash';
+
+  @override
+  String get identityMyQrTitle => 'My QR (id + pubKey + name)';
+
+  @override
+  String identityQrFailed(String error) {
+    return 'Could not create QR\n$error';
+  }
+
+  @override
+  String get identitySaving => 'Saving…';
+
+  @override
+  String get identitySaveQr => 'Save QR to photo library';
+
+  @override
+  String get identityOpenScanner => 'Open camera to scan QR';
+
+  @override
+  String get identityQrHelp =>
+      'Have a friend scan this to save your public key and (if needed) set you as a Verified Issuer';
+
+  @override
+  String get identityChatTip =>
+      'Tip: you can also scan a QR in chat to add a public key for E2EE';
 }

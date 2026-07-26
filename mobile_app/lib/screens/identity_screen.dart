@@ -161,7 +161,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
           padding: const EdgeInsets.all(18),
           children: [
             Text(
-              'User ID (Public Key Hash)',
+              context.l10n.identityUserIdLabel,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -178,7 +178,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'คัดลอก Public Key Hash',
+                  tooltip: context.l10n.identityCopyHashTooltip,
                   onPressed: () => _copyUserId(userId),
                   icon: const Icon(Icons.copy),
                 ),
@@ -219,7 +219,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'My QR (id + pubKey + name)',
+                            context.l10n.identityMyQrTitle,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
@@ -253,7 +253,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
                               height: 240,
                               child: Center(
                                 child: Text(
-                                  'สร้าง QR ไม่สำเร็จ\n$error',
+                                  context.l10n.identityQrFailed('$error'),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: Colors.red,
@@ -283,7 +283,9 @@ class _IdentityScreenState extends State<IdentityScreen> {
                               )
                             : const Icon(Icons.save_alt),
                         label: Text(
-                          _saving ? 'กำลังบันทึก...' : 'บันทึก QR ลงคลังภาพ',
+                          _saving
+                              ? context.l10n.identitySaving
+                              : context.l10n.identitySaveQr,
                         ),
                       ),
                     ),
@@ -293,12 +295,12 @@ class _IdentityScreenState extends State<IdentityScreen> {
                       child: OutlinedButton.icon(
                         onPressed: _openScanner,
                         icon: const Icon(Icons.photo_camera),
-                        label: const Text('เปิดกล้องสแกน QR'),
+                        label: Text(context.l10n.identityOpenScanner),
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'ให้เพื่อนสแกนเพื่อบันทึก public key และ (ถ้าจำเป็น)ตั้งเป็น Verified Issuer',
+                      context.l10n.identityQrHelp,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.white.withValues(alpha: 0.72),
                         height: 1.35,
@@ -310,7 +312,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'ทิป: สามารถสแกน QR ในหน้าแชตเพื่อเติม Public Key ให้พร้อมส่ง E2EE',
+              context.l10n.identityChatTip,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.white.withValues(alpha: 0.6),
               ),

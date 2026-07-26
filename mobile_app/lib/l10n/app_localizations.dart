@@ -1297,6 +1297,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save name'**
   String get identitySaveName;
+
+  /// No description provided for @identityUserIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User ID (Public Key Hash)'**
+  String get identityUserIdLabel;
+
+  /// No description provided for @identityCopyHashTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy public key hash'**
+  String get identityCopyHashTooltip;
+
+  /// No description provided for @identityMyQrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My QR (id + pubKey + name)'**
+  String get identityMyQrTitle;
+
+  /// No description provided for @identityQrFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create QR\n{error}'**
+  String identityQrFailed(String error);
+
+  /// No description provided for @identitySaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get identitySaving;
+
+  /// No description provided for @identitySaveQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Save QR to photo library'**
+  String get identitySaveQr;
+
+  /// No description provided for @identityOpenScanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Open camera to scan QR'**
+  String get identityOpenScanner;
+
+  /// No description provided for @identityQrHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a friend scan this to save your public key and (if needed) set you as a Verified Issuer'**
+  String get identityQrHelp;
+
+  /// No description provided for @identityChatTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: you can also scan a QR in chat to add a public key for E2EE'**
+  String get identityChatTip;
 }
 
 class _AppLocalizationsDelegate

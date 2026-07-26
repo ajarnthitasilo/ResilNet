@@ -199,5 +199,14 @@
   "voicePttHold": "กดค้างเพื่ออัดเสียง (PTT)",
   "voicePttRelease": "ปล่อยเพื่อส่งข้อความเสียง",
   "identityDisplayNameTitle": "ชื่อที่แสดง",
-  "identitySaveName": "บันทึกชื่อ"
+  "identitySaveName": "บันทึกชื่อ",
+  "identityUserIdLabel": "รหัสผู้ใช้ (Public Key Hash)",
+  "identityCopyHashTooltip": "คัดลอก Public Key Hash",
+  "identityMyQrTitle": "QR ของฉัน (id + pubKey + ชื่อ)",
+  "identityQrFailed": "สร้าง QR ไม่สำเร็จ\n{error}",
+  "identitySaving": "กำลังบันทึก...",
+  "identitySaveQr": "บันทึก QR ลงคลังภาพ",
+  "identityOpenScanner": "เปิดกล้องสแกน QR",
+  "identityQrHelp": "ให้เพื่อนสแกนเพื่อบันทึก public key และ (ถ้าจำเป็น) ตั้งเป็น Verified Issuer",
+  "identityChatTip": "ทิป: สามารถสแกน QR ในหน้าแชตเพื่อเติม Public Key ให้พร้อมส่ง E2EE"
 }

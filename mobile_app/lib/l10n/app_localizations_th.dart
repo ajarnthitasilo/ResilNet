@@ -678,4 +678,35 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get identitySaveName => 'บันทึกชื่อ';
+
+  @override
+  String get identityUserIdLabel => 'รหัสผู้ใช้ (Public Key Hash)';
+
+  @override
+  String get identityCopyHashTooltip => 'คัดลอก Public Key Hash';
+
+  @override
+  String get identityMyQrTitle => 'QR ของฉัน (id + pubKey + ชื่อ)';
+
+  @override
+  String identityQrFailed(String error) {
+    return 'สร้าง QR ไม่สำเร็จ\n$error';
+  }
+
+  @override
+  String get identitySaving => 'กำลังบันทึก...';
+
+  @override
+  String get identitySaveQr => 'บันทึก QR ลงคลังภาพ';
+
+  @override
+  String get identityOpenScanner => 'เปิดกล้องสแกน QR';
+
+  @override
+  String get identityQrHelp =>
+      'ให้เพื่อนสแกนเพื่อบันทึก public key และ (ถ้าจำเป็น) ตั้งเป็น Verified Issuer';
+
+  @override
+  String get identityChatTip =>
+      'ทิป: สามารถสแกน QR ในหน้าแชตเพื่อเติม Public Key ให้พร้อมส่ง E2EE';
 }

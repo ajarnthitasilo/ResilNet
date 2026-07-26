@@ -335,5 +335,19 @@
   "voicePttHold": "Hold to record voice (PTT)",
   "voicePttRelease": "Release to send voice note",
   "identityDisplayNameTitle": "Display name",
-  "identitySaveName": "Save name"
+  "identitySaveName": "Save name",
+  "identityUserIdLabel": "User ID (Public Key Hash)",
+  "identityCopyHashTooltip": "Copy public key hash",
+  "identityMyQrTitle": "My QR (id + pubKey + name)",
+  "identityQrFailed": "Could not create QR\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "identitySaving": "Saving…",
+  "identitySaveQr": "Save QR to photo library",
+  "identityOpenScanner": "Open camera to scan QR",
+  "identityQrHelp": "Have a friend scan this to save your public key and (if needed) set you as a Verified Issuer",
+  "identityChatTip": "Tip: you can also scan a QR in chat to add a public key for E2EE"
 }

@@ -200,6 +200,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
   }
 
+  Widget _compactIcon({
+    required String tooltip,
+    required VoidCallback onPressed,
+    required Widget icon,
+  }) {
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPressed,
+      visualDensity: VisualDensity.compact,
+      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+      padding: const EdgeInsets.all(6),
+      icon: icon,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
@@ -211,9 +226,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(l10n.communityTitle),
+        titleSpacing: 8,
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            l10n.communityTitle,
+            maxLines: 1,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.3,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        actionsIconTheme: const IconThemeData(size: 22),
         actions: [
-          IconButton(
+          _compactIcon(
             tooltip: l10n.channelPickerTooltip,
             onPressed: () => showFeedChannelSheet(context),
             icon: Icon(switch (s.feedChannel) {
@@ -222,13 +251,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
               FeedChannel.geo => Icons.tag,
             }),
           ),
-          IconButton(
+          _compactIcon(
             tooltip: l10n.locationPickerTooltip,
             onPressed: () => showLocationChannelSheet(context),
             icon: const Icon(Icons.place_outlined),
           ),
           if (s.feedChannel != FeedChannel.directs)
-            IconButton(
+            _compactIcon(
               tooltip: l10n.transportPickerTooltip,
               onPressed: () => showTransportModeSheet(context),
               icon: Icon(switch (s.transportMode.name) {
@@ -238,7 +267,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               }),
             ),
           if (s.feedChannel != FeedChannel.directs)
-            IconButton(
+            _compactIcon(
               tooltip: l10n.noticesOpen,
               onPressed: () => showNoticesSheet(
                 context,
@@ -247,7 +276,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               ),
               icon: const Icon(Icons.campaign_outlined),
             ),
-          IconButton(
+          _compactIcon(
             tooltip: s.feedChannel == FeedChannel.directs
                 ? l10n.networkMembersTooltip
                 : '${l10n.onlinePeopleTooltip} ($onlineCount)',
@@ -259,19 +288,31 @@ class _ChatListScreenState extends State<ChatListScreen> {
               child: const Icon(Icons.groups_outlined),
             ),
           ),
-          IconButton(
+          PopupMenuButton<String>(
             tooltip: l10n.settings,
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SettingsScreen()),
-            ),
-            icon: const Icon(Icons.settings_outlined),
-          ),
-          IconButton(
-            tooltip: l10n.identityQrTooltip,
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const IdentityScreen()),
-            ),
-            icon: const Icon(Icons.badge_outlined),
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.more_vert, size: 22),
+            onSelected: (v) {
+              if (v == 'settings') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                );
+              } else if (v == 'identity') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const IdentityScreen()),
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'settings',
+                child: Text(l10n.settings),
+              ),
+              PopupMenuItem(
+                value: 'identity',
+                child: Text(l10n.identityQrTooltip),
+              ),
+            ],
           ),
         ],
       ),
