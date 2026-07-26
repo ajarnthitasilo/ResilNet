@@ -707,4 +707,14 @@ class DatabaseService {
     await _database.execute('VACUUM');
     return deleted;
   }
+
+  /// Panic wipe: messages, peers, blocks, aliases, pending ACKs.
+  Future<void> wipeLocalUserData() async {
+    await _database.delete('messages');
+    await _database.delete('peers');
+    await _database.delete('blocked_peers');
+    await _database.delete('contacts');
+    await _database.delete('pending_acks');
+    await _database.execute('VACUUM');
+  }
 }

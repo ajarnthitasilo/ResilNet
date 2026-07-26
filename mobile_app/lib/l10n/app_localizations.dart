@@ -1351,6 +1351,384 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tip: you can also scan a QR in chat to add a public key for E2EE'**
   String get identityChatTip;
+
+  /// No description provided for @infoOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'About / Info'**
+  String get infoOpen;
+
+  /// No description provided for @infoTabInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get infoTabInfo;
+
+  /// No description provided for @infoTabSettingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings from the menu for language, E2EE, and data tools'**
+  String get infoTabSettingsHint;
+
+  /// No description provided for @infoHowToTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to use'**
+  String get infoHowToTitle;
+
+  /// No description provided for @infoHowToBody.
+  ///
+  /// In en, this message translates to:
+  /// **'• Tap the channel icon to switch Chat / #mesh / Area\n• Tap place to pick geohash size\n• Tap people for members or who’s online\n• Open Identity/QR from ⋮ to exchange keys in person\n• Area “public” sends sealed E2EE to each online peer — not a plaintext room'**
+  String get infoHowToBody;
+
+  /// No description provided for @infoFeaturesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Features'**
+  String get infoFeaturesTitle;
+
+  /// No description provided for @infoFeatureOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline messaging via Bluetooth Low Energy'**
+  String get infoFeatureOffline;
+
+  /// No description provided for @infoFeatureE2ee.
+  ///
+  /// In en, this message translates to:
+  /// **'End-to-end encryption with RSA-OAEP + AES-GCM (not Noise)'**
+  String get infoFeatureE2ee;
+
+  /// No description provided for @infoFeatureMultihop.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages can hop through nearby peers to go farther'**
+  String get infoFeatureMultihop;
+
+  /// No description provided for @infoFeatureBridge.
+  ///
+  /// In en, this message translates to:
+  /// **'Hybrid mesh ↔ internet (Nostr) for sealed envelopes'**
+  String get infoFeatureBridge;
+
+  /// No description provided for @infoFeatureGeo.
+  ///
+  /// In en, this message translates to:
+  /// **'Local geohash channels for people nearby (discovery UX)'**
+  String get infoFeatureGeo;
+
+  /// No description provided for @infoFeatureNotices.
+  ///
+  /// In en, this message translates to:
+  /// **'Notices with expiry for #mesh and Area'**
+  String get infoFeatureNotices;
+
+  /// No description provided for @infoPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get infoPrivacyTitle;
+
+  /// No description provided for @infoPrivacyNoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'No plaintext village / public chat room on the wire'**
+  String get infoPrivacyNoRoom;
+
+  /// No description provided for @infoPrivacyFanout.
+  ///
+  /// In en, this message translates to:
+  /// **'Area send = sealed 1:1 fan-out to peers with known public keys'**
+  String get infoPrivacyFanout;
+
+  /// No description provided for @infoPrivacyPresence.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet area presence uses ephemeral Nostr keys'**
+  String get infoPrivacyPresence;
+
+  /// No description provided for @infoSymbolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Symbols'**
+  String get infoSymbolsTitle;
+
+  /// No description provided for @infoSymBle.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Bluetooth link'**
+  String get infoSymBle;
+
+  /// No description provided for @infoSymMesh.
+  ///
+  /// In en, this message translates to:
+  /// **'Reachable via mesh (others forward)'**
+  String get infoSymMesh;
+
+  /// No description provided for @infoSymInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Via internet (Nostr) — sealed envelopes'**
+  String get infoSymInternet;
+
+  /// No description provided for @infoSymBridge.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived via mesh↔internet bridge path'**
+  String get infoSymBridge;
+
+  /// No description provided for @infoSymOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline — not reachable right now'**
+  String get infoSymOffline;
+
+  /// No description provided for @infoSymInArea.
+  ///
+  /// In en, this message translates to:
+  /// **'In this location channel’s area'**
+  String get infoSymInArea;
+
+  /// No description provided for @infoSymE2eeOk.
+  ///
+  /// In en, this message translates to:
+  /// **'End-to-end encrypted session'**
+  String get infoSymE2eeOk;
+
+  /// No description provided for @infoSymE2eeFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption unavailable — do not send sensitive text'**
+  String get infoSymE2eeFail;
+
+  /// No description provided for @infoSymVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity verified / known key'**
+  String get infoSymVerified;
+
+  /// No description provided for @infoSymBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get infoSymBlocked;
+
+  /// No description provided for @infoSymUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread private message'**
+  String get infoSymUnread;
+
+  /// No description provided for @infoEmergencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency mode'**
+  String get infoEmergencyTitle;
+
+  /// No description provided for @infoEmergencyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Triple-tap the ResilNet title on the home screen to wipe messages, keys, and identity on this device.'**
+  String get infoEmergencyBody;
+
+  /// No description provided for @infoLegendNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Some path icons are documented here for clarity; delivery ticks in chat remain the primary send status.'**
+  String get infoLegendNote;
+
+  /// No description provided for @dangerZoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger zone'**
+  String get dangerZoneTitle;
+
+  /// No description provided for @dangerZoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletes messages, encryption keys, Nostr identity, peers, and nicknames on this device. You will set up again.'**
+  String get dangerZoneSubtitle;
+
+  /// No description provided for @panicWipeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency wipe'**
+  String get panicWipeTitle;
+
+  /// No description provided for @panicWipeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Erase everything local — same as triple-tapping the home title'**
+  String get panicWipeSubtitle;
+
+  /// No description provided for @panicWipeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe all local data?'**
+  String get panicWipeConfirmTitle;
+
+  /// No description provided for @panicWipeConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes chats, keys, and identity on this phone.\nPeers must re-exchange QR keys with your new identity.\nThis cannot be undone.'**
+  String get panicWipeConfirmBody;
+
+  /// No description provided for @panicWipeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe everything'**
+  String get panicWipeAction;
+
+  /// No description provided for @panicWipeSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Local identity wiped — set up again'**
+  String get panicWipeSnack;
+
+  /// No description provided for @meshBridgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh bridge'**
+  String get meshBridgeTitle;
+
+  /// No description provided for @meshBridgeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When on (default), sealed envelopes may use both BLE mesh and internet (Nostr) together so nearby mesh islands can connect. When off, sends use one path only — never puts plaintext on the wire.'**
+  String get meshBridgeSubtitle;
+
+  /// No description provided for @favoritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favoritesTitle;
+
+  /// No description provided for @favoritesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get favoritesAdd;
+
+  /// No description provided for @favoritesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get favoritesRemove;
+
+  /// No description provided for @favoritesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet — star a peer from the member list'**
+  String get favoritesEmpty;
+
+  /// No description provided for @favoritesNearbyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite nearby'**
+  String get favoritesNearbyTitle;
+
+  /// No description provided for @favoritesNearbyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is nearby on mesh'**
+  String favoritesNearbyBody(String name);
+
+  /// No description provided for @favoritesInAreaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite in area'**
+  String get favoritesInAreaTitle;
+
+  /// No description provided for @favoritesInAreaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is online in this area'**
+  String favoritesInAreaBody(String name);
+
+  /// No description provided for @topologyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh topology'**
+  String get topologyTitle;
+
+  /// No description provided for @topologySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Peers and connection hints from mesh announce (read-only)'**
+  String get topologySubtitle;
+
+  /// No description provided for @topologyConnectedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected now (BLE)'**
+  String get topologyConnectedNow;
+
+  /// No description provided for @topologyNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby (BLE)'**
+  String get topologyNearby;
+
+  /// No description provided for @topologyKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'Known peers'**
+  String get topologyKnown;
+
+  /// No description provided for @topologyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No peers learned yet — stay nearby with BLE on'**
+  String get topologyEmpty;
+
+  /// No description provided for @topologyOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh topology'**
+  String get topologyOpen;
+
+  /// No description provided for @slashHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get slashHelpTitle;
+
+  /// No description provided for @slashHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)'**
+  String get slashHelpBody;
+
+  /// No description provided for @slashWhoEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No one online in this channel right now'**
+  String get slashWhoEmpty;
+
+  /// No description provided for @slashWhoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Online ({count})'**
+  String slashWhoTitle(int count);
+
+  /// No description provided for @slashDropNeedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage: /drop your note text'**
+  String get slashDropNeedText;
+
+  /// No description provided for @slashDropDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Dropped notice on {channel}'**
+  String slashDropDone(String channel);
+
+  /// No description provided for @slashUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown command — try /help'**
+  String get slashUnknown;
 }
 
 class _AppLocalizationsDelegate

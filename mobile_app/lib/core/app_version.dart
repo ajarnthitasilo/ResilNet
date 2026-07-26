@@ -1,2 +1,2 @@
 /// App marketing version (keep in sync with pubspec.yaml).
-const String kAppVersion = '1.7.2';
+const String kAppVersion = '1.8.0';

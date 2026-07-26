@@ -349,5 +349,88 @@
   "identitySaveQr": "Save QR to photo library",
   "identityOpenScanner": "Open camera to scan QR",
   "identityQrHelp": "Have a friend scan this to save your public key and (if needed) set you as a Verified Issuer",
-  "identityChatTip": "Tip: you can also scan a QR in chat to add a public key for E2EE"
+  "identityChatTip": "Tip: you can also scan a QR in chat to add a public key for E2EE",
+  "infoOpen": "About / Info",
+  "infoTabInfo": "Info",
+  "infoTabSettingsHint": "Open Settings from the menu for language, E2EE, and data tools",
+  "infoHowToTitle": "How to use",
+  "infoHowToBody": "• Tap the channel icon to switch Chat / #mesh / Area\n• Tap place to pick geohash size\n• Tap people for members or who’s online\n• Open Identity/QR from ⋮ to exchange keys in person\n• Area “public” sends sealed E2EE to each online peer — not a plaintext room",
+  "infoFeaturesTitle": "Features",
+  "infoFeatureOffline": "Offline messaging via Bluetooth Low Energy",
+  "infoFeatureE2ee": "End-to-end encryption with RSA-OAEP + AES-GCM (not Noise)",
+  "infoFeatureMultihop": "Messages can hop through nearby peers to go farther",
+  "infoFeatureBridge": "Hybrid mesh ↔ internet (Nostr) for sealed envelopes",
+  "infoFeatureGeo": "Local geohash channels for people nearby (discovery UX)",
+  "infoFeatureNotices": "Notices with expiry for #mesh and Area",
+  "infoPrivacyTitle": "Privacy",
+  "infoPrivacyNoRoom": "No plaintext village / public chat room on the wire",
+  "infoPrivacyFanout": "Area send = sealed 1:1 fan-out to peers with known public keys",
+  "infoPrivacyPresence": "Internet area presence uses ephemeral Nostr keys",
+  "infoSymbolsTitle": "Symbols",
+  "infoSymBle": "Direct Bluetooth link",
+  "infoSymMesh": "Reachable via mesh (others forward)",
+  "infoSymInternet": "Via internet (Nostr) — sealed envelopes",
+  "infoSymBridge": "Arrived via mesh↔internet bridge path",
+  "infoSymOffline": "Offline — not reachable right now",
+  "infoSymInArea": "In this location channel’s area",
+  "infoSymE2eeOk": "End-to-end encrypted session",
+  "infoSymE2eeFail": "Encryption unavailable — do not send sensitive text",
+  "infoSymVerified": "Identity verified / known key",
+  "infoSymBlocked": "Blocked",
+  "infoSymUnread": "Unread private message",
+  "infoEmergencyTitle": "Emergency mode",
+  "infoEmergencyBody": "Triple-tap the ResilNet title on the home screen to wipe messages, keys, and identity on this device.",
+  "infoLegendNote": "Some path icons are documented here for clarity; delivery ticks in chat remain the primary send status.",
+  "dangerZoneTitle": "Danger zone",
+  "dangerZoneSubtitle": "Deletes messages, encryption keys, Nostr identity, peers, and nicknames on this device. You will set up again.",
+  "panicWipeTitle": "Emergency wipe",
+  "panicWipeSubtitle": "Erase everything local — same as triple-tapping the home title",
+  "panicWipeConfirmTitle": "Wipe all local data?",
+  "panicWipeConfirmBody": "This permanently deletes chats, keys, and identity on this phone.\nPeers must re-exchange QR keys with your new identity.\nThis cannot be undone.",
+  "panicWipeAction": "Wipe everything",
+  "panicWipeSnack": "Local identity wiped — set up again",
+  "meshBridgeTitle": "Mesh bridge",
+  "meshBridgeSubtitle": "When on (default), sealed envelopes may use both BLE mesh and internet (Nostr) together so nearby mesh islands can connect. When off, sends use one path only — never puts plaintext on the wire.",
+  "favoritesTitle": "Favorites",
+  "favoritesAdd": "Add to favorites",
+  "favoritesRemove": "Remove from favorites",
+  "favoritesEmpty": "No favorites yet — star a peer from the member list",
+  "favoritesNearbyTitle": "Favorite nearby",
+  "favoritesNearbyBody": "{name} is nearby on mesh",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "favoritesInAreaTitle": "Favorite in area",
+  "favoritesInAreaBody": "{name} is online in this area",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "topologyTitle": "Mesh topology",
+  "topologySubtitle": "Peers and connection hints from mesh announce (read-only)",
+  "topologyConnectedNow": "Connected now (BLE)",
+  "topologyNearby": "Nearby (BLE)",
+  "topologyKnown": "Known peers",
+  "topologyEmpty": "No peers learned yet — stay nearby with BLE on",
+  "topologyOpen": "Mesh topology",
+  "slashHelpTitle": "Commands",
+  "slashHelpBody": "/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)",
+  "slashWhoEmpty": "No one online in this channel right now",
+  "slashWhoTitle": "Online ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "slashDropNeedText": "Usage: /drop your note text",
+  "slashDropDone": "Dropped notice on {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": { "type": "String" }
+    }
+  },
+  "slashUnknown": "Unknown command — try /help"
 }

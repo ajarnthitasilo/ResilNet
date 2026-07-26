@@ -157,6 +157,18 @@ class NostrSyncService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Panic wipe: delete stored Nostr secret and start a fresh identity.
+  Future<void> wipeIdentityAndRestart({List<String>? relayUrls}) async {
+    await stop();
+    try {
+      await _storage.delete(key: _kSecretHex);
+    } catch (e) {
+      debugPrint('[Nostr] wipe secret failed: $e');
+    }
+    _status = null;
+    await start(relayUrls: relayUrls);
+  }
+
   @override
   void dispose() {
     unawaited(stop());

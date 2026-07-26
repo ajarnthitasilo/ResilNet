@@ -52,7 +52,7 @@ class AppState extends ChangeNotifier {
   UdpTransportService? _udp;
   NostrSyncService? _nostr;
   FirmwareService? _firmware;
-  late final AckHandlerService _ackHandler;
+  late AckHandlerService _ackHandler;
   AckQueueManager? _ackQueue;
   StreamSubscription<MessagePacketDto>? _rustIncomingSub;
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
@@ -156,6 +156,17 @@ class AppState extends ChangeNotifier {
   static const _kScreenshotAlerts = 'resilnet_screenshot_alerts';
   bool _screenshotAlerts = true;
   bool get screenshotAlerts => _screenshotAlerts;
+
+  /// When true (default), outbound sealed envelopes may dual-path BLE+Nostr.
+  static const _kMeshBridgeEnabled = 'resilnet_mesh_bridge_enabled';
+  bool _meshBridgeEnabled = true;
+  bool get meshBridgeEnabled => _meshBridgeEnabled;
+
+  static const _kFavoritePeerIds = 'resilnet_favorite_peer_ids';
+  final Set<String> _favoritePeerIds = <String>{};
+  Set<String> get favoritePeerIds => Set.unmodifiable(_favoritePeerIds);
+  final Set<String> _favoriteNearbyNotified = <String>{};
+  final Set<String> _favoriteAreaNotified = <String>{};
 
   static const _kNostrExpiryDays = 'resilnet_nostr_expiry_days';
   NoticeExpiry _nostrExpiry = NoticeExpiry.sevenDays;
@@ -322,6 +333,7 @@ class AppState extends ChangeNotifier {
       _udp!.addListener(notifyListeners);
       _nostr!.addListener(notifyListeners);
       _mesh!.addListener(notifyListeners);
+      _mesh!.addListener(_onMeshPeersChanged);
 
       resilnet.startNetworkMonitoring(blePeerCount: () => _mesh?.nearbyPeerCount ?? 0);
       resilnet.addListener(() {
@@ -349,6 +361,8 @@ class AppState extends ChangeNotifier {
       );
       _e2eeEnabled = prefs.getBool(_kE2eeEnabled) ?? true;
       _screenshotAlerts = prefs.getBool(_kScreenshotAlerts) ?? true;
+      _meshBridgeEnabled = prefs.getBool(_kMeshBridgeEnabled) ?? true;
+      _loadFavorites(prefs);
       _nostrExpiry = NoticeExpiry.fromDays(prefs.getInt(_kNostrExpiryDays));
       _loadNotices(prefs);
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
@@ -446,6 +460,116 @@ class AppState extends ChangeNotifier {
     await prefs.setBool(_kScreenshotAlerts, enabled);
     await screenshots.setEnabled(enabled);
     notifyListeners();
+  }
+
+  Future<void> setMeshBridgeEnabled(bool enabled) async {
+    if (_meshBridgeEnabled == enabled) return;
+    _meshBridgeEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kMeshBridgeEnabled, enabled);
+    notifyListeners();
+  }
+
+  bool isFavorite(String peerId) => _favoritePeerIds.contains(peerId);
+
+  Future<void> toggleFavorite(String peerId) async {
+    final id = peerId.trim();
+    if (id.isEmpty) return;
+    if (_favoritePeerIds.contains(id)) {
+      _favoritePeerIds.remove(id);
+      _favoriteNearbyNotified.remove(id);
+      _favoriteAreaNotified.remove(id);
+    } else {
+      _favoritePeerIds.add(id);
+    }
+    await _persistFavorites();
+    notifyListeners();
+  }
+
+  void _loadFavorites(SharedPreferences prefs) {
+    _favoritePeerIds.clear();
+    final raw = prefs.getString(_kFavoritePeerIds);
+    if (raw == null || raw.isEmpty) return;
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      for (final item in list) {
+        if (item is String && item.isNotEmpty) _favoritePeerIds.add(item);
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] load favorites failed: $e');
+    }
+  }
+
+  Future<void> _persistFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _kFavoritePeerIds,
+      jsonEncode(_favoritePeerIds.toList()),
+    );
+  }
+
+  void _onMeshPeersChanged() {
+    unawaited(_notifyFavoriteNearby());
+  }
+
+  Future<void> _notifyFavoriteNearby() async {
+    if (!_notificationsEnabled || _favoritePeerIds.isEmpty || !isReady) return;
+    final nearby = _mesh?.nearbyPeers ?? const [];
+    for (final peer in nearby) {
+      if (!_favoritePeerIds.contains(peer.id) || peer.isBlocked) continue;
+      if (_favoriteNearbyNotified.contains(peer.id)) continue;
+      _favoriteNearbyNotified.add(peer.id);
+      final name = await db.resolveDisplayName(peer.id);
+      final th = _localeOverrideCode == 'th';
+      await notifications.showFavoriteAlert(
+        id: peer.id.hashCode & 0x7fffffff,
+        title: th ? 'คนโปรดอยู่ใกล้' : 'Favorite nearby',
+        body: th ? '$name อยู่ใกล้บน mesh' : '$name is nearby on mesh',
+      );
+    }
+    // Drop notified set entries that left nearby so we can re-alert later.
+    final nearbyIds = nearby.map((p) => p.id).toSet();
+    _favoriteNearbyNotified.removeWhere((id) => !nearbyIds.contains(id));
+  }
+
+  Future<void> _notifyFavoriteInArea() async {
+    if (!_notificationsEnabled || _favoritePeerIds.isEmpty) return;
+    final online = peersOnlineInSelectedArea();
+    final onlineIds = online.map((p) => p.id).toSet();
+    for (final peer in online) {
+      if (!_favoritePeerIds.contains(peer.id) || peer.isBlocked) continue;
+      if (_favoriteAreaNotified.contains(peer.id)) continue;
+      // Skip if already notified as nearby (same moment).
+      if (_favoriteNearbyNotified.contains(peer.id)) continue;
+      _favoriteAreaNotified.add(peer.id);
+      final name = await db.resolveDisplayName(peer.id);
+      final th = _localeOverrideCode == 'th';
+      await notifications.showFavoriteAlert(
+        id: (peer.id.hashCode ^ 0x51) & 0x7fffffff,
+        title: th ? 'คนโปรดในพื้นที่' : 'Favorite in area',
+        body: th ? '$name ออนไลน์ในพื้นที่นี้' : '$name is online in this area',
+      );
+    }
+    _favoriteAreaNotified.removeWhere((id) => !onlineIds.contains(id));
+  }
+
+  /// Prefer a single transport when mesh bridge is off (no dual-path fan-out).
+  List<TransportTypeDto> _applyBridgePolicy(List<TransportTypeDto> transports) {
+    if (_meshBridgeEnabled || transports.length <= 1) return transports;
+    final hasNostr = transports.contains(TransportTypeDto.nostr);
+    final meshLike = transports
+        .where(
+          (t) =>
+              t == TransportTypeDto.bluetoothMesh || t == TransportTypeDto.loRa,
+        )
+        .toList();
+    if (hasNostr && meshLike.isNotEmpty) {
+      final ble = _mesh?.nearbyPeerCount ?? 0;
+      final picked =
+          ble > 0 ? meshLike : const [TransportTypeDto.nostr];
+      return picked.isNotEmpty ? picked : transports;
+    }
+    return transports;
   }
 
   Future<void> setNostrExpiry(NoticeExpiry expiry) async {
@@ -847,6 +971,7 @@ class AppState extends ChangeNotifier {
     }
     _pruneNostrPresence();
     notifyListeners();
+    unawaited(_notifyFavoriteInArea());
   }
 
   void _pruneNostrPresence() {
@@ -1067,6 +1192,84 @@ class AppState extends ChangeNotifier {
     return deleted;
   }
 
+  /// Emergency wipe: chats, peers, RSA + Nostr identity → re-onboard.
+  /// Does not restore plaintext rooms; new keys only.
+  Future<void> panicWipeLocalIdentity() async {
+    debugPrint('[ResilNet] panicWipeLocalIdentity start');
+    await _stopRadios();
+
+    try {
+      _mesh?.removeListener(notifyListeners);
+    } catch (_) {}
+    try {
+      _ackHandler.removeListener(notifyListeners);
+    } catch (_) {}
+    try {
+      _ackQueue?.removeListener(notifyListeners);
+      _ackQueue?.dispose();
+    } catch (_) {}
+
+    await db.wipeLocalUserData();
+    _sessionMessages.clear();
+    _systemLines.clear();
+    _notices.clear();
+    _nostrPresence.clear();
+    _favoritePeerIds.clear();
+    _favoriteNearbyNotified.clear();
+    _favoriteAreaNotified.clear();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kNotices);
+    await prefs.remove(_kFavoritePeerIds);
+    await prefs.setBool(_kOnboardingDone, false);
+    _onboardingCompleted = false;
+
+    try {
+      await _storage.delete(key: _kDisplayName);
+    } catch (_) {}
+    _displayName = '';
+
+    await crypto.wipeAndRegenerate();
+
+    _ackHandler = AckHandlerService(
+      database: db,
+      myUserId: crypto.myUserId,
+    );
+    _ackHandler.addListener(notifyListeners);
+
+    _ackQueue = AckQueueManager(
+      database: db,
+      myUserId: crypto.myUserId,
+      isHighSpeedTransport: () =>
+          resilnet.isInternetAvailable || resilnet.isGatewayWifiActive,
+      sendAckBatch: _sendAckBatch,
+    );
+    await _ackQueue!.restoreFromDatabase();
+    _ackQueue!.addListener(notifyListeners);
+
+    _mesh = BleMeshService(
+      database: db,
+      myUserId: crypto.myUserId,
+      resilnet: resilnet,
+      ackQueue: _ackQueue,
+      ackHandler: _ackHandler,
+      shouldPersistHistory: () => _saveMessageHistory,
+      onEphemeralMessage: _rememberSessionMessage,
+    );
+    _mesh!.addListener(notifyListeners);
+    _mesh!.addListener(_onMeshPeersChanged);
+
+    try {
+      await _nostr?.wipeIdentityAndRestart();
+      _attachGeoPresenceListener();
+    } catch (e) {
+      debugPrint('[ResilNet] panicWipe nostr restart failed: $e');
+    }
+
+    notifyListeners();
+    debugPrint('[ResilNet] panicWipeLocalIdentity done id=${crypto.myUserId}');
+  }
+
   /// ส่งข้อความออกผ่าน Rust Hybrid Router แล้ว fan-out ตาม transports
   ///
   /// Privacy: [msg] must already be sealed (RSA-OAEP + AES-GCM). The router and
@@ -1098,9 +1301,11 @@ class AppState extends ChangeNotifier {
       return routed;
     }
 
-    final transports = routed.transports.isNotEmpty
-        ? routed.transports
-        : <TransportTypeDto>[routed.transport];
+    final transports = _applyBridgePolicy(
+      routed.transports.isNotEmpty
+          ? routed.transports
+          : <TransportTypeDto>[routed.transport],
+    );
 
     var markedSent = false;
     for (final transport in transports) {

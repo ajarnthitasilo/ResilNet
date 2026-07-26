@@ -713,4 +713,220 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get identityChatTip =>
       'Tip: you can also scan a QR in chat to add a public key for E2EE';
+
+  @override
+  String get infoOpen => 'About / Info';
+
+  @override
+  String get infoTabInfo => 'Info';
+
+  @override
+  String get infoTabSettingsHint =>
+      'Open Settings from the menu for language, E2EE, and data tools';
+
+  @override
+  String get infoHowToTitle => 'How to use';
+
+  @override
+  String get infoHowToBody =>
+      '• Tap the channel icon to switch Chat / #mesh / Area\n• Tap place to pick geohash size\n• Tap people for members or who’s online\n• Open Identity/QR from ⋮ to exchange keys in person\n• Area “public” sends sealed E2EE to each online peer — not a plaintext room';
+
+  @override
+  String get infoFeaturesTitle => 'Features';
+
+  @override
+  String get infoFeatureOffline => 'Offline messaging via Bluetooth Low Energy';
+
+  @override
+  String get infoFeatureE2ee =>
+      'End-to-end encryption with RSA-OAEP + AES-GCM (not Noise)';
+
+  @override
+  String get infoFeatureMultihop =>
+      'Messages can hop through nearby peers to go farther';
+
+  @override
+  String get infoFeatureBridge =>
+      'Hybrid mesh ↔ internet (Nostr) for sealed envelopes';
+
+  @override
+  String get infoFeatureGeo =>
+      'Local geohash channels for people nearby (discovery UX)';
+
+  @override
+  String get infoFeatureNotices => 'Notices with expiry for #mesh and Area';
+
+  @override
+  String get infoPrivacyTitle => 'Privacy';
+
+  @override
+  String get infoPrivacyNoRoom =>
+      'No plaintext village / public chat room on the wire';
+
+  @override
+  String get infoPrivacyFanout =>
+      'Area send = sealed 1:1 fan-out to peers with known public keys';
+
+  @override
+  String get infoPrivacyPresence =>
+      'Internet area presence uses ephemeral Nostr keys';
+
+  @override
+  String get infoSymbolsTitle => 'Symbols';
+
+  @override
+  String get infoSymBle => 'Direct Bluetooth link';
+
+  @override
+  String get infoSymMesh => 'Reachable via mesh (others forward)';
+
+  @override
+  String get infoSymInternet => 'Via internet (Nostr) — sealed envelopes';
+
+  @override
+  String get infoSymBridge => 'Arrived via mesh↔internet bridge path';
+
+  @override
+  String get infoSymOffline => 'Offline — not reachable right now';
+
+  @override
+  String get infoSymInArea => 'In this location channel’s area';
+
+  @override
+  String get infoSymE2eeOk => 'End-to-end encrypted session';
+
+  @override
+  String get infoSymE2eeFail =>
+      'Encryption unavailable — do not send sensitive text';
+
+  @override
+  String get infoSymVerified => 'Identity verified / known key';
+
+  @override
+  String get infoSymBlocked => 'Blocked';
+
+  @override
+  String get infoSymUnread => 'Unread private message';
+
+  @override
+  String get infoEmergencyTitle => 'Emergency mode';
+
+  @override
+  String get infoEmergencyBody =>
+      'Triple-tap the ResilNet title on the home screen to wipe messages, keys, and identity on this device.';
+
+  @override
+  String get infoLegendNote =>
+      'Some path icons are documented here for clarity; delivery ticks in chat remain the primary send status.';
+
+  @override
+  String get dangerZoneTitle => 'Danger zone';
+
+  @override
+  String get dangerZoneSubtitle =>
+      'Deletes messages, encryption keys, Nostr identity, peers, and nicknames on this device. You will set up again.';
+
+  @override
+  String get panicWipeTitle => 'Emergency wipe';
+
+  @override
+  String get panicWipeSubtitle =>
+      'Erase everything local — same as triple-tapping the home title';
+
+  @override
+  String get panicWipeConfirmTitle => 'Wipe all local data?';
+
+  @override
+  String get panicWipeConfirmBody =>
+      'This permanently deletes chats, keys, and identity on this phone.\nPeers must re-exchange QR keys with your new identity.\nThis cannot be undone.';
+
+  @override
+  String get panicWipeAction => 'Wipe everything';
+
+  @override
+  String get panicWipeSnack => 'Local identity wiped — set up again';
+
+  @override
+  String get meshBridgeTitle => 'Mesh bridge';
+
+  @override
+  String get meshBridgeSubtitle =>
+      'When on (default), sealed envelopes may use both BLE mesh and internet (Nostr) together so nearby mesh islands can connect. When off, sends use one path only — never puts plaintext on the wire.';
+
+  @override
+  String get favoritesTitle => 'Favorites';
+
+  @override
+  String get favoritesAdd => 'Add to favorites';
+
+  @override
+  String get favoritesRemove => 'Remove from favorites';
+
+  @override
+  String get favoritesEmpty =>
+      'No favorites yet — star a peer from the member list';
+
+  @override
+  String get favoritesNearbyTitle => 'Favorite nearby';
+
+  @override
+  String favoritesNearbyBody(String name) {
+    return '$name is nearby on mesh';
+  }
+
+  @override
+  String get favoritesInAreaTitle => 'Favorite in area';
+
+  @override
+  String favoritesInAreaBody(String name) {
+    return '$name is online in this area';
+  }
+
+  @override
+  String get topologyTitle => 'Mesh topology';
+
+  @override
+  String get topologySubtitle =>
+      'Peers and connection hints from mesh announce (read-only)';
+
+  @override
+  String get topologyConnectedNow => 'Connected now (BLE)';
+
+  @override
+  String get topologyNearby => 'Nearby (BLE)';
+
+  @override
+  String get topologyKnown => 'Known peers';
+
+  @override
+  String get topologyEmpty => 'No peers learned yet — stay nearby with BLE on';
+
+  @override
+  String get topologyOpen => 'Mesh topology';
+
+  @override
+  String get slashHelpTitle => 'Commands';
+
+  @override
+  String get slashHelpBody =>
+      '/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)';
+
+  @override
+  String get slashWhoEmpty => 'No one online in this channel right now';
+
+  @override
+  String slashWhoTitle(int count) {
+    return 'Online ($count)';
+  }
+
+  @override
+  String get slashDropNeedText => 'Usage: /drop your note text';
+
+  @override
+  String slashDropDone(String channel) {
+    return 'Dropped notice on $channel';
+  }
+
+  @override
+  String get slashUnknown => 'Unknown command — try /help';
 }

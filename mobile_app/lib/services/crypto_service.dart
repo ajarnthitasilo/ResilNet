@@ -32,6 +32,23 @@ class CryptoService {
 
     if (_privatePem != null && _publicPem != null) return;
 
+    await _generateAndPersist();
+  }
+
+  /// Panic wipe: drop RSA identity from secure storage and mint a new keypair.
+  Future<void> wipeAndRegenerate() async {
+    try {
+      await _storage.delete(key: _kPrivatePem).timeout(_keychainTimeout);
+      await _storage.delete(key: _kPublicPem).timeout(_keychainTimeout);
+    } catch (e) {
+      debugPrint('[Crypto] wipe delete failed: $e');
+    }
+    _privatePem = null;
+    _publicPem = null;
+    await _generateAndPersist();
+  }
+
+  Future<void> _generateAndPersist() async {
     final pair = _generateRsaKeyPair();
     final privatePem = _encodePrivateKeyToPem(
       pair.privateKey as pc.RSAPrivateKey,

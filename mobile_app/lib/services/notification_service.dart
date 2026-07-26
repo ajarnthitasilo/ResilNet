@@ -20,9 +20,16 @@ class NotificationService {
       description: 'แจ้งเตือนข้อความส่วนตัว (E2EE)',
       importance: Importance.high,
     );
+    const presenceChannel = AndroidNotificationChannel(
+      'resilnet_presence',
+      'Presence',
+      description: 'Favorites nearby / in area',
+      importance: Importance.defaultImportance,
+    );
     final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     await androidPlugin?.createNotificationChannel(directChannel);
+    await androidPlugin?.createNotificationChannel(presenceChannel);
 
     _initialized = true;
   }
@@ -55,6 +62,21 @@ class NotificationService {
       id: id,
       title: PushNotificationCopy.title,
       body: PushNotificationCopy.genericBody,
+    );
+  }
+
+  /// Favorite peer appeared nearby or in area.
+  Future<void> showFavoriteAlert({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    await _show(
+      id: id,
+      title: title,
+      body: body,
+      channelId: 'resilnet_presence',
+      channelName: 'Presence',
     );
   }
 

@@ -10,8 +10,10 @@ import 'package:uuid/uuid.dart';
 
 import '../app/theme.dart';
 import '../core/payload_kinds.dart';
+import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/chat_message.dart';
+import '../models/feed_channel.dart';
 import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
@@ -215,14 +217,34 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _send() async {
     final s = context.read<AppState>();
+    final l10n = context.l10n;
+    final msgText = _text.text.trim();
+    if (msgText.isEmpty) return;
+
+    final slash = await SlashCommands.tryHandle(
+      raw: msgText,
+      state: s,
+      l10n: l10n,
+      channel: FeedChannel.directs,
+    );
+    if (slash.handled) {
+      _text.clear();
+      if (_showEmojiPicker) setState(() => _showEmojiPicker = false);
+      if (!mounted) return;
+      SlashCommands.showFeedback(
+        context,
+        l10n: l10n,
+        feedback: slash.feedback,
+      );
+      return;
+    }
+
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.settingsE2eeSubtitle)),
       );
       return;
     }
-    final msgText = _text.text.trim();
-    if (msgText.isEmpty) return;
 
     final receiverId = widget.peerId;
     final receiverPub = await _resolveReceiverPub(s);

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
 import '../core/payload_kinds.dart';
+import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
 import '../models/mesh_retention.dart';
@@ -19,9 +20,11 @@ import '../widgets/mesh_status_bar.dart';
 import 'chat_screen.dart';
 import 'feed_channel_sheet.dart';
 import 'identity_screen.dart';
+import 'info_sheet.dart';
 import 'location_channel_sheet.dart';
 import 'notices_sheet.dart';
 import 'online_people_sheet.dart';
+import 'panic_wipe.dart';
 import 'peer_list_screen.dart';
 import 'settings_screen.dart';
 
@@ -38,12 +41,30 @@ class _ChatListScreenState extends State<ChatListScreen> {
   final _compose = TextEditingController();
   NoticeExpiry _expiry = NoticeExpiry.sevenDays;
   bool _sending = false;
+  int _titleTapCount = 0;
+  DateTime? _titleTapAt;
 
   @override
   void dispose() {
     _peerController.dispose();
     _compose.dispose();
     super.dispose();
+  }
+
+  void _onTitleTap() {
+    final now = DateTime.now();
+    final prev = _titleTapAt;
+    if (prev == null || now.difference(prev) > const Duration(milliseconds: 900)) {
+      _titleTapCount = 1;
+    } else {
+      _titleTapCount += 1;
+    }
+    _titleTapAt = now;
+    if (_titleTapCount >= 3) {
+      _titleTapCount = 0;
+      _titleTapAt = null;
+      unawaited(confirmAndPanicWipe(context));
+    }
   }
 
   Future<void> _openPeer(BuildContext context, String peerId) async {
@@ -110,6 +131,25 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Future<void> _sendPublic(AppState s) async {
     final text = _compose.text.trim();
     if (text.isEmpty || _sending) return;
+    final l10n = context.l10n;
+
+    final slash = await SlashCommands.tryHandle(
+      raw: text,
+      state: s,
+      l10n: l10n,
+      channel: s.feedChannel,
+    );
+    if (slash.handled) {
+      _compose.clear();
+      if (!mounted) return;
+      SlashCommands.showFeedback(
+        context,
+        l10n: l10n,
+        feedback: slash.feedback,
+      );
+      return;
+    }
+
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
@@ -227,16 +267,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         titleSpacing: 8,
-        title: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: Text(
-            l10n.communityTitle,
-            maxLines: 1,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.3,
-              fontSize: 18,
+        title: GestureDetector(
+          onTap: _onTitleTap,
+          behavior: HitTestBehavior.opaque,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              l10n.communityTitle,
+              maxLines: 1,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.3,
+                fontSize: 18,
+              ),
             ),
           ),
         ),
@@ -301,9 +345,15 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const IdentityScreen()),
                 );
+              } else if (v == 'info') {
+                showInfoSheet(context);
               }
             },
             itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'info',
+                child: Text(l10n.infoOpen),
+              ),
               PopupMenuItem(
                 value: 'settings',
                 child: Text(l10n.settings),

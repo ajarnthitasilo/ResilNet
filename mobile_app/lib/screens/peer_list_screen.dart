@@ -87,7 +87,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          final peers = snap.data ?? const <Peer>[];
+          final peers = List<Peer>.from(snap.data ?? const <Peer>[]);
           if (peers.isEmpty) {
             return Center(
               child: Padding(
@@ -103,6 +103,13 @@ class _PeerListScreenState extends State<PeerListScreen> {
               ),
             );
           }
+
+          peers.sort((a, b) {
+            final af = s.isFavorite(a.id) ? 0 : 1;
+            final bf = s.isFavorite(b.id) ? 0 : 1;
+            if (af != bf) return af.compareTo(bf);
+            return b.lastSeen.compareTo(a.lastSeen);
+          });
 
           final nearbyIds = s.isReady
               ? s.mesh.nearbyPeers.map((p) => p.id).toSet()
@@ -131,6 +138,15 @@ class _PeerListScreenState extends State<PeerListScreen> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          if (s.isFavorite(peer.id))
+                            const Padding(
+                              padding: EdgeInsets.only(left: 6),
+                              child: Icon(
+                                Icons.star,
+                                size: 16,
+                                color: Colors.amberAccent,
+                              ),
+                            ),
                         ],
                       );
                     },
@@ -162,6 +178,9 @@ class _PeerListScreenState extends State<PeerListScreen> {
                       switch (action) {
                         case 'chat':
                           await _openChat(peer.id);
+                        case 'favorite':
+                          await s.toggleFavorite(peer.id);
+                          await _refresh();
                         case 'block':
                           await _toggleBlock(s, peer);
                       }
@@ -170,6 +189,14 @@ class _PeerListScreenState extends State<PeerListScreen> {
                       PopupMenuItem(
                         value: 'chat',
                         child: Text(l10n.peersOpenChat),
+                      ),
+                      PopupMenuItem(
+                        value: 'favorite',
+                        child: Text(
+                          s.isFavorite(peer.id)
+                              ? l10n.favoritesRemove
+                              : l10n.favoritesAdd,
+                        ),
                       ),
                       PopupMenuItem(
                         value: 'block',

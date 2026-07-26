@@ -8,6 +8,9 @@ import '../models/notice_expiry.dart';
 import '../models/transport_mode.dart';
 import '../state/app_state.dart';
 import 'esp32_firmware_screen.dart';
+import 'info_sheet.dart';
+import 'mesh_topology_screen.dart';
+import 'panic_wipe.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -18,9 +21,10 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _clearing = false;
+  bool _wiping = false;
 
   Future<void> _confirmClearMessages() async {
-    if (_clearing) return;
+    if (_clearing || _wiping) return;
     final l10n = context.l10n;
 
     final ok = await showDialog<bool>(
@@ -55,6 +59,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
       );
     } finally {
       if (mounted) setState(() => _clearing = false);
+    }
+  }
+
+  Future<void> _confirmPanicWipe() async {
+    if (_clearing || _wiping) return;
+    setState(() => _wiping = true);
+    try {
+      final wiped = await confirmAndPanicWipe(context);
+      if (!mounted || !wiped) return;
+      // Pop settings — home will switch to onboarding.
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } finally {
+      if (mounted) setState(() => _wiping = false);
     }
   }
 
@@ -124,6 +141,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: s.screenshotAlerts,
               onChanged: s.setScreenshotAlerts,
             ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: Icon(
+                s.meshBridgeEnabled ? Icons.hub : Icons.hub_outlined,
+                color: s.meshBridgeEnabled
+                    ? ResilNetTheme.emerald
+                    : Colors.white54,
+              ),
+              title: Text(l10n.meshBridgeTitle),
+              subtitle: Text(l10n.meshBridgeSubtitle),
+              value: s.meshBridgeEnabled,
+              onChanged: s.setMeshBridgeEnabled,
+            ),
             const SizedBox(height: 12),
             Text(l10n.transportModeTitle),
             const SizedBox(height: 4),
@@ -181,8 +211,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
               ],
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
             _section(l10n.settingsDevices),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.share_outlined),
+              title: Text(l10n.topologyOpen),
+              subtitle: Text(l10n.topologySubtitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const MeshTopologyScreen()),
+                );
+              },
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.download_outlined),
@@ -220,7 +262,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               contentPadding: EdgeInsets.zero,
               leading: Icon(
                 Icons.delete_sweep_outlined,
-                color: _clearing ? Colors.white38 : Colors.redAccent,
+                color: _clearing || _wiping ? Colors.white38 : Colors.redAccent,
               ),
               title: Text(l10n.settingsClearTitle),
               subtitle: Text(l10n.settingsClearSubtitle),
@@ -231,8 +273,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.chevron_right),
-              enabled: !_clearing,
+              enabled: !_clearing && !_wiping,
               onTap: _confirmClearMessages,
+            ),
+            const SizedBox(height: 28),
+            _section(l10n.dangerZoneTitle),
+            Text(
+              l10n.dangerZoneSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.55),
+                  ),
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(
+                Icons.warning_amber_rounded,
+                color: _wiping ? Colors.white38 : Colors.redAccent,
+              ),
+              title: Text(
+                l10n.panicWipeTitle,
+                style: const TextStyle(color: Colors.redAccent),
+              ),
+              subtitle: Text(l10n.panicWipeSubtitle),
+              trailing: _wiping
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.chevron_right, color: Colors.redAccent),
+              enabled: !_clearing && !_wiping,
+              onTap: _confirmPanicWipe,
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.info_outline),
+              title: Text(l10n.infoOpen),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => showInfoSheet(context),
             ),
             const SizedBox(height: 32),
             Center(

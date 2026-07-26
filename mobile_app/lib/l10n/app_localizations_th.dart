@@ -709,4 +709,218 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get identityChatTip =>
       'ทิป: สามารถสแกน QR ในหน้าแชตเพื่อเติม Public Key ให้พร้อมส่ง E2EE';
+
+  @override
+  String get infoOpen => 'เกี่ยวกับ / ข้อมูล';
+
+  @override
+  String get infoTabInfo => 'ข้อมูล';
+
+  @override
+  String get infoTabSettingsHint =>
+      'เปิดตั้งค่าจากเมนู ⋮ สำหรับภาษา, E2EE และข้อมูล';
+
+  @override
+  String get infoHowToTitle => 'วิธีใช้งาน';
+
+  @override
+  String get infoHowToBody =>
+      '• แตะไอคอนช่องเพื่อสลับ Chat / #mesh / Area\n• แตะไอคอนสถานที่เพื่อเลือกขนาด geohash\n• แตะไอคอนคนเพื่อดูสมาชิกหรือคนออนไลน์\n• เปิด Identity/QR จาก ⋮ เพื่อแลกกุญแจตัวต่อตัว\n• ข้อความ “สาธารณะ” ใน Area คือการส่งแบบ sealed E2EE ทีละคน — ไม่ใช่ห้อง plaintext';
+
+  @override
+  String get infoFeaturesTitle => 'ฟีเจอร์';
+
+  @override
+  String get infoFeatureOffline => 'สื่อสารออฟไลน์ด้วย Bluetooth Low Energy';
+
+  @override
+  String get infoFeatureE2ee =>
+      'เข้ารหัสปลายทางด้วย RSA-OAEP + AES-GCM (ไม่ใช่ Noise)';
+
+  @override
+  String get infoFeatureMultihop => 'ข้อความส่งต่อผ่านเพียร์เพื่อไปได้ไกลขึ้น';
+
+  @override
+  String get infoFeatureBridge =>
+      'เชื่อม mesh ↔ อินเทอร์เน็ต (Nostr) สำหรับซองที่เข้ารหัสแล้ว';
+
+  @override
+  String get infoFeatureGeo =>
+      'ช่อง geohash สำหรับคนใกล้ตัว (ใช้ค้นหา ไม่ใช่ห้องเปิด)';
+
+  @override
+  String get infoFeatureNotices =>
+      'ประกาศ/โน้ตพร้อมวันหมดอายุใน #mesh และ Area';
+
+  @override
+  String get infoPrivacyTitle => 'ความเป็นส่วนตัว';
+
+  @override
+  String get infoPrivacyNoRoom => 'ไม่มีห้องแชทหมู่บ้านแบบ plaintext บนสาย';
+
+  @override
+  String get infoPrivacyFanout =>
+      'ส่งใน Area = sealed fan-out 1:1 ไปยังเพียร์ที่มี public key';
+
+  @override
+  String get infoPrivacyPresence =>
+      'Presence บน Internet ใช้นามแฝง Nostr ชั่วคราว';
+
+  @override
+  String get infoSymbolsTitle => 'สัญลักษณ์';
+
+  @override
+  String get infoSymBle => 'เชื่อมต่อโดยตรงผ่าน Bluetooth';
+
+  @override
+  String get infoSymMesh => 'เข้าถึงได้ผ่าน mesh โดยมีผู้อื่นส่งต่อ';
+
+  @override
+  String get infoSymInternet => 'ผ่านอินเทอร์เน็ต (Nostr) — ซองที่เข้ารหัสแล้ว';
+
+  @override
+  String get infoSymBridge => 'มาถึงผ่านเส้นทางบริดจ์ mesh↔internet';
+
+  @override
+  String get infoSymOffline => 'ออฟไลน์ — เข้าถึงไม่ได้ตอนนี้';
+
+  @override
+  String get infoSymInArea => 'อยู่ในพื้นที่ของช่องตำแหน่งนี้';
+
+  @override
+  String get infoSymE2eeOk => 'เซสชันที่เข้ารหัสแบบครบวงจร';
+
+  @override
+  String get infoSymE2eeFail => 'เข้ารหัสไม่ได้ — อย่าส่งข้อความอ่อนไหว';
+
+  @override
+  String get infoSymVerified => 'ยืนยันตัวตน / มีกุญแจแล้ว';
+
+  @override
+  String get infoSymBlocked => 'ถูกบล็อก';
+
+  @override
+  String get infoSymUnread => 'ข้อความส่วนตัวที่ยังไม่ได้อ่าน';
+
+  @override
+  String get infoEmergencyTitle => 'โหมดฉุกเฉิน';
+
+  @override
+  String get infoEmergencyBody =>
+      'แตะชื่อ ResilNet บนหน้าหลักสามครั้งเพื่อลบข้อความ กุญแจ และตัวตนบนเครื่องนี้ทันที';
+
+  @override
+  String get infoLegendNote =>
+      'ไอคอนเส้นทางบางรายการอธิบายไว้เพื่อความชัดเจน — สถานะส่งหลักในแชทยังเป็นเครื่องหมายส่ง/อ่าน';
+
+  @override
+  String get dangerZoneTitle => 'โซนอันตราย';
+
+  @override
+  String get dangerZoneSubtitle =>
+      'ลบข้อความ กุญแจเข้ารหัส ตัวตน Nostr เพียร์ และชื่อเล่นบนเครื่องนี้ คุณจะต้องตั้งค่าใหม่';
+
+  @override
+  String get panicWipeTitle => 'ล้างข้อมูลฉุกเฉิน';
+
+  @override
+  String get panicWipeSubtitle =>
+      'ลบทุกอย่างในเครื่อง — เหมือนแตะชื่อบนหน้าหลักสามครั้ง';
+
+  @override
+  String get panicWipeConfirmTitle => 'ล้างข้อมูลทั้งหมดในเครื่อง?';
+
+  @override
+  String get panicWipeConfirmBody =>
+      'จะลบแชท กุญแจ และตัวตนบนโทรศัพท์นี้ถาวร\nเพื่อนต้องสแกน QR ใหม่กับตัวตนใหม่ของคุณ\nย้อนกลับไม่ได้';
+
+  @override
+  String get panicWipeAction => 'ล้างทั้งหมด';
+
+  @override
+  String get panicWipeSnack => 'ล้างตัวตนในเครื่องแล้ว — ตั้งค่าใหม่ได้';
+
+  @override
+  String get meshBridgeTitle => 'บริดจ์ mesh';
+
+  @override
+  String get meshBridgeSubtitle =>
+      'เมื่อเปิด (ค่าเริ่มต้น) ซองที่เข้ารหัสแล้วอาจใช้ทั้ง BLE mesh และอินเทอร์เน็ต (Nostr) พร้อมกัน เพื่อเชื่อมเกาะ mesh ใกล้กัน เมื่อปิดจะส่งทางเดียว — ไม่ใส่ข้อความ plaintext บนสาย';
+
+  @override
+  String get favoritesTitle => 'รายการโปรด';
+
+  @override
+  String get favoritesAdd => 'เพิ่มเป็นคนโปรด';
+
+  @override
+  String get favoritesRemove => 'เอาออกจากคนโปรด';
+
+  @override
+  String get favoritesEmpty => 'ยังไม่มีคนโปรด — กดดาวจากรายชื่อสมาชิก';
+
+  @override
+  String get favoritesNearbyTitle => 'คนโปรดอยู่ใกล้';
+
+  @override
+  String favoritesNearbyBody(String name) {
+    return '$name อยู่ใกล้บน mesh';
+  }
+
+  @override
+  String get favoritesInAreaTitle => 'คนโปรดในพื้นที่';
+
+  @override
+  String favoritesInAreaBody(String name) {
+    return '$name ออนไลน์ในพื้นที่นี้';
+  }
+
+  @override
+  String get topologyTitle => 'โทโพโลยี mesh';
+
+  @override
+  String get topologySubtitle =>
+      'เพียร์และสถานะการเชื่อมต่อจาก mesh announce (อ่านอย่างเดียว)';
+
+  @override
+  String get topologyConnectedNow => 'เชื่อมต่ออยู่ตอนนี้ (BLE)';
+
+  @override
+  String get topologyNearby => 'ใกล้ตัว (BLE)';
+
+  @override
+  String get topologyKnown => 'เพียร์ที่รู้จัก';
+
+  @override
+  String get topologyEmpty =>
+      'ยังไม่มีเพียร์ — เปิด BLE แล้วอยู่ใกล้เครื่องอื่น';
+
+  @override
+  String get topologyOpen => 'โทโพโลยี mesh';
+
+  @override
+  String get slashHelpTitle => 'คำสั่ง';
+
+  @override
+  String get slashHelpBody =>
+      '/help — รายการนี้\n/who — คนออนไลน์ในช่องปัจจุบัน\n/drop <ข้อความ> — ปักโน้ตแบบ sealed ในช่องนี้ (E2EE fan-out)';
+
+  @override
+  String get slashWhoEmpty => 'ยังไม่มีใครออนไลน์ในช่องนี้';
+
+  @override
+  String slashWhoTitle(int count) {
+    return 'ออนไลน์ ($count)';
+  }
+
+  @override
+  String get slashDropNeedText => 'ใช้แบบ: /drop ข้อความของคุณ';
+
+  @override
+  String slashDropDone(String channel) {
+    return 'ปักโน้ตที่ $channel แล้ว';
+  }
+
+  @override
+  String get slashUnknown => 'ไม่รู้จักคำสั่ง — ลอง /help';
 }
