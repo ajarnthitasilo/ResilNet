@@ -488,6 +488,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.1"
+  flutter_screenshot_callback_plus:
+    dependency: "direct main"
+    description:
+      name: flutter_screenshot_callback_plus
+      sha256: e3727bd27ba971e818734af21c21772357e57091a80e805d00f7ebee45806a66
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -1307,14 +1315,6 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
-  screenshot_callback:
-    dependency: "direct main"
-    description:
-      name: screenshot_callback
-      sha256: "80ec324d67f1fb45794045b698cdc7711632b64b2e6a21924286faaade1e0be7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
   shared_preferences:
     dependency: "direct main"
     description:

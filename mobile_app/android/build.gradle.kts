@@ -40,6 +40,15 @@ subprojects {
     }
 }
 
+// Only force JVM 1.8 Kotlin for known legacy Java-1.8 plugins.
+val legacyKotlinJvm18 = setOf("reactive_ble_mobile")
+subprojects {
+    if (name !in legacyKotlinJvm18) return@subprojects
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+    }
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

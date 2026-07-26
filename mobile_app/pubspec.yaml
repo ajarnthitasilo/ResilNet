@@ -63,7 +63,7 @@ dependencies:
   record: ^6.0.0
   audioplayers: ^6.4.0
   image_picker: ^1.1.2
-  screenshot_callback: ^3.0.1
+  flutter_screenshot_callback_plus: ^1.0.1
   latlong2: ^0.10.1
   freezed_annotation: ^3.0.0
   resilnet_core:

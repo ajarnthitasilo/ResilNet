@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:screenshot_callback/screenshot_callback.dart';
+import 'package:flutter_screenshot_callback_plus/flutter_screenshot_callback_plus.dart';
 
 /// Watches OS screenshot events and notifies listeners (chat/system UX).
-class ScreenshotWatchService extends ChangeNotifier {
+class ScreenshotWatchService extends ChangeNotifier
+    implements IScreenshotCallback {
   ScreenshotCallback? _callback;
   bool _enabled = true;
   int _lastShotAt = 0;
@@ -18,11 +19,8 @@ class ScreenshotWatchService extends ChangeNotifier {
     if (!_enabled) return;
     try {
       _callback = ScreenshotCallback();
-      await _callback!.initialize();
-      _callback!.addListener(() {
-        _lastShotAt = DateTime.now().millisecondsSinceEpoch;
-        notifyListeners();
-      });
+      _callback!.setInterfaceScreenshotCallback(this);
+      _callback!.startScreenshot();
     } catch (e) {
       debugPrint('[ResilNet] screenshot watch unavailable: $e');
     }
@@ -35,9 +33,21 @@ class ScreenshotWatchService extends ChangeNotifier {
 
   Future<void> stop() async {
     try {
-      await _callback?.dispose();
+      _callback?.stopScreenshot();
     } catch (_) {}
     _callback = null;
+  }
+
+  @override
+  void screenshotCallback(String data) {
+    if (!_enabled) return;
+    _lastShotAt = DateTime.now().millisecondsSinceEpoch;
+    notifyListeners();
+  }
+
+  @override
+  void deniedPermission() {
+    debugPrint('[ResilNet] screenshot watch permission denied');
   }
 
   @override
