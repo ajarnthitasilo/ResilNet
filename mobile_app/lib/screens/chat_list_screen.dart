@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../app/theme.dart';
 import '../core/geohash.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
@@ -11,6 +12,7 @@ import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
 import 'chat_screen.dart';
 import 'identity_screen.dart';
+import 'notices_sheet.dart';
 import 'peer_list_screen.dart';
 import 'settings_screen.dart';
 
@@ -124,9 +126,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final l10n = context.l10n;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(l10n.communityTitle),
         actions: [
+          if (s.feedChannel == FeedChannel.mesh ||
+              s.feedChannel == FeedChannel.geo)
+            IconButton(
+              tooltip: l10n.noticesOpen,
+              onPressed: () => showNoticesSheet(
+                context,
+                initialScope:
+                    s.feedChannel == FeedChannel.mesh ? 'mesh' : 'geo',
+              ),
+              icon: const Icon(Icons.campaign_outlined),
+            ),
           PopupMenuButton<String>(
             tooltip: l10n.notificationsTooltip,
             icon: Icon(
@@ -170,76 +184,93 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          const MeshStatusBar(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
-            child: SegmentedButton<FeedChannel>(
-              segments: [
-                ButtonSegment(
-                  value: FeedChannel.directs,
-                  label: Text(l10n.feedDirects),
-                  icon: const Icon(Icons.lock_outline, size: 16),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        child: Column(
+          children: [
+            const MeshStatusBar(),
+            if (s.systemLines.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+                child: Text(
+                  '${l10n.screenshotTaken} [${TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(s.systemLines.last.timestamp)).format(context)}]',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.4),
+                        fontStyle: FontStyle.italic,
+                      ),
                 ),
-                ButtonSegment(
-                  value: FeedChannel.mesh,
-                  label: Text(l10n.feedMesh),
-                  icon: const Icon(Icons.bluetooth, size: 16),
-                ),
-                ButtonSegment(
-                  value: FeedChannel.geo,
-                  label: Text(l10n.feedGeo),
-                  icon: const Icon(Icons.public, size: 16),
-                ),
-              ],
-              selected: {s.feedChannel},
-              onSelectionChanged: (set) {
-                s.setFeedChannel(set.first);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                _feedSubtitle(l10n, s.feedChannel),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.55),
-                    ),
               ),
-            ),
-          ),
-          if (s.feedChannel == FeedChannel.directs) ...[
             Padding(
-              padding: const EdgeInsets.all(14),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _peerController,
-                      decoration: InputDecoration(hintText: l10n.peerIdHint),
-                    ),
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+              child: SegmentedButton<FeedChannel>(
+                segments: [
+                  ButtonSegment(
+                    value: FeedChannel.directs,
+                    label: Text(l10n.feedDirects),
+                    icon: const Icon(Icons.lock_outline, size: 16),
                   ),
-                  const SizedBox(width: 10),
-                  FilledButton(
-                    onPressed: () {
-                      final peer = _peerController.text.trim();
-                      if (peer.isEmpty) return;
-                      _openPeer(context, peer);
-                    },
-                    child: Text(l10n.start),
+                  ButtonSegment(
+                    value: FeedChannel.mesh,
+                    label: Text(l10n.feedMesh),
+                    icon: const Icon(Icons.bluetooth, size: 16),
+                  ),
+                  ButtonSegment(
+                    value: FeedChannel.geo,
+                    label: Text(l10n.feedGeo),
+                    icon: const Icon(Icons.public, size: 16),
                   ),
                 ],
+                selected: {s.feedChannel},
+                onSelectionChanged: (set) {
+                  s.setFeedChannel(set.first);
+                },
               ),
             ),
-            Expanded(child: _DirectsBody(onOpen: _openPeer, onAlias: _setAlias)),
-          ] else if (s.feedChannel == FeedChannel.mesh)
-            Expanded(child: _MeshBody(onOpen: _openPeer))
-          else
-            Expanded(child: _GeoBody(onOpen: _openPeer)),
-        ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  _feedSubtitle(l10n, s.feedChannel),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.45),
+                      ),
+                ),
+              ),
+            ),
+            if (s.feedChannel == FeedChannel.directs) ...[
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _peerController,
+                        decoration: InputDecoration(hintText: l10n.peerIdHint),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    FilledButton(
+                      onPressed: () {
+                        final peer = _peerController.text.trim();
+                        if (peer.isEmpty) return;
+                        _openPeer(context, peer);
+                      },
+                      child: Text(l10n.start),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: _DirectsBody(onOpen: _openPeer, onAlias: _setAlias),
+              ),
+            ] else if (s.feedChannel == FeedChannel.mesh)
+              Expanded(child: _MeshBody(onOpen: _openPeer))
+            else
+              Expanded(child: _GeoBody(onOpen: _openPeer)),
+          ],
+        ),
       ),
     );
   }
@@ -276,8 +307,7 @@ class _DirectsBody extends StatelessWidget {
           separatorBuilder: (_, _) => const SizedBox(height: 10),
           itemBuilder: (context, i) {
             final peerId = peers[i];
-            return Card(
-              child: ListTile(
+            return ListTile(
                 title: FutureBuilder<String>(
                   future: s.db.resolveDisplayName(peerId),
                   builder: (context, nameSnap) {
@@ -290,11 +320,10 @@ class _DirectsBody extends StatelessWidget {
                   },
                 ),
                 subtitle: Text(l10n.directsSubtitle),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(Icons.chevron_right, size: 18),
                 onTap: () => onOpen(context, peerId),
                 onLongPress: () => onAlias(context, peerId),
-              ),
-            );
+              );
           },
         );
       },
@@ -378,8 +407,7 @@ class _MeshBody extends StatelessWidget {
                     final shortId = peer.id.length > 12
                         ? '${peer.id.substring(0, 12)}…'
                         : peer.id;
-                    return Card(
-                      child: ListTile(
+                    return ListTile(
                         leading: Identicon(id: peer.id),
                         title: FutureBuilder<String>(
                           future: s.db.resolveDisplayName(peer.id),
@@ -392,10 +420,9 @@ class _MeshBody extends StatelessWidget {
                           },
                         ),
                         subtitle: Text('${l10n.meshNearbyPrefix} • $shortId'),
-                        trailing: const Icon(Icons.lock_outline),
+                        trailing: const Icon(Icons.lock_outline, size: 18),
                         onTap: () => onOpen(context, peer.id),
-                      ),
-                    );
+                      );
                   },
                 ),
         ),
@@ -531,7 +558,7 @@ class _GeoBodyState extends State<_GeoBody> {
                     controller: _publicController,
                     enabled: !_sendingPublic,
                     decoration: InputDecoration(
-                      hintText: l10n.geoPublicHint,
+                      hintText: l10n.geoPublicComposeHint(s.geoChannelLabel),
                     ),
                     minLines: 1,
                     maxLines: 3,
@@ -580,27 +607,25 @@ class _GeoBodyState extends State<_GeoBody> {
                   separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, i) {
                     final peer = online[i];
-                    return Card(
-                      child: ListTile(
-                        leading: Identicon(id: peer.id),
-                        title: FutureBuilder<String>(
-                          future: s.db.resolveDisplayName(peer.id),
-                          builder: (context, nameSnap) {
-                            return Text(
-                              nameSnap.data ?? peer.displayName ?? peer.id,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          },
-                        ),
-                        subtitle: Text(
-                          peer.geohash == null || peer.geohash!.isEmpty
-                              ? l10n.geoPeerNearbySubtitle
-                              : l10n.geoPeerSubtitle(s.geoChannelLabel),
-                        ),
-                        trailing: const Icon(Icons.lock_outline),
-                        onTap: () => widget.onOpen(context, peer.id),
+                  return ListTile(
+                      leading: Identicon(id: peer.id),
+                      title: FutureBuilder<String>(
+                        future: s.db.resolveDisplayName(peer.id),
+                        builder: (context, nameSnap) {
+                          return Text(
+                            nameSnap.data ?? peer.displayName ?? peer.id,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        },
                       ),
+                      subtitle: Text(
+                        peer.geohash == null || peer.geohash!.isEmpty
+                            ? l10n.geoPeerNearbySubtitle
+                            : l10n.geoPeerSubtitle(s.geoChannelLabel),
+                      ),
+                      trailing: const Icon(Icons.lock_outline, size: 18),
+                      onTap: () => widget.onOpen(context, peer.id),
                     );
                   },
                 ),

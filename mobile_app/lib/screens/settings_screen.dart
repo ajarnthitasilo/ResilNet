@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../app/theme.dart';
 import '../core/app_version.dart';
 import '../l10n/l10n_ext.dart';
+import '../models/notice_expiry.dart';
 import '../state/app_state.dart';
 import 'esp32_firmware_screen.dart';
 
@@ -55,6 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Widget _section(String title) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -63,54 +70,92 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
-      body: ListView(
-        padding: const EdgeInsets.all(18),
-        children: [
-          Text(l10n.language, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          Text(
-            l10n.languageSubtitle,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.65),
-                ),
-          ),
-          const SizedBox(height: 12),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: SegmentedButton<String>(
-                segments: [
-                  ButtonSegment(
-                    value: 'system',
-                    label: Text(l10n.languageSystem),
-                    icon: const Icon(Icons.phone_android, size: 16),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        child: ListView(
+          padding: const EdgeInsets.all(18),
+          children: [
+            _section(l10n.language),
+            Text(
+              l10n.languageSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.55),
                   ),
-                  ButtonSegment(
-                    value: 'th',
-                    label: Text(l10n.languageThai),
-                  ),
-                  ButtonSegment(
-                    value: 'en',
-                    label: Text(l10n.languageEnglish),
-                  ),
-                ],
-                selected: {override ?? 'system'},
-                onSelectionChanged: (set) {
-                  final next = set.first;
-                  if (next == 'system') {
-                    s.setLocaleOverride(null);
-                  } else {
-                    s.setLocaleOverride(Locale(next));
-                  }
-                },
-              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          Text(l10n.settingsDevices, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          Card(
-            child: ListTile(
+            const SizedBox(height: 12),
+            SegmentedButton<String>(
+              segments: [
+                ButtonSegment(
+                  value: 'system',
+                  label: Text(l10n.languageSystem),
+                ),
+                ButtonSegment(value: 'th', label: Text(l10n.languageThai)),
+                ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
+              ],
+              selected: {override ?? 'system'},
+              onSelectionChanged: (set) {
+                final next = set.first;
+                if (next == 'system') {
+                  s.setLocaleOverride(null);
+                } else {
+                  s.setLocaleOverride(Locale(next));
+                }
+              },
+            ),
+            const SizedBox(height: 28),
+            _section(l10n.settingsPrivacy),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: Icon(
+                s.e2eeEnabled ? Icons.lock_outline : Icons.lock_open,
+                color: s.e2eeEnabled ? ResilNetTheme.emerald : Colors.orangeAccent,
+              ),
+              title: Text(l10n.settingsE2eeTitle),
+              subtitle: Text(l10n.settingsE2eeSubtitle),
+              value: s.e2eeEnabled,
+              onChanged: s.setE2eeEnabled,
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.screenshot_monitor_outlined),
+              title: Text(l10n.settingsScreenshotTitle),
+              subtitle: Text(l10n.settingsScreenshotSubtitle),
+              value: s.screenshotAlerts,
+              onChanged: s.setScreenshotAlerts,
+            ),
+            const SizedBox(height: 8),
+            Text(l10n.settingsNostrExpiryTitle),
+            const SizedBox(height: 4),
+            Text(
+              l10n.settingsNostrExpirySubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.55),
+                  ),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              children: [
+                for (final e in NoticeExpiry.values)
+                  ChoiceChip(
+                    label: Text(
+                      e == NoticeExpiry.forever
+                          ? '∞'
+                          : e == NoticeExpiry.oneDay
+                              ? '1d'
+                              : e == NoticeExpiry.threeDays
+                                  ? '3d'
+                                  : '7d',
+                    ),
+                    selected: s.nostrExpiry == e,
+                    onSelected: (_) => s.setNostrExpiry(e),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 28),
+            _section(l10n.settingsDevices),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.download_outlined),
               title: Text(l10n.settingsFirmwareTitle),
               subtitle: Text(l10n.settingsFirmwareSubtitle),
@@ -121,19 +166,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
-          ),
-          const SizedBox(height: 24),
-          Text(l10n.settingsData, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          Text(
-            l10n.settingsDataHint,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.65),
-                ),
-          ),
-          const SizedBox(height: 12),
-          Card(
-            child: SwitchListTile(
+            const SizedBox(height: 24),
+            _section(l10n.settingsData),
+            Text(
+              l10n.settingsDataHint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.55),
+                  ),
+            ),
+            const SizedBox(height: 8),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
               secondary: Icon(
                 s.saveMessageHistory
                     ? Icons.history
@@ -144,10 +187,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: s.saveMessageHistory,
               onChanged: (v) => s.setSaveMessageHistory(v),
             ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: ListTile(
+            ListTile(
+              contentPadding: EdgeInsets.zero,
               leading: Icon(
                 Icons.delete_sweep_outlined,
                 color: _clearing ? Colors.white38 : Colors.redAccent,
@@ -164,18 +205,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               enabled: !_clearing,
               onTap: _confirmClearMessages,
             ),
-          ),
-          const SizedBox(height: 32),
-          Center(
-            child: Text(
-              l10n.settingsVersion(kAppVersion),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.45),
-                  ),
+            const SizedBox(height: 32),
+            Center(
+              child: Text(
+                l10n.settingsVersion(kAppVersion),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.4),
+                    ),
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-        ],
+            const SizedBox(height: 12),
+          ],
+        ),
       ),
     );
   }

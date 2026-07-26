@@ -229,6 +229,76 @@ class AppLocalizationsEn extends AppLocalizations {
       'When off, messages are still E2EE-sealed and sent, but not stored in local chat history (ephemeral)';
 
   @override
+  String get settingsPrivacy => 'Privacy';
+
+  @override
+  String get settingsE2eeTitle => 'End-to-end encryption';
+
+  @override
+  String get settingsE2eeSubtitle =>
+      'Seal messages with RSA-OAEP + AES-GCM before send (recommended on)';
+
+  @override
+  String get settingsScreenshotTitle => 'Screenshot alerts';
+
+  @override
+  String get settingsScreenshotSubtitle =>
+      'Show a system line in chat when this device captures the screen';
+
+  @override
+  String get settingsNostrExpiryTitle => 'Nostr message keep time';
+
+  @override
+  String get settingsNostrExpirySubtitle =>
+      'How long sealed envelopes should remain locally when online via Nostr';
+
+  @override
+  String get noticeExpiresIn => 'expires in';
+
+  @override
+  String get noticesTitle => 'Notices';
+
+  @override
+  String get noticesMeshIntro =>
+      'Pin short announcements for people around you. They hop phone-to-phone offline and fade after a few days.';
+
+  @override
+  String get noticesGeoIntro =>
+      'Add short notes for this place so other visitors can find them.';
+
+  @override
+  String get noticesEmpty => 'no notices yet';
+
+  @override
+  String get noticesEmptyHint => 'pin the first notice for people around here.';
+
+  @override
+  String get noticesComposeHint => 'post a notice...';
+
+  @override
+  String get noticesUrgent => 'urgent';
+
+  @override
+  String get noticesOpen => 'Notices';
+
+  @override
+  String get screenshotTaken => '* you took a screenshot *';
+
+  @override
+  String get chatAttachImage => 'Attach image';
+
+  @override
+  String get chatImageLabel => 'Image';
+
+  @override
+  String get chatNostrExpiry => 'Nostr keep';
+
+  @override
+  String geoPublicComposeHint(String channel) {
+    return 'Send to $channel — public';
+  }
+
+  @override
   String get settingsClearTitle => 'Clear all messages';
 
   @override

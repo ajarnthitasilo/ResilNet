@@ -494,6 +494,132 @@ abstract class AppLocalizations {
   /// **'When off, messages are still E2EE-sealed and sent, but not stored in local chat history (ephemeral)'**
   String get settingsSaveHistorySubtitle;
 
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsE2eeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End-to-end encryption'**
+  String get settingsE2eeTitle;
+
+  /// No description provided for @settingsE2eeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Seal messages with RSA-OAEP + AES-GCM before send (recommended on)'**
+  String get settingsE2eeSubtitle;
+
+  /// No description provided for @settingsScreenshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot alerts'**
+  String get settingsScreenshotTitle;
+
+  /// No description provided for @settingsScreenshotSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a system line in chat when this device captures the screen'**
+  String get settingsScreenshotSubtitle;
+
+  /// No description provided for @settingsNostrExpiryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr message keep time'**
+  String get settingsNostrExpiryTitle;
+
+  /// No description provided for @settingsNostrExpirySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How long sealed envelopes should remain locally when online via Nostr'**
+  String get settingsNostrExpirySubtitle;
+
+  /// No description provided for @noticeExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'expires in'**
+  String get noticeExpiresIn;
+
+  /// No description provided for @noticesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notices'**
+  String get noticesTitle;
+
+  /// No description provided for @noticesMeshIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin short announcements for people around you. They hop phone-to-phone offline and fade after a few days.'**
+  String get noticesMeshIntro;
+
+  /// No description provided for @noticesGeoIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Add short notes for this place so other visitors can find them.'**
+  String get noticesGeoIntro;
+
+  /// No description provided for @noticesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'no notices yet'**
+  String get noticesEmpty;
+
+  /// No description provided for @noticesEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'pin the first notice for people around here.'**
+  String get noticesEmptyHint;
+
+  /// No description provided for @noticesComposeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'post a notice...'**
+  String get noticesComposeHint;
+
+  /// No description provided for @noticesUrgent.
+  ///
+  /// In en, this message translates to:
+  /// **'urgent'**
+  String get noticesUrgent;
+
+  /// No description provided for @noticesOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Notices'**
+  String get noticesOpen;
+
+  /// No description provided for @screenshotTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'* you took a screenshot *'**
+  String get screenshotTaken;
+
+  /// No description provided for @chatAttachImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach image'**
+  String get chatAttachImage;
+
+  /// No description provided for @chatImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get chatImageLabel;
+
+  /// No description provided for @chatNostrExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr keep'**
+  String get chatNostrExpiry;
+
+  /// No description provided for @geoPublicComposeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to {channel} — public'**
+  String geoPublicComposeHint(String channel);
+
   /// No description provided for @settingsClearTitle.
   ///
   /// In en, this message translates to:

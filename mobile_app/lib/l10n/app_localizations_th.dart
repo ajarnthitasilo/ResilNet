@@ -226,6 +226,76 @@ class AppLocalizationsTh extends AppLocalizations {
       'เมื่อปิด ข้อความยังถูกเข้ารหัส E2EE และส่งตามปกติ แต่จะไม่เก็บในประวัติแชตบนเครื่อง (โหมดชั่วคราว)';
 
   @override
+  String get settingsPrivacy => 'ความเป็นส่วนตัว';
+
+  @override
+  String get settingsE2eeTitle => 'การเข้ารหัสปลายทางถึงปลายทาง (E2EE)';
+
+  @override
+  String get settingsE2eeSubtitle =>
+      'ผนึกข้อความด้วย RSA-OAEP + AES-GCM ก่อนส่ง (แนะนำให้เปิด)';
+
+  @override
+  String get settingsScreenshotTitle => 'แจ้งเตือนการแคปหน้าจอ';
+
+  @override
+  String get settingsScreenshotSubtitle =>
+      'แสดงบรรทัดระบบในแชตเมื่ออุปกรณ์นี้แคปหน้าจอ';
+
+  @override
+  String get settingsNostrExpiryTitle => 'ระยะเวลาเก็บข้อความบน Nostr';
+
+  @override
+  String get settingsNostrExpirySubtitle =>
+      'ระยะที่ซองข้อความควรคงอยู่บนเครื่องเมื่อส่งผ่าน Nostr';
+
+  @override
+  String get noticeExpiresIn => 'expires in';
+
+  @override
+  String get noticesTitle => 'ประกาศ';
+
+  @override
+  String get noticesMeshIntro =>
+      'ปักประกาศสั้น ๆ ให้คนรอบตัว ส่งต่อจากมือถือสู่มือถือได้แม้ออฟไลน์ และหายไปเองหลังผ่านไปสองสามวัน';
+
+  @override
+  String get noticesGeoIntro =>
+      'เพิ่มบันทึกถาวรสั้น ๆ ให้สถานที่นี้เพื่อให้ผู้มาเยือนคนอื่นพบได้';
+
+  @override
+  String get noticesEmpty => 'no notices yet';
+
+  @override
+  String get noticesEmptyHint => 'pin the first notice for people around here.';
+
+  @override
+  String get noticesComposeHint => 'post a notice...';
+
+  @override
+  String get noticesUrgent => 'urgent';
+
+  @override
+  String get noticesOpen => 'ประกาศ';
+
+  @override
+  String get screenshotTaken => '* คุณแคปหน้าจอ *';
+
+  @override
+  String get chatAttachImage => 'แนบรูป';
+
+  @override
+  String get chatImageLabel => 'รูปภาพ';
+
+  @override
+  String get chatNostrExpiry => 'เก็บบน Nostr';
+
+  @override
+  String geoPublicComposeHint(String channel) {
+    return 'ส่งข้อความถึง $channel — สาธารณะ';
+  }
+
+  @override
   String get settingsClearTitle => 'ล้างข้อความทั้งหมด';
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
@@ -16,7 +17,9 @@ import '../core/payload_kinds.dart';
 import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
+import '../models/local_notice.dart';
 import '../models/mesh_retention.dart';
+import '../models/notice_expiry.dart';
 import '../models/peer.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
@@ -30,6 +33,7 @@ import '../services/notification_service.dart';
 import '../services/nostr_sync_service.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../services/resilnet_service.dart';
+import '../services/screenshot_watch_service.dart';
 import '../services/udp_transport_service.dart';
 import '../src/rust/api/dto.dart';
 
@@ -39,6 +43,7 @@ class AppState extends ChangeNotifier {
   final resilnet = ResilNetService();
   final _storage = const FlutterSecureStorage();
   final notifications = NotificationService();
+  final screenshots = ScreenshotWatchService();
 
   BleMeshService? _mesh;
   Esp32SyncService? _esp32;
@@ -140,6 +145,28 @@ class AppState extends ChangeNotifier {
   static const _kMeshRetentionDays = 'resilnet_mesh_retention_days';
   MeshRetention _meshRetention = MeshRetention.keep;
   MeshRetention get meshRetention => _meshRetention;
+
+  /// When false, outbound chat is blocked until re-enabled (network stays sealed).
+  static const _kE2eeEnabled = 'resilnet_e2ee_enabled';
+  bool _e2eeEnabled = true;
+  bool get e2eeEnabled => _e2eeEnabled;
+
+  static const _kScreenshotAlerts = 'resilnet_screenshot_alerts';
+  bool _screenshotAlerts = true;
+  bool get screenshotAlerts => _screenshotAlerts;
+
+  static const _kNostrExpiryDays = 'resilnet_nostr_expiry_days';
+  NoticeExpiry _nostrExpiry = NoticeExpiry.sevenDays;
+  NoticeExpiry get nostrExpiry => _nostrExpiry;
+
+  static const _kNotices = 'resilnet_local_notices';
+  final List<LocalNotice> _notices = <LocalNotice>[];
+  List<LocalNotice> get notices =>
+      List.unmodifiable(_notices.where((n) => !n.isExpired));
+
+  /// Latest local system lines (screenshot etc.) for UI banners.
+  final List<ChatMessage> _systemLines = <ChatMessage>[];
+  List<ChatMessage> get systemLines => List.unmodifiable(_systemLines);
 
   /// In-memory sealed envelopes for the current process only (ephemeral UI).
   final List<ChatMessage> _sessionMessages = <ChatMessage>[];
@@ -308,6 +335,10 @@ class AppState extends ChangeNotifier {
       _meshRetention = MeshRetention.fromDays(
         prefs.getInt(_kMeshRetentionDays),
       );
+      _e2eeEnabled = prefs.getBool(_kE2eeEnabled) ?? true;
+      _screenshotAlerts = prefs.getBool(_kScreenshotAlerts) ?? true;
+      _nostrExpiry = NoticeExpiry.fromDays(prefs.getInt(_kNostrExpiryDays));
+      _loadNotices(prefs);
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
       final loc = prefs.getString(_kLocaleOverride);
       _localeOverrideCode =
@@ -328,10 +359,171 @@ class AppState extends ChangeNotifier {
       }
       _startRetentionTimer();
       unawaited(purgeExpiredMessages());
+      unawaited(_startScreenshotWatch());
     } finally {
       _initDone = true;
       notifyListeners();
     }
+  }
+
+  void _loadNotices(SharedPreferences prefs) {
+    _notices.clear();
+    final raw = prefs.getString(_kNotices);
+    if (raw == null || raw.isEmpty) return;
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      for (final item in list) {
+        if (item is Map<String, dynamic>) {
+          _notices.add(LocalNotice.fromJson(Map<String, Object?>.from(item)));
+        }
+      }
+      _notices.removeWhere((n) => n.isExpired);
+    } catch (e) {
+      debugPrint('[ResilNet] load notices failed: $e');
+    }
+  }
+
+  Future<void> _persistNotices() async {
+    final prefs = await SharedPreferences.getInstance();
+    final active = _notices.where((n) => !n.isExpired).toList();
+    await prefs.setString(
+      _kNotices,
+      jsonEncode(active.map((n) => n.toJson()).toList()),
+    );
+  }
+
+  Future<void> _startScreenshotWatch() async {
+    screenshots.addListener(_onScreenshot);
+    await screenshots.start(enabled: _screenshotAlerts);
+  }
+
+  void _onScreenshot() {
+    if (!_screenshotAlerts) return;
+    final ts = screenshots.lastShotAt;
+    final line = ChatMessage(
+      id: _uuid.v4(),
+      senderId: myUserId,
+      receiverId: myUserId,
+      content: 'screenshot',
+      encryptedPayload: PayloadKinds.system,
+      encryptedKey: PayloadKinds.system,
+      ttl: 0,
+      timestamp: ts == 0 ? DateTime.now().millisecondsSinceEpoch : ts,
+      status: MessageStatus.sent,
+      type: MessageType.direct,
+      payloadKind: PayloadKinds.system,
+    );
+    _systemLines.add(line);
+    if (_systemLines.length > 40) {
+      _systemLines.removeRange(0, _systemLines.length - 40);
+    }
+    notifyListeners();
+  }
+
+  Future<void> setE2eeEnabled(bool enabled) async {
+    _e2eeEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kE2eeEnabled, enabled);
+    notifyListeners();
+  }
+
+  Future<void> setScreenshotAlerts(bool enabled) async {
+    _screenshotAlerts = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kScreenshotAlerts, enabled);
+    await screenshots.setEnabled(enabled);
+    notifyListeners();
+  }
+
+  Future<void> setNostrExpiry(NoticeExpiry expiry) async {
+    if (_nostrExpiry == expiry) return;
+    _nostrExpiry = expiry;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kNostrExpiryDays, expiry.days);
+    // Align mesh retention purge window when a finite keep-time is chosen.
+    if (expiry.days > 0) {
+      await setMeshRetention(MeshRetention.fromDays(expiry.days));
+    }
+    notifyListeners();
+  }
+
+  List<LocalNotice> noticesForScope(String scope) {
+    return notices.where((n) => n.scope == scope).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  }
+
+  /// Pin a public notice on #mesh or Area and fan-out sealed envelopes.
+  Future<LocalNotice?> postNotice({
+    required String scope,
+    required String channelLabel,
+    required String text,
+    required NoticeExpiry expiry,
+    bool urgent = false,
+  }) async {
+    if (!_e2eeEnabled) return null;
+    final body = text.trim();
+    if (body.isEmpty) return null;
+    final notice = LocalNotice(
+      id: _uuid.v4(),
+      scope: scope,
+      channelLabel: channelLabel,
+      text: body,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      expiresAt: expiry.expiresAtMs,
+      urgent: urgent,
+    );
+    _notices.insert(0, notice);
+    await _persistNotices();
+
+    final prefix = urgent ? '[URGENT] ' : '';
+    final payload = '$prefix${notice.text}';
+    if (scope == 'geo') {
+      await sendAreaPublicText(payload, kind: PayloadKinds.notice);
+    } else {
+      await _fanOutToNearby(payload, kind: PayloadKinds.notice);
+    }
+    notifyListeners();
+    return notice;
+  }
+
+  Future<int> _fanOutToNearby(
+    String text, {
+    String kind = PayloadKinds.areaPublic,
+  }) async {
+    final peers = _mesh?.nearbyPeers ?? const <Peer>[];
+    var sent = 0;
+    for (final peer in peers) {
+      if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
+      try {
+        final ts = DateTime.now().millisecondsSinceEpoch;
+        final pkg = crypto.encryptForRecipient(
+          plaintext: text,
+          receiverPublicPem: peer.publicKey,
+          senderId: myUserId,
+          receiverId: peer.id,
+          timestamp: ts,
+        );
+        final msg = ChatMessage(
+          id: _uuid.v4(),
+          senderId: myUserId,
+          receiverId: peer.id,
+          encryptedPayload: pkg.encryptedPayload,
+          encryptedKey: pkg.encryptedKey,
+          signature: pkg.signature,
+          ttl: 5,
+          timestamp: ts,
+          status: MessageStatus.pending,
+          type: MessageType.direct,
+          payloadKind: kind,
+        );
+        await persistChatMessage(msg);
+        await routeOutbound(msg);
+        sent++;
+      } catch (e) {
+        debugPrint('[ResilNet] fan-out to ${peer.id} failed: $e');
+      }
+    }
+    return sent;
   }
 
   Future<void> setDisplayName(String v) async {
@@ -689,7 +881,11 @@ class AppState extends ChangeNotifier {
 
   /// Fan-out sealed 1:1 messages to every peer online in the selected area.
   /// Returns how many envelopes were queued.
-  Future<int> sendAreaPublicText(String text) async {
+  Future<int> sendAreaPublicText(
+    String text, {
+    String kind = PayloadKinds.areaPublic,
+  }) async {
+    if (!_e2eeEnabled) return 0;
     final body = text.trim();
     if (body.isEmpty) return 0;
     final peers = peersOnlineInSelectedArea();
@@ -718,7 +914,7 @@ class AppState extends ChangeNotifier {
           timestamp: ts,
           status: MessageStatus.pending,
           type: MessageType.direct,
-          payloadKind: PayloadKinds.areaPublic,
+          payloadKind: kind,
         );
         await persistChatMessage(msg);
         await routeOutbound(msg);
@@ -1038,6 +1234,8 @@ class AppState extends ChangeNotifier {
 
   @override
   void dispose() {
+    screenshots.removeListener(_onScreenshot);
+    screenshots.dispose();
     _retentionTimer?.cancel();
     _rustIncomingSub?.cancel();
     _ackQueue?.dispose();

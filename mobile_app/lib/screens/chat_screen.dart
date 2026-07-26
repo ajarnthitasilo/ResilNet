@@ -4,9 +4,11 @@ import 'dart:typed_data';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+import '../app/theme.dart';
 import '../core/payload_kinds.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/chat_message.dart';
@@ -170,6 +172,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _stopAndSendVoiceNote() async {
     if (!_recordingVoice) return;
     final s = context.read<AppState>();
+    if (!s.e2eeEnabled) {
+      await _audio.stopRecording();
+      if (mounted) setState(() => _recordingVoice = false);
+      return;
+    }
     final receiverPub = await _resolveReceiverPub(s);
     final opus = await _audio.stopRecording();
     if (mounted) setState(() => _recordingVoice = false);
@@ -208,6 +215,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _send() async {
     final s = context.read<AppState>();
+    if (!s.e2eeEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.settingsE2eeSubtitle)),
+      );
+      return;
+    }
     final msgText = _text.text.trim();
     if (msgText.isEmpty) return;
 
@@ -243,6 +256,58 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_showEmojiPicker) setState(() => _showEmojiPicker = false);
     if (!mounted) return;
     setState(() {});
+  }
+
+  Future<void> _sendImage() async {
+    final s = context.read<AppState>();
+    if (!s.e2eeEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.settingsE2eeSubtitle)),
+      );
+      return;
+    }
+    final picker = ImagePicker();
+    final file = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1280,
+      imageQuality: 72,
+    );
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (bytes.length > 180 * 1024) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Image too large (max ~180KB)')),
+      );
+      return;
+    }
+    final receiverPub = await _resolveReceiverPub(s);
+    if (receiverPub == null) return;
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final b64 = base64Encode(bytes);
+    final pkg = s.crypto.encryptForRecipient(
+      plaintext: b64,
+      receiverPublicPem: receiverPub,
+      senderId: s.myUserId,
+      receiverId: widget.peerId,
+      timestamp: ts,
+    );
+    final msg = ChatMessage(
+      id: _uuid.v4(),
+      senderId: s.myUserId,
+      receiverId: widget.peerId,
+      encryptedPayload: pkg.encryptedPayload,
+      encryptedKey: pkg.encryptedKey,
+      signature: pkg.signature,
+      ttl: 5,
+      timestamp: ts,
+      status: MessageStatus.pending,
+      type: MessageType.direct,
+      payloadKind: PayloadKinds.image,
+    );
+    await s.persistChatMessage(msg);
+    await s.routeOutbound(msg);
+    if (mounted) setState(() {});
   }
 
   String _statusLabel(AppLocalizations l10n, MessageStatus s) {
@@ -292,6 +357,12 @@ class _ChatScreenState extends State<ChatScreen> {
           ? l10n.chatVoiceLabelSent
           : l10n.chatVoiceLabel;
     }
+    if (m.payloadKind == PayloadKinds.image) {
+      return l10n.chatImageLabel;
+    }
+    if (PayloadKinds.isSystemLine(m.payloadKind)) {
+      return l10n.screenshotTaken;
+    }
     if (m.receiverId == s.myUserId) {
       try {
         return s.crypto.decryptFromSender(
@@ -336,6 +407,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final myId = s.myUserId;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(l10n.chatTitle),
         actions: [
@@ -413,7 +485,9 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
       ),
-      body: Column(
+      body: Container(
+        decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(14),
@@ -570,6 +644,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       IconButton(
+                        tooltip: l10n.chatAttachImage,
+                        onPressed: _sendImage,
+                        icon: const Icon(Icons.image_outlined),
+                      ),
+                      IconButton(
                         tooltip: l10n.chatEmojiTooltip,
                         onPressed: _toggleEmojiPicker,
                         icon: Icon(
@@ -586,16 +665,23 @@ class _ChatScreenState extends State<ChatScreen> {
                           minLines: 1,
                           maxLines: 4,
                           onTap: () {
-                            if (_showEmojiPicker)
+                            if (_showEmojiPicker) {
                               setState(() => _showEmojiPicker = false);
+                            }
                           },
                           decoration: InputDecoration(
                             hintText: l10n.chatComposeHint,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      FilledButton(onPressed: _send, child: Text(l10n.send)),
+                      const SizedBox(width: 8),
+                      IconButton.filled(
+                        onPressed: _send,
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white.withValues(alpha: 0.12),
+                        ),
+                        icon: const Icon(Icons.arrow_upward, size: 20),
+                      ),
                     ],
                   ),
                 ),
@@ -608,6 +694,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ],
+        ),
       ),
     );
   }
