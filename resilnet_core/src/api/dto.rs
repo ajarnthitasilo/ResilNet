@@ -307,3 +307,26 @@ impl From<ResilNetEnvelopeDto> for ResilNetEnvelope {
         }
     }
 }
+
+/// Anonymous geohash presence seen on Nostr (not a chat peer).
+#[frb]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GeoPresenceDto {
+    pub event_id: String,
+    pub pubkey_hex: String,
+    pub geohash: String,
+    pub nick: String,
+    pub created_at: u64,
+}
+
+impl From<crate::nostr::GeoPresenceEvent> for GeoPresenceDto {
+    fn from(e: crate::nostr::GeoPresenceEvent) -> Self {
+        Self {
+            event_id: e.event_id,
+            pubkey_hex: e.pubkey_hex,
+            geohash: e.geohash,
+            nick: e.nick,
+            created_at: e.created_at,
+        }
+    }
+}

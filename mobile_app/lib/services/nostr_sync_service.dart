@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -15,6 +17,8 @@ class NostrSyncService extends ChangeNotifier {
   NostrPoolStatusDto? _status;
   bool _running = false;
   bool _publishing = false;
+  StreamSubscription<GeoPresenceDto>? _presenceSub;
+  final _presenceController = StreamController<GeoPresenceDto>.broadcast();
 
   bool get running => _running;
   NostrPoolStatusDto? get status => _status;
@@ -23,6 +27,9 @@ class NostrSyncService extends ChangeNotifier {
   int get connectedRelays => _status?.connectedRelays ?? 0;
   int get totalRelays => _status?.totalRelays ?? 0;
   bool get isOnline => (_status?.connectedRelays ?? 0) > 0;
+
+  /// Anonymous geohash presence events (kind 20050).
+  Stream<GeoPresenceDto> get geoPresenceStream => _presenceController.stream;
 
   SyncPhase get phase =>
       _publishing ? SyncPhase.cloudSync : SyncPhase.idle;
@@ -40,6 +47,7 @@ class NostrSyncService extends ChangeNotifier {
       }
       _status = result.status;
       _running = true;
+      await _attachPresenceStream();
       notifyListeners();
       debugPrint(
         '[Nostr] started npub=${_status?.npub} '
@@ -48,6 +56,22 @@ class NostrSyncService extends ChangeNotifier {
     } catch (e, st) {
       debugPrint('[Nostr] start failed: $e\n$st');
       rethrow;
+    }
+  }
+
+  Future<void> _attachPresenceStream() async {
+    await _presenceSub?.cancel();
+    try {
+      _presenceSub = nostrSubscribeGeoPresence().listen(
+        (ev) {
+          if (!_presenceController.isClosed) {
+            _presenceController.add(ev);
+          }
+        },
+        onError: (e) => debugPrint('[Nostr] presence stream error: $e'),
+      );
+    } catch (e) {
+      debugPrint('[Nostr] presence subscribe failed: $e');
     }
   }
 
@@ -87,6 +111,30 @@ class NostrSyncService extends ChangeNotifier {
     }
   }
 
+  /// Anonymous geohash presence (ephemeral key on Rust side).
+  Future<bool> publishGeoPresence(String geohash) async {
+    final g = geohash.trim().toLowerCase();
+    if (g.isEmpty || !_running) return false;
+    try {
+      final id = await nostrPublishGeoPresence(geohash: g);
+      debugPrint('[Nostr] geo presence published event=$id g=$g');
+      return id.isNotEmpty;
+    } catch (e) {
+      debugPrint('[Nostr] geo presence publish failed: $e');
+      return false;
+    }
+  }
+
+  /// Subscribe relays to presence for these geohash cells (`[]` clears).
+  Future<void> setGeoPresenceFilter(List<String> geohashes) async {
+    if (!_running) return;
+    try {
+      await nostrSetGeoPresenceFilter(geohashes: geohashes);
+    } catch (e) {
+      debugPrint('[Nostr] set geo filter failed: $e');
+    }
+  }
+
   Future<int> flushOfflineQueue() async {
     try {
       final n = await flushOfflineQueueToNostr();
@@ -100,7 +148,19 @@ class NostrSyncService extends ChangeNotifier {
   }
 
   Future<void> stop() async {
+    await _presenceSub?.cancel();
+    _presenceSub = null;
+    try {
+      await nostrSetGeoPresenceFilter(geohashes: const []);
+    } catch (_) {}
     _running = false;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    unawaited(stop());
+    unawaited(_presenceController.close());
+    super.dispose();
   }
 }

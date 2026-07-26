@@ -8,6 +8,7 @@ mod relay_pool;
 
 pub use identity::{NostrIdentity, NostrIdentityInfo};
 pub use kinds::{
-    ResilNetEventKind, ResilNetEnvelope, KIND_BROADCAST, KIND_DIRECT, KIND_NODE_HEALTH,
+    GeoPresenceContent, GeoPresenceEvent, ResilNetEnvelope, ResilNetEventKind,
+    GEO_PRESENCE_TTL_SECS, KIND_BROADCAST, KIND_DIRECT, KIND_GEO_PRESENCE, KIND_NODE_HEALTH,
 };
 pub use relay_pool::{NostrPoolHandle, NostrPoolStatus, RelayStatus, DEFAULT_RELAYS};

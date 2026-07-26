@@ -14,6 +14,7 @@ import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/geohash.dart';
 import '../core/payload_kinds.dart';
+import '../models/area_presence.dart';
 import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
@@ -21,6 +22,7 @@ import '../models/local_notice.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
+import '../models/transport_mode.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
 import '../services/ble_mesh_service.dart';
@@ -188,12 +190,21 @@ class AppState extends ChangeNotifier {
 
   static const _kFeedChannel = 'resilnet_feed_channel';
   static const _kGeoPrecision = 'resilnet_geo_precision';
+  static const _kTransportMode = 'resilnet_transport_mode';
 
   FeedChannel _feedChannel = FeedChannel.directs;
   FeedChannel get feedChannel => _feedChannel;
 
   GeoPrecision _geoPrecision = GeoPrecision.neighborhood;
   GeoPrecision get geoPrecision => _geoPrecision;
+
+  TransportMode _transportMode = TransportMode.auto;
+  TransportMode get transportMode => _transportMode;
+
+  /// Anonymous Nostr presence sightings keyed by pubkey hex.
+  final Map<String, NostrPresenceSighting> _nostrPresence = {};
+  StreamSubscription<GeoPresenceDto>? _geoPresenceSub;
+  Timer? _geoPresencePublishTimer;
 
   String? _currentGeohash;
   String? get currentGeohash => _currentGeohash;
@@ -302,6 +313,7 @@ class AppState extends ChangeNotifier {
       _nostr = NostrSyncService();
       try {
         await _nostr!.start();
+        _attachGeoPresenceListener();
       } catch (e, st) {
         debugPrint('[ResilNet] Nostr start failed (offline ok): $e\n$st');
       }
@@ -351,6 +363,7 @@ class AppState extends ChangeNotifier {
         (e) => e.name == prefs.getString(_kGeoPrecision),
         orElse: () => GeoPrecision.neighborhood,
       );
+      _transportMode = TransportMode.fromName(prefs.getString(_kTransportMode));
 
       // ตรวจสิทธิ์ที่มีอยู่แล้ว (ไม่ขึ้น dialog) แล้วค่อยสตาร์ท radio
       _permissionsGranted = await _hasAllRequiredPermissions();
@@ -771,8 +784,11 @@ class AppState extends ChangeNotifier {
       if (_currentGeohash == null || _currentGeohash!.isEmpty) {
         unawaited(refreshGeohash());
       } else {
-        unawaited(announceGeohashPresence());
+        unawaited(syncGeoPresence(forceAnnounce: true));
       }
+    } else {
+      unawaited(_clearNostrGeoSubscription());
+      _stopGeoPresencePublishTimer();
     }
     notifyListeners();
   }
@@ -783,9 +799,100 @@ class AppState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kGeoPrecision, precision.name);
     if (_feedChannel == FeedChannel.geo) {
-      unawaited(announceGeohashPresence(force: true));
+      unawaited(syncGeoPresence(forceAnnounce: true));
     }
     notifyListeners();
+  }
+
+  Future<void> setTransportMode(TransportMode mode) async {
+    if (_transportMode == mode) return;
+    _transportMode = mode;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kTransportMode, mode.name);
+    if (_feedChannel == FeedChannel.geo) {
+      unawaited(syncGeoPresence(forceAnnounce: true));
+    } else if (!mode.usesInternet) {
+      unawaited(_clearNostrGeoSubscription());
+    }
+    notifyListeners();
+  }
+
+  void _attachGeoPresenceListener() {
+    final n = _nostr;
+    if (n == null) return;
+    _geoPresenceSub?.cancel();
+    _geoPresenceSub = n.geoPresenceStream.listen(_onNostrGeoPresence);
+  }
+
+  void _onNostrGeoPresence(GeoPresenceDto ev) {
+    final pk = ev.pubkeyHex.trim().toLowerCase();
+    if (pk.isEmpty) return;
+    final createdMs = ev.createdAt.toInt() * 1000;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final lastSeen = createdMs > 0 ? createdMs : now;
+    final existing = _nostrPresence[pk];
+    if (existing != null) {
+      existing.nick = ev.nick.isNotEmpty ? ev.nick : existing.nick;
+      existing.geohash = ev.geohash;
+      if (lastSeen > existing.lastSeen) existing.lastSeen = lastSeen;
+    } else {
+      _nostrPresence[pk] = NostrPresenceSighting(
+        pubkeyHex: pk,
+        nick: ev.nick.isNotEmpty
+            ? ev.nick
+            : 'anon·${pk.length >= 4 ? pk.substring(0, 4) : pk}',
+        geohash: ev.geohash,
+        lastSeen: lastSeen,
+      );
+    }
+    _pruneNostrPresence();
+    notifyListeners();
+  }
+
+  void _pruneNostrPresence() {
+    final cutoff = DateTime.now().millisecondsSinceEpoch -
+        kNostrPresenceOnlineWindow.inMilliseconds;
+    _nostrPresence.removeWhere((_, v) => v.lastSeen < cutoff);
+  }
+
+  Future<void> _clearNostrGeoSubscription() async {
+    await _nostr?.setGeoPresenceFilter(const []);
+  }
+
+  void _stopGeoPresencePublishTimer() {
+    _geoPresencePublishTimer?.cancel();
+    _geoPresencePublishTimer = null;
+  }
+
+  void _ensureGeoPresencePublishTimer() {
+    if (!_transportMode.usesInternet) {
+      _stopGeoPresencePublishTimer();
+      return;
+    }
+    if (_feedChannel != FeedChannel.geo) {
+      _stopGeoPresencePublishTimer();
+      return;
+    }
+    _geoPresencePublishTimer ??= Timer.periodic(
+      const Duration(seconds: 60),
+      (_) => unawaited(announceGeohashPresence()),
+    );
+  }
+
+  /// Refresh mesh + Nostr presence for the current Area channel.
+  Future<void> syncGeoPresence({bool forceAnnounce = false}) async {
+    final channel = selectedAreaHash;
+    if (_transportMode.usesInternet &&
+        channel != null &&
+        channel.isNotEmpty &&
+        (_nostr?.isOnline ?? false)) {
+      await _nostr?.setGeoPresenceFilter([channel]);
+      _ensureGeoPresencePublishTimer();
+    } else {
+      await _clearNostrGeoSubscription();
+      if (!_transportMode.usesInternet) _stopGeoPresencePublishTimer();
+    }
+    await announceGeohashPresence(force: forceAnnounce);
   }
 
   /// Resolve device location → geohash for the geo channel label.
@@ -807,7 +914,7 @@ class AppState extends ChangeNotifier {
           pos.longitude,
           precision: GeoPrecision.block.length,
         );
-        unawaited(announceGeohashPresence(force: true));
+        unawaited(syncGeoPresence(forceAnnounce: true));
       }
     } catch (e) {
       _geoError = e.toString();
@@ -825,24 +932,41 @@ class AppState extends ChangeNotifier {
     return Geohash.atPrecision(h, _geoPrecision);
   }
 
-  /// Nearby BLE peers considered online in the selected geohash area.
-  ///
-  /// Matching rules:
-  /// - Peer with matching geohash presence → include
-  /// - Peer with unknown geohash → include (BLE proximity bootstrap)
-  /// - Peer with non-matching geohash → exclude
-  List<Peer> peersOnlineInSelectedArea() {
+  /// Merged Area people list (BLE mesh + anonymous Nostr presence).
+  List<AreaPresenceEntry> areaPresenceOnline() {
+    _pruneNostrPresence();
     final channel = selectedAreaHash;
     final nearby = _mesh?.nearbyPeers ?? const <Peer>[];
-    if (channel == null || channel.isEmpty) return nearby;
-    return nearby.where((p) {
-      final geo = p.geohash?.trim();
-      if (geo == null || geo.isEmpty) return true;
-      return Geohash.matchesChannel(geo, channel);
-    }).toList();
+    // Mesh filter: unknown geohash included (BLE bootstrap) when channel set.
+    final meshFiltered = (channel == null || channel.isEmpty)
+        ? nearby
+        : nearby.where((p) {
+            final geo = p.geohash?.trim();
+            if (geo == null || geo.isEmpty) return true;
+            return Geohash.matchesChannel(geo, channel);
+          }).toList();
+
+    return mergeAreaPresence(
+      meshPeers: meshFiltered,
+      nostrSightings: _nostrPresence.values.toList(),
+      channel: channel,
+      mode: _transportMode,
+      nowMs: DateTime.now().millisecondsSinceEpoch,
+    );
   }
 
-  /// Share our geohash cell with nearby peers (not shown as chat).
+  /// Nearby BLE peers considered online in the selected geohash area.
+  ///
+  /// Used for sealed area fan-out (must have RSA keys). Anonymous Nostr-only
+  /// presence is discoverable via [areaPresenceOnline] but not messageable yet.
+  List<Peer> peersOnlineInSelectedArea() {
+    return areaPresenceOnline()
+        .where((e) => e.canMessage)
+        .map((e) => e.peer!)
+        .toList();
+  }
+
+  /// Share our geohash cell with nearby peers / Nostr (not shown as chat).
   Future<void> announceGeohashPresence({bool force = false}) async {
     final full = _currentGeohash;
     if (full == null || full.isEmpty) return;
@@ -850,10 +974,17 @@ class AppState extends ChangeNotifier {
     if (channel.isEmpty) return;
     final since = DateTime.now().difference(_lastPresenceAnnounce);
     if (!force && since < const Duration(seconds: 45)) return;
+    _lastPresenceAnnounce = DateTime.now();
 
+    // Internet: anonymous ephemeral presence on Nostr (no RSA identity).
+    if (_transportMode.usesInternet && (_nostr?.isOnline ?? false)) {
+      unawaited(_nostr!.publishGeoPresence(channel));
+    }
+
+    // Mesh: sealed presence to nearby BLE peers (existing path).
+    if (!_transportMode.usesMesh) return;
     final peers = _mesh?.nearbyPeers ?? const <Peer>[];
     if (peers.isEmpty) return;
-    _lastPresenceAnnounce = DateTime.now();
 
     for (final peer in peers) {
       if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
@@ -1237,6 +1368,9 @@ class AppState extends ChangeNotifier {
     screenshots.removeListener(_onScreenshot);
     screenshots.dispose();
     _retentionTimer?.cancel();
+    _stopGeoPresencePublishTimer();
+    unawaited(_geoPresenceSub?.cancel());
+    unawaited(_clearNostrGeoSubscription());
     _rustIncomingSub?.cancel();
     _ackQueue?.dispose();
     _udp?.dispose();

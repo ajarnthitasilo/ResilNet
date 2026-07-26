@@ -125,6 +125,48 @@ pub async fn flush_offline_queue_to_nostr() -> Result<u32, String> {
     Ok(published)
 }
 
+/// Publish bitchat-style anonymous geohash presence (ephemeral key, kind 20050).
+/// Content never includes the long-term ResilNet RSA identity.
+#[frb]
+pub async fn nostr_publish_geo_presence(geohash: String) -> Result<String, String> {
+    let pool = get_nostr_pool()?;
+    pool.publish_geo_presence(&geohash)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Replace the active geohash presence subscription (`[]` unsubscribes).
+#[frb]
+pub async fn nostr_set_geo_presence_filter(geohashes: Vec<String>) -> Result<(), String> {
+    let pool = get_nostr_pool()?;
+    pool.set_geo_presence_subscription(geohashes)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Stream anonymous geohash presence events (separate from chat ingest).
+#[frb]
+pub async fn nostr_subscribe_geo_presence(
+    sink: crate::frb_generated::StreamSink<crate::api::dto::GeoPresenceDto>,
+) -> Result<(), String> {
+    let pool = get_nostr_pool()?;
+    let mut rx = pool.subscribe_geo_presence_events();
+    tokio::spawn(async move {
+        loop {
+            match rx.recv().await {
+                Ok(ev) => {
+                    if sink.add(ev.into()).is_err() {
+                        break;
+                    }
+                }
+                Err(tokio::sync::broadcast::error::RecvError::Lagged(_)) => {}
+                Err(tokio::sync::broadcast::error::RecvError::Closed) => break,
+            }
+        }
+    });
+    Ok(())
+}
+
 /// Convert a Nostr envelope into a MessagePacket and ingest through router dedup.
 /// Legacy broadcast envelopes are ignored (do not crash / do not enter chat).
 #[frb]

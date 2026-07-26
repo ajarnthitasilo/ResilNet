@@ -5,6 +5,7 @@ import '../app/theme.dart';
 import '../core/app_version.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/notice_expiry.dart';
+import '../models/transport_mode.dart';
 import '../state/app_state.dart';
 import 'esp32_firmware_screen.dart';
 
@@ -122,6 +123,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: Text(l10n.settingsScreenshotSubtitle),
               value: s.screenshotAlerts,
               onChanged: s.setScreenshotAlerts,
+            ),
+            const SizedBox(height: 12),
+            Text(l10n.transportModeTitle),
+            const SizedBox(height: 4),
+            Text(
+              l10n.transportModeSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.55),
+                  ),
+            ),
+            const SizedBox(height: 10),
+            SegmentedButton<TransportMode>(
+              segments: [
+                ButtonSegment(
+                  value: TransportMode.mesh,
+                  label: Text(l10n.transportModeMesh),
+                ),
+                ButtonSegment(
+                  value: TransportMode.internet,
+                  label: Text(l10n.transportModeInternet),
+                ),
+                ButtonSegment(
+                  value: TransportMode.auto,
+                  label: Text(l10n.transportModeAuto),
+                ),
+              ],
+              selected: {s.transportMode},
+              onSelectionChanged: (set) => s.setTransportMode(set.first),
             ),
             const SizedBox(height: 8),
             Text(l10n.settingsNostrExpiryTitle),

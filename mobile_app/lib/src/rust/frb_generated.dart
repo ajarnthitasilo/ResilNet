@@ -70,7 +70,7 @@ class ResilNetCore
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 45778395;
+  int get rustContentHash => -1554104074;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -118,11 +118,21 @@ abstract class ResilNetCoreApi extends BaseApi {
     required String kind,
   });
 
+  Future<String> crateApiNostrApiNostrPublishGeoPresence({
+    required String geohash,
+  });
+
   Future<String> crateApiNostrApiNostrPublishPacket({
     required MessagePacketDto packet,
   });
 
   Future<void> crateApiNostrApiNostrReconnect();
+
+  Future<void> crateApiNostrApiNostrSetGeoPresenceFilter({
+    required List<String> geohashes,
+  });
+
+  Stream<GeoPresenceDto> crateApiNostrApiNostrSubscribeGeoPresence();
 
   Future<int> crateApiRouterApiOfflineQueueLen();
 
@@ -505,6 +515,39 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       );
 
   @override
+  Future<String> crateApiNostrApiNostrPublishGeoPresence({
+    required String geohash,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(geohash, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 13,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiNostrApiNostrPublishGeoPresenceConstMeta,
+        argValues: [geohash],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNostrApiNostrPublishGeoPresenceConstMeta =>
+      const TaskConstMeta(
+        debugName: "nostr_publish_geo_presence",
+        argNames: ["geohash"],
+      );
+
+  @override
   Future<String> crateApiNostrApiNostrPublishPacket({
     required MessagePacketDto packet,
   }) {
@@ -516,7 +559,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 14,
             port: port_,
           );
         },
@@ -546,7 +589,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 15,
             port: port_,
           );
         },
@@ -565,6 +608,74 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       const TaskConstMeta(debugName: "nostr_reconnect", argNames: []);
 
   @override
+  Future<void> crateApiNostrApiNostrSetGeoPresenceFilter({
+    required List<String> geohashes,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_String(geohashes, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 16,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiNostrApiNostrSetGeoPresenceFilterConstMeta,
+        argValues: [geohashes],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNostrApiNostrSetGeoPresenceFilterConstMeta =>
+      const TaskConstMeta(
+        debugName: "nostr_set_geo_presence_filter",
+        argNames: ["geohashes"],
+      );
+
+  @override
+  Stream<GeoPresenceDto> crateApiNostrApiNostrSubscribeGeoPresence() {
+    final sink = RustStreamSink<GeoPresenceDto>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_StreamSink_geo_presence_dto_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 17,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_String,
+          ),
+          constMeta: kCrateApiNostrApiNostrSubscribeGeoPresenceConstMeta,
+          argValues: [sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiNostrApiNostrSubscribeGeoPresenceConstMeta =>
+      const TaskConstMeta(
+        debugName: "nostr_subscribe_geo_presence",
+        argNames: ["sink"],
+      );
+
+  @override
   Future<int> crateApiRouterApiOfflineQueueLen() {
     return handler.executeNormal(
       NormalTask(
@@ -573,7 +684,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 18,
             port: port_,
           );
         },
@@ -601,7 +712,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 19,
             port: port_,
           );
         },
@@ -631,7 +742,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 20,
             port: port_,
           );
         },
@@ -659,7 +770,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 21,
             port: port_,
           );
         },
@@ -687,7 +798,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_u_8(value, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_opt_box_autoadd_payload_tag_dto,
@@ -718,7 +829,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 20,
+            funcId: 23,
             port: port_,
           );
         },
@@ -745,7 +856,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 24,
             port: port_,
           );
         },
@@ -775,7 +886,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 22,
+              funcId: 25,
               port: port_,
             );
           },
@@ -814,7 +925,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 26,
             port: port_,
           );
         },
@@ -843,6 +954,14 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return AnyhowException(raw as String);
+  }
+
+  @protected
+  RustStreamSink<GeoPresenceDto> dco_decode_StreamSink_geo_presence_dto_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
   }
 
   @protected
@@ -889,6 +1008,21 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   RouterConfigDto dco_decode_box_autoadd_router_config_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_router_config_dto(raw);
+  }
+
+  @protected
+  GeoPresenceDto dco_decode_geo_presence_dto(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return GeoPresenceDto(
+      eventId: dco_decode_String(arr[0]),
+      pubkeyHex: dco_decode_String(arr[1]),
+      geohash: dco_decode_String(arr[2]),
+      nick: dco_decode_String(arr[3]),
+      createdAt: dco_decode_u_64(arr[4]),
+    );
   }
 
   @protected
@@ -1106,6 +1240,14 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  RustStreamSink<GeoPresenceDto> sse_decode_StreamSink_geo_presence_dto_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
   RustStreamSink<MessagePacketDto> sse_decode_StreamSink_message_packet_dto_Sse(
     SseDeserializer deserializer,
   ) {
@@ -1156,6 +1298,23 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_router_config_dto(deserializer));
+  }
+
+  @protected
+  GeoPresenceDto sse_decode_geo_presence_dto(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_eventId = sse_decode_String(deserializer);
+    var var_pubkeyHex = sse_decode_String(deserializer);
+    var var_geohash = sse_decode_String(deserializer);
+    var var_nick = sse_decode_String(deserializer);
+    var var_createdAt = sse_decode_u_64(deserializer);
+    return GeoPresenceDto(
+      eventId: var_eventId,
+      pubkeyHex: var_pubkeyHex,
+      geohash: var_geohash,
+      nick: var_nick,
+      createdAt: var_createdAt,
+    );
   }
 
   @protected
@@ -1432,6 +1591,23 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  void sse_encode_StreamSink_geo_presence_dto_Sse(
+    RustStreamSink<GeoPresenceDto> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_geo_presence_dto,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
   void sse_encode_StreamSink_message_packet_dto_Sse(
     RustStreamSink<MessagePacketDto> self,
     SseSerializer serializer,
@@ -1494,6 +1670,19 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_router_config_dto(self, serializer);
+  }
+
+  @protected
+  void sse_encode_geo_presence_dto(
+    GeoPresenceDto self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.eventId, serializer);
+    sse_encode_String(self.pubkeyHex, serializer);
+    sse_encode_String(self.geohash, serializer);
+    sse_encode_String(self.nick, serializer);
+    sse_encode_u_64(self.createdAt, serializer);
   }
 
   @protected

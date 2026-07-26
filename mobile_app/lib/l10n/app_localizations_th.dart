@@ -139,7 +139,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String geoEmpty(String channel) {
-    return 'ยังไม่มีใครออนไลน์ใน $channel\nสลับไป #mesh ใกล้ตัว รีเฟรชพิกัด หรือรอการประกาศพื้นที่';
+    return 'ยังไม่มีใครออนไลน์ใน $channel\nลองโหมด Internet + รีเฟรชพิกัด หรือเปิด #mesh ใกล้ตัว';
   }
 
   @override
@@ -150,6 +150,31 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get geoPeerNearbySubtitle =>
       'ใกล้ตัว (รอ presence พื้นที่) • แตะเพื่อแชต 1:1 E2EE';
+
+  @override
+  String geoPeerNostrSubtitle(String channel) {
+    return 'นิรนามบน Nostr ใน $channel • ค้นพบอย่างเดียว';
+  }
+
+  @override
+  String get geoPeerDiscoverOnlySnack =>
+      'presence นี้เป็นนิรนามบน Nostr — แชตได้หลังแลกตัวตนผ่าน mesh/QR';
+
+  @override
+  String get transportModeTitle => 'ช่องทางพื้นที่';
+
+  @override
+  String get transportModeSubtitle =>
+      'Mesh = BLE ใกล้ตัว · Internet = presence นิรนามบน Nostr · Auto = ทั้งสอง';
+
+  @override
+  String get transportModeMesh => 'Mesh';
+
+  @override
+  String get transportModeInternet => 'Internet';
+
+  @override
+  String get transportModeAuto => 'Auto';
 
   @override
   String get geoPublicHint => 'ข้อความสาธารณะถึงทุกคนที่ออนไลน์ในพื้นที่นี้';

@@ -6,7 +6,43 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
+
+/// Anonymous geohash presence seen on Nostr (not a chat peer).
+class GeoPresenceDto {
+  final String eventId;
+  final String pubkeyHex;
+  final String geohash;
+  final String nick;
+  final BigInt createdAt;
+
+  const GeoPresenceDto({
+    required this.eventId,
+    required this.pubkeyHex,
+    required this.geohash,
+    required this.nick,
+    required this.createdAt,
+  });
+
+  @override
+  int get hashCode =>
+      eventId.hashCode ^
+      pubkeyHex.hashCode ^
+      geohash.hashCode ^
+      nick.hashCode ^
+      createdAt.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GeoPresenceDto &&
+          runtimeType == other.runtimeType &&
+          eventId == other.eventId &&
+          pubkeyHex == other.pubkeyHex &&
+          geohash == other.geohash &&
+          nick == other.nick &&
+          createdAt == other.createdAt;
+}
 
 /// แพ็กเก็ตข้อความข้าม FFI (mirror ของ `MessagePacket`)
 class MessagePacketDto {

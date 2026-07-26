@@ -29,5 +29,5 @@ Override via `initNostr(relayUrls: [...])`.
 ## Remaining work
 - Map LoRa ESP32 connection → `resilnet.setLoraAvailable(true)`.
 - Optional: expose npub on Identity screen.
-- Optional: geohash-tagged Nostr presence (metadata trade-off; not enabled by default).
+- ~~Optional: geohash-tagged Nostr presence~~ → implemented (see `docs/GEO_PRESENCE_NOSTR.md`).
 - Push notifications without a central server (local-only / alternative wake path).

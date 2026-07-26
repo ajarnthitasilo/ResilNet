@@ -347,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @geoEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No one online in {channel} yet\nOpen #mesh nearby, refresh location, or wait for area presence'**
+  /// **'No one online in {channel} yet\nTry Internet mode + refresh location, or open #mesh nearby'**
   String geoEmpty(String channel);
 
   /// No description provided for @geoPeerSubtitle.
@@ -361,6 +361,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nearby (awaiting area presence) • tap for 1:1 E2EE'**
   String get geoPeerNearbySubtitle;
+
+  /// No description provided for @geoPeerNostrSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous on Nostr in {channel} • discovery only'**
+  String geoPeerNostrSubtitle(String channel);
+
+  /// No description provided for @geoPeerDiscoverOnlySnack.
+  ///
+  /// In en, this message translates to:
+  /// **'This presence is anonymous on Nostr — chat after mesh/QR identity exchange'**
+  String get geoPeerDiscoverOnlySnack;
+
+  /// No description provided for @transportModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Area transport'**
+  String get transportModeTitle;
+
+  /// No description provided for @transportModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh = BLE nearby · Internet = anonymous Nostr presence · Auto = both'**
+  String get transportModeSubtitle;
+
+  /// No description provided for @transportModeMesh.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh'**
+  String get transportModeMesh;
+
+  /// No description provided for @transportModeInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet'**
+  String get transportModeInternet;
+
+  /// No description provided for @transportModeAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get transportModeAuto;
 
   /// No description provided for @geoPublicHint.
   ///

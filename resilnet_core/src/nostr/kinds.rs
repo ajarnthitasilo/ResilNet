@@ -8,12 +8,22 @@ pub const KIND_DIRECT: u16 = 31_234;
 pub const KIND_BROADCAST: u16 = 31_235;
 /// Optional node health / geo heartbeat.
 pub const KIND_NODE_HEALTH: u16 = 31_236;
+/// Bitchat-style anonymous geohash presence (NIP-16 ephemeral range).
+///
+/// Signed with a throwaway secp256k1 key — never the long-lived messaging identity.
+/// Tags: `g` = geohash cell, `client` = resilnet, optional `expiration` (NIP-40).
+/// Content JSON must not include RSA peer id or real display name.
+pub const KIND_GEO_PRESENCE: u16 = 20_050;
+
+/// How long presence events remain valid (seconds) for subscribe window / NIP-40.
+pub const GEO_PRESENCE_TTL_SECS: u64 = 180;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ResilNetEventKind {
     Direct,
     Broadcast,
     NodeHealth,
+    GeoPresence,
 }
 
 impl ResilNetEventKind {
@@ -22,6 +32,7 @@ impl ResilNetEventKind {
             Self::Direct => KIND_DIRECT,
             Self::Broadcast => KIND_BROADCAST,
             Self::NodeHealth => KIND_NODE_HEALTH,
+            Self::GeoPresence => KIND_GEO_PRESENCE,
         }
     }
 
@@ -30,6 +41,7 @@ impl ResilNetEventKind {
             KIND_DIRECT => Some(Self::Direct),
             KIND_BROADCAST => Some(Self::Broadcast),
             KIND_NODE_HEALTH => Some(Self::NodeHealth),
+            KIND_GEO_PRESENCE => Some(Self::GeoPresence),
             _ => None,
         }
     }
@@ -62,4 +74,33 @@ impl ResilNetEnvelope {
     pub fn from_json(s: &str) -> Result<Self, serde_json::Error> {
         serde_json::from_str(s)
     }
+}
+
+/// Compact anonymous presence payload (event content). No long-term identity.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct GeoPresenceContent {
+    pub v: u8,
+    pub geohash: String,
+    /// Short unlinkable nick, e.g. `anon·a1b2` from ephemeral pubkey prefix.
+    pub nick: String,
+}
+
+impl GeoPresenceContent {
+    pub fn to_json(&self) -> Result<String, serde_json::Error> {
+        serde_json::to_string(self)
+    }
+
+    pub fn from_json(s: &str) -> Result<Self, serde_json::Error> {
+        serde_json::from_str(s)
+    }
+}
+
+/// Parsed inbound geohash presence for Flutter.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GeoPresenceEvent {
+    pub event_id: String,
+    pub pubkey_hex: String,
+    pub geohash: String,
+    pub nick: String,
+    pub created_at: u64,
 }

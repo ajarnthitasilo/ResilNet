@@ -9,7 +9,10 @@ use thiserror::Error;
 use tokio::sync::broadcast;
 
 use super::identity::NostrIdentity;
-use super::kinds::{ResilNetEnvelope, ResilNetEventKind, KIND_BROADCAST, KIND_DIRECT};
+use super::kinds::{
+    GeoPresenceContent, GeoPresenceEvent, ResilNetEnvelope, ResilNetEventKind,
+    GEO_PRESENCE_TTL_SECS, KIND_BROADCAST, KIND_DIRECT, KIND_GEO_PRESENCE,
+};
 
 /// Default public relays (can be overridden from Flutter).
 pub const DEFAULT_RELAYS: &[&str] = &[
@@ -59,12 +62,17 @@ struct NostrPoolInner {
     relay_urls: RwLock<Vec<String>>,
     /// Incoming ResilNet envelopes (after parse) for Flutter / router ingest.
     event_tx: broadcast::Sender<ResilNetEnvelope>,
+    /// Anonymous geohash presence (never routed as chat).
+    presence_tx: broadcast::Sender<GeoPresenceEvent>,
+    /// Active geo presence subscription id (if any).
+    geo_sub_id: RwLock<Option<SubscriptionId>>,
     status: RwLock<NostrPoolStatus>,
 }
 
 impl NostrPoolHandle {
     pub fn new() -> Self {
         let (event_tx, _) = broadcast::channel(256);
+        let (presence_tx, _) = broadcast::channel(256);
         Self {
             inner: Arc::new(NostrPoolInner {
                 identity: RwLock::new(None),
@@ -73,6 +81,8 @@ impl NostrPoolHandle {
                     DEFAULT_RELAYS.iter().map(|s| (*s).to_string()).collect(),
                 ),
                 event_tx,
+                presence_tx,
+                geo_sub_id: RwLock::new(None),
                 status: RwLock::new(NostrPoolStatus::default()),
             }),
         }
@@ -80,6 +90,10 @@ impl NostrPoolHandle {
 
     pub fn subscribe_envelopes(&self) -> broadcast::Receiver<ResilNetEnvelope> {
         self.inner.event_tx.subscribe()
+    }
+
+    pub fn subscribe_geo_presence_events(&self) -> broadcast::Receiver<GeoPresenceEvent> {
+        self.inner.presence_tx.subscribe()
     }
 
     pub fn status(&self) -> NostrPoolStatus {
@@ -118,7 +132,8 @@ impl NostrPoolHandle {
         }
         client.connect().await;
 
-        // Subscribe to ResilNet kinds (recent + future).
+        // Subscribe to ResilNet DM kinds (recent + future). Geo presence is
+        // subscribed dynamically via `set_geo_presence_subscription`.
         let filter = Filter::new()
             .kinds([
                 Kind::Custom(KIND_DIRECT),
@@ -208,6 +223,97 @@ impl NostrPoolHandle {
         Ok(event_id.to_hex())
     }
 
+    /// Publish anonymous geohash presence signed with a fresh ephemeral key.
+    ///
+    /// Does **not** use the long-lived messaging identity. Content never includes
+    /// RSA peer id or real display name.
+    pub async fn publish_geo_presence(&self, geohash: &str) -> Result<String, PoolError> {
+        let geo = geohash.trim().to_lowercase();
+        if geo.is_empty() || geo.len() > 12 {
+            return Err(PoolError::Event("invalid geohash".into()));
+        }
+
+        let client = {
+            let guard = self.inner.client.read();
+            guard.clone().ok_or(PoolError::NotInitialized)?
+        };
+
+        let ephemeral = Keys::generate();
+        let pubkey_hex = ephemeral.public_key().to_hex();
+        let nick = anon_nick_from_pubkey(&pubkey_hex);
+        let content = GeoPresenceContent {
+            v: 1,
+            geohash: geo.clone(),
+            nick,
+        }
+        .to_json()
+        .map_err(|e| PoolError::Event(e.to_string()))?;
+
+        let expires = Timestamp::now().as_u64() + GEO_PRESENCE_TTL_SECS;
+        let tags = vec![
+            Tag::custom(
+                TagKind::SingleLetter(SingleLetterTag::lowercase(Alphabet::G)),
+                [geo.clone()],
+            ),
+            Tag::custom(TagKind::Custom("client".into()), ["resilnet"]),
+            Tag::custom(
+                TagKind::Custom("expiration".into()),
+                [expires.to_string()],
+            ),
+        ];
+
+        let mut builder = EventBuilder::new(Kind::Custom(KIND_GEO_PRESENCE), content);
+        for tag in tags {
+            builder = builder.tag(tag);
+        }
+        let event = builder
+            .sign_with_keys(&ephemeral)
+            .map_err(|e| PoolError::Event(e.to_string()))?;
+        let event_id = client
+            .send_event(event)
+            .await
+            .map_err(|e| PoolError::Relay(e.to_string()))?;
+
+        Ok(event_id.to_hex())
+    }
+
+    /// Replace the active geohash presence filter (empty = unsubscribe).
+    pub async fn set_geo_presence_subscription(
+        &self,
+        geohashes: Vec<String>,
+    ) -> Result<(), PoolError> {
+        let client = {
+            let guard = self.inner.client.read();
+            guard.clone().ok_or(PoolError::NotInitialized)?
+        };
+
+        if let Some(old) = self.inner.geo_sub_id.write().take() {
+            let _ = client.unsubscribe(old).await;
+        }
+
+        let cleaned: Vec<String> = geohashes
+            .into_iter()
+            .map(|g| g.trim().to_lowercase())
+            .filter(|g| !g.is_empty() && g.len() <= 12)
+            .collect();
+        if cleaned.is_empty() {
+            return Ok(());
+        }
+
+        let since = Timestamp::now() - GEO_PRESENCE_TTL_SECS;
+        let filter = Filter::new()
+            .kind(Kind::Custom(KIND_GEO_PRESENCE))
+            .custom_tags(SingleLetterTag::lowercase(Alphabet::G), cleaned)
+            .since(since);
+
+        let output = client
+            .subscribe(filter, None)
+            .await
+            .map_err(|e| PoolError::Relay(e.to_string()))?;
+        *self.inner.geo_sub_id.write() = Some(output.val);
+        Ok(())
+    }
+
     pub async fn reconnect(&self) -> Result<(), PoolError> {
         let client = {
             let guard = self.inner.client.read();
@@ -258,7 +364,17 @@ impl NostrPoolHandle {
         while let Ok(notification) = notifications.recv().await {
             match notification {
                 RelayPoolNotification::Event { event, .. } => {
-                    if ResilNetEventKind::from_u16(event.kind.as_u16()).is_none() {
+                    let kind_u16 = event.kind.as_u16();
+                    if kind_u16 == KIND_GEO_PRESENCE {
+                        if let Some(parsed) = parse_geo_presence_event(&event) {
+                            let _ = self.inner.presence_tx.send(parsed);
+                        }
+                        continue;
+                    }
+                    if ResilNetEventKind::from_u16(kind_u16).is_none() {
+                        continue;
+                    }
+                    if kind_u16 == KIND_GEO_PRESENCE {
                         continue;
                     }
                     match ResilNetEnvelope::from_json(&event.content) {
@@ -278,8 +394,63 @@ impl NostrPoolHandle {
     }
 }
 
+fn anon_nick_from_pubkey(pubkey_hex: &str) -> String {
+    let prefix: String = pubkey_hex
+        .chars()
+        .filter(|c| c.is_ascii_hexdigit())
+        .take(4)
+        .collect();
+    if prefix.is_empty() {
+        "anon".into()
+    } else {
+        format!("anon·{prefix}")
+    }
+}
+
+fn parse_geo_presence_event(event: &Event) -> Option<GeoPresenceEvent> {
+    let geohash = event
+        .tags
+        .iter()
+        .find_map(|t| {
+            let s = t.as_slice();
+            if s.len() >= 2 && s[0] == "g" {
+                Some(s[1].to_lowercase())
+            } else {
+                None
+            }
+        })
+        .filter(|g| !g.is_empty())?;
+
+    let (nick, content_geo) = match GeoPresenceContent::from_json(&event.content) {
+        Ok(c) => (c.nick, Some(c.geohash.to_lowercase())),
+        Err(_) => (anon_nick_from_pubkey(&event.pubkey.to_hex()), None),
+    };
+    let geohash = content_geo
+        .filter(|g| !g.is_empty())
+        .unwrap_or(geohash);
+
+    Some(GeoPresenceEvent {
+        event_id: event.id.to_hex(),
+        pubkey_hex: event.pubkey.to_hex(),
+        geohash,
+        nick,
+        created_at: event.created_at.as_u64(),
+    })
+}
+
 impl Default for NostrPoolHandle {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn anon_nick_is_unlinkable_prefix() {
+        let n = anon_nick_from_pubkey("a1b2c3d4e5");
+        assert_eq!(n, "anon·a1b2");
     }
 }

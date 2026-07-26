@@ -141,7 +141,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String geoEmpty(String channel) {
-    return 'No one online in $channel yet\nOpen #mesh nearby, refresh location, or wait for area presence';
+    return 'No one online in $channel yet\nTry Internet mode + refresh location, or open #mesh nearby';
   }
 
   @override
@@ -152,6 +152,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get geoPeerNearbySubtitle =>
       'Nearby (awaiting area presence) • tap for 1:1 E2EE';
+
+  @override
+  String geoPeerNostrSubtitle(String channel) {
+    return 'Anonymous on Nostr in $channel • discovery only';
+  }
+
+  @override
+  String get geoPeerDiscoverOnlySnack =>
+      'This presence is anonymous on Nostr — chat after mesh/QR identity exchange';
+
+  @override
+  String get transportModeTitle => 'Area transport';
+
+  @override
+  String get transportModeSubtitle =>
+      'Mesh = BLE nearby · Internet = anonymous Nostr presence · Auto = both';
+
+  @override
+  String get transportModeMesh => 'Mesh';
+
+  @override
+  String get transportModeInternet => 'Internet';
+
+  @override
+  String get transportModeAuto => 'Auto';
 
   @override
   String get geoPublicHint => 'Public message to everyone online in this area';

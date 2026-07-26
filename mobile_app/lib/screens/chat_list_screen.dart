@@ -7,6 +7,7 @@ import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
 import '../models/mesh_retention.dart';
 import '../models/peer.dart';
+import '../models/transport_mode.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
@@ -471,7 +472,8 @@ class _GeoBodyState extends State<_GeoBody> {
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
-    final online = s.peersOnlineInSelectedArea();
+    final presence = s.areaPresenceOnline();
+    final messageable = presence.where((e) => e.canMessage).length;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -504,6 +506,28 @@ class _GeoBodyState extends State<_GeoBody> {
                         : const Icon(Icons.my_location),
                   ),
                 ],
+              ),
+              const SizedBox(height: 8),
+              SegmentedButton<TransportMode>(
+                style: const ButtonStyle(
+                  visualDensity: VisualDensity.compact,
+                ),
+                segments: [
+                  ButtonSegment(
+                    value: TransportMode.mesh,
+                    label: Text(l10n.transportModeMesh),
+                  ),
+                  ButtonSegment(
+                    value: TransportMode.internet,
+                    label: Text(l10n.transportModeInternet),
+                  ),
+                  ButtonSegment(
+                    value: TransportMode.auto,
+                    label: Text(l10n.transportModeAuto),
+                  ),
+                ],
+                selected: {s.transportMode},
+                onSelectionChanged: (set) => s.setTransportMode(set.first),
               ),
               const SizedBox(height: 8),
               Wrap(
@@ -548,7 +572,7 @@ class _GeoBodyState extends State<_GeoBody> {
             ],
           ),
         ),
-        if (online.isNotEmpty) ...[
+        if (messageable > 0) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
             child: Row(
@@ -583,7 +607,7 @@ class _GeoBodyState extends State<_GeoBody> {
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
             child: Text(
-              l10n.geoPublicHelp(online.length),
+              l10n.geoPublicHelp(messageable),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.white.withValues(alpha: 0.5),
                   ),
@@ -591,7 +615,7 @@ class _GeoBodyState extends State<_GeoBody> {
           ),
         ],
         Expanded(
-          child: online.isEmpty
+          child: presence.isEmpty
               ? Center(
                   child: Text(
                     l10n.geoEmpty(s.geoChannelLabel),
@@ -603,29 +627,43 @@ class _GeoBodyState extends State<_GeoBody> {
                 )
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-                  itemCount: online.length,
+                  itemCount: presence.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, i) {
-                    final peer = online[i];
-                  return ListTile(
-                      leading: Identicon(id: peer.id),
-                      title: FutureBuilder<String>(
-                        future: s.db.resolveDisplayName(peer.id),
-                        builder: (context, nameSnap) {
-                          return Text(
-                            nameSnap.data ?? peer.displayName ?? peer.id,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          );
-                        },
-                      ),
-                      subtitle: Text(
-                        peer.geohash == null || peer.geohash!.isEmpty
+                    final entry = presence[i];
+                    final subtitle = !entry.canMessage
+                        ? l10n.geoPeerNostrSubtitle(s.geoChannelLabel)
+                        : (entry.geohash == null || entry.geohash!.isEmpty)
                             ? l10n.geoPeerNearbySubtitle
-                            : l10n.geoPeerSubtitle(s.geoChannelLabel),
+                            : l10n.geoPeerSubtitle(s.geoChannelLabel);
+                    return ListTile(
+                      leading: Identicon(id: entry.id),
+                      title: Text(
+                        entry.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      trailing: const Icon(Icons.lock_outline, size: 18),
-                      onTap: () => widget.onOpen(context, peer.id),
+                      subtitle: Text(subtitle),
+                      trailing: Icon(
+                        entry.canMessage
+                            ? Icons.lock_outline
+                            : Icons.travel_explore_outlined,
+                        size: 18,
+                        color: entry.source.isInternet
+                            ? ResilNetTheme.channelGreen
+                            : null,
+                      ),
+                      onTap: () {
+                        if (!entry.canMessage) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.geoPeerDiscoverOnlySnack),
+                            ),
+                          );
+                          return;
+                        }
+                        widget.onOpen(context, entry.peer!.id);
+                      },
                     );
                   },
                 ),

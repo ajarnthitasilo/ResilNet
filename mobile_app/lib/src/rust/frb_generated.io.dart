@@ -25,6 +25,11 @@ abstract class ResilNetCoreApiImplPlatform
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
+  RustStreamSink<GeoPresenceDto> dco_decode_StreamSink_geo_presence_dto_Sse(
+    dynamic raw,
+  );
+
+  @protected
   RustStreamSink<MessagePacketDto> dco_decode_StreamSink_message_packet_dto_Sse(
     dynamic raw,
   );
@@ -48,6 +53,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   RouterConfigDto dco_decode_box_autoadd_router_config_dto(dynamic raw);
+
+  @protected
+  GeoPresenceDto dco_decode_geo_presence_dto(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -122,6 +130,11 @@ abstract class ResilNetCoreApiImplPlatform
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
+  RustStreamSink<GeoPresenceDto> sse_decode_StreamSink_geo_presence_dto_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   RustStreamSink<MessagePacketDto> sse_decode_StreamSink_message_packet_dto_Sse(
     SseDeserializer deserializer,
   );
@@ -151,6 +164,9 @@ abstract class ResilNetCoreApiImplPlatform
   RouterConfigDto sse_decode_box_autoadd_router_config_dto(
     SseDeserializer deserializer,
   );
+
+  @protected
+  GeoPresenceDto sse_decode_geo_presence_dto(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -240,6 +256,12 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  void sse_encode_StreamSink_geo_presence_dto_Sse(
+    RustStreamSink<GeoPresenceDto> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_StreamSink_message_packet_dto_Sse(
     RustStreamSink<MessagePacketDto> self,
     SseSerializer serializer,
@@ -272,6 +294,12 @@ abstract class ResilNetCoreApiImplPlatform
   @protected
   void sse_encode_box_autoadd_router_config_dto(
     RouterConfigDto self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_geo_presence_dto(
+    GeoPresenceDto self,
     SseSerializer serializer,
   );
 

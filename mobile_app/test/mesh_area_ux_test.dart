@@ -1,9 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:resilnet/core/geohash.dart';
 import 'package:resilnet/core/payload_kinds.dart';
+import 'package:resilnet/models/area_presence.dart';
 import 'package:resilnet/models/chat_message.dart';
 import 'package:resilnet/models/mesh_retention.dart';
 import 'package:resilnet/models/peer.dart';
+import 'package:resilnet/models/transport_mode.dart';
 import 'package:resilnet/services/database_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -38,7 +40,76 @@ void main() {
     });
   });
 
-  group('area peer geohash filter', () {
+  group('area presence merge', () {
+    test('internet mode shows nostr sightings without mesh peers', () {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final list = mergeAreaPresence(
+        meshPeers: const [],
+        nostrSightings: [
+          NostrPresenceSighting(
+            pubkeyHex: 'abcd1234',
+            nick: 'anon·abcd',
+            geohash: 'w5jt8',
+            lastSeen: now,
+          ),
+        ],
+        channel: 'w5jt8',
+        mode: TransportMode.internet,
+        nowMs: now,
+      );
+      expect(list.length, 1);
+      expect(list.first.canMessage, isFalse);
+      expect(list.first.source, PresenceSource.internet);
+      expect(list.first.label, 'anon·abcd');
+    });
+
+    test('mesh mode ignores nostr sightings', () {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final list = mergeAreaPresence(
+        meshPeers: [
+          Peer(
+            id: 'mesh-a',
+            publicKey: 'pk',
+            geohash: 'w5jt8xx',
+            isVerifiedIssuer: false,
+            isBlocked: false,
+            lastSeen: now,
+          ),
+        ],
+        nostrSightings: [
+          NostrPresenceSighting(
+            pubkeyHex: 'ffff',
+            nick: 'anon·ffff',
+            geohash: 'w5jt8',
+            lastSeen: now,
+          ),
+        ],
+        channel: 'w5jt8',
+        mode: TransportMode.mesh,
+        nowMs: now,
+      );
+      expect(list.map((e) => e.id), ['mesh-a']);
+    });
+
+    test('expired nostr sightings are dropped', () {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final list = mergeAreaPresence(
+        meshPeers: const [],
+        nostrSightings: [
+          NostrPresenceSighting(
+            pubkeyHex: 'old',
+            nick: 'anon·old0',
+            geohash: 'w5',
+            lastSeen: now - const Duration(minutes: 10).inMilliseconds,
+          ),
+        ],
+        channel: 'w5',
+        mode: TransportMode.internet,
+        nowMs: now,
+      );
+      expect(list, isEmpty);
+    });
+
     test('matchesChannel filters peers in selected area', () {
       const channel = 'w1z0';
       final peers = [
