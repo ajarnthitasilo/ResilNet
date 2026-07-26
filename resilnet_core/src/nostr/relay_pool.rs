@@ -287,7 +287,8 @@ impl NostrPoolHandle {
             guard.clone().ok_or(PoolError::NotInitialized)?
         };
 
-        if let Some(old) = self.inner.geo_sub_id.write().take() {
+        let old_sub = self.inner.geo_sub_id.write().take();
+        if let Some(old) = old_sub {
             let _ = client.unsubscribe(old).await;
         }
 
