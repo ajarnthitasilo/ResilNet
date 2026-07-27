@@ -14,9 +14,11 @@ import '../models/feed_channel.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
+import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
+import 'announcements_screen.dart';
 import 'chat_screen.dart';
 import 'feed_channel_sheet.dart';
 import 'identity_screen.dart';
@@ -39,8 +41,10 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   final _peerController = TextEditingController();
   final _compose = TextEditingController();
+  final _audio = AudioRecorderService();
   NoticeExpiry _expiry = NoticeExpiry.sevenDays;
   bool _sending = false;
+  bool _recordingVoice = false;
   int _titleTapCount = 0;
   DateTime? _titleTapAt;
 
@@ -48,6 +52,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void dispose() {
     _peerController.dispose();
     _compose.dispose();
+    _audio.dispose();
     super.dispose();
   }
 
@@ -216,15 +221,56 @@ class _ChatListScreenState extends State<ChatListScreen> {
           SnackBar(content: Text(context.l10n.geoPublicSent(n))),
         );
       } else if (s.feedChannel == FeedChannel.mesh) {
-        await s.postNotice(
-          scope: 'mesh',
-          channelLabel: '#mesh',
-          text: '[image]',
-          expiry: _expiry == NoticeExpiry.forever
-              ? NoticeExpiry.sevenDays
-              : _expiry,
+        final n = await s.sendMeshPublicText(
+          b64,
+          kind: PayloadKinds.image,
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
         );
       }
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
+  }
+
+  Future<void> _startPublicVoice(AppState s) async {
+    if (_recordingVoice || _sending) return;
+    if (!s.e2eeEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+      );
+      return;
+    }
+    try {
+      await _audio.startRecording();
+      if (mounted) setState(() => _recordingVoice = true);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
+      );
+    }
+  }
+
+  Future<void> _stopAndSendPublicVoice(AppState s) async {
+    if (!_recordingVoice) return;
+    final opus = await _audio.stopRecording();
+    if (mounted) setState(() => _recordingVoice = false);
+    if (opus == null || opus.isEmpty) return;
+    if (!s.e2eeEnabled) return;
+
+    final b64 = base64Encode(opus);
+    setState(() => _sending = true);
+    try {
+      final n = s.feedChannel == FeedChannel.geo
+          ? await s.sendAreaPublicText(b64, kind: PayloadKinds.audio)
+          : await s.sendMeshPublicText(b64, kind: PayloadKinds.audio);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.geoPublicSent(n))),
+      );
     } finally {
       if (mounted) setState(() => _sending = false);
     }
@@ -347,12 +393,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 );
               } else if (v == 'info') {
                 showInfoSheet(context);
+              } else if (v == 'announce') {
+                openAnnouncementsScreen(context);
               }
             },
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'info',
                 child: Text(l10n.infoOpen),
+              ),
+              PopupMenuItem(
+                value: 'announce',
+                child: Text(l10n.announceOpen),
               ),
               PopupMenuItem(
                 value: 'settings',
@@ -449,13 +501,46 @@ class _ChatListScreenState extends State<ChatListScreen> {
               children: [
                 IconButton(
                   tooltip: l10n.chatAttachImage,
-                  onPressed: _sending ? null : () => _sendPublicImage(s),
+                  onPressed: _sending || _recordingVoice
+                      ? null
+                      : () => _sendPublicImage(s),
                   icon: const Icon(Icons.image_outlined),
+                ),
+                Tooltip(
+                  message: _recordingVoice
+                      ? l10n.voicePttRelease
+                      : l10n.voicePttHold,
+                  child: GestureDetector(
+                    onLongPressStart: (_) {
+                      if (!_sending) unawaited(_startPublicVoice(s));
+                    },
+                    onLongPressEnd: (_) {
+                      if (_recordingVoice) {
+                        unawaited(_stopAndSendPublicVoice(s));
+                      }
+                    },
+                    onLongPressCancel: () {
+                      if (_recordingVoice) {
+                        unawaited(_audio.cancelRecording().then((_) {
+                          if (mounted) {
+                            setState(() => _recordingVoice = false);
+                          }
+                        }));
+                      }
+                    },
+                    child: IconButton(
+                      onPressed: null,
+                      icon: Icon(
+                        _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
+                        color: _recordingVoice ? Colors.redAccent : null,
+                      ),
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: TextField(
                     controller: _compose,
-                    enabled: !_sending,
+                    enabled: !_sending && !_recordingVoice,
                     minLines: 1,
                     maxLines: 4,
                     decoration: InputDecoration(
@@ -467,7 +552,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
                 const SizedBox(width: 6),
                 IconButton.filled(
-                  onPressed: _sending ? null : () => unawaited(_sendPublic(s)),
+                  onPressed: _sending || _recordingVoice
+                      ? null
+                      : () => unawaited(_sendPublic(s)),
                   icon: _sending
                       ? const SizedBox(
                           width: 18,

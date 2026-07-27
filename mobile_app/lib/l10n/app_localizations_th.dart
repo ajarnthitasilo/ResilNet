@@ -923,4 +923,111 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get slashUnknown => 'ไม่รู้จักคำสั่ง — ลอง /help';
+
+  @override
+  String get announceOpen => 'ประกาศ';
+
+  @override
+  String get announceTitle => 'ประกาศ';
+
+  @override
+  String get announceEmpty =>
+      'ยังไม่มีกระดาน — สร้างเพื่อโพสต์แบบล็อกหรือแบบเปิด';
+
+  @override
+  String get announceCreate => 'สร้างกระดาน';
+
+  @override
+  String get announceCreateHint => 'ชื่อกระดาน';
+
+  @override
+  String get announceDefaultTitle => 'กระดานชุมชน';
+
+  @override
+  String get announceSettings => 'ตั้งค่ากระดาน';
+
+  @override
+  String get announceAllowLocked => 'อนุญาตโพสต์แบบล็อก (เข้ารหัส)';
+
+  @override
+  String get announceAllowLockedSub =>
+      'เข้ารหัสด้วยกุญแจกระดาน — ผู้อ่านต้องได้รับสิทธิ์';
+
+  @override
+  String get announceAllowOpen => 'อนุญาตโพสต์แบบเปิด (plaintext)';
+
+  @override
+  String get announceAllowOpenSub =>
+      'ไม่ใช่ E2EE — อ่านได้บน mesh/รีเลย์ (ปิดเป็นค่าเริ่มต้น)';
+
+  @override
+  String get announceComposeHint => 'เขียนประกาศ…';
+
+  @override
+  String get announceModeLocked => 'ล็อก';
+
+  @override
+  String get announceModeOpen => 'เปิด';
+
+  @override
+  String get announceOpenBadge => 'เปิด · ไม่เข้ารหัส';
+
+  @override
+  String get announceLockedBadge => 'ล็อก';
+
+  @override
+  String get announceLockedPlaceholder => 'เข้ารหัสแล้ว — ขอสิทธิ์เพื่ออ่าน';
+
+  @override
+  String get announceRequestAccess => 'ขอสิทธิ์อ่าน';
+
+  @override
+  String get announceRequestSent => 'ส่งคำขอไปยังเจ้าของกระดานแล้ว';
+
+  @override
+  String get announceRequestFailed =>
+      'ขอสิทธิ์ไม่ได้ (ต้องมี public key ของเจ้าของ)';
+
+  @override
+  String get announceOpenConfirmTitle => 'โพสต์โดยไม่เข้ารหัส?';
+
+  @override
+  String get announceOpenConfirmBody =>
+      'โพสต์แบบเปิดไม่ใช่ E2EE ผู้ที่อยู่บนเส้นทาง (mesh / รีเลย์) อาจอ่านได้ ดำเนินการต่อ?';
+
+  @override
+  String get announcePostAction => 'โพสต์';
+
+  @override
+  String get announcePendingRequests => 'คำขอเข้าถึง';
+
+  @override
+  String get announceApprove => 'อนุมัติ';
+
+  @override
+  String get announceDeny => 'ปฏิเสธ';
+
+  @override
+  String get announceGranted => 'อ่านโพสต์ล็อกบนกระดานนี้ได้แล้ว';
+
+  @override
+  String get announceOwner => 'คุณเป็นเจ้าของกระดานนี้';
+
+  @override
+  String get announceCopyInvite => 'คัดลอกคำเชิญกระดาน';
+
+  @override
+  String get announceFollow => 'ติดตามกระดานจากคำเชิญ';
+
+  @override
+  String get announceFollowHint => 'วาง JSON คำเชิญจากเจ้าของ';
+
+  @override
+  String get announceFollowOk => 'ติดตามกระดานแล้ว';
+
+  @override
+  String get announceFollowFail => 'คำเชิญไม่ถูกต้อง';
+
+  @override
+  String get announceInviteCopied => 'คัดลอกคำเชิญแล้ว';
 }

@@ -214,8 +214,21 @@ class CryptoService {
     required String encryptedPayload,
     required String encryptedKey,
   }) {
+    return decryptWithPrivatePem(
+      privatePem: privateKeyPem,
+      encryptedPayload: encryptedPayload,
+      encryptedKey: encryptedKey,
+    );
+  }
+
+  /// Decrypt using an arbitrary RSA private PEM (e.g. announcement board key).
+  String decryptWithPrivatePem({
+    required String privatePem,
+    required String encryptedPayload,
+    required String encryptedKey,
+  }) {
     final privateKey =
-        enc.RSAKeyParser().parse(privateKeyPem) as pc.RSAPrivateKey;
+        enc.RSAKeyParser().parse(privatePem) as pc.RSAPrivateKey;
     final rsa = enc.Encrypter(
       enc.RSA(privateKey: privateKey, encoding: enc.RSAEncoding.OAEP),
     );
@@ -231,6 +244,20 @@ class CryptoService {
     );
     final plaintext = aes.decrypt(enc.Encrypted.fromBase64(ct), iv: enc.IV(iv));
     return plaintext;
+  }
+
+  /// Mint a fresh RSA-2048 keypair (e.g. for an announcement board).
+  ({String publicPem, String privatePem, String keyId}) generateKeyPairPems() {
+    final pair = _generateRsaKeyPair();
+    final privatePem = _encodePrivateKeyToPem(
+      pair.privateKey as pc.RSAPrivateKey,
+    );
+    final publicPem = _encodePublicKeyToPem(pair.publicKey as pc.RSAPublicKey);
+    return (
+      publicPem: publicPem,
+      privatePem: privatePem,
+      keyId: _publicKeyHash(publicPem),
+    );
   }
 
   bool verifySignature({

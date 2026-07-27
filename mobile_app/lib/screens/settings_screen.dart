@@ -7,6 +7,7 @@ import '../l10n/l10n_ext.dart';
 import '../models/notice_expiry.dart';
 import '../models/transport_mode.dart';
 import '../state/app_state.dart';
+import 'announcements_screen.dart';
 import 'esp32_firmware_screen.dart';
 import 'info_sheet.dart';
 import 'mesh_topology_screen.dart';
@@ -213,6 +214,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             _section(l10n.settingsDevices),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.campaign_outlined),
+              title: Text(l10n.announceOpen),
+              subtitle: Text(l10n.announceTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => openAnnouncementsScreen(context),
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.share_outlined),

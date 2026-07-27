@@ -20,9 +20,17 @@ class PayloadKinds {
   /// Local system line (screenshot, etc.) — not relayed.
   static const system = 'system';
 
+  /// Request board private key from owner (Prompt C).
+  static const boardKeyRequest = 'board_key_request';
+
+  /// Owner grants wrapped board private key (Prompt C).
+  static const boardKeyGrant = 'board_key_grant';
+
   static bool isChatVisible(String? kind) {
     final k = (kind ?? text).trim();
-    return k != presence;
+    return k != presence &&
+        k != boardKeyRequest &&
+        k != boardKeyGrant;
   }
 
   static bool isSystemLine(String? kind) => (kind ?? '') == system;

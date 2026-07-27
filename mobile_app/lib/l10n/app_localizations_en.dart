@@ -929,4 +929,111 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get slashUnknown => 'Unknown command — try /help';
+
+  @override
+  String get announceOpen => 'Announcements';
+
+  @override
+  String get announceTitle => 'Announcements';
+
+  @override
+  String get announceEmpty =>
+      'No boards yet — create one to post locked or open notices';
+
+  @override
+  String get announceCreate => 'Create board';
+
+  @override
+  String get announceCreateHint => 'Board name';
+
+  @override
+  String get announceDefaultTitle => 'Community board';
+
+  @override
+  String get announceSettings => 'Board settings';
+
+  @override
+  String get announceAllowLocked => 'Allow locked (encrypted) posts';
+
+  @override
+  String get announceAllowLockedSub =>
+      'Encrypted to the board key — readers need access';
+
+  @override
+  String get announceAllowOpen => 'Allow open (plaintext) posts';
+
+  @override
+  String get announceAllowOpenSub =>
+      'Not E2EE — readable on mesh/relays. Off by default.';
+
+  @override
+  String get announceComposeHint => 'Write an announcement…';
+
+  @override
+  String get announceModeLocked => 'Locked';
+
+  @override
+  String get announceModeOpen => 'Open';
+
+  @override
+  String get announceOpenBadge => 'OPEN · not encrypted';
+
+  @override
+  String get announceLockedBadge => 'Locked';
+
+  @override
+  String get announceLockedPlaceholder => 'Encrypted — request access to read';
+
+  @override
+  String get announceRequestAccess => 'Request access';
+
+  @override
+  String get announceRequestSent => 'Access request sent to the board owner';
+
+  @override
+  String get announceRequestFailed =>
+      'Could not request access (need owner’s public key)';
+
+  @override
+  String get announceOpenConfirmTitle => 'Post without encryption?';
+
+  @override
+  String get announceOpenConfirmBody =>
+      'Open posts are not E2EE. Anyone on the path (mesh / relays) may read them. Continue?';
+
+  @override
+  String get announcePostAction => 'Post';
+
+  @override
+  String get announcePendingRequests => 'Access requests';
+
+  @override
+  String get announceApprove => 'Approve';
+
+  @override
+  String get announceDeny => 'Deny';
+
+  @override
+  String get announceGranted => 'You can read locked posts on this board';
+
+  @override
+  String get announceOwner => 'You own this board';
+
+  @override
+  String get announceCopyInvite => 'Copy board invite';
+
+  @override
+  String get announceFollow => 'Follow board from invite';
+
+  @override
+  String get announceFollowHint => 'Paste board invite JSON from the owner';
+
+  @override
+  String get announceFollowOk => 'Following board';
+
+  @override
+  String get announceFollowFail => 'Invalid invite';
+
+  @override
+  String get announceInviteCopied => 'Invite copied';
 }

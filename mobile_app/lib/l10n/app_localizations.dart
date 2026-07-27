@@ -1729,6 +1729,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown command — try /help'**
   String get slashUnknown;
+
+  /// No description provided for @announceOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcements'**
+  String get announceOpen;
+
+  /// No description provided for @announceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcements'**
+  String get announceTitle;
+
+  /// No description provided for @announceEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No boards yet — create one to post locked or open notices'**
+  String get announceEmpty;
+
+  /// No description provided for @announceCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create board'**
+  String get announceCreate;
+
+  /// No description provided for @announceCreateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Board name'**
+  String get announceCreateHint;
+
+  /// No description provided for @announceDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Community board'**
+  String get announceDefaultTitle;
+
+  /// No description provided for @announceSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Board settings'**
+  String get announceSettings;
+
+  /// No description provided for @announceAllowLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow locked (encrypted) posts'**
+  String get announceAllowLocked;
+
+  /// No description provided for @announceAllowLockedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted to the board key — readers need access'**
+  String get announceAllowLockedSub;
+
+  /// No description provided for @announceAllowOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow open (plaintext) posts'**
+  String get announceAllowOpen;
+
+  /// No description provided for @announceAllowOpenSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Not E2EE — readable on mesh/relays. Off by default.'**
+  String get announceAllowOpenSub;
+
+  /// No description provided for @announceComposeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write an announcement…'**
+  String get announceComposeHint;
+
+  /// No description provided for @announceModeLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get announceModeLocked;
+
+  /// No description provided for @announceModeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get announceModeOpen;
+
+  /// No description provided for @announceOpenBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'OPEN · not encrypted'**
+  String get announceOpenBadge;
+
+  /// No description provided for @announceLockedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get announceLockedBadge;
+
+  /// No description provided for @announceLockedPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted — request access to read'**
+  String get announceLockedPlaceholder;
+
+  /// No description provided for @announceRequestAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Request access'**
+  String get announceRequestAccess;
+
+  /// No description provided for @announceRequestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Access request sent to the board owner'**
+  String get announceRequestSent;
+
+  /// No description provided for @announceRequestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not request access (need owner’s public key)'**
+  String get announceRequestFailed;
+
+  /// No description provided for @announceOpenConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Post without encryption?'**
+  String get announceOpenConfirmTitle;
+
+  /// No description provided for @announceOpenConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open posts are not E2EE. Anyone on the path (mesh / relays) may read them. Continue?'**
+  String get announceOpenConfirmBody;
+
+  /// No description provided for @announcePostAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get announcePostAction;
+
+  /// No description provided for @announcePendingRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Access requests'**
+  String get announcePendingRequests;
+
+  /// No description provided for @announceApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get announceApprove;
+
+  /// No description provided for @announceDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get announceDeny;
+
+  /// No description provided for @announceGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'You can read locked posts on this board'**
+  String get announceGranted;
+
+  /// No description provided for @announceOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'You own this board'**
+  String get announceOwner;
+
+  /// No description provided for @announceCopyInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy board invite'**
+  String get announceCopyInvite;
+
+  /// No description provided for @announceFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow board from invite'**
+  String get announceFollow;
+
+  /// No description provided for @announceFollowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste board invite JSON from the owner'**
+  String get announceFollowHint;
+
+  /// No description provided for @announceFollowOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Following board'**
+  String get announceFollowOk;
+
+  /// No description provided for @announceFollowFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid invite'**
+  String get announceFollowFail;
+
+  /// No description provided for @announceInviteCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite copied'**
+  String get announceInviteCopied;
 }
 
 class _AppLocalizationsDelegate

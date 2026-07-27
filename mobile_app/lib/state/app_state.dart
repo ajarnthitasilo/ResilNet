@@ -16,6 +16,7 @@ import '../core/geohash.dart';
 import '../core/payload_kinds.dart';
 import '../models/area_presence.dart';
 import '../models/ack_entry.dart';
+import '../models/announcement_board.dart';
 import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
 import '../models/local_notice.dart';
@@ -176,6 +177,28 @@ class AppState extends ChangeNotifier {
   final List<LocalNotice> _notices = <LocalNotice>[];
   List<LocalNotice> get notices =>
       List.unmodifiable(_notices.where((n) => !n.isExpired));
+
+  static const _kAnnouncementBoards = 'resilnet_announcement_boards';
+  static const _kAnnouncementPosts = 'resilnet_announcement_posts';
+  final List<AnnouncementBoard> _boards = <AnnouncementBoard>[];
+  final List<AnnouncementPost> _boardPosts = <AnnouncementPost>[];
+  /// boardId → private PEM (owner or granted).
+  final Map<String, String> _boardPrivateKeys = {};
+  /// Pending inbound key requests: requestMsgId → meta
+  final List<Map<String, String>> _pendingBoardKeyRequests =
+      <Map<String, String>>[];
+
+  List<AnnouncementBoard> get announcementBoards =>
+      List.unmodifiable(_boards);
+  List<AnnouncementPost> postsForBoard(String boardId) => _boardPosts
+      .where((p) => p.boardId == boardId)
+      .toList()
+    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  List<Map<String, String>> get pendingBoardKeyRequests =>
+      List.unmodifiable(_pendingBoardKeyRequests);
+
+  bool canDecryptBoard(String boardId) =>
+      _boardPrivateKeys.containsKey(boardId);
 
   /// Latest local system lines (screenshot etc.) for UI banners.
   final List<ChatMessage> _systemLines = <ChatMessage>[];
@@ -365,6 +388,7 @@ class AppState extends ChangeNotifier {
       _loadFavorites(prefs);
       _nostrExpiry = NoticeExpiry.fromDays(prefs.getInt(_kNostrExpiryDays));
       _loadNotices(prefs);
+      await _loadAnnouncementBoards(prefs);
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
       final loc = prefs.getString(_kLocaleOverride);
       _localeOverrideCode =
@@ -417,6 +441,387 @@ class AppState extends ChangeNotifier {
       _kNotices,
       jsonEncode(active.map((n) => n.toJson()).toList()),
     );
+  }
+
+  Future<void> _loadAnnouncementBoards(SharedPreferences prefs) async {
+    _boards.clear();
+    _boardPosts.clear();
+    _boardPrivateKeys.clear();
+    try {
+      final rawB = prefs.getString(_kAnnouncementBoards);
+      if (rawB != null && rawB.isNotEmpty) {
+        final list = jsonDecode(rawB) as List<dynamic>;
+        for (final item in list) {
+          if (item is Map<String, dynamic>) {
+            _boards.add(
+              AnnouncementBoard.fromJson(Map<String, Object?>.from(item)),
+            );
+          }
+        }
+      }
+      final rawP = prefs.getString(_kAnnouncementPosts);
+      if (rawP != null && rawP.isNotEmpty) {
+        final list = jsonDecode(rawP) as List<dynamic>;
+        for (final item in list) {
+          if (item is Map<String, dynamic>) {
+            _boardPosts.add(
+              AnnouncementPost.fromJson(Map<String, Object?>.from(item)),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] load boards failed: $e');
+    }
+    for (final b in _boards) {
+      try {
+        final priv = await _storage.read(key: 'resilnet_board_priv_${b.id}');
+        if (priv != null && priv.isNotEmpty) {
+          _boardPrivateKeys[b.id] = priv;
+        }
+        final grant = await _storage.read(key: 'resilnet_board_grant_${b.id}');
+        if (grant != null && grant.isNotEmpty) {
+          _boardPrivateKeys[b.id] = grant;
+        }
+      } catch (e) {
+        debugPrint('[ResilNet] load board key ${b.id} failed: $e');
+      }
+    }
+  }
+
+  Future<void> _persistAnnouncementBoards() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _kAnnouncementBoards,
+      jsonEncode(_boards.map((b) => b.toJson()).toList()),
+    );
+    await prefs.setString(
+      _kAnnouncementPosts,
+      jsonEncode(_boardPosts.map((p) => p.toJson()).toList()),
+    );
+  }
+
+  Future<AnnouncementBoard> createAnnouncementBoard({
+    required String title,
+  }) async {
+    final pair = crypto.generateKeyPairPems();
+    final board = AnnouncementBoard(
+      id: pair.keyId,
+      title: title.trim().isEmpty ? 'Board' : title.trim(),
+      ownerId: myUserId,
+      publicKeyPem: pair.publicPem,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      allowLocked: true,
+      allowOpen: false,
+    );
+    _boards.insert(0, board);
+    await _storage.write(
+      key: 'resilnet_board_priv_${board.id}',
+      value: pair.privatePem,
+    );
+    _boardPrivateKeys[board.id] = pair.privatePem;
+    await _persistAnnouncementBoards();
+    notifyListeners();
+    return board;
+  }
+
+  /// Import board metadata without private key (for readers before grant).
+  Future<void> followAnnouncementBoard(AnnouncementBoard board) async {
+    if (_boards.any((b) => b.id == board.id)) return;
+    _boards.insert(
+      0,
+      AnnouncementBoard(
+        id: board.id,
+        title: board.title,
+        ownerId: board.ownerId,
+        publicKeyPem: board.publicKeyPem,
+        createdAt: board.createdAt,
+        allowLocked: board.allowLocked,
+        allowOpen: board.allowOpen,
+        epoch: board.epoch,
+      ),
+    );
+    await _persistAnnouncementBoards();
+    notifyListeners();
+  }
+
+  String boardInvitePayload(AnnouncementBoard board) {
+    return jsonEncode(board.toJson());
+  }
+
+  Future<bool> followBoardFromInviteJson(String raw) async {
+    try {
+      final m = jsonDecode(raw.trim()) as Map<String, dynamic>;
+      final board = AnnouncementBoard.fromJson(Map<String, Object?>.from(m));
+      if (board.id.isEmpty || board.publicKeyPem.isEmpty) return false;
+      await followAnnouncementBoard(board);
+      return true;
+    } catch (e) {
+      debugPrint('[ResilNet] follow invite failed: $e');
+      return false;
+    }
+  }
+
+  Future<void> updateBoardSettings(
+    String boardId, {
+    bool? allowLocked,
+    bool? allowOpen,
+  }) async {
+    final i = _boards.indexWhere((b) => b.id == boardId);
+    if (i < 0) return;
+    final b = _boards[i];
+    if (b.ownerId != myUserId) return;
+    if (allowLocked != null) b.allowLocked = allowLocked;
+    if (allowOpen != null) b.allowOpen = allowOpen;
+    await _persistAnnouncementBoards();
+    notifyListeners();
+  }
+
+AnnouncementBoard? boardById(String id) {
+    for (final b in _boards) {
+      if (b.id == id) return b;
+    }
+    return null;
+  }
+
+  Future<AnnouncementPost?> postAnnouncement({
+    required String boardId,
+    required String text,
+    required AnnouncementPostMode mode,
+  }) async {
+    final board = boardById(boardId);
+    if (board == null) return null;
+    final body = text.trim();
+    if (body.isEmpty) return null;
+
+    if (mode == AnnouncementPostMode.open) {
+      if (!board.allowOpen) return null;
+      final post = AnnouncementPost(
+        id: _uuid.v4(),
+        boardId: boardId,
+        authorId: myUserId,
+        mode: AnnouncementPostMode.open,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        openText: body,
+        epoch: board.epoch,
+      );
+      _boardPosts.insert(0, post);
+      await _persistAnnouncementBoards();
+      // Best-effort fan-out as labeled open notice (explicitly non-E2EE).
+      unawaited(
+        postNotice(
+          scope: 'mesh',
+          channelLabel: '#announce',
+          text: '[OPEN][${board.title}] $body',
+          expiry: NoticeExpiry.oneDay,
+        ),
+      );
+      notifyListeners();
+      return post;
+    }
+
+    if (!board.allowLocked) return null;
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final pkg = crypto.encryptForRecipient(
+      plaintext: body,
+      receiverPublicPem: board.publicKeyPem,
+      senderId: myUserId,
+      receiverId: board.id,
+      timestamp: ts,
+    );
+    final post = AnnouncementPost(
+      id: _uuid.v4(),
+      boardId: boardId,
+      authorId: myUserId,
+      mode: AnnouncementPostMode.locked,
+      createdAt: ts,
+      encryptedPayload: pkg.encryptedPayload,
+      encryptedKey: pkg.encryptedKey,
+      signature: pkg.signature,
+      epoch: board.epoch,
+    );
+    _boardPosts.insert(0, post);
+    await _persistAnnouncementBoards();
+    notifyListeners();
+    return post;
+  }
+
+  String? decryptAnnouncementPost(AnnouncementPost post) {
+    if (post.isOpen) return post.openText;
+    final priv = _boardPrivateKeys[post.boardId];
+    if (priv == null ||
+        post.encryptedPayload == null ||
+        post.encryptedKey == null) {
+      return null;
+    }
+    try {
+      return crypto.decryptWithPrivatePem(
+        privatePem: priv,
+        encryptedPayload: post.encryptedPayload!,
+        encryptedKey: post.encryptedKey!,
+      );
+    } catch (e) {
+      debugPrint('[ResilNet] board decrypt failed: $e');
+      return null;
+    }
+  }
+
+  /// Prompt C: request board key from owner (sealed 1:1).
+  Future<bool> requestBoardAccess(String boardId) async {
+    final board = boardById(boardId);
+    if (board == null) return false;
+    if (board.ownerId == myUserId) return true;
+    if (canDecryptBoard(boardId)) return true;
+    if (!_e2eeEnabled) return false;
+
+    final owner = await db.getPeer(board.ownerId);
+    final ownerPub = owner?.publicKey ?? '';
+    if (ownerPub.isEmpty) return false;
+
+    final payload = jsonEncode({
+      'v': 1,
+      'type': PayloadKinds.boardKeyRequest,
+      'boardId': boardId,
+      'boardTitle': board.title,
+      'requesterId': myUserId,
+      'requesterPub': crypto.publicKeyPem,
+    });
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final pkg = crypto.encryptForRecipient(
+      plaintext: payload,
+      receiverPublicPem: ownerPub,
+      senderId: myUserId,
+      receiverId: board.ownerId,
+      timestamp: ts,
+    );
+    final msg = ChatMessage(
+      id: _uuid.v4(),
+      senderId: myUserId,
+      receiverId: board.ownerId,
+      encryptedPayload: pkg.encryptedPayload,
+      encryptedKey: pkg.encryptedKey,
+      signature: pkg.signature,
+      ttl: 5,
+      timestamp: ts,
+      status: MessageStatus.pending,
+      type: MessageType.direct,
+      payloadKind: PayloadKinds.boardKeyRequest,
+    );
+    await persistChatMessage(msg);
+    await routeOutbound(msg);
+    notifyListeners();
+    return true;
+  }
+
+  /// Prompt C: owner approves — wrap board private key for requester.
+  Future<bool> approveBoardKeyRequest({
+    required String boardId,
+    required String requesterId,
+    required String requesterPubPem,
+  }) async {
+    if (!_e2eeEnabled) return false;
+    final board = boardById(boardId);
+    if (board == null || board.ownerId != myUserId) return false;
+    final priv = _boardPrivateKeys[boardId];
+    if (priv == null || priv.isEmpty) return false;
+
+    final grantBody = jsonEncode({
+      'v': 1,
+      'type': PayloadKinds.boardKeyGrant,
+      'boardId': boardId,
+      'epoch': board.epoch,
+      'privatePem': priv,
+    });
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final pkg = crypto.encryptForRecipient(
+      plaintext: grantBody,
+      receiverPublicPem: requesterPubPem,
+      senderId: myUserId,
+      receiverId: requesterId,
+      timestamp: ts,
+    );
+    final msg = ChatMessage(
+      id: _uuid.v4(),
+      senderId: myUserId,
+      receiverId: requesterId,
+      encryptedPayload: pkg.encryptedPayload,
+      encryptedKey: pkg.encryptedKey,
+      signature: pkg.signature,
+      ttl: 5,
+      timestamp: ts,
+      status: MessageStatus.pending,
+      type: MessageType.direct,
+      payloadKind: PayloadKinds.boardKeyGrant,
+    );
+    await persistChatMessage(msg);
+    await routeOutbound(msg);
+    _pendingBoardKeyRequests.removeWhere(
+      (r) => r['boardId'] == boardId && r['requesterId'] == requesterId,
+    );
+    notifyListeners();
+    return true;
+  }
+
+  void denyBoardKeyRequest({
+    required String boardId,
+    required String requesterId,
+  }) {
+    _pendingBoardKeyRequests.removeWhere(
+      (r) => r['boardId'] == boardId && r['requesterId'] == requesterId,
+    );
+    notifyListeners();
+  }
+
+  Future<void> _handleBoardKeyControlMessage(ChatMessage msg) async {
+    if (msg.receiverId != myUserId) return;
+    if (msg.payloadKind != PayloadKinds.boardKeyRequest &&
+        msg.payloadKind != PayloadKinds.boardKeyGrant) {
+      return;
+    }
+    String plain;
+    try {
+      plain = crypto.decryptFromSender(
+        encryptedPayload: msg.encryptedPayload,
+        encryptedKey: msg.encryptedKey,
+      );
+    } catch (e) {
+      debugPrint('[ResilNet] board control decrypt failed: $e');
+      return;
+    }
+    try {
+      final obj = jsonDecode(plain) as Map<String, dynamic>;
+      final type = obj['type'] as String? ?? '';
+      if (type == PayloadKinds.boardKeyRequest) {
+        final boardId = obj['boardId'] as String? ?? '';
+        final requesterId = obj['requesterId'] as String? ?? msg.senderId;
+        final requesterPub = obj['requesterPub'] as String? ?? '';
+        final title = obj['boardTitle'] as String? ?? '';
+        if (boardId.isEmpty) return;
+        _pendingBoardKeyRequests.removeWhere(
+          (r) => r['boardId'] == boardId && r['requesterId'] == requesterId,
+        );
+        _pendingBoardKeyRequests.add({
+          'boardId': boardId,
+          'requesterId': requesterId,
+          'requesterPub': requesterPub,
+          'boardTitle': title,
+          'msgId': msg.id,
+        });
+        notifyListeners();
+      } else if (type == PayloadKinds.boardKeyGrant) {
+        final boardId = obj['boardId'] as String? ?? '';
+        final privatePem = obj['privatePem'] as String? ?? '';
+        if (boardId.isEmpty || privatePem.isEmpty) return;
+        await _storage.write(
+          key: 'resilnet_board_grant_$boardId',
+          value: privatePem,
+        );
+        _boardPrivateKeys[boardId] = privatePem;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] board control parse failed: $e');
+    }
   }
 
   Future<void> _startScreenshotWatch() async {
@@ -1144,9 +1549,33 @@ class AppState extends ChangeNotifier {
     if (!_e2eeEnabled) return 0;
     final body = text.trim();
     if (body.isEmpty) return 0;
-    final peers = peersOnlineInSelectedArea();
-    if (peers.isEmpty) return 0;
+    return _sendSealedFanOut(
+      peers: peersOnlineInSelectedArea(),
+      body: body,
+      kind: kind,
+    );
+  }
 
+  /// Fan-out sealed media/text to BLE-nearby mesh peers (same crypto as Area).
+  Future<int> sendMeshPublicText(
+    String text, {
+    String kind = PayloadKinds.areaPublic,
+  }) async {
+    if (!_e2eeEnabled || !isReady) return 0;
+    final body = text.trim();
+    if (body.isEmpty) return 0;
+    return _sendSealedFanOut(
+      peers: mesh.nearbyPeers,
+      body: body,
+      kind: kind,
+    );
+  }
+
+  Future<int> _sendSealedFanOut({
+    required List<Peer> peers,
+    required String body,
+    required String kind,
+  }) async {
     var sent = 0;
     for (final peer in peers) {
       if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
@@ -1176,7 +1605,7 @@ class AppState extends ChangeNotifier {
         await routeOutbound(msg);
         sent++;
       } catch (e) {
-        debugPrint('[ResilNet] area public to ${peer.id} failed: $e');
+        debugPrint('[ResilNet] sealed fan-out to ${peer.id} failed: $e');
       }
     }
     notifyListeners();
@@ -1221,6 +1650,18 @@ class AppState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_kNotices);
     await prefs.remove(_kFavoritePeerIds);
+    await prefs.remove(_kAnnouncementBoards);
+    await prefs.remove(_kAnnouncementPosts);
+    for (final id in _boardPrivateKeys.keys.toList()) {
+      try {
+        await _storage.delete(key: 'resilnet_board_priv_$id');
+        await _storage.delete(key: 'resilnet_board_grant_$id');
+      } catch (_) {}
+    }
+    _boards.clear();
+    _boardPosts.clear();
+    _boardPrivateKeys.clear();
+    _pendingBoardKeyRequests.clear();
     await prefs.setBool(_kOnboardingDone, false);
     _onboardingCompleted = false;
 
@@ -1407,6 +1848,10 @@ class AppState extends ChangeNotifier {
       if (msg == null) return;
 
       await mesh.applyIncomingFromRouter(msg);
+      if (msg.payloadKind == PayloadKinds.boardKeyRequest ||
+          msg.payloadKind == PayloadKinds.boardKeyGrant) {
+        unawaited(_handleBoardKeyControlMessage(msg));
+      }
       notifyListeners();
     } catch (e, st) {
       debugPrint('[ResilNet] _onRustIncomingMessage failed: $e\n$st');
