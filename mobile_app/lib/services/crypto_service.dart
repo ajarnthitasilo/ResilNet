@@ -128,6 +128,22 @@ class CryptoService {
     return '-----BEGIN RSA PUBLIC KEY-----\n$chunked\n-----END RSA PUBLIC KEY-----';
   }
 
+  /// True when [rid] equals hash of normalized [publicKeyMaterial] (QR / Nostr binding).
+  static bool bindsIdentity({
+    required String rid,
+    required String publicKeyMaterial,
+  }) {
+    final id = rid.trim();
+    final raw = publicKeyMaterial.trim();
+    if (id.isEmpty || raw.isEmpty) return false;
+    try {
+      final pem = normalizePublicKey(raw);
+      return publicKeyHash(pem) == id;
+    } catch (_) {
+      return false;
+    }
+  }
+
   static String _chunkStatic(String s, [int chunkSize = 64]) {
     final b = StringBuffer();
     for (var i = 0; i < s.length; i += chunkSize) {

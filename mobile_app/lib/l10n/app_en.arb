@@ -41,7 +41,7 @@
   "meshRetention7Days": "7 days",
   "refreshLocationTooltip": "Refresh location",
   "geoIntro": "People online in this geohash can be messaged 1:1 or with an area public fan-out (still sealed E2EE per peer — not plaintext)",
-  "geoEmpty": "No one online in {channel} yet\nTry Internet mode + refresh location, or open #mesh nearby",
+  "geoEmpty": "No one online in {channel} yet\nUse Transport → Internet/Auto, wait for Nostr, refresh location",
   "@geoEmpty": {
     "placeholders": {
       "channel": {
@@ -58,7 +58,7 @@
     }
   },
   "geoPeerNearbySubtitle": "Nearby (awaiting area presence) • tap for 1:1 E2EE",
-  "geoPeerNostrSubtitle": "Anonymous on Nostr in {channel} • discovery only",
+  "geoPeerNostrSubtitle": "Seen on Nostr in {channel} • discovery only (legacy)",
   "@geoPeerNostrSubtitle": {
     "placeholders": {
       "channel": {
@@ -66,7 +66,14 @@
       }
     }
   },
-  "geoPeerDiscoverOnlySnack": "This presence is anonymous on Nostr — chat after mesh/QR identity exchange",
+  "geoPeerDiscoverOnlySnack": "Legacy anonymous presence — wait for a bound peer or exchange QR",
+  "geoInternetDiscoverHint": "Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)",
+  "geoPeerInternetSubtitle": "Internet (Nostr) in {channel} • sealed chat ready",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": { "type": "String" }
+    }
+  },
   "transportModeTitle": "Area transport",
   "transportModeSubtitle": "Mesh = BLE nearby · Internet = anonymous Nostr presence · Auto = both",
   "transportModeMesh": "Mesh",

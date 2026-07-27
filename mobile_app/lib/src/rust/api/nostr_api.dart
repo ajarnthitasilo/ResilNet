@@ -47,12 +47,18 @@ Future<String> nostrPublishPacket({required MessagePacketDto packet}) =>
 Future<int> flushOfflineQueueToNostr() =>
     ResilNetCore.instance.api.crateApiNostrApiFlushOfflineQueueToNostr();
 
-/// Publish bitchat-style anonymous geohash presence (ephemeral key, kind 20050).
-/// Content never includes the long-term ResilNet RSA identity.
-Future<String> nostrPublishGeoPresence({required String geohash}) =>
-    ResilNetCore.instance.api.crateApiNostrApiNostrPublishGeoPresence(
-      geohash: geohash,
-    );
+/// Publish geohash presence (ephemeral Nostr key; optional ResilNet RSA rid+pk in content).
+Future<String> nostrPublishGeoPresence({
+  required String geohash,
+  required String nick,
+  required String rid,
+  required String pk,
+}) => ResilNetCore.instance.api.crateApiNostrApiNostrPublishGeoPresence(
+  geohash: geohash,
+  nick: nick,
+  rid: rid,
+  pk: pk,
+);
 
 /// Replace the active geohash presence subscription (`[]` unsubscribes).
 Future<void> nostrSetGeoPresenceFilter({required List<String> geohashes}) =>

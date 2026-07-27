@@ -97,11 +97,17 @@ class _OnlinePeopleSheet extends StatelessWidget {
           Expanded(
             child: entries.isEmpty
                 ? Center(
-                    child: Text(
-                      l10n.onlinePeopleEmpty,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white54,
-                          ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        s.feedChannel == FeedChannel.geo && !s.isNostrOnline
+                            ? l10n.geoInternetDiscoverHint
+                            : l10n.onlinePeopleEmpty,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.white54,
+                            ),
+                      ),
                     ),
                   )
                 : ListView.separated(
@@ -121,9 +127,11 @@ class _OnlinePeopleSheet extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(
-                          e.canMessage
-                              ? l10n.geoPeerSubtitle(channel)
-                              : l10n.geoPeerNostrSubtitle(channel),
+                          !e.canMessage
+                              ? l10n.geoPeerNostrSubtitle(channel)
+                              : e.source.isInternet && !e.source.isMesh
+                                  ? l10n.geoPeerInternetSubtitle(channel)
+                                  : l10n.geoPeerSubtitle(channel),
                         ),
                         trailing: Icon(
                           e.canMessage

@@ -125,12 +125,16 @@ pub async fn flush_offline_queue_to_nostr() -> Result<u32, String> {
     Ok(published)
 }
 
-/// Publish bitchat-style anonymous geohash presence (ephemeral key, kind 20050).
-/// Content never includes the long-term ResilNet RSA identity.
+/// Publish geohash presence (ephemeral Nostr key; optional ResilNet RSA rid+pk in content).
 #[frb]
-pub async fn nostr_publish_geo_presence(geohash: String) -> Result<String, String> {
+pub async fn nostr_publish_geo_presence(
+    geohash: String,
+    nick: String,
+    rid: String,
+    pk: String,
+) -> Result<String, String> {
     let pool = get_nostr_pool()?;
-    pool.publish_geo_presence(&geohash)
+    pool.publish_geo_presence(&geohash, &nick, &rid, &pk)
         .await
         .map_err(|e| e.to_string())
 }

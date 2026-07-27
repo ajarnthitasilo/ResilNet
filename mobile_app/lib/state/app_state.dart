@@ -110,6 +110,9 @@ class AppState extends ChangeNotifier {
   bool get isCloudOnline =>
       (_nostr?.isOnline ?? false) || resilnet.isInternetAvailable;
 
+  /// True when at least one Nostr relay is connected.
+  bool get isNostrOnline => _nostr?.isOnline ?? false;
+
   bool _initDone = false;
   bool get initDone => _initDone;
 
@@ -1479,24 +1482,69 @@ AnnouncementBoard? boardById(String id) {
   }
 
   void _onNostrGeoPresence(GeoPresenceDto ev) {
-    final pk = ev.pubkeyHex.trim().toLowerCase();
-    if (pk.isEmpty) return;
+    final pkHex = ev.pubkeyHex.trim().toLowerCase();
+    if (pkHex.isEmpty) return;
     final createdMs = ev.createdAt.toInt() * 1000;
     final now = DateTime.now().millisecondsSinceEpoch;
     final lastSeen = createdMs > 0 ? createdMs : now;
-    final existing = _nostrPresence[pk];
+
+    final rid = ev.rid.trim();
+    final pkRaw = ev.pk.trim();
+    Peer? boundPeer;
+    // Legacy anon events (no rid/pk) remain discover-only; mismatched binding is dropped.
+    if (rid.isNotEmpty || pkRaw.isNotEmpty) {
+      if (!CryptoService.bindsIdentity(rid: rid, publicKeyMaterial: pkRaw)) {
+        debugPrint(
+          '[ResilNet] drop geo presence — rid/pk binding failed rid=$rid',
+        );
+        return;
+      }
+      if (rid == myUserId) return;
+      try {
+        final pem = CryptoService.normalizePublicKey(pkRaw);
+        boundPeer = Peer(
+          id: rid,
+          publicKey: pem,
+          displayName: ev.nick.trim().isNotEmpty ? ev.nick.trim() : null,
+          geohash: ev.geohash.trim().toLowerCase(),
+          isVerifiedIssuer: false,
+          isBlocked: false,
+          lastSeen: lastSeen,
+        );
+        unawaited(db.upsertPeer(boundPeer));
+      } catch (e) {
+        debugPrint('[ResilNet] geo presence peer upsert failed: $e');
+        return;
+      }
+    }
+
+    final cacheKey = boundPeer?.id ?? pkHex;
+    if (boundPeer != null) {
+      // Drop legacy anon row for the same ephemeral Nostr pubkey if present.
+      _nostrPresence.remove(pkHex);
+    }
+    final existing = _nostrPresence[cacheKey];
     if (existing != null) {
       existing.nick = ev.nick.isNotEmpty ? ev.nick : existing.nick;
       existing.geohash = ev.geohash;
       if (lastSeen > existing.lastSeen) existing.lastSeen = lastSeen;
+      if (boundPeer != null) {
+        existing.resilnetId = boundPeer.id;
+        existing.peer = boundPeer;
+      }
     } else {
-      _nostrPresence[pk] = NostrPresenceSighting(
-        pubkeyHex: pk,
+      _nostrPresence[cacheKey] = NostrPresenceSighting(
+        pubkeyHex: pkHex,
         nick: ev.nick.isNotEmpty
             ? ev.nick
-            : 'anon·${pk.length >= 4 ? pk.substring(0, 4) : pk}',
+            : (boundPeer != null
+                ? (boundPeer.displayName ??
+                    'peer·${rid.length >= 4 ? rid.substring(0, 4) : rid}')
+                : 'anon·${pkHex.length >= 4 ? pkHex.substring(0, 4) : pkHex}'),
         geohash: ev.geohash,
         lastSeen: lastSeen,
+        resilnetId: boundPeer?.id,
+        peer: boundPeer,
       );
     }
     _pruneNostrPresence();
@@ -1631,9 +1679,19 @@ AnnouncementBoard? boardById(String id) {
     if (!force && since < const Duration(seconds: 45)) return;
     _lastPresenceAnnounce = DateTime.now();
 
-    // Internet: anonymous ephemeral presence on Nostr (no RSA identity).
+    // Internet: geohash presence with ResilNet RSA rid+pk (messageable without QR).
     if (_transportMode.usesInternet && (_nostr?.isOnline ?? false)) {
-      unawaited(_nostr!.publishGeoPresence(channel));
+      final nick = _displayName.trim().isNotEmpty
+          ? _displayName.trim()
+          : myUserId.substring(0, myUserId.length.clamp(0, 10));
+      unawaited(
+        _nostr!.publishGeoPresence(
+          channel,
+          nick: nick,
+          rid: myUserId,
+          pk: CryptoService.compactPublicKey(crypto.publicKeyPem),
+        ),
+      );
     }
 
     // Mesh: sealed presence to nearby BLE peers (existing path).

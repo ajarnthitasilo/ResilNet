@@ -347,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @geoEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No one online in {channel} yet\nTry Internet mode + refresh location, or open #mesh nearby'**
+  /// **'No one online in {channel} yet\nUse Transport → Internet/Auto, wait for Nostr, refresh location'**
   String geoEmpty(String channel);
 
   /// No description provided for @geoPeerSubtitle.
@@ -365,14 +365,26 @@ abstract class AppLocalizations {
   /// No description provided for @geoPeerNostrSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Anonymous on Nostr in {channel} • discovery only'**
+  /// **'Seen on Nostr in {channel} • discovery only (legacy)'**
   String geoPeerNostrSubtitle(String channel);
 
   /// No description provided for @geoPeerDiscoverOnlySnack.
   ///
   /// In en, this message translates to:
-  /// **'This presence is anonymous on Nostr — chat after mesh/QR identity exchange'**
+  /// **'Legacy anonymous presence — wait for a bound peer or exchange QR'**
   String get geoPeerDiscoverOnlySnack;
+
+  /// No description provided for @geoInternetDiscoverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)'**
+  String get geoInternetDiscoverHint;
+
+  /// No description provided for @geoPeerInternetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet (Nostr) in {channel} • sealed chat ready'**
+  String geoPeerInternetSubtitle(String channel);
 
   /// No description provided for @transportModeTitle.
   ///

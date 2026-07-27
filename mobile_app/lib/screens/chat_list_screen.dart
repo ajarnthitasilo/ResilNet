@@ -800,9 +800,11 @@ class _GeoListBody extends StatelessWidget {
                 leading: Identicon(id: e.id),
                 title: Text(e.label),
                 subtitle: Text(
-                  e.canMessage
-                      ? l10n.geoPeerSubtitle(s.geoChannelLabel)
-                      : l10n.geoPeerNostrSubtitle(s.geoChannelLabel),
+                  !e.canMessage
+                      ? l10n.geoPeerNostrSubtitle(s.geoChannelLabel)
+                      : e.source.isInternet && !e.source.isMesh
+                          ? l10n.geoPeerInternetSubtitle(s.geoChannelLabel)
+                          : l10n.geoPeerSubtitle(s.geoChannelLabel),
                 ),
                 trailing: Icon(
                   e.canMessage

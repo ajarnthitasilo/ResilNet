@@ -308,7 +308,7 @@ impl From<ResilNetEnvelopeDto> for ResilNetEnvelope {
     }
 }
 
-/// Anonymous geohash presence seen on Nostr (not a chat peer).
+/// Geohash presence seen on Nostr (may include ResilNet RSA binding).
 #[frb]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeoPresenceDto {
@@ -317,6 +317,10 @@ pub struct GeoPresenceDto {
     pub geohash: String,
     pub nick: String,
     pub created_at: u64,
+    /// ResilNet user id when bound; empty for legacy anon.
+    pub rid: String,
+    /// RSA public key (compact/PEM) when bound; empty for legacy anon.
+    pub pk: String,
 }
 
 impl From<crate::nostr::GeoPresenceEvent> for GeoPresenceDto {
@@ -327,6 +331,8 @@ impl From<crate::nostr::GeoPresenceEvent> for GeoPresenceDto {
             geohash: e.geohash,
             nick: e.nick,
             created_at: e.created_at,
+            rid: e.rid,
+            pk: e.pk,
         }
     }
 }

@@ -223,11 +223,17 @@ impl NostrPoolHandle {
         Ok(event_id.to_hex())
     }
 
-    /// Publish anonymous geohash presence signed with a fresh ephemeral key.
+    /// Publish geohash presence signed with a fresh ephemeral Nostr key.
     ///
-    /// Does **not** use the long-lived messaging identity. Content never includes
-    /// RSA peer id or real display name.
-    pub async fn publish_geo_presence(&self, geohash: &str) -> Result<String, PoolError> {
+    /// When `rid`/`pk` are non-empty, content carries ResilNet RSA binding so
+    /// receivers can upsert a messageable peer without QR. Private keys never leave the device.
+    pub async fn publish_geo_presence(
+        &self,
+        geohash: &str,
+        nick: &str,
+        rid: &str,
+        pk: &str,
+    ) -> Result<String, PoolError> {
         let geo = geohash.trim().to_lowercase();
         if geo.is_empty() || geo.len() > 12 {
             return Err(PoolError::Event("invalid geohash".into()));
@@ -240,11 +246,23 @@ impl NostrPoolHandle {
 
         let ephemeral = Keys::generate();
         let pubkey_hex = ephemeral.public_key().to_hex();
-        let nick = anon_nick_from_pubkey(&pubkey_hex);
+        let rid = rid.trim().to_string();
+        let pk = pk.trim().to_string();
+        let nick_trim = nick.trim().to_string();
+        let nick = if !nick_trim.is_empty() {
+            nick_trim
+        } else if !rid.is_empty() {
+            rid.chars().take(10).collect::<String>()
+        } else {
+            anon_nick_from_pubkey(&pubkey_hex)
+        };
+        let v = if !rid.is_empty() && !pk.is_empty() { 2 } else { 1 };
         let content = GeoPresenceContent {
-            v: 1,
+            v,
             geohash: geo.clone(),
             nick,
+            rid,
+            pk,
         }
         .to_json()
         .map_err(|e| PoolError::Event(e.to_string()))?;
@@ -422,9 +440,19 @@ fn parse_geo_presence_event(event: &Event) -> Option<GeoPresenceEvent> {
         })
         .filter(|g| !g.is_empty())?;
 
-    let (nick, content_geo) = match GeoPresenceContent::from_json(&event.content) {
-        Ok(c) => (c.nick, Some(c.geohash.to_lowercase())),
-        Err(_) => (anon_nick_from_pubkey(&event.pubkey.to_hex()), None),
+    let (nick, content_geo, rid, pk) = match GeoPresenceContent::from_json(&event.content) {
+        Ok(c) => (
+            c.nick,
+            Some(c.geohash.to_lowercase()),
+            c.rid,
+            c.pk,
+        ),
+        Err(_) => (
+            anon_nick_from_pubkey(&event.pubkey.to_hex()),
+            None,
+            String::new(),
+            String::new(),
+        ),
     };
     let geohash = content_geo
         .filter(|g| !g.is_empty())
@@ -436,6 +464,8 @@ fn parse_geo_presence_event(event: &Event) -> Option<GeoPresenceEvent> {
         geohash,
         nick,
         created_at: event.created_at.as_u64(),
+        rid,
+        pk,
     })
 }
 

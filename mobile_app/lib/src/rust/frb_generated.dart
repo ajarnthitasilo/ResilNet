@@ -122,6 +122,9 @@ abstract class ResilNetCoreApi extends BaseApi {
 
   Future<String> crateApiNostrApiNostrPublishGeoPresence({
     required String geohash,
+    required String nick,
+    required String rid,
+    required String pk,
   });
 
   Future<String> crateApiNostrApiNostrPublishPacket({
@@ -546,12 +549,18 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   @override
   Future<String> crateApiNostrApiNostrPublishGeoPresence({
     required String geohash,
+    required String nick,
+    required String rid,
+    required String pk,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(geohash, serializer);
+          sse_encode_String(nick, serializer);
+          sse_encode_String(rid, serializer);
+          sse_encode_String(pk, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -564,7 +573,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiNostrApiNostrPublishGeoPresenceConstMeta,
-        argValues: [geohash],
+        argValues: [geohash, nick, rid, pk],
         apiImpl: this,
       ),
     );
@@ -573,7 +582,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   TaskConstMeta get kCrateApiNostrApiNostrPublishGeoPresenceConstMeta =>
       const TaskConstMeta(
         debugName: "nostr_publish_geo_presence",
-        argNames: ["geohash"],
+        argNames: ["geohash", "nick", "rid", "pk"],
       );
 
   @override
@@ -1043,14 +1052,16 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   GeoPresenceDto dco_decode_geo_presence_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return GeoPresenceDto(
       eventId: dco_decode_String(arr[0]),
       pubkeyHex: dco_decode_String(arr[1]),
       geohash: dco_decode_String(arr[2]),
       nick: dco_decode_String(arr[3]),
       createdAt: dco_decode_u_64(arr[4]),
+      rid: dco_decode_String(arr[5]),
+      pk: dco_decode_String(arr[6]),
     );
   }
 
@@ -1337,12 +1348,16 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     var var_geohash = sse_decode_String(deserializer);
     var var_nick = sse_decode_String(deserializer);
     var var_createdAt = sse_decode_u_64(deserializer);
+    var var_rid = sse_decode_String(deserializer);
+    var var_pk = sse_decode_String(deserializer);
     return GeoPresenceDto(
       eventId: var_eventId,
       pubkeyHex: var_pubkeyHex,
       geohash: var_geohash,
       nick: var_nick,
       createdAt: var_createdAt,
+      rid: var_rid,
+      pk: var_pk,
     );
   }
 
@@ -1712,6 +1727,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     sse_encode_String(self.geohash, serializer);
     sse_encode_String(self.nick, serializer);
     sse_encode_u_64(self.createdAt, serializer);
+    sse_encode_String(self.rid, serializer);
+    sse_encode_String(self.pk, serializer);
   }
 
   @protected

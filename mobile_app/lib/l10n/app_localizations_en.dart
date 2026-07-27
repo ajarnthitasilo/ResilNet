@@ -141,7 +141,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String geoEmpty(String channel) {
-    return 'No one online in $channel yet\nTry Internet mode + refresh location, or open #mesh nearby';
+    return 'No one online in $channel yet\nUse Transport → Internet/Auto, wait for Nostr, refresh location';
   }
 
   @override
@@ -155,12 +155,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String geoPeerNostrSubtitle(String channel) {
-    return 'Anonymous on Nostr in $channel • discovery only';
+    return 'Seen on Nostr in $channel • discovery only (legacy)';
   }
 
   @override
   String get geoPeerDiscoverOnlySnack =>
-      'This presence is anonymous on Nostr — chat after mesh/QR identity exchange';
+      'Legacy anonymous presence — wait for a bound peer or exchange QR';
+
+  @override
+  String get geoInternetDiscoverHint =>
+      'Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)';
+
+  @override
+  String geoPeerInternetSubtitle(String channel) {
+    return 'Internet (Nostr) in $channel • sealed chat ready';
+  }
 
   @override
   String get transportModeTitle => 'Area transport';

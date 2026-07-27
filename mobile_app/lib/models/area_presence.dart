@@ -2,7 +2,7 @@ import '../core/geohash.dart';
 import 'peer.dart';
 import 'transport_mode.dart';
 
-/// One row in the Area people list (BLE peer and/or anonymous Nostr presence).
+/// One row in the Area people list (BLE peer and/or Nostr presence).
 class AreaPresenceEntry {
   const AreaPresenceEntry({
     required this.id,
@@ -13,7 +13,7 @@ class AreaPresenceEntry {
     this.peer,
   });
 
-  /// Stable id: RSA peer id (mesh) or `nostr:<pubkeyHex>` (internet).
+  /// Stable id: RSA peer id (mesh / bound Nostr) or `nostr:<pubkeyHex>` (legacy anon).
   final String id;
 
   /// Display label (resolved name or anon nick).
@@ -42,29 +42,47 @@ enum PresenceSource {
       this == PresenceSource.internet || this == PresenceSource.both;
 }
 
-/// In-memory cache of anonymous Nostr presence for a geohash channel.
+/// In-memory cache of Nostr presence for a geohash channel.
 class NostrPresenceSighting {
   NostrPresenceSighting({
     required this.pubkeyHex,
     required this.nick,
     required this.geohash,
     required this.lastSeen,
+    this.resilnetId,
+    this.peer,
   });
 
+  /// Ephemeral Nostr event pubkey (not ResilNet RSA id).
   final String pubkeyHex;
   String nick;
   String geohash;
   int lastSeen;
 
-  String get listId => 'nostr:$pubkeyHex';
+  /// Bound ResilNet user id when rid+pk verified.
+  String? resilnetId;
+
+  /// Messageable peer when RSA binding present.
+  Peer? peer;
+
+  /// Prefer ResilNet id so mesh + Nostr merge on the same key.
+  String get listId {
+    final rid = resilnetId?.trim() ?? '';
+    if (rid.isNotEmpty) return rid;
+    return 'nostr:$pubkeyHex';
+  }
 
   AreaPresenceEntry toEntry() => AreaPresenceEntry(
         id: listId,
-        label: nick,
+        label: nick.isNotEmpty
+            ? nick
+            : (peer?.displayName?.trim().isNotEmpty == true
+                ? peer!.displayName!.trim()
+                : listId),
         source: PresenceSource.internet,
         geohash: geohash,
         lastSeen: lastSeen,
-        peer: null,
+        peer: peer,
       );
 }
 
@@ -113,19 +131,21 @@ List<AreaPresenceEntry> mergeAreaPresence({
           !Geohash.matchesChannel(s.geohash, channel)) {
         continue;
       }
-      final existing = map[s.listId];
+      final id = s.listId;
+      final existing = map[id];
       if (existing != null) {
-        map[s.listId] = AreaPresenceEntry(
+        map[id] = AreaPresenceEntry(
           id: existing.id,
-          label: existing.label,
+          label: s.nick.isNotEmpty ? s.nick : existing.label,
           source: PresenceSource.both,
-          geohash: s.geohash,
+          geohash: s.geohash.isNotEmpty ? s.geohash : existing.geohash,
           lastSeen:
               s.lastSeen > existing.lastSeen ? s.lastSeen : existing.lastSeen,
-          peer: existing.peer,
+          // Prefer bound Nostr peer pubkey if mesh row lacked one (unlikely).
+          peer: existing.peer ?? s.peer,
         );
       } else {
-        map[s.listId] = s.toEntry();
+        map[id] = s.toEntry();
       }
     }
   }

@@ -167,9 +167,12 @@ let api_kind = <String>::sse_decode(&mut deserializer);deserializer.end(); move 
                 FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "nostr_publish_geo_presence", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
             let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
             let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_geohash = <String>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+            let api_geohash = <String>::sse_decode(&mut deserializer);
+let api_nick = <String>::sse_decode(&mut deserializer);
+let api_rid = <String>::sse_decode(&mut deserializer);
+let api_pk = <String>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
                     transform_result_sse::<_, String>((move || async move {
-                         let output_ok = crate::api::nostr_api::nostr_publish_geo_presence(api_geohash).await?;   Ok(output_ok)
+                         let output_ok = crate::api::nostr_api::nostr_publish_geo_presence(api_geohash, api_nick, api_rid, api_pk).await?;   Ok(output_ok)
                     })().await)
                 } })
             }fn wire__crate__api__nostr_api__nostr_publish_packet_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
@@ -331,7 +334,9 @@ let mut var_pubkeyHex = <String>::sse_decode(deserializer);
 let mut var_geohash = <String>::sse_decode(deserializer);
 let mut var_nick = <String>::sse_decode(deserializer);
 let mut var_createdAt = <u64>::sse_decode(deserializer);
-return crate::api::dto::GeoPresenceDto{event_id: var_eventId, pubkey_hex: var_pubkeyHex, geohash: var_geohash, nick: var_nick, created_at: var_createdAt};}
+let mut var_rid = <String>::sse_decode(deserializer);
+let mut var_pk = <String>::sse_decode(deserializer);
+return crate::api::dto::GeoPresenceDto{event_id: var_eventId, pubkey_hex: var_pubkeyHex, geohash: var_geohash, nick: var_nick, created_at: var_createdAt, rid: var_rid, pk: var_pk};}
                 }
                 
                 impl SseDecode for i32 {
@@ -587,7 +592,9 @@ return crate::api::dto::RouterConfigDto{dedup_capacity: var_dedupCapacity, dedup
 self.pubkey_hex.into_into_dart().into_dart(),
 self.geohash.into_into_dart().into_dart(),
 self.nick.into_into_dart().into_dart(),
-self.created_at.into_into_dart().into_dart()
+self.created_at.into_into_dart().into_dart(),
+self.rid.into_into_dart().into_dart(),
+self.pk.into_into_dart().into_dart()
                 ].into_dart()
                 }
             }
@@ -807,7 +814,9 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::dto::TransportTypeDto> for cr
 <String>::sse_encode(self.pubkey_hex, serializer);
 <String>::sse_encode(self.geohash, serializer);
 <String>::sse_encode(self.nick, serializer);
-<u64>::sse_encode(self.created_at, serializer);}
+<u64>::sse_encode(self.created_at, serializer);
+<String>::sse_encode(self.rid, serializer);
+<String>::sse_encode(self.pk, serializer);}
                 }
                 
                 impl SseEncode for i32 {

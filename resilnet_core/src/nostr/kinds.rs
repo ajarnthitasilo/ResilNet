@@ -8,11 +8,14 @@ pub const KIND_DIRECT: u16 = 31_234;
 pub const KIND_BROADCAST: u16 = 31_235;
 /// Optional node health / geo heartbeat.
 pub const KIND_NODE_HEALTH: u16 = 31_236;
-/// Bitchat-style anonymous geohash presence (NIP-16 ephemeral range).
+/// Bitchat-style geohash presence (NIP-16 ephemeral range).
 ///
-/// Signed with a throwaway secp256k1 key — never the long-lived messaging identity.
+/// Signed with a throwaway secp256k1 key — not the long-lived Nostr messaging key.
 /// Tags: `g` = geohash cell, `client` = resilnet, optional `expiration` (NIP-40).
-/// Content JSON must not include RSA peer id or real display name.
+///
+/// Content may include ResilNet RSA `rid` + `pk` so Area peers become messageable
+/// without QR. Publishing `pk` on public relays makes the Area identity linkable
+/// while present (acceptable product tradeoff; keep events ephemeral).
 pub const KIND_GEO_PRESENCE: u16 = 20_050;
 
 /// How long presence events remain valid (seconds) for subscribe window / NIP-40.
@@ -76,13 +79,21 @@ impl ResilNetEnvelope {
     }
 }
 
-/// Compact anonymous presence payload (event content). No long-term identity.
+/// Compact geohash presence payload (event content).
+///
+/// v1 = anon nick only. v2+ may include ResilNet RSA binding (`rid` + `pk`).
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct GeoPresenceContent {
     pub v: u8,
     pub geohash: String,
-    /// Short unlinkable nick, e.g. `anon·a1b2` from ephemeral pubkey prefix.
+    /// Display nick (may be real display name when rid/pk present).
     pub nick: String,
+    /// ResilNet user id = hash(public PEM). Empty on legacy anon events.
+    #[serde(default)]
+    pub rid: String,
+    /// Compact or PEM RSA public key. Empty on legacy anon events.
+    #[serde(default)]
+    pub pk: String,
 }
 
 impl GeoPresenceContent {
@@ -103,4 +114,8 @@ pub struct GeoPresenceEvent {
     pub geohash: String,
     pub nick: String,
     pub created_at: u64,
+    /// ResilNet id when present (may be empty for legacy anon).
+    pub rid: String,
+    /// RSA public key material when present (may be empty).
+    pub pk: String,
 }

@@ -111,13 +111,25 @@ class NostrSyncService extends ChangeNotifier {
     }
   }
 
-  /// Anonymous geohash presence (ephemeral key on Rust side).
-  Future<bool> publishGeoPresence(String geohash) async {
+  /// Geohash presence (ephemeral Nostr key; include rid+pk for messageable discovery).
+  ///
+  /// Publishing `pk` on public relays makes the Area identity linkable while present.
+  Future<bool> publishGeoPresence(
+    String geohash, {
+    required String nick,
+    required String rid,
+    required String pk,
+  }) async {
     final g = geohash.trim().toLowerCase();
     if (g.isEmpty || !_running) return false;
     try {
-      final id = await nostrPublishGeoPresence(geohash: g);
-      debugPrint('[Nostr] geo presence published event=$id g=$g');
+      final id = await nostrPublishGeoPresence(
+        geohash: g,
+        nick: nick,
+        rid: rid,
+        pk: pk,
+      );
+      debugPrint('[Nostr] geo presence published event=$id g=$g rid=$rid');
       return id.isNotEmpty;
     } catch (e) {
       debugPrint('[Nostr] geo presence publish failed: $e');
