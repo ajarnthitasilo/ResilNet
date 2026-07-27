@@ -483,6 +483,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionMicOpenSettings => 'Settings';
 
   @override
+  String get permissionCameraDenied =>
+      'Camera access denied — allow it in Settings to scan QR codes';
+
+  @override
+  String get permissionCameraFailed =>
+      'Camera permission is required to scan QR codes';
+
+  @override
+  String get permissionCameraOpenSettings => 'Settings';
+
+  @override
+  String get permissionPhotosDenied =>
+      'Photo library access denied — allow it in Settings to save your QR code';
+
+  @override
+  String get permissionPhotosFailed =>
+      'Photo library permission is required to save your QR code';
+
+  @override
+  String get permissionPhotosOpenSettings => 'Settings';
+
+  @override
   String permissionFailedSnack(String error) {
     return 'Permission request failed: $error';
   }
@@ -651,6 +673,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get qrRetrySettings => 'Try again / open Settings';
+
+  @override
+  String qrCameraOpenFailed(String error) {
+    return 'Could not open camera: $error';
+  }
+
+  @override
+  String get qrScanAlignHint => 'Align the QR code inside the frame';
 
   @override
   String get firmwareDownloadTitle => 'Download ESP32 firmware';
@@ -925,6 +955,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get panicWipeSnack => 'Local identity wiped — set up again';
+
+  @override
+  String panicWipeFailed(String error) {
+    return 'Wipe failed: $error';
+  }
 
   @override
   String get meshBridgeTitle => 'Mesh bridge';

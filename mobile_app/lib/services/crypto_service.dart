@@ -9,15 +9,21 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pointycastle/asn1.dart' as asn1;
 import 'package:pointycastle/export.dart' as pc;
 
+import 'secure_storage.dart';
+
 class CryptoService {
   static const _kPrivatePem = 'resilnet_rsa_private_pem';
   static const _kPublicPem = 'resilnet_rsa_public_pem';
   static const _keychainTimeout = Duration(seconds: 3);
+  static const _wipeTimeout = Duration(seconds: 12);
 
-  final _storage = const FlutterSecureStorage();
+  final FlutterSecureStorage _storage;
 
   String? _publicPem;
   String? _privatePem;
+
+  CryptoService({FlutterSecureStorage? storage})
+      : _storage = storage ?? resilnetSecureStorage;
 
   Future<void> init() async {
     try {
@@ -36,19 +42,62 @@ class CryptoService {
   }
 
   /// Panic wipe: drop RSA identity from secure storage and mint a new keypair.
-  Future<void> wipeAndRegenerate() async {
-    try {
-      await _storage.delete(key: _kPrivatePem).timeout(_keychainTimeout);
-      await _storage.delete(key: _kPublicPem).timeout(_keychainTimeout);
-    } catch (e) {
-      debugPrint('[Crypto] wipe delete failed: $e');
-    }
+  Future<String> wipeAndRegenerate() async {
+    final oldId = _publicPem != null ? myUserId : null;
+    await _wipeStoredIdentityKeys();
     _privatePem = null;
     _publicPem = null;
-    await _generateAndPersist();
+    await _generateAndPersist(requirePersist: true);
+
+    final newId = myUserId;
+    if (oldId != null && oldId == newId) {
+      throw StateError('Identity wipe failed: public key hash unchanged');
+    }
+    debugPrint('[Crypto] wipeAndRegenerate $oldId -> $newId');
+    return newId;
   }
 
-  Future<void> _generateAndPersist() async {
+  Future<void> _wipeStoredIdentityKeys() async {
+    for (var attempt = 0; attempt < 3; attempt++) {
+      try {
+        await _storage
+            .delete(key: _kPrivatePem)
+            .timeout(_wipeTimeout);
+        await _storage
+            .delete(key: _kPublicPem)
+            .timeout(_wipeTimeout);
+      } catch (e) {
+        debugPrint('[Crypto] wipe delete attempt ${attempt + 1}: $e');
+      }
+
+      final priv = await _readKey(_kPrivatePem);
+      final pub = await _readKey(_kPublicPem);
+      if (priv == null && pub == null) return;
+    }
+
+    try {
+      await _storage.deleteAll().timeout(_wipeTimeout);
+    } catch (e) {
+      debugPrint('[Crypto] wipe deleteAll failed: $e');
+    }
+
+    final priv = await _readKey(_kPrivatePem);
+    final pub = await _readKey(_kPublicPem);
+    if (priv != null || pub != null) {
+      throw StateError('Identity wipe failed: RSA keys still in secure storage');
+    }
+  }
+
+  Future<String?> _readKey(String key) async {
+    try {
+      return await _storage.read(key: key).timeout(_keychainTimeout);
+    } catch (e) {
+      debugPrint('[Crypto] read $key failed: $e');
+      return null;
+    }
+  }
+
+  Future<void> _generateAndPersist({bool requirePersist = false}) async {
     final pair = _generateRsaKeyPair();
     final privatePem = _encodePrivateKeyToPem(
       pair.privateKey as pc.RSAPrivateKey,
@@ -62,12 +111,22 @@ class CryptoService {
     try {
       await _storage
           .write(key: _kPrivatePem, value: privatePem)
-          .timeout(_keychainTimeout);
+          .timeout(_wipeTimeout);
       await _storage
           .write(key: _kPublicPem, value: publicPem)
-          .timeout(_keychainTimeout);
+          .timeout(_wipeTimeout);
     } catch (e) {
       debugPrint('[Crypto] Keychain write timeout — using in-memory keys: $e');
+      if (requirePersist) {
+        throw StateError('Identity persist failed: $e');
+      }
+    }
+
+    if (requirePersist) {
+      final storedPub = await _readKey(_kPublicPem);
+      if (storedPub != publicPem) {
+        throw StateError('Identity persist verify failed');
+      }
     }
   }
 

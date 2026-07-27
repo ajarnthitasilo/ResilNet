@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../models/peer.dart';
 import '../services/crypto_service.dart';
+import '../services/camera_permission.dart';
 import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 
@@ -89,17 +90,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     });
 
     try {
-      final status = await Permission.camera.request();
-      if (!status.isGranted) {
-        if (!mounted) return;
-        setState(() {
-          _starting = false;
-          _error = status.isPermanentlyDenied
-              ? 'ไม่ได้รับสิทธิ์กล้อง — เปิดใน Settings > ResilNet'
-              : 'ต้องอนุญาตกล้องเพื่อสแกน QR';
-        });
-        return;
-      }
+      await ensureCameraPermission();
 
       final controller = MobileScannerController(
         formats: const [BarcodeFormat.qrCode],
@@ -113,9 +104,16 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     } catch (e, st) {
       debugPrint('[ResilNet] camera prepare failed: $e\n$st');
       if (!mounted) return;
+      final l10n = context.l10n;
       setState(() {
         _starting = false;
-        _error = 'เปิดกล้องไม่สำเร็จ: $e';
+        if (e is StateError && e.message == cameraPermanentlyDeniedCode) {
+          _error = l10n.permissionCameraDenied;
+        } else if (e is StateError && e.message == 'CAMERA_DENIED') {
+          _error = l10n.permissionCameraFailed;
+        } else {
+          _error = l10n.qrCameraOpenFailed('$e');
+        }
       });
     }
   }
@@ -253,7 +251,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'กล้องผิดพลาด: $error',
+                  context.l10n.qrCameraOpenFailed('$error'),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -267,10 +265,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
             width: double.infinity,
             color: Colors.black54,
             padding: const EdgeInsets.all(12),
-            child: const Text(
-              'จัด QR ให้อยู่ในกรอบตรงกลาง',
+            child: Text(
+              context.l10n.qrScanAlignHint,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ),

@@ -479,6 +479,26 @@ class AppLocalizationsTh extends AppLocalizations {
   String get permissionMicOpenSettings => 'Settings';
 
   @override
+  String get permissionCameraDenied =>
+      'ไม่ได้รับอนุญาตกล้อง — เปิด Settings เพื่อสแกน QR';
+
+  @override
+  String get permissionCameraFailed => 'ต้องอนุญาตกล้องเพื่อสแกน QR';
+
+  @override
+  String get permissionCameraOpenSettings => 'Settings';
+
+  @override
+  String get permissionPhotosDenied =>
+      'ไม่ได้รับสิทธิ์คลังภาพ — เปิด Settings เพื่อบันทึก QR';
+
+  @override
+  String get permissionPhotosFailed => 'ต้องอนุญาตคลังภาพเพื่อบันทึก QR';
+
+  @override
+  String get permissionPhotosOpenSettings => 'Settings';
+
+  @override
   String permissionFailedSnack(String error) {
     return 'ขอสิทธิ์ล้มเหลว: $error';
   }
@@ -647,6 +667,14 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get qrRetrySettings => 'ลองอีกครั้ง / เปิด Settings';
+
+  @override
+  String qrCameraOpenFailed(String error) {
+    return 'เปิดกล้องไม่สำเร็จ: $error';
+  }
+
+  @override
+  String get qrScanAlignHint => 'จัด QR ให้อยู่ในกรอบตรงกลาง';
 
   @override
   String get firmwareDownloadTitle => 'ดาวน์โหลดเฟิร์มแวร์ ESP32';
@@ -919,6 +947,11 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get panicWipeSnack => 'ล้างตัวตนในเครื่องแล้ว — ตั้งค่าใหม่ได้';
+
+  @override
+  String panicWipeFailed(String error) {
+    return 'ล้างข้อมูลล้มเหลว: $error';
+  }
 
   @override
   String get meshBridgeTitle => 'บริดจ์ mesh';

@@ -143,6 +143,12 @@
   "permissionDeniedSnack": "ยังไม่ได้สิทธิ์ครบ — เปิด Settings > ResilNet แล้วอนุญาต Bluetooth/Location/ไมโครโฟน",
   "permissionMicDenied": "ไม่ได้รับอนุญาตไมโครโฟน — เปิด Settings เพื่ออนุญาตการบันทึกเสียง",
   "permissionMicOpenSettings": "Settings",
+  "permissionCameraDenied": "ไม่ได้รับอนุญาตกล้อง — เปิด Settings เพื่อสแกน QR",
+  "permissionCameraFailed": "ต้องอนุญาตกล้องเพื่อสแกน QR",
+  "permissionCameraOpenSettings": "Settings",
+  "permissionPhotosDenied": "ไม่ได้รับสิทธิ์คลังภาพ — เปิด Settings เพื่อบันทึก QR",
+  "permissionPhotosFailed": "ต้องอนุญาตคลังภาพเพื่อบันทึก QR",
+  "permissionPhotosOpenSettings": "Settings",
   "permissionFailedSnack": "ขอสิทธิ์ล้มเหลว: {error}",
   "permissionFooter": "ResilNet Architecture • Store-and-Forward Multi-hop",
   "onboardingSkip": "ข้าม",
@@ -198,6 +204,15 @@
   "qrIdKeyMismatch": "ปฏิเสธ QR: id ไม่ตรงกับกุญแจสาธารณะ",
   "qrCameraNotReady": "กล้องยังไม่พร้อม",
   "qrRetrySettings": "ลองอีกครั้ง / เปิด Settings",
+  "qrCameraOpenFailed": "เปิดกล้องไม่สำเร็จ: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "จัด QR ให้อยู่ในกรอบตรงกลาง",
   "firmwareDownloadTitle": "ดาวน์โหลดเฟิร์มแวร์ ESP32",
   "peersRefreshTooltip": "รีเฟรช",
   "peersBlocked": "บล็อกแล้ว",
@@ -279,6 +294,14 @@
   "panicWipeConfirmBody": "จะลบแชท กุญแจ และตัวตนบนโทรศัพท์นี้ถาวร\nเพื่อนต้องสแกน QR ใหม่กับตัวตนใหม่ของคุณ\nย้อนกลับไม่ได้",
   "panicWipeAction": "ล้างทั้งหมด",
   "panicWipeSnack": "ล้างตัวตนในเครื่องแล้ว — ตั้งค่าใหม่ได้",
+  "panicWipeFailed": "ล้างข้อมูลล้มเหลว: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "meshBridgeTitle": "บริดจ์ mesh",
   "meshBridgeSubtitle": "เมื่อเปิด (ค่าเริ่มต้น) ซองที่เข้ารหัสแล้วอาจใช้ทั้ง BLE mesh และอินเทอร์เน็ต (Nostr) พร้อมกัน เพื่อเชื่อมเกาะ mesh ใกล้กัน เมื่อปิดจะส่งทางเดียว — ไม่ใส่ข้อความ plaintext บนสาย",
   "favoritesTitle": "รายการโปรด",

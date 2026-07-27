@@ -4,7 +4,6 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,6 +38,7 @@ import '../services/notification_service.dart';
 import '../services/nostr_sync_service.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../services/resilnet_service.dart';
+import '../services/secure_storage.dart';
 import '../services/screenshot_watch_service.dart';
 import '../services/udp_transport_service.dart';
 import '../src/rust/api/dto.dart';
@@ -47,7 +47,7 @@ class AppState extends ChangeNotifier {
   final crypto = CryptoService();
   final db = DatabaseService();
   final resilnet = ResilNetService();
-  final _storage = const FlutterSecureStorage();
+  final _storage = resilnetSecureStorage;
   final notifications = NotificationService();
   final screenshots = ScreenshotWatchService();
 
@@ -1941,7 +1941,8 @@ AnnouncementBoard? boardById(String id) {
   /// - Nostr identity restart; radios stopped first
   /// Does not restore plaintext rooms; new keys only.
   Future<void> panicWipeLocalIdentity() async {
-    debugPrint('[ResilNet] panicWipeLocalIdentity start');
+    final oldId = myUserIdReady ? myUserId : null;
+    debugPrint('[ResilNet] panicWipeLocalIdentity start oldId=$oldId');
     await _stopRadios();
 
     // Drop queued sealed envelopes BEFORE any post-wipe Nostr flush.
@@ -2047,7 +2048,9 @@ AnnouncementBoard? boardById(String id) {
     }
 
     notifyListeners();
-    debugPrint('[ResilNet] panicWipeLocalIdentity done id=${crypto.myUserId}');
+    debugPrint(
+      '[ResilNet] panicWipeLocalIdentity done oldId=$oldId newId=${crypto.myUserId}',
+    );
   }
 
   Future<void> _deleteTempVoiceFiles() async {

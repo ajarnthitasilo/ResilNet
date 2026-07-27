@@ -926,6 +926,42 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get permissionMicOpenSettings;
 
+  /// No description provided for @permissionCameraDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access denied — allow it in Settings to scan QR codes'**
+  String get permissionCameraDenied;
+
+  /// No description provided for @permissionCameraFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan QR codes'**
+  String get permissionCameraFailed;
+
+  /// No description provided for @permissionCameraOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get permissionCameraOpenSettings;
+
+  /// No description provided for @permissionPhotosDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library access denied — allow it in Settings to save your QR code'**
+  String get permissionPhotosDenied;
+
+  /// No description provided for @permissionPhotosFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library permission is required to save your QR code'**
+  String get permissionPhotosFailed;
+
+  /// No description provided for @permissionPhotosOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get permissionPhotosOpenSettings;
+
   /// No description provided for @permissionFailedSnack.
   ///
   /// In en, this message translates to:
@@ -1225,6 +1261,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again / open Settings'**
   String get qrRetrySettings;
+
+  /// No description provided for @qrCameraOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open camera: {error}'**
+  String qrCameraOpenFailed(String error);
+
+  /// No description provided for @qrScanAlignHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Align the QR code inside the frame'**
+  String get qrScanAlignHint;
 
   /// No description provided for @firmwareDownloadTitle.
   ///
@@ -1711,6 +1759,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Local identity wiped — set up again'**
   String get panicWipeSnack;
+
+  /// No description provided for @panicWipeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe failed: {error}'**
+  String panicWipeFailed(String error);
 
   /// No description provided for @meshBridgeTitle.
   ///

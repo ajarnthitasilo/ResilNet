@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../app/theme.dart';
+import '../services/camera_permission.dart';
+import '../services/photos_permission.dart';
 import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 import 'qr_scanner_screen.dart';
@@ -25,6 +27,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
   bool _saving = false;
   String? _cachedQrData;
   String? _cachedName;
+  String? _cachedUserId;
 
   @override
   void initState() {
@@ -57,6 +60,21 @@ class _IdentityScreenState extends State<IdentityScreen> {
 
   Future<void> _openScanner() async {
     if (!mounted) return;
+    final l10n = context.l10n;
+    try {
+      await ensureCameraPermission();
+    } catch (e) {
+      if (!mounted) return;
+      showCameraPermissionError(
+        context,
+        error: e,
+        deniedMessage: l10n.permissionCameraDenied,
+        failedMessage: l10n.permissionCameraFailed,
+        openSettingsLabel: l10n.permissionCameraOpenSettings,
+      );
+      return;
+    }
+    if (!mounted) return;
     final ok = await Navigator.of(
       context,
     ).push<bool>(MaterialPageRoute(builder: (_) => const QrScannerScreen()));
@@ -77,9 +95,11 @@ class _IdentityScreenState extends State<IdentityScreen> {
     if (_saving) return;
     setState(() => _saving = true);
     try {
-      final hasAccess = await Gal.hasAccess();
+      await ensurePhotosPermission();
+
+      final hasAccess = await Gal.hasAccess(toAlbum: true);
       if (!hasAccess) {
-        final granted = await Gal.requestAccess();
+        final granted = await Gal.requestAccess(toAlbum: true);
         if (!granted) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -123,6 +143,18 @@ class _IdentityScreenState extends State<IdentityScreen> {
     } catch (e, st) {
       debugPrint('[ResilNet] save QR failed: $e\n$st');
       if (!mounted) return;
+      if (e is StateError &&
+          (e.message == photosPermanentlyDeniedCode ||
+              e.message == 'PHOTOS_DENIED')) {
+        showPhotosPermissionError(
+          context,
+          error: e,
+          deniedMessage: context.l10n.permissionPhotosDenied,
+          failedMessage: context.l10n.permissionPhotosFailed,
+          openSettingsLabel: context.l10n.permissionPhotosOpenSettings,
+        );
+        return;
+      }
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(context.l10n.identityQrSaveFailed('$e'))));
@@ -139,7 +171,10 @@ class _IdentityScreenState extends State<IdentityScreen> {
     final crypto = context.read<AppState>().crypto;
     _syncNameField(displayName);
 
-    if (_cachedName != displayName || _cachedQrData == null) {
+    if (_cachedUserId != userId ||
+        _cachedName != displayName ||
+        _cachedQrData == null) {
+      _cachedUserId = userId;
       _cachedName = displayName;
       _cachedQrData = jsonEncode(crypto.identityJson(displayName: displayName));
     }

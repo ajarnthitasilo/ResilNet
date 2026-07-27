@@ -69,8 +69,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       final wiped = await confirmAndPanicWipe(context);
       if (!mounted || !wiped) return;
-      // Pop settings — home will switch to onboarding.
-      Navigator.of(context).popUntil((route) => route.isFirst);
     } finally {
       if (mounted) setState(() => _wiping = false);
     }

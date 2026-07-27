@@ -6,13 +6,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../core/resilnet_protocol.dart';
 import '../src/rust/api/dto.dart';
 import '../src/rust/api/nostr_api.dart';
+import 'secure_storage.dart';
 
 /// Cloud replacement — Nostr relay pool via Rust FFI (account-less secp256k1).
 class NostrSyncService extends ChangeNotifier {
-  NostrSyncService();
+  NostrSyncService({FlutterSecureStorage? storage})
+      : _storage = storage ?? resilnetSecureStorage;
 
   static const _kSecretHex = 'resilnet_nostr_secret_hex';
-  final _storage = const FlutterSecureStorage();
+  final FlutterSecureStorage _storage;
 
   NostrPoolStatusDto? _status;
   bool _running = false;
@@ -172,10 +174,21 @@ class NostrSyncService extends ChangeNotifier {
   /// Panic wipe: delete stored Nostr secret and start a fresh identity.
   Future<void> wipeIdentityAndRestart({List<String>? relayUrls}) async {
     await stop();
-    try {
-      await _storage.delete(key: _kSecretHex);
-    } catch (e) {
-      debugPrint('[Nostr] wipe secret failed: $e');
+    for (var attempt = 0; attempt < 3; attempt++) {
+      try {
+        await _storage.delete(key: _kSecretHex);
+      } catch (e) {
+        debugPrint('[Nostr] wipe secret attempt ${attempt + 1}: $e');
+      }
+      final remaining = await _storage.read(key: _kSecretHex);
+      if (remaining == null || remaining.isEmpty) break;
+      if (attempt == 2) {
+        try {
+          await _storage.deleteAll();
+        } catch (e) {
+          debugPrint('[Nostr] wipe deleteAll failed: $e');
+        }
+      }
     }
     _status = null;
     await start(relayUrls: relayUrls);

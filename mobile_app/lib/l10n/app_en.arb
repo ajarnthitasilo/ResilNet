@@ -235,6 +235,12 @@
   "permissionDeniedSnack": "Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location / Microphone",
   "permissionMicDenied": "Microphone access denied — allow it in Settings to record voice notes",
   "permissionMicOpenSettings": "Settings",
+  "permissionCameraDenied": "Camera access denied — allow it in Settings to scan QR codes",
+  "permissionCameraFailed": "Camera permission is required to scan QR codes",
+  "permissionCameraOpenSettings": "Settings",
+  "permissionPhotosDenied": "Photo library access denied — allow it in Settings to save your QR code",
+  "permissionPhotosFailed": "Photo library permission is required to save your QR code",
+  "permissionPhotosOpenSettings": "Settings",
   "permissionFailedSnack": "Permission request failed: {error}",
   "@permissionFailedSnack": {
     "placeholders": {
@@ -325,6 +331,15 @@
   "qrIdKeyMismatch": "QR rejected: id does not match public key",
   "qrCameraNotReady": "Camera not ready",
   "qrRetrySettings": "Try again / open Settings",
+  "qrCameraOpenFailed": "Could not open camera: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "Align the QR code inside the frame",
   "firmwareDownloadTitle": "Download ESP32 firmware",
   "peersRefreshTooltip": "Refresh",
   "peersBlocked": "Blocked",
@@ -438,6 +453,14 @@
   "panicWipeConfirmBody": "This permanently deletes chats, keys, and identity on this phone.\nPeers must re-exchange QR keys with your new identity.\nThis cannot be undone.",
   "panicWipeAction": "Wipe everything",
   "panicWipeSnack": "Local identity wiped — set up again",
+  "panicWipeFailed": "Wipe failed: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "meshBridgeTitle": "Mesh bridge",
   "meshBridgeSubtitle": "When on (default), sealed envelopes may use both BLE mesh and internet (Nostr) together so nearby mesh islands can connect. When off, sends use one path only — never puts plaintext on the wire.",
   "favoritesTitle": "Favorites",
