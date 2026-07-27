@@ -107,6 +107,30 @@ class Geohash {
     return x.startsWith(c) || c.startsWith(x);
   }
 
+  /// Geohash cells for Nostr `#g` subscription: selected precision + parent prefixes.
+  ///
+  /// Relays match `#g` exactly, so subscribing to parent cells catches peers on
+  /// a finer or coarser precision ladder step. [maxCells] caps relay filter size.
+  static List<String> nostrSubscribeCells(
+    String fullHash,
+    GeoPrecision precision, {
+    int maxCells = 3,
+  }) {
+    final h = fullHash.trim().toLowerCase();
+    if (h.isEmpty || maxCells < 1) return const [];
+    final selected = atPrecision(h, precision);
+    if (selected.isEmpty) return const [];
+    final cells = <String>[selected];
+    for (final p in GeoPrecision.values) {
+      if (p.length >= precision.length) continue;
+      final parent = atPrecision(h, p);
+      if (parent.isEmpty || cells.contains(parent)) continue;
+      cells.add(parent);
+      if (cells.length >= maxCells) break;
+    }
+    return cells;
+  }
+
   /// IRC-style channel label, e.g. `#dr5rsj7`.
   static String channelLabel(String hash) {
     final h = hash.trim().toLowerCase();

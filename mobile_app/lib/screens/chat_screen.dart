@@ -16,6 +16,7 @@ import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/crypto_service.dart';
+import '../services/mic_permission.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
@@ -224,8 +225,12 @@ class _ChatScreenState extends State<ChatScreen> {
       if (mounted) setState(() => _recordingVoice = true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
+      showMicPermissionError(
+        context,
+        error: e,
+        deniedMessage: context.l10n.permissionMicDenied,
+        failedMessage: context.l10n.chatVoiceFailed('$e'),
+        openSettingsLabel: context.l10n.permissionMicOpenSettings,
       );
     }
   }

@@ -5,6 +5,7 @@ import '../app/theme.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/area_presence.dart';
 import '../models/feed_channel.dart';
+import '../widgets/geo_discovery_empty.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'chat_screen.dart';
@@ -87,6 +88,16 @@ class _OnlinePeopleSheet extends StatelessWidget {
               ),
             ],
           ),
+          if (s.feedChannel == FeedChannel.geo && s.transportMode.usesInternet) ...[
+            Text(
+              l10n.geoDiscoveryStatus(s.geoChannelLabel, s.nostrRelayLabel),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Colors.white38,
+                    fontFamily: 'monospace',
+                  ),
+            ),
+            const SizedBox(height: 4),
+          ],
           Text(
             l10n.onlinePeopleCount(entries.length),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -96,20 +107,7 @@ class _OnlinePeopleSheet extends StatelessWidget {
           const SizedBox(height: 8),
           Expanded(
             child: entries.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        s.feedChannel == FeedChannel.geo && !s.isNostrOnline
-                            ? l10n.geoInternetDiscoverHint
-                            : l10n.onlinePeopleEmpty,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white54,
-                            ),
-                      ),
-                    ),
-                  )
+                ? GeoDiscoveryEmptyPanel(channelLabel: channel)
                 : ListView.separated(
                     itemCount: entries.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 8),

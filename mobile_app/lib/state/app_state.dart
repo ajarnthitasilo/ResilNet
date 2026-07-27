@@ -16,10 +16,12 @@ import '../core/resilnet_ack_codec.dart';
 import '../core/geohash.dart';
 import '../core/payload_kinds.dart';
 import '../models/area_presence.dart';
+import '../models/ble_radio_state.dart';
 import '../models/ack_entry.dart';
 import '../models/announcement_board.dart';
 import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
+import '../models/geo_discovery.dart';
 import '../models/local_notice.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
@@ -61,6 +63,7 @@ class AppState extends ChangeNotifier {
   Timer? _retentionTimer;
   Timer? _meshUiNotifyDebounce;
   DateTime _lastPresenceAnnounce = DateTime.fromMillisecondsSinceEpoch(0);
+  DateTime _lastGeoRefreshAttempt = DateTime.fromMillisecondsSinceEpoch(0);
   final _uuid = const Uuid();
 
   VoidCallback? _onAckHandlerChanged;
@@ -124,6 +127,46 @@ class AppState extends ChangeNotifier {
 
   bool _radioPaused = false;
   bool get radioPaused => _radioPaused;
+
+  /// BLE mesh radio lifecycle for status UI.
+  BleRadioState get bleRadioState {
+    if (!permissionsGranted) return BleRadioState.needsPermission;
+    if (_radioPaused) return BleRadioState.pausedForCamera;
+    if (isReady && (_mesh?.running ?? false)) return BleRadioState.running;
+    return BleRadioState.stopped;
+  }
+
+  /// Human-readable mesh permission snapshot for Settings (BT + Location).
+  Future<({String bt, String loc})> meshPermissionLabels() async {
+    final mesh = await _meshPermissions();
+    String label(Permission p, PermissionStatus s) {
+      if (s.isGranted) return 'ok';
+      if (s.isLimited) return 'limited';
+      if (s.isPermanentlyDenied) return 'denied';
+      return 'off';
+    }
+    var bt = '—';
+    var loc = '—';
+    for (final p in mesh) {
+      final s = await p.status;
+      final name = p.toString();
+      if (name.contains('bluetooth')) {
+        bt = label(p, s);
+      } else if (name.contains('location')) {
+        loc = label(p, s);
+      }
+    }
+    return (bt: bt, loc: loc);
+  }
+
+  String get bleRadioRunningLabel {
+    return switch (bleRadioState) {
+      BleRadioState.running => 'running',
+      BleRadioState.pausedForCamera => 'paused',
+      BleRadioState.stopped => 'stopped',
+      BleRadioState.needsPermission => 'needs_permission',
+    };
+  }
 
   bool get myUserIdReady {
     try {
@@ -436,6 +479,10 @@ class AppState extends ChangeNotifier {
         orElse: () => GeoPrecision.neighborhood,
       );
       _transportMode = TransportMode.fromName(prefs.getString(_kTransportMode));
+
+      if (_feedChannel == FeedChannel.geo) {
+        unawaited(refreshGeohash());
+      }
 
       // ตรวจสิทธิ์ที่มีอยู่แล้ว (ไม่ขึ้น dialog) แล้วค่อยสตาร์ท radio
       _permissionsGranted = await _hasAllRequiredPermissions();
@@ -1220,6 +1267,8 @@ AnnouncementBoard? boardById(String id) {
     if (!isReady) return;
     debugPrint('[ResilNet] onAppResumed — reconnecting services');
 
+    await refreshPermissions();
+
     try {
       await resilnet.reconnectIncomingBridge();
       await _attachRustIncomingHandler();
@@ -1258,7 +1307,11 @@ AnnouncementBoard? boardById(String id) {
 
     unawaited(purgeExpiredMessages());
     if (_feedChannel == FeedChannel.geo) {
-      unawaited(announceGeohashPresence());
+      if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+        unawaited(refreshGeohash());
+      } else {
+        unawaited(syncGeoPresence(forceAnnounce: true));
+      }
     }
 
     notifyListeners();
@@ -1288,6 +1341,15 @@ AnnouncementBoard? boardById(String id) {
     if (sync == null) return;
     await sync.reconnect();
     await sync.flushOfflineQueue();
+    if (_feedChannel == FeedChannel.geo && _transportMode.usesInternet) {
+      unawaited(syncGeoPresence(forceAnnounce: true));
+    }
+  }
+
+  /// Reconnect Nostr relays and re-sync Area presence (UI action).
+  Future<void> reconnectNostrAndSyncGeo() async {
+    await _reconnectNostr();
+    notifyListeners();
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
@@ -1490,6 +1552,10 @@ AnnouncementBoard? boardById(String id) {
 
     final rid = ev.rid.trim();
     final pkRaw = ev.pk.trim();
+    debugPrint(
+      '[GeoPresence] received rid=${rid.isEmpty ? "anon" : rid} '
+      'g=${ev.geohash.trim().toLowerCase()}',
+    );
     Peer? boundPeer;
     // Legacy anon events (no rid/pk) remain discover-only; mismatched binding is dropped.
     if (rid.isNotEmpty || pkRaw.isNotEmpty) {
@@ -1584,16 +1650,32 @@ AnnouncementBoard? boardById(String id) {
 
   /// Refresh mesh + Nostr presence for the current Area channel.
   Future<void> syncGeoPresence({bool forceAnnounce = false}) async {
-    final channel = selectedAreaHash;
-    if (_transportMode.usesInternet &&
-        channel != null &&
-        channel.isNotEmpty &&
-        (_nostr?.isOnline ?? false)) {
-      await _nostr?.setGeoPresenceFilter([channel]);
+    if (!_transportMode.usesInternet || _feedChannel != FeedChannel.geo) {
+      await _clearNostrGeoSubscription();
+      if (!_transportMode.usesInternet) _stopGeoPresencePublishTimer();
+      await announceGeohashPresence(force: forceAnnounce);
+      return;
+    }
+
+    final full = _currentGeohash;
+    if (full == null || full.isEmpty) {
+      await _clearNostrGeoSubscription();
+      await announceGeohashPresence(force: forceAnnounce);
+      return;
+    }
+
+    if (!(_nostr?.isOnline ?? false) && isCloudOnline) {
+      await _nostr?.reconnect();
+      await _nostr?.refreshStatus();
+    }
+
+    if (_nostr?.isOnline ?? false) {
+      final cells = Geohash.nostrSubscribeCells(full, _geoPrecision);
+      debugPrint('[GeoPresence] subscribe $cells');
+      await _nostr?.setGeoPresenceFilter(cells);
       _ensureGeoPresencePublishTimer();
     } else {
       await _clearNostrGeoSubscription();
-      if (!_transportMode.usesInternet) _stopGeoPresencePublishTimer();
     }
     await announceGeohashPresence(force: forceAnnounce);
   }
@@ -1635,6 +1717,33 @@ AnnouncementBoard? boardById(String id) {
     return Geohash.atPrecision(h, _geoPrecision);
   }
 
+  /// Why Area people list is empty (for UI). [none] when not applicable or peers exist.
+  GeoDiscoveryEmptyReason get geoDiscoveryEmptyReason {
+    if (_feedChannel != FeedChannel.geo) return GeoDiscoveryEmptyReason.none;
+    if (_geoNeedsPermission ||
+        _currentGeohash == null ||
+        _currentGeohash!.isEmpty) {
+      return GeoDiscoveryEmptyReason.noLocation;
+    }
+    if (_transportMode == TransportMode.mesh) {
+      return GeoDiscoveryEmptyReason.meshOnly;
+    }
+    if (_transportMode.usesInternet && !isNostrOnline) {
+      return GeoDiscoveryEmptyReason.noNostr;
+    }
+    if (areaPresenceOnline().isEmpty) {
+      return GeoDiscoveryEmptyReason.waiting;
+    }
+    return GeoDiscoveryEmptyReason.none;
+  }
+
+  /// Nostr relay connection label for Area discovery UI, e.g. `2/4`.
+  String get nostrRelayLabel {
+    final n = _nostr;
+    if (n == null) return '0/0';
+    return '${n.connectedRelays}/${n.totalRelays}';
+  }
+
   /// Merged Area people list (BLE mesh + anonymous Nostr presence).
   List<AreaPresenceEntry> areaPresenceOnline() {
     _pruneNostrPresence();
@@ -1671,8 +1780,17 @@ AnnouncementBoard? boardById(String id) {
 
   /// Share our geohash cell with nearby peers / Nostr (not shown as chat).
   Future<void> announceGeohashPresence({bool force = false}) async {
-    final full = _currentGeohash;
-    if (full == null || full.isEmpty) return;
+    var full = _currentGeohash;
+    if (full == null || full.isEmpty) {
+      if (_feedChannel == FeedChannel.geo && _transportMode.usesInternet) {
+        final since = DateTime.now().difference(_lastGeoRefreshAttempt);
+        if (since >= const Duration(seconds: 30)) {
+          _lastGeoRefreshAttempt = DateTime.now();
+          unawaited(refreshGeohash());
+        }
+      }
+      return;
+    }
     final channel = Geohash.atPrecision(full, _geoPrecision);
     if (channel.isEmpty) return;
     final since = DateTime.now().difference(_lastPresenceAnnounce);
@@ -1680,18 +1798,28 @@ AnnouncementBoard? boardById(String id) {
     _lastPresenceAnnounce = DateTime.now();
 
     // Internet: geohash presence with ResilNet RSA rid+pk (messageable without QR).
-    if (_transportMode.usesInternet && (_nostr?.isOnline ?? false)) {
-      final nick = _displayName.trim().isNotEmpty
-          ? _displayName.trim()
-          : myUserId.substring(0, myUserId.length.clamp(0, 10));
-      unawaited(
-        _nostr!.publishGeoPresence(
-          channel,
-          nick: nick,
-          rid: myUserId,
-          pk: CryptoService.compactPublicKey(crypto.publicKeyPem),
-        ),
-      );
+    if (_transportMode.usesInternet) {
+      if (!(_nostr?.isOnline ?? false) && isCloudOnline) {
+        await _nostr?.reconnect();
+        await _nostr?.refreshStatus();
+      }
+      if (_nostr?.isOnline ?? false) {
+        final nick = _displayName.trim().isNotEmpty
+            ? _displayName.trim()
+            : myUserId.substring(0, myUserId.length.clamp(0, 10));
+        final relays = nostrRelayLabel;
+        debugPrint(
+          '[GeoPresence] publish g=$channel rid=$myUserId relays=$relays',
+        );
+        unawaited(
+          _nostr!.publishGeoPresence(
+            channel,
+            nick: nick,
+            rid: myUserId,
+            pk: CryptoService.compactPublicKey(crypto.publicKeyPem),
+          ),
+        );
+      }
     }
 
     // Mesh: sealed presence to nearby BLE peers (existing path).
@@ -2165,9 +2293,25 @@ AnnouncementBoard? boardById(String id) {
     notifyListeners();
   }
 
+  /// Re-check permissions and start BLE mesh if allowed.
+  Future<void> ensureBleRadiosStarted() async {
+    await refreshPermissions();
+    if (_permissionsGranted && !_radioPaused && isReady) {
+      try {
+        if (!(_mesh?.running ?? false)) {
+          await _startRadios();
+        }
+      } catch (e) {
+        debugPrint('[ResilNet] ensureBleRadiosStarted failed: $e');
+      }
+    }
+    notifyListeners();
+  }
+
   Future<bool> requestPermissions() async {
     if (!isReady) return false;
-    final needed = await _requiredPermissions();
+    final mesh = await _meshPermissions();
+    final needed = <Permission>[...mesh, Permission.microphone];
     debugPrint(
       '[ResilNet] requestPermissions: asking ${needed.map((p) => p.toString()).join(', ')}',
     );
@@ -2175,9 +2319,11 @@ AnnouncementBoard? boardById(String id) {
     for (final entry in result.entries) {
       debugPrint('[ResilNet] permission ${entry.key} => ${entry.value}');
     }
-    _permissionsGranted = result.values.every(
-      (s) => s.isGranted || s.isLimited,
-    );
+    // BLE mesh starts when radio permissions are granted; mic is optional here.
+    _permissionsGranted = mesh.every((p) {
+      final status = result[p];
+      return status != null && (status.isGranted || status.isLimited);
+    });
     debugPrint('[ResilNet] permissionsGranted=$_permissionsGranted');
     if (_permissionsGranted && !_radioPaused) {
       unawaited(_startRadios());
@@ -2248,7 +2394,7 @@ AnnouncementBoard? boardById(String id) {
   }
 
   Future<bool> _hasAllRequiredPermissions() async {
-    final needed = await _requiredPermissions();
+    final needed = await _meshPermissions();
     for (final p in needed) {
       final status = await p.status;
       debugPrint('[ResilNet] check $p => $status');
@@ -2258,7 +2404,7 @@ AnnouncementBoard? boardById(String id) {
     return true;
   }
 
-  Future<List<Permission>> _requiredPermissions() async {
+  Future<List<Permission>> _meshPermissions() async {
     // iOS: only Permission.bluetooth (CoreBluetooth) is handled by permission_handler.
     if (Platform.isIOS) {
       return <Permission>[Permission.bluetooth, Permission.locationWhenInUse];

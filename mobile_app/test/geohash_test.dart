@@ -43,5 +43,16 @@ void main() {
       expect(GeoPrecision.neighborhood.approxRadiusLabel, '~1.2 km');
       expect(GeoPrecision.region.approxRadiusLabel, '~1250 km');
     });
+
+    test('nostrSubscribeCells includes selected + parent prefixes', () {
+      const full = 'w5q6ukq';
+      final cells = Geohash.nostrSubscribeCells(
+        full,
+        GeoPrecision.neighborhood,
+      );
+      expect(cells.first, Geohash.atPrecision(full, GeoPrecision.neighborhood));
+      expect(cells.length, lessThanOrEqualTo(3));
+      expect(cells.every((c) => full.startsWith(c) || c.startsWith(full)), isTrue);
+    });
   });
 }

@@ -110,6 +110,26 @@ void main() {
       expect(list, isEmpty);
     });
 
+    test('channel w5jt8 accepts sighting w5jt8x via prefix match', () {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final list = mergeAreaPresence(
+        meshPeers: const [],
+        nostrSightings: [
+          NostrPresenceSighting(
+            pubkeyHex: 'peer01',
+            nick: 'peer·0001',
+            geohash: 'w5jt8x',
+            lastSeen: now,
+          ),
+        ],
+        channel: 'w5jt8',
+        mode: TransportMode.internet,
+        nowMs: now,
+      );
+      expect(list.length, 1);
+      expect(list.first.geohash, 'w5jt8x');
+    });
+
     test('matchesChannel filters peers in selected area', () {
       const channel = 'w1z0';
       final peers = [

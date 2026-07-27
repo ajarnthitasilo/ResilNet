@@ -15,7 +15,9 @@ import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
 import '../services/audio_recorder_service.dart';
+import '../services/mic_permission.dart';
 import '../state/app_state.dart';
+import '../widgets/geo_discovery_empty.dart';
 import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
 import 'announcements_screen.dart';
@@ -248,8 +250,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
       if (mounted) setState(() => _recordingVoice = true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
+      showMicPermissionError(
+        context,
+        error: e,
+        deniedMessage: context.l10n.permissionMicDenied,
+        failedMessage: context.l10n.chatVoiceFailed('$e'),
+        openSettingsLabel: context.l10n.permissionMicOpenSettings,
       );
     }
   }
@@ -769,27 +775,11 @@ class _GeoListBody extends StatelessWidget {
     final presence = s.areaPresenceOnline();
 
     if (s.geoNeedsPermission) {
-      return Center(
-        child: Text(
-          l10n.geoErrorPermission,
-          style: const TextStyle(color: Colors.orangeAccent),
-        ),
-      );
+      return GeoDiscoveryEmptyPanel(channelLabel: s.geoChannelLabel);
     }
 
     return presence.isEmpty
-        ? Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(
-                l10n.geoEmpty(s.geoChannelLabel),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.white54,
-                    ),
-              ),
-            ),
-          )
+        ? GeoDiscoveryEmptyPanel(channelLabel: s.geoChannelLabel)
         : ListView.separated(
             padding: const EdgeInsets.fromLTRB(14, 8, 14, 14),
             itemCount: presence.length,

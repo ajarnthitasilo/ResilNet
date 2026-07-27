@@ -20,9 +20,11 @@ class QrScannerScreen extends StatefulWidget {
 
 class _QrScannerScreenState extends State<QrScannerScreen> {
   MobileScannerController? _controller;
+  AppState? _appState;
   bool _handled = false;
   bool _starting = true;
   bool _closing = false;
+  bool _resumedRadios = false;
   String? _error;
 
   @override
@@ -31,10 +33,20 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     _boot();
   }
 
+  void _resumeRadiosIfNeeded() {
+    if (_resumedRadios) return;
+    _resumedRadios = true;
+    final s = _appState;
+    if (s != null && s.radioPaused) {
+      unawaited(s.resumeRadiosAfterCamera());
+    }
+  }
+
   Future<void> _boot() async {
     // หยุด BLE ก่อนเปิดกล้อง — ลดโอกาส radio conflict / UI freeze บน iOS
     try {
-      await context.read<AppState>().pauseRadiosForCamera();
+      _appState = context.read<AppState>();
+      await _appState!.pauseRadiosForCamera();
     } catch (e) {
       debugPrint('[ResilNet] pause radios: $e');
     }
@@ -54,9 +66,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     _controller = null;
     if (!mounted) return;
     final s = context.read<AppState>();
+    _appState = s;
     Navigator.of(context).pop(result);
     // resume หลัง pop เพื่อไม่บล็อกการปิดหน้า
-    unawaited(s.resumeRadiosAfterCamera());
+    _resumeRadiosIfNeeded();
   }
 
   @override
@@ -65,7 +78,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     final c = _controller;
     _controller = null;
     c?.dispose();
-    // อย่าเรียก context ใน dispose — resume ผ่าน WillPop / _safeClose เป็นหลัก
+    _resumeRadiosIfNeeded();
     super.dispose();
   }
 

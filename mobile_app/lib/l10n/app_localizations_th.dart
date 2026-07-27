@@ -165,6 +165,37 @@ class AppLocalizationsTh extends AppLocalizations {
       'การค้นพบ Area ผ่านเน็ตต้องต่อ Nostr (Settings → Transport → Internet/Auto)';
 
   @override
+  String get geoEmptyNoLocation =>
+      'ยังไม่ได้พิกัด — อนุญาต GPS แล้วกด refresh เพื่อประกาศ geohash บน Nostr';
+
+  @override
+  String get geoEmptyNoNostr =>
+      'Nostr relay ยังไม่ต่อ — ตรวจเน็ตแล้ว reconnect';
+
+  @override
+  String get geoEmptyMeshOnly =>
+      'Transport เป็น Mesh อย่างเดียว — เปลี่ยนเป็น Internet หรือ Auto เพื่อค้นหาผ่าน Nostr';
+
+  @override
+  String geoEmptyWaiting(String channel) {
+    return 'ยังไม่มีใครใน $channel — เปิด Area + Internet ทั้งสองเครื่อง แล้วรอ ~60 วินาที';
+  }
+
+  @override
+  String get geoChannelFallback => '#area';
+
+  @override
+  String get geoRefreshLocation => 'Refresh ตำแหน่ง';
+
+  @override
+  String get geoReconnectNostr => 'Reconnect Nostr';
+
+  @override
+  String geoDiscoveryStatus(String channel, String relays) {
+    return '$channel · Nostr $relays';
+  }
+
+  @override
   String geoPeerInternetSubtitle(String channel) {
     return 'อินเทอร์เน็ต (Nostr) ใน $channel • พร้อมแชตผนึก';
   }
@@ -372,6 +403,23 @@ class AppLocalizationsTh extends AppLocalizations {
   String get meshBleNeedsPermission => 'BLE: ต้องขอสิทธิ์ก่อน';
 
   @override
+  String get meshBlePausedCamera => 'BLE หยุดชั่วคราว (กล้อง) — แตะ เริ่ม BLE';
+
+  @override
+  String get meshBleStopped => 'BLE ปิดอยู่ — เปิด Bluetooth แล้วแตะ เริ่ม BLE';
+
+  @override
+  String get meshBleRestart => 'เริ่ม BLE';
+
+  @override
+  String meshBleStatusDetail(String bt, String loc, String ble) {
+    return 'BT $bt · Loc $loc · BLE $ble';
+  }
+
+  @override
+  String get meshBleEnsureAction => 'ตรวจสิทธิ์และเริ่ม BLE';
+
+  @override
   String get meshNostrOffline => 'Nostr ออฟไลน์';
 
   @override
@@ -403,7 +451,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get permissionBody =>
-      'แอปต้องใช้ Bluetooth (สแกน/เชื่อมต่อ/โฆษณาตัวตน) และ Location (รองรับอุปกรณ์ Android รุ่นเก่า) เพื่อสื่อสารแบบออฟไลน์ในชุมชน';
+      'แอปต้องใช้ Bluetooth (สแกน/เชื่อมต่อ/โฆษณาตัวตน), Location (รองรับ Android รุ่นเก่า) และไมโครโฟน (สำหรับข้อความเสียงในแชตและประกาศ) เพื่อสื่อสารในชุมชน';
 
   @override
   String get permissionE2ee =>
@@ -421,7 +469,14 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get permissionDeniedSnack =>
-      'ยังไม่ได้สิทธิ์ครบ — เปิด Settings > ResilNet แล้วอนุญาต Bluetooth/Location';
+      'ยังไม่ได้สิทธิ์ครบ — เปิด Settings > ResilNet แล้วอนุญาต Bluetooth/Location/ไมโครโฟน';
+
+  @override
+  String get permissionMicDenied =>
+      'ไม่ได้รับอนุญาตไมโครโฟน — เปิด Settings เพื่ออนุญาตการบันทึกเสียง';
+
+  @override
+  String get permissionMicOpenSettings => 'Settings';
 
   @override
   String permissionFailedSnack(String error) {

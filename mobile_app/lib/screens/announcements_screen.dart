@@ -11,6 +11,7 @@ import '../app/theme.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/announcement_board.dart';
 import '../services/audio_recorder_service.dart';
+import '../services/mic_permission.dart';
 import '../state/app_state.dart';
 
 Future<void> openAnnouncementsScreen(BuildContext context) {
@@ -233,8 +234,12 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       if (mounted) setState(() => _recordingVoice = true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.announceVoiceFailed('$e'))),
+      showMicPermissionError(
+        context,
+        error: e,
+        deniedMessage: context.l10n.permissionMicDenied,
+        failedMessage: context.l10n.announceVoiceFailed('$e'),
+        openSettingsLabel: context.l10n.permissionMicOpenSettings,
       );
     }
   }

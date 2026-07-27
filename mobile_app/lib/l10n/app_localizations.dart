@@ -380,6 +380,54 @@ abstract class AppLocalizations {
   /// **'Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)'**
   String get geoInternetDiscoverHint;
 
+  /// No description provided for @geoEmptyNoLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr'**
+  String get geoEmptyNoLocation;
+
+  /// No description provided for @geoEmptyNoNostr.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr relays offline — check internet and reconnect'**
+  String get geoEmptyNoNostr;
+
+  /// No description provided for @geoEmptyMeshOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport is Mesh-only — switch to Internet or Auto to discover peers over Nostr'**
+  String get geoEmptyMeshOnly;
+
+  /// No description provided for @geoEmptyWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'No one in {channel} yet — keep Area + Internet open on both devices and wait ~60s'**
+  String geoEmptyWaiting(String channel);
+
+  /// No description provided for @geoChannelFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'#area'**
+  String get geoChannelFallback;
+
+  /// No description provided for @geoRefreshLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh location'**
+  String get geoRefreshLocation;
+
+  /// No description provided for @geoReconnectNostr.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect Nostr'**
+  String get geoReconnectNostr;
+
+  /// No description provided for @geoDiscoveryStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'{channel} · Nostr {relays}'**
+  String geoDiscoveryStatus(String channel, String relays);
+
   /// No description provided for @geoPeerInternetSubtitle.
   ///
   /// In en, this message translates to:
@@ -752,6 +800,36 @@ abstract class AppLocalizations {
   /// **'BLE: permission required'**
   String get meshBleNeedsPermission;
 
+  /// No description provided for @meshBlePausedCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE paused for camera — tap Start BLE'**
+  String get meshBlePausedCamera;
+
+  /// No description provided for @meshBleStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE is off — check Bluetooth is on, then tap Start BLE'**
+  String get meshBleStopped;
+
+  /// No description provided for @meshBleRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start BLE'**
+  String get meshBleRestart;
+
+  /// No description provided for @meshBleStatusDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'BT {bt} · Loc {loc} · BLE {ble}'**
+  String meshBleStatusDetail(String bt, String loc, String ble);
+
+  /// No description provided for @meshBleEnsureAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Check permissions & start BLE'**
+  String get meshBleEnsureAction;
+
   /// No description provided for @meshNostrOffline.
   ///
   /// In en, this message translates to:
@@ -803,7 +881,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionBody.
   ///
   /// In en, this message translates to:
-  /// **'The app needs Bluetooth (scan / connect / advertise) and Location (for older Android devices) for offline community messaging.'**
+  /// **'The app needs Bluetooth (scan / connect / advertise), Location (for older Android devices), and Microphone (for voice notes in chat and announcements) for community messaging.'**
   String get permissionBody;
 
   /// No description provided for @permissionE2ee.
@@ -833,8 +911,20 @@ abstract class AppLocalizations {
   /// No description provided for @permissionDeniedSnack.
   ///
   /// In en, this message translates to:
-  /// **'Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location'**
+  /// **'Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location / Microphone'**
   String get permissionDeniedSnack;
+
+  /// No description provided for @permissionMicDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone access denied — allow it in Settings to record voice notes'**
+  String get permissionMicDenied;
+
+  /// No description provided for @permissionMicOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get permissionMicOpenSettings;
 
   /// No description provided for @permissionFailedSnack.
   ///

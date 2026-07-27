@@ -6,6 +6,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
+import 'mic_permission.dart';
+
 /// Push-to-Talk voice note recorder — 16 kHz Opus, สูงสุด 15 วินาที / <20 KB
 class AudioRecorderService {
   AudioRecorderService()
@@ -25,13 +27,11 @@ class AudioRecorderService {
 
   bool get isRecording => _recording;
 
-  Future<bool> hasPermission() => _recorder.hasPermission();
+  Future<bool> hasPermission() => micPermissionGranted();
 
   Future<void> startRecording() async {
     if (_recording) return;
-    if (!await hasPermission()) {
-      throw StateError('ไม่ได้รับอนุญาตไมโครโฟน');
-    }
+    await ensureMicPermission();
 
     final dir = await getTemporaryDirectory();
     final stamp = DateTime.now().millisecondsSinceEpoch;

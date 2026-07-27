@@ -68,6 +68,25 @@
   },
   "geoPeerDiscoverOnlySnack": "Legacy anonymous presence — wait for a bound peer or exchange QR",
   "geoInternetDiscoverHint": "Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)",
+  "geoEmptyNoLocation": "Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr",
+  "geoEmptyNoNostr": "Nostr relays offline — check internet and reconnect",
+  "geoEmptyMeshOnly": "Transport is Mesh-only — switch to Internet or Auto to discover peers over Nostr",
+  "geoEmptyWaiting": "No one in {channel} yet — keep Area + Internet open on both devices and wait ~60s",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": { "type": "String" }
+    }
+  },
+  "geoChannelFallback": "#area",
+  "geoRefreshLocation": "Refresh location",
+  "geoReconnectNostr": "Reconnect Nostr",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": { "type": "String" },
+      "relays": { "type": "String" }
+    }
+  },
   "geoPeerInternetSubtitle": "Internet (Nostr) in {channel} • sealed chat ready",
   "@geoPeerInternetSubtitle": {
     "placeholders": {
@@ -161,6 +180,18 @@
   "meshNostrPublishing": "Nostr: publishing",
   "meshBleIdle": "BLE: standby",
   "meshBleNeedsPermission": "BLE: permission required",
+  "meshBlePausedCamera": "BLE paused for camera — tap Start BLE",
+  "meshBleStopped": "BLE is off — check Bluetooth is on, then tap Start BLE",
+  "meshBleRestart": "Start BLE",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": { "type": "String" },
+      "loc": { "type": "String" },
+      "ble": { "type": "String" }
+    }
+  },
+  "meshBleEnsureAction": "Check permissions & start BLE",
   "meshNostrOffline": "Nostr offline",
   "meshNostrOnline": "Nostr {relays}",
   "@meshNostrOnline": {
@@ -196,12 +227,14 @@
   },
   "meshGatewayReady": "Gateway UDP: ready",
   "permissionTitle": "Allow access to start the BLE mesh network",
-  "permissionBody": "The app needs Bluetooth (scan / connect / advertise) and Location (for older Android devices) for offline community messaging.",
+  "permissionBody": "The app needs Bluetooth (scan / connect / advertise), Location (for older Android devices), and Microphone (for voice notes in chat and announcements) for community messaging.",
   "permissionE2ee": "End-to-End Encryption (E2EE)\nRelay nodes cannot read message contents",
   "permissionReady": "Permissions ready",
   "permissionRequest": "Allow and continue",
   "permissionNotReadySnack": "System not ready yet — wait a moment and try again",
-  "permissionDeniedSnack": "Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location",
+  "permissionDeniedSnack": "Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location / Microphone",
+  "permissionMicDenied": "Microphone access denied — allow it in Settings to record voice notes",
+  "permissionMicOpenSettings": "Settings",
   "permissionFailedSnack": "Permission request failed: {error}",
   "@permissionFailedSnack": {
     "placeholders": {

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../app/theme.dart';
 import '../core/resilnet_protocol.dart';
 import '../l10n/l10n_ext.dart';
+import '../models/ble_radio_state.dart';
 import '../state/app_state.dart';
 
 /// แถบสถานะ BLE + LoRa + Nostr relays
@@ -21,6 +22,15 @@ class MeshStatusBar extends StatelessWidget {
       case SyncPhase.idle:
         return l10n.meshBleIdle;
     }
+  }
+
+  String _radioLabel(AppLocalizations l10n, BleRadioState state) {
+    return switch (state) {
+      BleRadioState.needsPermission => l10n.meshBleNeedsPermission,
+      BleRadioState.pausedForCamera => l10n.meshBlePausedCamera,
+      BleRadioState.stopped => l10n.meshBleStopped,
+      BleRadioState.running => l10n.meshBleIdle,
+    };
   }
 
   Color _phaseColor(SyncPhase phase) {
@@ -43,15 +53,19 @@ class MeshStatusBar extends StatelessWidget {
     if (!s.isReady) {
       return const SizedBox.shrink();
     }
+    final radioState = s.bleRadioState;
     final phase = s.syncPhase;
+    final meshRunning = radioState == BleRadioState.running;
     final nostrOnline = s.nostr.isOnline;
-    final meshRunning = s.mesh.running;
     final activePeers = s.mesh.nearbyPeers.length;
     final chunkProgress = s.chunkTransferState;
     final relays = '${s.nostr.connectedRelays}/${s.nostr.totalRelays}';
     final lora = s.resilnet.loraAvailable
         ? l10n.meshLoraReady
         : l10n.meshLoraNotReady;
+    final showRestart = radioState == BleRadioState.stopped ||
+        radioState == BleRadioState.needsPermission ||
+        radioState == BleRadioState.pausedForCamera;
 
     return Container(
       decoration: BoxDecoration(
@@ -79,10 +93,19 @@ class MeshStatusBar extends StatelessWidget {
                 child: Text(
                   meshRunning
                       ? _phaseLabel(l10n, phase)
-                      : l10n.meshBleNeedsPermission,
+                      : _radioLabel(l10n, radioState),
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
+              if (showRestart)
+                TextButton(
+                  onPressed: () => s.ensureBleRadiosStarted(),
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  child: Text(l10n.meshBleRestart),
+                ),
               Icon(
                 nostrOnline ? Icons.hub_outlined : Icons.cloud_off,
                 size: 18,

@@ -183,6 +183,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
               selected: {s.transportMode},
               onSelectionChanged: (set) => s.setTransportMode(set.first),
             ),
+            const SizedBox(height: 12),
+            FutureBuilder<({String bt, String loc})>(
+              future: s.meshPermissionLabels(),
+              builder: (context, snap) {
+                final bt = snap.data?.bt ?? '…';
+                final loc = snap.data?.loc ?? '…';
+                final ble = s.bleRadioRunningLabel;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      l10n.meshBleStatusDetail(bt, loc, ble),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.55),
+                            fontFamily: 'monospace',
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: () => s.ensureBleRadiosStarted(),
+                      icon: const Icon(Icons.bluetooth_searching, size: 18),
+                      label: Text(l10n.meshBleEnsureAction),
+                    ),
+                  ],
+                );
+              },
+            ),
             const SizedBox(height: 8),
             Text(l10n.settingsNostrExpiryTitle),
             const SizedBox(height: 4),

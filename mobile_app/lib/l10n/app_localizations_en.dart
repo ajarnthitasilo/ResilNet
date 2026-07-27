@@ -167,6 +167,37 @@ class AppLocalizationsEn extends AppLocalizations {
       'Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)';
 
   @override
+  String get geoEmptyNoLocation =>
+      'Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr';
+
+  @override
+  String get geoEmptyNoNostr =>
+      'Nostr relays offline — check internet and reconnect';
+
+  @override
+  String get geoEmptyMeshOnly =>
+      'Transport is Mesh-only — switch to Internet or Auto to discover peers over Nostr';
+
+  @override
+  String geoEmptyWaiting(String channel) {
+    return 'No one in $channel yet — keep Area + Internet open on both devices and wait ~60s';
+  }
+
+  @override
+  String get geoChannelFallback => '#area';
+
+  @override
+  String get geoRefreshLocation => 'Refresh location';
+
+  @override
+  String get geoReconnectNostr => 'Reconnect Nostr';
+
+  @override
+  String geoDiscoveryStatus(String channel, String relays) {
+    return '$channel · Nostr $relays';
+  }
+
+  @override
   String geoPeerInternetSubtitle(String channel) {
     return 'Internet (Nostr) in $channel • sealed chat ready';
   }
@@ -375,6 +406,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get meshBleNeedsPermission => 'BLE: permission required';
 
   @override
+  String get meshBlePausedCamera => 'BLE paused for camera — tap Start BLE';
+
+  @override
+  String get meshBleStopped =>
+      'BLE is off — check Bluetooth is on, then tap Start BLE';
+
+  @override
+  String get meshBleRestart => 'Start BLE';
+
+  @override
+  String meshBleStatusDetail(String bt, String loc, String ble) {
+    return 'BT $bt · Loc $loc · BLE $ble';
+  }
+
+  @override
+  String get meshBleEnsureAction => 'Check permissions & start BLE';
+
+  @override
   String get meshNostrOffline => 'Nostr offline';
 
   @override
@@ -406,7 +455,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionBody =>
-      'The app needs Bluetooth (scan / connect / advertise) and Location (for older Android devices) for offline community messaging.';
+      'The app needs Bluetooth (scan / connect / advertise), Location (for older Android devices), and Microphone (for voice notes in chat and announcements) for community messaging.';
 
   @override
   String get permissionE2ee =>
@@ -424,7 +473,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionDeniedSnack =>
-      'Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location';
+      'Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location / Microphone';
+
+  @override
+  String get permissionMicDenied =>
+      'Microphone access denied — allow it in Settings to record voice notes';
+
+  @override
+  String get permissionMicOpenSettings => 'Settings';
 
   @override
   String permissionFailedSnack(String error) {
