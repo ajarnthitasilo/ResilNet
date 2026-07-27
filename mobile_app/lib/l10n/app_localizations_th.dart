@@ -476,7 +476,12 @@ class AppLocalizationsTh extends AppLocalizations {
       'วาง Public Key ของเพื่อนที่นี่ (ได้จาก QR/แชร์ไฟล์)';
 
   @override
-  String get chatNeedPeerKey => 'สแกน QR เพื่อน หรือวาง Public Key ก่อน';
+  String get chatNeedPeerKey =>
+      'สแกน QR ของเพื่อนนี้ก่อน (ต้องมีกุญแจที่ยืนยันแล้ว)';
+
+  @override
+  String get chatPeerKeyMismatch =>
+      'กุญแจสาธารณะที่เก็บไว้ไม่ตรงกับรหัสเพื่อนนี้';
 
   @override
   String chatVoiceFailed(String error) {
@@ -514,6 +519,11 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get chatEmptyThread =>
       'ยังไม่มีข้อความ\nพิมพ์ข้อความด้านล่างเพื่อส่งผ่าน Mesh';
+
+  @override
+  String chatLoadFailed(String error) {
+    return 'โหลดบทสนทนาไม่สำเร็จ: $error';
+  }
 
   @override
   String get chatEmojiTooltip => 'อิโมจิ';
@@ -564,6 +574,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get qrInvalid => 'สแกนไม่สำเร็จ: QR ไม่ถูกต้อง';
+
+  @override
+  String get qrIdKeyMismatch => 'ปฏิเสธ QR: id ไม่ตรงกับกุญแจสาธารณะ';
 
   @override
   String get qrCameraNotReady => 'กล้องยังไม่พร้อม';
@@ -668,10 +681,13 @@ class AppLocalizationsTh extends AppLocalizations {
   String get messageExpiryTitle => 'หมดอายุใน';
 
   @override
-  String get voicePttHold => 'กดค้างเพื่ออัดเสียง (PTT)';
+  String get voicePttHold => 'แตะไมค์เพื่ออัดเสียง';
 
   @override
-  String get voicePttRelease => 'ปล่อยเพื่อส่งข้อความเสียง';
+  String get voicePttRelease => 'แตะอีกครั้งเพื่อส่ง';
+
+  @override
+  String get voicePttRecording => 'กำลังอัด… แตะเพื่อส่ง';
 
   @override
   String get identityDisplayNameTitle => 'ชื่อที่แสดง';
@@ -962,6 +978,31 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get announceComposeHint => 'เขียนประกาศ…';
+
+  @override
+  String get announceMediaInternetOnly =>
+      'รูป/เสียงในประกาศส่งผ่านเน็ตเท่านั้น (ไม่ใช้ BLE)';
+
+  @override
+  String get announceNeedInternet =>
+      'ต้องเชื่อมต่ออินเทอร์เน็ตเพื่อส่งรูปหรือเสียงในประกาศ';
+
+  @override
+  String announceVoiceFailed(String error) {
+    return 'อัดเสียงไม่สำเร็จ: $error';
+  }
+
+  @override
+  String get announceImageTooLarge => 'รูปใหญ่เกินไป (สูงสุด ~180 KB)';
+
+  @override
+  String get announcePlayVoice => 'เล่นข้อความเสียง';
+
+  @override
+  String get announceImageLabel => '📷 รูปภาพ';
+
+  @override
+  String get announceAudioLabel => '🎤 ข้อความเสียง';
 
   @override
   String get announceModeLocked => 'ล็อก';

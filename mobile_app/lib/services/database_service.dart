@@ -26,7 +26,7 @@ class DatabaseService {
   Future<Database> _openDatabaseAt(String path) async {
     return openDatabase(
       path,
-      version: 11,
+      version: 12,
       onCreate: (db, _) async {
         await db.execute('''
           CREATE TABLE messages (
@@ -68,6 +68,15 @@ class DatabaseService {
         );
         await db.execute(
           'CREATE INDEX idx_messages_rate_limit ON messages(senderId, isBroadcast, timestamp)',
+        );
+        await db.execute(
+          'CREATE INDEX idx_messages_conversation ON messages(senderId, receiverId, timestamp)',
+        );
+        await db.execute(
+          'CREATE INDEX idx_messages_unread ON messages(receiverId, senderId, status)',
+        );
+        await db.execute(
+          'CREATE INDEX idx_messages_pending ON messages(status, timestamp)',
         );
 
         await db.execute('''
@@ -229,6 +238,21 @@ class DatabaseService {
           await db.execute('ALTER TABLE peers ADD COLUMN geohash TEXT');
           await db.execute(
             'CREATE INDEX IF NOT EXISTS idx_peers_geohash ON peers(geohash)',
+          );
+        }
+
+        if (oldVersion < 12) {
+          await db.execute(
+            'CREATE INDEX IF NOT EXISTS idx_messages_conversation '
+            'ON messages(senderId, receiverId, timestamp)',
+          );
+          await db.execute(
+            'CREATE INDEX IF NOT EXISTS idx_messages_unread '
+            'ON messages(receiverId, senderId, status)',
+          );
+          await db.execute(
+            'CREATE INDEX IF NOT EXISTS idx_messages_pending '
+            'ON messages(status, timestamp)',
           );
         }
       },
@@ -695,6 +719,15 @@ class DatabaseService {
     final n = peer?.displayName?.trim();
     if (n != null && n.isNotEmpty) return n;
     return publicKeyHash;
+  }
+
+  /// Batch resolve for peer lists (avoids N+1 FutureBuilders).
+  Future<Map<String, String>> resolveDisplayNames(Iterable<String> ids) async {
+    final out = <String, String>{};
+    for (final id in ids) {
+      out[id] = await resolveDisplayName(id);
+    }
+    return out;
   }
 
   /// ลบข้อความทั้งหมดใน SQLite และคืนพื้นที่ดิสก์ด้วย VACUUM

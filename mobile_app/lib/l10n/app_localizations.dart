@@ -935,8 +935,14 @@ abstract class AppLocalizations {
   /// No description provided for @chatNeedPeerKey.
   ///
   /// In en, this message translates to:
-  /// **'Scan a peer QR or paste their public key first'**
+  /// **'Scan this peer\'s QR first (verified public key required)'**
   String get chatNeedPeerKey;
+
+  /// No description provided for @chatPeerKeyMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Stored public key does not match this peer id'**
+  String get chatPeerKeyMismatch;
 
   /// No description provided for @chatVoiceFailed.
   ///
@@ -997,6 +1003,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No messages yet\nType below to send over the mesh'**
   String get chatEmptyThread;
+
+  /// No description provided for @chatLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load conversation: {error}'**
+  String chatLoadFailed(String error);
 
   /// No description provided for @chatEmojiTooltip.
   ///
@@ -1093,6 +1105,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan failed: invalid QR'**
   String get qrInvalid;
+
+  /// No description provided for @qrIdKeyMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'QR rejected: id does not match public key'**
+  String get qrIdKeyMismatch;
 
   /// No description provided for @qrCameraNotReady.
   ///
@@ -1277,14 +1295,20 @@ abstract class AppLocalizations {
   /// No description provided for @voicePttHold.
   ///
   /// In en, this message translates to:
-  /// **'Hold to record voice (PTT)'**
+  /// **'Tap mic to record'**
   String get voicePttHold;
 
   /// No description provided for @voicePttRelease.
   ///
   /// In en, this message translates to:
-  /// **'Release to send voice note'**
+  /// **'Tap again to send voice note'**
   String get voicePttRelease;
+
+  /// No description provided for @voicePttRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording… tap to send'**
+  String get voicePttRecording;
 
   /// No description provided for @identityDisplayNameTitle.
   ///
@@ -1801,6 +1825,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write an announcement…'**
   String get announceComposeHint;
+
+  /// No description provided for @announceMediaInternetOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo/voice announcements send over the internet (not BLE)'**
+  String get announceMediaInternetOnly;
+
+  /// No description provided for @announceNeedInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to send photo or voice announcements'**
+  String get announceNeedInternet;
+
+  /// No description provided for @announceVoiceFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not record voice: {error}'**
+  String announceVoiceFailed(String error);
+
+  /// No description provided for @announceImageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Image is too large (max ~180 KB)'**
+  String get announceImageTooLarge;
+
+  /// No description provided for @announcePlayVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Play voice note'**
+  String get announcePlayVoice;
+
+  /// No description provided for @announceImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'📷 Image'**
+  String get announceImageLabel;
+
+  /// No description provided for @announceAudioLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'🎤 Voice note'**
+  String get announceAudioLabel;
 
   /// No description provided for @announceModeLocked.
   ///

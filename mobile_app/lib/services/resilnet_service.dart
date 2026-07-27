@@ -385,6 +385,19 @@ class ResilNetService extends ChangeNotifier {
 
   Future<int> fetchOfflineQueueLen() => offlineQueueLen();
 
+  /// Drop pending offline envelopes without flushing to Nostr (panic wipe).
+  Future<int> clearOfflineQueuePackets() async {
+    if (!_initialized) return 0;
+    try {
+      final n = await clearOfflineQueue();
+      chunkArq.clearAllCaches();
+      return n;
+    } catch (e) {
+      debugPrint('[ResilNet] clearOfflineQueue failed: $e');
+      return 0;
+    }
+  }
+
   Future<void> _syncNetworkStatus(int Function() blePeerCount) async {
     final results = await _connectivity.checkConnectivity();
     _internetAvailable = results.any((r) => r != ConnectivityResult.none);

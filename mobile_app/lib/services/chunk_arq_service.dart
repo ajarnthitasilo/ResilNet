@@ -336,6 +336,17 @@ class ChunkArqService {
     reassembler.reset();
   }
 
+  /// Drop in-flight chunk reassembly / outbound cache (panic wipe).
+  void clearAllCaches() {
+    for (final t in _gapTimers.values) {
+      t.cancel();
+    }
+    _gapTimers.clear();
+    _lastNackAt.clear();
+    outboundCache.reset();
+    reassembler.reset();
+  }
+
   bool _shouldDedupChunk(int msgId, int chunkIndex) {
     try {
       if (!isRouterInitialized()) return false;

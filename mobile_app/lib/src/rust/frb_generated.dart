@@ -70,7 +70,7 @@ class ResilNetCore
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1554104074;
+  int get rustContentHash => 760302760;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -87,6 +87,8 @@ abstract class ResilNetCoreApi extends BaseApi {
   });
 
   void crateApiRouterApiClearChunkStream({required int msgId});
+
+  Future<int> crateApiRouterApiClearOfflineQueue();
 
   Future<int> crateApiNostrApiFlushOfflineQueueToNostr();
 
@@ -222,7 +224,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       const TaskConstMeta(debugName: "clear_chunk_stream", argNames: ["msgId"]);
 
   @override
-  Future<int> crateApiNostrApiFlushOfflineQueueToNostr() {
+  Future<int> crateApiRouterApiClearOfflineQueue() {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -231,6 +233,33 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             generalizedFrbRustBinding,
             serializer,
             funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_32,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiRouterApiClearOfflineQueueConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRouterApiClearOfflineQueueConstMeta =>
+      const TaskConstMeta(debugName: "clear_offline_queue", argNames: []);
+
+  @override
+  Future<int> crateApiNostrApiFlushOfflineQueueToNostr() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
             port: port_,
           );
         },
@@ -260,7 +289,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 5,
             port: port_,
           );
         },
@@ -287,7 +316,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 6,
             port: port_,
           );
         },
@@ -317,7 +346,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 7,
             port: port_,
           );
         },
@@ -350,7 +379,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 8,
             port: port_,
           );
         },
@@ -382,7 +411,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 9,
             port: port_,
           );
         },
@@ -411,7 +440,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 10,
             port: port_,
           );
         },
@@ -439,7 +468,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 11,
             port: port_,
           );
         },
@@ -463,7 +492,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_bool,
@@ -493,7 +522,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 12,
+            funcId: 13,
             port: port_,
           );
         },
@@ -526,7 +555,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 14,
             port: port_,
           );
         },
@@ -559,7 +588,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 15,
             port: port_,
           );
         },
@@ -589,7 +618,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 16,
             port: port_,
           );
         },
@@ -619,7 +648,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 17,
             port: port_,
           );
         },
@@ -652,7 +681,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 17,
+              funcId: 18,
               port: port_,
             );
           },
@@ -684,7 +713,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 19,
             port: port_,
           );
         },
@@ -712,7 +741,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 20,
             port: port_,
           );
         },
@@ -742,7 +771,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 20,
+            funcId: 21,
             port: port_,
           );
         },
@@ -770,7 +799,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 22,
             port: port_,
           );
         },
@@ -798,7 +827,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_u_8(value, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_opt_box_autoadd_payload_tag_dto,
@@ -829,7 +858,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 24,
             port: port_,
           );
         },
@@ -856,7 +885,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 25,
             port: port_,
           );
         },
@@ -886,7 +915,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 25,
+              funcId: 26,
               port: port_,
             );
           },
@@ -925,7 +954,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 27,
             port: port_,
           );
         },

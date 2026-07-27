@@ -152,6 +152,14 @@ impl HybridRouterHandle {
         items
     }
 
+    /// Drop every pending offline-queue packet (panic wipe / identity reset).
+    pub async fn clear_offline_queue(&self) -> usize {
+        let mut q = self.inner.offline_queue.lock().await;
+        let n = q.len();
+        q.clear();
+        n
+    }
+
     /// กรอง chunk frame ซ้ำระหว่าง reassembly (audio/firmware streams)
     pub fn check_and_record_chunk(&self, msg_id: u16, chunk_index: u8) -> DedupDecision {
         self.inner.dedup.check_and_record_chunk(msg_id, chunk_index)

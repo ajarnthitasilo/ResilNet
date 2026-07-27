@@ -220,7 +220,8 @@
   "chatAliasTooltip": "Set nickname",
   "chatReceiverPemLabel": "Recipient public key (PEM)",
   "chatReceiverPemHint": "Paste your friend’s public key (from QR / shared file)",
-  "chatNeedPeerKey": "Scan a peer QR or paste their public key first",
+  "chatNeedPeerKey": "Scan this peer's QR first (verified public key required)",
+  "chatPeerKeyMismatch": "Stored public key does not match this peer id",
   "chatVoiceFailed": "Could not record audio: {error}",
   "@chatVoiceFailed": {
     "placeholders": {
@@ -252,6 +253,12 @@
   "chatSentSealedShort": "[sealed]",
   "chatComposeHint": "Type a message… (sealed on send)",
   "chatEmptyThread": "No messages yet\nType below to send over the mesh",
+  "chatLoadFailed": "Could not load conversation: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "chatEmojiTooltip": "Emoji",
   "statusPending": "Pending",
   "statusSent": "Transmitted",
@@ -275,6 +282,7 @@
   "peersTitle": "Network members",
   "qrScanTitle": "Scan QR to add a friend",
   "qrInvalid": "Scan failed: invalid QR",
+  "qrIdKeyMismatch": "QR rejected: id does not match public key",
   "qrCameraNotReady": "Camera not ready",
   "qrRetrySettings": "Try again / open Settings",
   "firmwareDownloadTitle": "Download ESP32 firmware",
@@ -332,8 +340,9 @@
     }
   },
   "messageExpiryTitle": "expires in",
-  "voicePttHold": "Hold to record voice (PTT)",
-  "voicePttRelease": "Release to send voice note",
+  "voicePttHold": "Tap mic to record",
+  "voicePttRelease": "Tap again to send voice note",
+  "voicePttRecording": "Recording… tap to send",
   "identityDisplayNameTitle": "Display name",
   "identitySaveName": "Save name",
   "identityUserIdLabel": "User ID (Public Key Hash)",
@@ -445,6 +454,16 @@
   "announceAllowOpen": "Allow open (plaintext) posts",
   "announceAllowOpenSub": "Not E2EE — readable on mesh/relays. Off by default.",
   "announceComposeHint": "Write an announcement…",
+  "announceMediaInternetOnly": "Photo/voice announcements send over the internet (not BLE)",
+  "announceNeedInternet": "Connect to the internet to send photo or voice announcements",
+  "announceVoiceFailed": "Could not record voice: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "announceImageTooLarge": "Image is too large (max ~180 KB)",
+  "announcePlayVoice": "Play voice note",
+  "announceImageLabel": "📷 Image",
+  "announceAudioLabel": "🎤 Voice note",
   "announceModeLocked": "Locked",
   "announceModeOpen": "Open",
   "announceOpenBadge": "OPEN · not encrypted",

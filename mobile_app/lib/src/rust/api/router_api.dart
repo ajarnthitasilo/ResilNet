@@ -40,6 +40,10 @@ Future<void> ingestPacket({required MessagePacketDto packet}) =>
 Future<int> offlineQueueLen() =>
     ResilNetCore.instance.api.crateApiRouterApiOfflineQueueLen();
 
+/// Drop all offline-queue packets without publishing (panic wipe).
+Future<int> clearOfflineQueue() =>
+    ResilNetCore.instance.api.crateApiRouterApiClearOfflineQueue();
+
 /// สร้าง Stream ข้อความเข้าแบบ real-time ไปยัง Flutter UI
 ///
 /// ฟัง `RouterEvent::IncomingMessage` จาก broadcast channel — เรียกซ้ำได้เมื่อแอป resume

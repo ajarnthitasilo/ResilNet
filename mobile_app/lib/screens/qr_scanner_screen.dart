@@ -124,12 +124,16 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       }
 
       final pub = CryptoService.normalizePublicKey(rawKey);
+      final expectedId = CryptoService.publicKeyHash(pub);
+      if (id != expectedId) {
+        throw const FormatException('QR id does not match public key hash');
+      }
       if (!mounted) return;
       final s = context.read<AppState>();
       final now = DateTime.now().millisecondsSinceEpoch;
       await s.db.upsertPeer(
         Peer(
-          id: id,
+          id: expectedId,
           publicKey: pub,
           displayName: name,
           isVerifiedIssuer: false,
@@ -148,7 +152,14 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       } catch (_) {}
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.qrInvalid)),
+        SnackBar(
+          content: Text(
+            e is FormatException &&
+                    e.message.contains('does not match public key')
+                ? context.l10n.qrIdKeyMismatch
+                : context.l10n.qrInvalid,
+          ),
+        ),
       );
     }
   }

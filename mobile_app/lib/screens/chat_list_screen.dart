@@ -506,35 +506,22 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       : () => _sendPublicImage(s),
                   icon: const Icon(Icons.image_outlined),
                 ),
-                Tooltip(
-                  message: _recordingVoice
-                      ? l10n.voicePttRelease
+                IconButton(
+                  tooltip: _recordingVoice
+                      ? l10n.voicePttRecording
                       : l10n.voicePttHold,
-                  child: GestureDetector(
-                    onLongPressStart: (_) {
-                      if (!_sending) unawaited(_startPublicVoice(s));
-                    },
-                    onLongPressEnd: (_) {
-                      if (_recordingVoice) {
-                        unawaited(_stopAndSendPublicVoice(s));
-                      }
-                    },
-                    onLongPressCancel: () {
-                      if (_recordingVoice) {
-                        unawaited(_audio.cancelRecording().then((_) {
-                          if (mounted) {
-                            setState(() => _recordingVoice = false);
+                  onPressed: _sending
+                      ? null
+                      : () {
+                          if (_recordingVoice) {
+                            unawaited(_stopAndSendPublicVoice(s));
+                          } else {
+                            unawaited(_startPublicVoice(s));
                           }
-                        }));
-                      }
-                    },
-                    child: IconButton(
-                      onPressed: null,
-                      icon: Icon(
-                        _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
-                        color: _recordingVoice ? Colors.redAccent : null,
-                      ),
-                    ),
+                        },
+                  icon: Icon(
+                    _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
+                    color: _recordingVoice ? Colors.redAccent : null,
                   ),
                 ),
                 Expanded(

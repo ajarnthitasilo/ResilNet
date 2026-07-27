@@ -5,6 +5,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -58,8 +59,18 @@ class AppState extends ChangeNotifier {
   StreamSubscription<MessagePacketDto>? _rustIncomingSub;
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
   Timer? _retentionTimer;
+  Timer? _meshUiNotifyDebounce;
   DateTime _lastPresenceAnnounce = DateTime.fromMillisecondsSinceEpoch(0);
   final _uuid = const Uuid();
+
+  VoidCallback? _onAckHandlerChanged;
+  VoidCallback? _onAckQueueChanged;
+  VoidCallback? _onResilnetFlush;
+  VoidCallback? _onResilnetUi;
+  VoidCallback? _onEsp32Changed;
+  VoidCallback? _onUdpChanged;
+  VoidCallback? _onNostrChanged;
+  VoidCallback? _onMeshChanged;
 
   AppLifecycleState get lifecycleState => _lifecycleState;
 
@@ -207,6 +218,12 @@ class AppState extends ChangeNotifier {
   /// In-memory sealed envelopes for the current process only (ephemeral UI).
   final List<ChatMessage> _sessionMessages = <ChatMessage>[];
 
+  /// Bumped when conversation rows / statuses change (chat UI cache invalidation).
+  int _chatDataEpoch = 0;
+  int get chatDataEpoch => _chatDataEpoch;
+
+  void _bumpChatData() => _chatDataEpoch++;
+
   static const _kOnboardingDone = 'resilnet_onboarding_done';
   bool _onboardingCompleted = false;
   bool get onboardingCompleted => _onboardingCompleted;
@@ -307,7 +324,11 @@ class AppState extends ChangeNotifier {
         database: db,
         myUserId: crypto.myUserId,
       );
-      _ackHandler.addListener(notifyListeners);
+      _onAckHandlerChanged = () {
+        _bumpChatData();
+        notifyListeners();
+      };
+      _ackHandler.addListener(_onAckHandlerChanged!);
 
       _ackQueue = AckQueueManager(
         database: db,
@@ -317,14 +338,16 @@ class AppState extends ChangeNotifier {
         sendAckBatch: _sendAckBatch,
       );
       await _ackQueue!.restoreFromDatabase();
-      _ackQueue!.addListener(notifyListeners);
+      _onAckQueueChanged = notifyListeners;
+      _ackQueue!.addListener(_onAckQueueChanged!);
 
-      resilnet.addListener(() {
+      _onResilnetFlush = () {
         if (resilnet.isInternetAvailable || resilnet.isGatewayWifiActive) {
           _ackQueue?.onTransportUpgraded();
           unawaited(_nostr?.flushOfflineQueue());
         }
-      });
+      };
+      resilnet.addListener(_onResilnetFlush!);
 
       await notifications.init();
       unawaited(notifications.requestPermissions());
@@ -332,13 +355,14 @@ class AppState extends ChangeNotifier {
       _mesh = BleMeshService(
         database: db,
         myUserId: crypto.myUserId,
+        crypto: crypto,
         resilnet: resilnet,
         ackQueue: _ackQueue,
         ackHandler: _ackHandler,
         shouldPersistHistory: () => _saveMessageHistory,
         onEphemeralMessage: _rememberSessionMessage,
       );
-      _esp32 = Esp32SyncService(database: db);
+      _esp32 = Esp32SyncService(database: db, crypto: crypto);
       _udp = UdpTransportService(database: db, resilnet: resilnet);
       resilnet.attachUdpTransport(_udp!, crypto: crypto);
       _firmware = FirmwareService();
@@ -352,20 +376,27 @@ class AppState extends ChangeNotifier {
         debugPrint('[ResilNet] Nostr start failed (offline ok): $e\n$st');
       }
 
-      _esp32!.addListener(notifyListeners);
-      _udp!.addListener(notifyListeners);
-      _nostr!.addListener(notifyListeners);
-      _mesh!.addListener(notifyListeners);
-      _mesh!.addListener(_onMeshPeersChanged);
+      _onEsp32Changed = notifyListeners;
+      _onUdpChanged = notifyListeners;
+      _onNostrChanged = notifyListeners;
+      _onMeshChanged = () {
+        _onMeshPeersChanged();
+        _scheduleMeshUiNotify();
+      };
+      _esp32!.addListener(_onEsp32Changed!);
+      _udp!.addListener(_onUdpChanged!);
+      _nostr!.addListener(_onNostrChanged!);
+      _mesh!.addListener(_onMeshChanged!);
 
       resilnet.startNetworkMonitoring(blePeerCount: () => _mesh?.nearbyPeerCount ?? 0);
-      resilnet.addListener(() {
+      _onResilnetUi = () {
         if (resilnet.isInternetAvailable) {
           unawaited(_nostr?.flushOfflineQueue());
           unawaited(_nostr?.reconnect());
         }
         notifyListeners();
-      });
+      };
+      resilnet.addListener(_onResilnetUi!);
 
       final storedName = await _storage.read(key: _kDisplayName);
       if (storedName != null) {
@@ -593,6 +624,12 @@ AnnouncementBoard? boardById(String id) {
     if (board == null) return null;
     final body = text.trim();
     if (body.isEmpty) return null;
+    final isMedia = AnnouncementMedia.isMedia(body);
+    // Large photo/voice payloads are internet-only (avoid BLE mesh MTU pain).
+    if (isMedia && !resilnet.isInternetAvailable && !(_nostr?.isOnline ?? false)) {
+      debugPrint('[ResilNet] announcement media blocked — no internet');
+      return null;
+    }
 
     if (mode == AnnouncementPostMode.open) {
       if (!board.allowOpen) return null;
@@ -607,15 +644,19 @@ AnnouncementBoard? boardById(String id) {
       );
       _boardPosts.insert(0, post);
       await _persistAnnouncementBoards();
-      // Best-effort fan-out as labeled open notice (explicitly non-E2EE).
-      unawaited(
-        postNotice(
-          scope: 'mesh',
-          channelLabel: '#announce',
-          text: '[OPEN][${board.title}] $body',
-          expiry: NoticeExpiry.oneDay,
-        ),
-      );
+      if (isMedia) {
+        unawaited(_fanOutBoardPost(post, internetOnly: true));
+      } else {
+        // Best-effort fan-out as labeled open notice (explicitly non-E2EE).
+        unawaited(
+          postNotice(
+            scope: 'mesh',
+            channelLabel: '#announce',
+            text: '[OPEN][${board.title}] $body',
+            expiry: NoticeExpiry.oneDay,
+          ),
+        );
+      }
       notifyListeners();
       return post;
     }
@@ -642,8 +683,59 @@ AnnouncementBoard? boardById(String id) {
     );
     _boardPosts.insert(0, post);
     await _persistAnnouncementBoards();
+    unawaited(_fanOutBoardPost(post, internetOnly: isMedia));
     notifyListeners();
     return post;
+  }
+
+  Future<void> _fanOutBoardPost(
+    AnnouncementPost post, {
+    bool internetOnly = false,
+  }) async {
+    if (!_e2eeEnabled) return;
+    final peers = await db.getAllPeers();
+    final body = jsonEncode({
+      'v': 1,
+      'type': PayloadKinds.boardPost,
+      'post': post.toJson(),
+    });
+    await _sendSealedFanOut(
+      peers: peers,
+      body: body,
+      kind: PayloadKinds.boardPost,
+      internetOnly: internetOnly,
+    );
+  }
+
+  Future<void> _handleBoardPostSyncMessage(ChatMessage msg) async {
+    if (msg.receiverId != myUserId) return;
+    if (msg.payloadKind != PayloadKinds.boardPost) return;
+    String plain;
+    try {
+      plain = crypto.decryptFromSender(
+        encryptedPayload: msg.encryptedPayload,
+        encryptedKey: msg.encryptedKey,
+      );
+    } catch (e) {
+      debugPrint('[ResilNet] board post sync decrypt failed: $e');
+      return;
+    }
+    try {
+      final obj = jsonDecode(plain) as Map<String, dynamic>;
+      if ((obj['type'] as String?) != PayloadKinds.boardPost) return;
+      final rawPost = obj['post'];
+      if (rawPost is! Map) return;
+      final post = AnnouncementPost.fromJson(
+        Map<String, Object?>.from(rawPost),
+      );
+      if (boardById(post.boardId) == null) return;
+      if (_boardPosts.any((p) => p.id == post.id)) return;
+      _boardPosts.insert(0, post);
+      await _persistAnnouncementBoards();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ResilNet] board post sync parse failed: $e');
+    }
   }
 
   String? decryptAnnouncementPost(AnnouncementPost post) {
@@ -725,6 +817,20 @@ AnnouncementBoard? boardById(String id) {
     final priv = _boardPrivateKeys[boardId];
     if (priv == null || priv.isEmpty) return false;
 
+    // Prefer peer DB pubkey; always bind id ↔ hash(pubkey).
+    final peer = await db.getPeer(requesterId);
+    var pub = (peer?.publicKey.trim().isNotEmpty == true)
+        ? peer!.publicKey.trim()
+        : CryptoService.normalizePublicKey(requesterPubPem);
+    if (pub.isEmpty) return false;
+    pub = CryptoService.normalizePublicKey(pub);
+    if (CryptoService.publicKeyHash(pub) != requesterId) {
+      debugPrint(
+        '[ResilNet] approveBoardKeyRequest rejected — pubkey hash != requesterId',
+      );
+      return false;
+    }
+
     final grantBody = jsonEncode({
       'v': 1,
       'type': PayloadKinds.boardKeyGrant,
@@ -735,7 +841,7 @@ AnnouncementBoard? boardById(String id) {
     final ts = DateTime.now().millisecondsSinceEpoch;
     final pkg = crypto.encryptForRecipient(
       plaintext: grantBody,
-      receiverPublicPem: requesterPubPem,
+      receiverPublicPem: pub,
       senderId: myUserId,
       receiverId: requesterId,
       timestamp: ts,
@@ -794,9 +900,18 @@ AnnouncementBoard? boardById(String id) {
       if (type == PayloadKinds.boardKeyRequest) {
         final boardId = obj['boardId'] as String? ?? '';
         final requesterId = obj['requesterId'] as String? ?? msg.senderId;
-        final requesterPub = obj['requesterPub'] as String? ?? '';
+        final requesterPubRaw = obj['requesterPub'] as String? ?? '';
         final title = obj['boardTitle'] as String? ?? '';
-        if (boardId.isEmpty) return;
+        if (boardId.isEmpty || requesterPubRaw.isEmpty) return;
+        final requesterPub = CryptoService.normalizePublicKey(requesterPubRaw);
+        final boundId = CryptoService.publicKeyHash(requesterPub);
+        if (boundId != requesterId || msg.senderId != requesterId) {
+          debugPrint(
+            '[ResilNet] drop board key request — id/pubkey mismatch '
+            'claimed=$requesterId bound=$boundId sender=${msg.senderId}',
+          );
+          return;
+        }
         _pendingBoardKeyRequests.removeWhere(
           (r) => r['boardId'] == boardId && r['requesterId'] == requesterId,
         );
@@ -915,6 +1030,13 @@ AnnouncementBoard? boardById(String id) {
 
   void _onMeshPeersChanged() {
     unawaited(_notifyFavoriteNearby());
+  }
+
+  void _scheduleMeshUiNotify() {
+    _meshUiNotifyDebounce?.cancel();
+    _meshUiNotifyDebounce = Timer(const Duration(seconds: 1), () {
+      if (hasListeners) notifyListeners();
+    });
   }
 
   Future<void> _notifyFavoriteNearby() async {
@@ -1234,6 +1356,7 @@ AnnouncementBoard? boardById(String id) {
         _sessionMessages.removeRange(0, _sessionMessages.length - 200);
       }
     }
+    _bumpChatData();
   }
 
   /// Conversation view: SQLite history (if enabled) + sealed session-only envelopes.
@@ -1250,7 +1373,8 @@ AnnouncementBoard? boardById(String id) {
           (m.senderId == b && m.receiverId == a);
     });
     final byId = <String, ChatMessage>{
-      for (final m in persisted) m.id: m,
+      for (final m in persisted)
+        if (PayloadKinds.isChatVisible(m.payloadKind)) m.id: m,
       for (final m in session) m.id: m,
     };
     final items = byId.values.toList()
@@ -1279,6 +1403,7 @@ AnnouncementBoard? boardById(String id) {
   Future<void> persistChatMessage(ChatMessage msg) async {
     if (_saveMessageHistory) {
       await db.saveMessage(msg);
+      _bumpChatData();
     } else {
       _rememberSessionMessage(msg);
     }
@@ -1575,6 +1700,7 @@ AnnouncementBoard? boardById(String id) {
     required List<Peer> peers,
     required String body,
     required String kind,
+    bool internetOnly = false,
   }) async {
     var sent = 0;
     for (final peer in peers) {
@@ -1602,7 +1728,7 @@ AnnouncementBoard? boardById(String id) {
           payloadKind: kind,
         );
         await persistChatMessage(msg);
-        await routeOutbound(msg);
+        await routeOutbound(msg, internetOnly: internetOnly);
         sent++;
       } catch (e) {
         debugPrint('[ResilNet] sealed fan-out to ${peer.id} failed: $e');
@@ -1621,20 +1747,37 @@ AnnouncementBoard? boardById(String id) {
     return deleted;
   }
 
-  /// Emergency wipe: chats, peers, RSA + Nostr identity → re-onboard.
+  /// Emergency wipe covers:
+  /// - SQLite messages/peers/acks, session/system lines, notices/boards/favorites prefs
+  /// - board private keys in secure storage, RSA identity (regenerated)
+  /// - Rust offline Nostr queue (dropped, not flushed) + ChunkArq caches
+  /// - temp voice files (`resilnet_voice_*`, `resilnet_play_*`)
+  /// - Nostr identity restart; radios stopped first
   /// Does not restore plaintext rooms; new keys only.
   Future<void> panicWipeLocalIdentity() async {
     debugPrint('[ResilNet] panicWipeLocalIdentity start');
     await _stopRadios();
 
+    // Drop queued sealed envelopes BEFORE any post-wipe Nostr flush.
     try {
-      _mesh?.removeListener(notifyListeners);
+      final n = await resilnet.clearOfflineQueuePackets();
+      debugPrint('[ResilNet] panicWipe cleared offline queue n=$n');
+    } catch (e) {
+      debugPrint('[ResilNet] panicWipe clearOfflineQueue failed: $e');
+    }
+    await _deleteTempVoiceFiles();
+
+    try {
+      final meshCb = _onMeshChanged;
+      if (meshCb != null) _mesh?.removeListener(meshCb);
     } catch (_) {}
     try {
-      _ackHandler.removeListener(notifyListeners);
+      final ackH = _onAckHandlerChanged;
+      if (ackH != null) _ackHandler.removeListener(ackH);
     } catch (_) {}
     try {
-      _ackQueue?.removeListener(notifyListeners);
+      final ackQ = _onAckQueueChanged;
+      if (ackQ != null) _ackQueue?.removeListener(ackQ);
       _ackQueue?.dispose();
     } catch (_) {}
 
@@ -1646,6 +1789,7 @@ AnnouncementBoard? boardById(String id) {
     _favoritePeerIds.clear();
     _favoriteNearbyNotified.clear();
     _favoriteAreaNotified.clear();
+    _bumpChatData();
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_kNotices);
@@ -1676,7 +1820,11 @@ AnnouncementBoard? boardById(String id) {
       database: db,
       myUserId: crypto.myUserId,
     );
-    _ackHandler.addListener(notifyListeners);
+    _onAckHandlerChanged = () {
+      _bumpChatData();
+      notifyListeners();
+    };
+    _ackHandler.addListener(_onAckHandlerChanged!);
 
     _ackQueue = AckQueueManager(
       database: db,
@@ -1686,19 +1834,24 @@ AnnouncementBoard? boardById(String id) {
       sendAckBatch: _sendAckBatch,
     );
     await _ackQueue!.restoreFromDatabase();
-    _ackQueue!.addListener(notifyListeners);
+    _onAckQueueChanged = notifyListeners;
+    _ackQueue!.addListener(_onAckQueueChanged!);
 
     _mesh = BleMeshService(
       database: db,
       myUserId: crypto.myUserId,
+      crypto: crypto,
       resilnet: resilnet,
       ackQueue: _ackQueue,
       ackHandler: _ackHandler,
       shouldPersistHistory: () => _saveMessageHistory,
       onEphemeralMessage: _rememberSessionMessage,
     );
-    _mesh!.addListener(notifyListeners);
-    _mesh!.addListener(_onMeshPeersChanged);
+    _onMeshChanged = () {
+      _onMeshPeersChanged();
+      _scheduleMeshUiNotify();
+    };
+    _mesh!.addListener(_onMeshChanged!);
 
     try {
       await _nostr?.wipeIdentityAndRestart();
@@ -1711,13 +1864,35 @@ AnnouncementBoard? boardById(String id) {
     debugPrint('[ResilNet] panicWipeLocalIdentity done id=${crypto.myUserId}');
   }
 
+  Future<void> _deleteTempVoiceFiles() async {
+    try {
+      final dir = await getTemporaryDirectory();
+      await for (final entity in dir.list()) {
+        final name = entity.uri.pathSegments.isNotEmpty
+            ? entity.uri.pathSegments.last
+            : '';
+        if (name.startsWith('resilnet_voice_') ||
+            name.startsWith('resilnet_play_')) {
+          try {
+            await entity.delete();
+          } catch (_) {}
+        }
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] temp voice wipe failed: $e');
+    }
+  }
+
   /// ส่งข้อความออกผ่าน Rust Hybrid Router แล้ว fan-out ตาม transports
   ///
   /// Privacy: [msg] must already be sealed (RSA-OAEP + AES-GCM). The router and
   /// transports only see opaque bytes — plaintext must not be persisted in [msg.content].
   /// Exception: [PayloadKinds.presence] carries a truncated geohash cell for Area UX
   /// and is never written to chat history.
-  Future<RoutedPacketDto> routeOutbound(ChatMessage msg) async {
+  Future<RoutedPacketDto> routeOutbound(
+    ChatMessage msg, {
+    bool internetOnly = false,
+  }) async {
     final isPresence = msg.payloadKind == PayloadKinds.presence;
     final piggyback = isPresence
         ? const <AckEntry>[]
@@ -1742,11 +1917,23 @@ AnnouncementBoard? boardById(String id) {
       return routed;
     }
 
-    final transports = _applyBridgePolicy(
+    var transports = _applyBridgePolicy(
       routed.transports.isNotEmpty
           ? routed.transports
           : <TransportTypeDto>[routed.transport],
     );
+    if (internetOnly) {
+      transports = transports
+          .where(
+            (t) =>
+                t == TransportTypeDto.nostr ||
+                t == TransportTypeDto.offlineQueue,
+          )
+          .toList();
+      if (transports.isEmpty) {
+        transports = const [TransportTypeDto.nostr];
+      }
+    }
 
     var markedSent = false;
     for (final transport in transports) {
@@ -1772,6 +1959,7 @@ AnnouncementBoard? boardById(String id) {
           }
         case TransportTypeDto.bluetoothMesh:
         case TransportTypeDto.loRa:
+          if (internetOnly) continue;
           final outgoing = msg.copyWith(
             ttl: routed.packet.ttl,
             status: markedSent ? MessageStatus.sent : MessageStatus.pending,
@@ -1793,14 +1981,18 @@ AnnouncementBoard? boardById(String id) {
           }
         case TransportTypeDto.offlineQueue:
           if (_saveMessageHistory) {
-            await db.saveMessage(msg.copyWith(status: MessageStatus.pending));
-            if (resilnet.isGatewayWifiActive) {
-              unawaited(_udp?.pumpSendQueue());
-            }
+            await db.saveMessage(
+              msg.copyWith(
+                ttl: routed.packet.ttl,
+                status: MessageStatus.pending,
+              ),
+            );
           } else {
-            // Rust offline queue still holds opaque bytes; no SQLite history.
             await persistChatMessage(
-              msg.copyWith(status: MessageStatus.pending),
+              msg.copyWith(
+                ttl: routed.packet.ttl,
+                status: MessageStatus.pending,
+              ),
             );
           }
       }
@@ -1847,10 +2039,17 @@ AnnouncementBoard? boardById(String id) {
       final msg = meta.message;
       if (msg == null) return;
 
-      await mesh.applyIncomingFromRouter(msg);
+      final accepted = await mesh.applyIncomingFromRouter(msg);
+      if (!accepted) return;
+      if (msg.payloadKind != PayloadKinds.presence) {
+        _bumpChatData();
+      }
       if (msg.payloadKind == PayloadKinds.boardKeyRequest ||
           msg.payloadKind == PayloadKinds.boardKeyGrant) {
         unawaited(_handleBoardKeyControlMessage(msg));
+      }
+      if (msg.payloadKind == PayloadKinds.boardPost) {
+        unawaited(_handleBoardPostSyncMessage(msg));
       }
       notifyListeners();
     } catch (e, st) {
@@ -1871,6 +2070,7 @@ AnnouncementBoard? boardById(String id) {
         at: now,
       );
     }
+    _bumpChatData();
     notifyListeners();
   }
 
@@ -2015,6 +2215,7 @@ AnnouncementBoard? boardById(String id) {
 
   @override
   void dispose() {
+    _meshUiNotifyDebounce?.cancel();
     screenshots.removeListener(_onScreenshot);
     screenshots.dispose();
     _retentionTimer?.cancel();
@@ -2022,6 +2223,29 @@ AnnouncementBoard? boardById(String id) {
     unawaited(_geoPresenceSub?.cancel());
     unawaited(_clearNostrGeoSubscription());
     _rustIncomingSub?.cancel();
+
+    final meshCb = _onMeshChanged;
+    if (meshCb != null) _mesh?.removeListener(meshCb);
+    final espCb = _onEsp32Changed;
+    if (espCb != null) _esp32?.removeListener(espCb);
+    final udpCb = _onUdpChanged;
+    if (udpCb != null) _udp?.removeListener(udpCb);
+    final nostrCb = _onNostrChanged;
+    if (nostrCb != null) _nostr?.removeListener(nostrCb);
+    final ackH = _onAckHandlerChanged;
+    if (ackH != null) {
+      try {
+        _ackHandler.removeListener(ackH);
+      } catch (_) {}
+    }
+    final ackQ = _onAckQueueChanged;
+    if (ackQ != null) _ackQueue?.removeListener(ackQ);
+    final flushCb = _onResilnetFlush;
+    if (flushCb != null) resilnet.removeListener(flushCb);
+    final uiCb = _onResilnetUi;
+    if (uiCb != null) resilnet.removeListener(uiCb);
+
+    unawaited(_stopRadios());
     _ackQueue?.dispose();
     _udp?.dispose();
     resilnet.dispose();

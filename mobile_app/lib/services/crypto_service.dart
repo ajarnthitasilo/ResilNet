@@ -83,7 +83,14 @@ class CryptoService {
     return v;
   }
 
-  String get myUserId => _publicKeyHash(publicKeyPem);
+  String get myUserId => publicKeyHash(publicKeyPem);
+
+  /// Hash = SHA-256(publicKeyPem) encoded as base64Url (no padding).
+  /// Same algorithm used for `myUserId` and QR `id`.
+  static String publicKeyHash(String publicPem) {
+    final digest = crypto.sha256.convert(utf8.encode(publicPem));
+    return base64Url.encode(digest.bytes).replaceAll('=', '');
+  }
 
   /// Build QR/identity JSON data for in-person key exchange.
   ///
@@ -129,12 +136,6 @@ class CryptoService {
       );
     }
     return b.toString().trimRight();
-  }
-
-  /// Hash = SHA-256(publicKeyPem) encoded as base64Url (no padding).
-  String _publicKeyHash(String publicPem) {
-    final digest = crypto.sha256.convert(utf8.encode(publicPem));
-    return base64Url.encode(digest.bytes).replaceAll('=', '');
   }
 
   ({String encryptedPayload, String encryptedKey, String signature})
@@ -256,7 +257,7 @@ class CryptoService {
     return (
       publicPem: publicPem,
       privatePem: privatePem,
-      keyId: _publicKeyHash(publicPem),
+      keyId: publicKeyHash(publicPem),
     );
   }
 
@@ -281,6 +282,43 @@ class CryptoService {
       timestamp: timestamp,
     );
     return signer.verify64(input, signature);
+  }
+
+  /// Verify a sealed inbound envelope. Returns false on missing/invalid signature.
+  bool verifyInboundEnvelope({
+    required String? signature,
+    required String senderPublicPem,
+    required String encryptedPayload,
+    required String encryptedKey,
+    required String senderId,
+    required String receiverId,
+    required int timestamp,
+  }) {
+    final sig = signature?.trim() ?? '';
+    if (sig.isEmpty || senderPublicPem.trim().isEmpty) return false;
+    try {
+      return verifySignature(
+        signature: sig,
+        senderPublicPem: senderPublicPem,
+        encryptedPayload: encryptedPayload,
+        encryptedKey: encryptedKey,
+        senderId: senderId,
+        receiverId: receiverId,
+        timestamp: timestamp,
+      );
+    } catch (e) {
+      debugPrint('[Crypto] verifyInboundEnvelope failed: $e');
+      return false;
+    }
+  }
+
+  /// In-memory keys for unit tests (skips secure storage).
+  void useInMemoryKeys({
+    required String publicPem,
+    required String privatePem,
+  }) {
+    _publicPem = publicPem;
+    _privatePem = privatePem;
   }
 
   String _signPackage({

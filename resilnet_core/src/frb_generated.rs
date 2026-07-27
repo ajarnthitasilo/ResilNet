@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
                     default_rust_auto_opaque = RustAutoOpaqueMoi,
                 );
                 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-                pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1554104074;
+                pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 760302760;
             
 
 // Section: executor
@@ -63,6 +63,15 @@ let api_chunk_index = <u8>::sse_decode(&mut deserializer);deserializer.end();
                 transform_result_sse::<_, String>((move || {
                      let output_ok = crate::api::router_api::clear_chunk_stream(api_msg_id)?;   Ok(output_ok)
                 })()) })
+            }fn wire__crate__api__router_api__clear_offline_queue_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
+                FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "clear_offline_queue", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, String>((move || async move {
+                         let output_ok = crate::api::router_api::clear_offline_queue().await?;   Ok(output_ok)
+                    })().await)
+                } })
             }fn wire__crate__api__nostr_api__flush_offline_queue_to_nostr_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
                 FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "flush_offline_queue_to_nostr", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
             let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
@@ -524,28 +533,29 @@ return crate::api::dto::RouterConfigDto{dedup_capacity: var_dedupCapacity, dedup
                 )  {
                     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
                     match func_id {
-                        3 => wire__crate__api__nostr_api__flush_offline_queue_to_nostr_impl(port, ptr, rust_vec_len, data_len),
-4 => wire__crate__api__router_api__get_network_status_impl(port, ptr, rust_vec_len, data_len),
-5 => wire__crate__api__nostr_api__get_nostr_status_impl(port, ptr, rust_vec_len, data_len),
-6 => wire__crate__api__nostr_api__ingest_nostr_envelope_impl(port, ptr, rust_vec_len, data_len),
-7 => wire__crate__api__router_api__ingest_packet_impl(port, ptr, rust_vec_len, data_len),
-8 => wire__crate__api__nostr_api__init_nostr_impl(port, ptr, rust_vec_len, data_len),
-9 => wire__crate__api__router_api__init_resilnet_core_impl(port, ptr, rust_vec_len, data_len),
-10 => wire__crate__api__router_api__init_router_impl(port, ptr, rust_vec_len, data_len),
-12 => wire__crate__api__nostr_api__nostr_publish_impl(port, ptr, rust_vec_len, data_len),
-13 => wire__crate__api__nostr_api__nostr_publish_geo_presence_impl(port, ptr, rust_vec_len, data_len),
-14 => wire__crate__api__nostr_api__nostr_publish_packet_impl(port, ptr, rust_vec_len, data_len),
-15 => wire__crate__api__nostr_api__nostr_reconnect_impl(port, ptr, rust_vec_len, data_len),
-16 => wire__crate__api__nostr_api__nostr_set_geo_presence_filter_impl(port, ptr, rust_vec_len, data_len),
-17 => wire__crate__api__nostr_api__nostr_subscribe_geo_presence_impl(port, ptr, rust_vec_len, data_len),
-18 => wire__crate__api__router_api__offline_queue_len_impl(port, ptr, rust_vec_len, data_len),
-19 => wire__crate__api__dto__payload_tag_dto_as_u8_impl(port, ptr, rust_vec_len, data_len),
-20 => wire__crate__api__dto__payload_tag_dto_default_impl(port, ptr, rust_vec_len, data_len),
-21 => wire__crate__api__dto__payload_tag_dto_from_u8_impl(port, ptr, rust_vec_len, data_len),
-23 => wire__crate__api__router_api__route_packet_impl(port, ptr, rust_vec_len, data_len),
-24 => wire__crate__api__dto__router_config_dto_default_impl(port, ptr, rust_vec_len, data_len),
-25 => wire__crate__api__router_api__subscribe_incoming_messages_impl(port, ptr, rust_vec_len, data_len),
-26 => wire__crate__api__router_api__update_network_status_impl(port, ptr, rust_vec_len, data_len),
+                        3 => wire__crate__api__router_api__clear_offline_queue_impl(port, ptr, rust_vec_len, data_len),
+4 => wire__crate__api__nostr_api__flush_offline_queue_to_nostr_impl(port, ptr, rust_vec_len, data_len),
+5 => wire__crate__api__router_api__get_network_status_impl(port, ptr, rust_vec_len, data_len),
+6 => wire__crate__api__nostr_api__get_nostr_status_impl(port, ptr, rust_vec_len, data_len),
+7 => wire__crate__api__nostr_api__ingest_nostr_envelope_impl(port, ptr, rust_vec_len, data_len),
+8 => wire__crate__api__router_api__ingest_packet_impl(port, ptr, rust_vec_len, data_len),
+9 => wire__crate__api__nostr_api__init_nostr_impl(port, ptr, rust_vec_len, data_len),
+10 => wire__crate__api__router_api__init_resilnet_core_impl(port, ptr, rust_vec_len, data_len),
+11 => wire__crate__api__router_api__init_router_impl(port, ptr, rust_vec_len, data_len),
+13 => wire__crate__api__nostr_api__nostr_publish_impl(port, ptr, rust_vec_len, data_len),
+14 => wire__crate__api__nostr_api__nostr_publish_geo_presence_impl(port, ptr, rust_vec_len, data_len),
+15 => wire__crate__api__nostr_api__nostr_publish_packet_impl(port, ptr, rust_vec_len, data_len),
+16 => wire__crate__api__nostr_api__nostr_reconnect_impl(port, ptr, rust_vec_len, data_len),
+17 => wire__crate__api__nostr_api__nostr_set_geo_presence_filter_impl(port, ptr, rust_vec_len, data_len),
+18 => wire__crate__api__nostr_api__nostr_subscribe_geo_presence_impl(port, ptr, rust_vec_len, data_len),
+19 => wire__crate__api__router_api__offline_queue_len_impl(port, ptr, rust_vec_len, data_len),
+20 => wire__crate__api__dto__payload_tag_dto_as_u8_impl(port, ptr, rust_vec_len, data_len),
+21 => wire__crate__api__dto__payload_tag_dto_default_impl(port, ptr, rust_vec_len, data_len),
+22 => wire__crate__api__dto__payload_tag_dto_from_u8_impl(port, ptr, rust_vec_len, data_len),
+24 => wire__crate__api__router_api__route_packet_impl(port, ptr, rust_vec_len, data_len),
+25 => wire__crate__api__dto__router_config_dto_default_impl(port, ptr, rust_vec_len, data_len),
+26 => wire__crate__api__router_api__subscribe_incoming_messages_impl(port, ptr, rust_vec_len, data_len),
+27 => wire__crate__api__router_api__update_network_status_impl(port, ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
                 }
@@ -560,8 +570,8 @@ return crate::api::dto::RouterConfigDto{dedup_capacity: var_dedupCapacity, dedup
                     match func_id {
                         1 => wire__crate__api__router_api__check_chunk_dedup_impl(ptr, rust_vec_len, data_len),
 2 => wire__crate__api__router_api__clear_chunk_stream_impl(ptr, rust_vec_len, data_len),
-11 => wire__crate__api__router_api__is_router_initialized_impl(ptr, rust_vec_len, data_len),
-22 => wire__crate__api__router_api__payload_tag_from_u8_impl(ptr, rust_vec_len, data_len),
+12 => wire__crate__api__router_api__is_router_initialized_impl(ptr, rust_vec_len, data_len),
+23 => wire__crate__api__router_api__payload_tag_from_u8_impl(ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
                 }

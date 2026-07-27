@@ -111,6 +111,11 @@ pub(crate) async fn drain_offline_queue_async() -> Result<Vec<MessagePacket>, St
     Ok(handle.drain_offline_queue().await)
 }
 
+pub(crate) async fn clear_offline_queue_async() -> Result<usize, String> {
+    let handle = get_handle()?;
+    Ok(handle.clear_offline_queue().await)
+}
+
 pub(crate) fn update_network_status_mapped(
     is_internet_available: bool,
     active_ble_peers_count: u32,

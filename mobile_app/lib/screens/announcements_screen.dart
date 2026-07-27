@@ -1,10 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/announcement_board.dart';
+import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
 
 Future<void> openAnnouncementsScreen(BuildContext context) {
@@ -23,14 +29,19 @@ class AnnouncementsScreen extends StatefulWidget {
 class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   String? _selectedBoardId;
   final _compose = TextEditingController();
+  final _audio = AudioRecorderService();
   AnnouncementPostMode _mode = AnnouncementPostMode.locked;
   bool _posting = false;
+  bool _recordingVoice = false;
 
   @override
   void dispose() {
     _compose.dispose();
+    _audio.dispose();
     super.dispose();
   }
+
+  bool _hasInternet(AppState s) => s.isCloudOnline;
 
   Future<void> _followInvite(AppState s) async {
     final l10n = context.l10n;
@@ -95,11 +106,23 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     setState(() => _selectedBoardId = board.id);
   }
 
-  Future<void> _post(AppState s, AnnouncementBoard board) async {
+  Future<void> _postBody(
+    AppState s,
+    AnnouncementBoard board,
+    String body,
+  ) async {
     if (_posting) return;
-    final text = _compose.text.trim();
+    final text = body.trim();
     if (text.isEmpty) return;
     final l10n = context.l10n;
+    final isMedia = AnnouncementMedia.isMedia(text);
+
+    if (isMedia && !_hasInternet(s)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.announceNeedInternet)),
+      );
+      return;
+    }
 
     var mode = _mode;
     if (mode == AnnouncementPostMode.open && !board.allowOpen) {
@@ -110,7 +133,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       mode = AnnouncementPostMode.open;
     }
 
-    if (mode == AnnouncementPostMode.open) {
+    if (mode == AnnouncementPostMode.open && !isMedia) {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -122,7 +145,9 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
               child: Text(l10n.cancel),
             ),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: Colors.orangeAccent),
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.orangeAccent,
+              ),
               onPressed: () => Navigator.pop(ctx, true),
               child: Text(l10n.announcePostAction),
             ),
@@ -139,9 +164,78 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         text: text,
         mode: mode,
       );
-      if (post != null) _compose.clear();
+      if (post != null) {
+        _compose.clear();
+      } else if (isMedia && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.announceNeedInternet)),
+        );
+      }
     } finally {
       if (mounted) setState(() => _posting = false);
+    }
+  }
+
+  Future<void> _post(AppState s, AnnouncementBoard board) =>
+      _postBody(s, board, _compose.text);
+
+  Future<void> _attachImage(AppState s, AnnouncementBoard board) async {
+    if (_posting || _recordingVoice) return;
+    if (!_hasInternet(s)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.announceNeedInternet)),
+      );
+      return;
+    }
+    final file = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1280,
+      imageQuality: 75,
+    );
+    if (file == null) return;
+    final bytes = await File(file.path).readAsBytes();
+    if (bytes.length > 180000) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.announceImageTooLarge)),
+      );
+      return;
+    }
+    final payload = AnnouncementMedia.encodeImage(base64Encode(bytes));
+    await _postBody(s, board, payload);
+  }
+
+  Future<void> _toggleVoice(AppState s, AnnouncementBoard board) async {
+    if (_posting) return;
+    if (_recordingVoice) {
+      final opus = await _audio.stopRecording();
+      if (mounted) setState(() => _recordingVoice = false);
+      if (opus == null || opus.isEmpty) return;
+      if (!_hasInternet(s)) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.announceNeedInternet)),
+        );
+        return;
+      }
+      final payload = AnnouncementMedia.encodeAudio(base64Encode(opus));
+      await _postBody(s, board, payload);
+      return;
+    }
+    if (!_hasInternet(s)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.announceNeedInternet)),
+      );
+      return;
+    }
+    try {
+      await _audio.startRecording();
+      if (mounted) setState(() => _recordingVoice = true);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.announceVoiceFailed('$e'))),
+      );
     }
   }
 
@@ -151,8 +245,58 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(ok ? l10n.announceRequestSent : l10n.announceRequestFailed),
+        content: Text(
+          ok ? l10n.announceRequestSent : l10n.announceRequestFailed,
+        ),
       ),
+    );
+  }
+
+  Widget _buildPostBody(AppState s, AnnouncementPost p, String? plain) {
+    final l10n = context.l10n;
+    if (plain == null) {
+      return Text(
+        l10n.announceLockedPlaceholder,
+        style: const TextStyle(
+          color: Colors.white54,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+    final media = AnnouncementMedia.parse(plain);
+    if (media == null) {
+      return Text(plain, style: const TextStyle(color: Colors.white));
+    }
+    if (media.kind == 'image') {
+      try {
+        final bytes = base64Decode(media.data);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.announceImageLabel, style: const TextStyle(fontSize: 12)),
+            const SizedBox(height: 6),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.memory(
+                Uint8List.fromList(bytes),
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => Text(l10n.announceImageLabel),
+              ),
+            ),
+          ],
+        );
+      } catch (_) {
+        return Text(l10n.announceImageLabel);
+      }
+    }
+    return FilledButton.tonalIcon(
+      onPressed: () async {
+        try {
+          await _audio.playBytes(Uint8List.fromList(base64Decode(media.data)));
+        } catch (_) {}
+      },
+      icon: const Icon(Icons.play_arrow),
+      label: Text(l10n.announcePlayVoice),
     );
   }
 
@@ -164,7 +308,8 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     final boardId = _selectedBoardId ??
         (boards.isNotEmpty ? boards.first.id : null);
     final board = boardId == null ? null : s.boardById(boardId);
-    final posts = boardId == null ? const <AnnouncementPost>[] : s.postsForBoard(boardId);
+    final posts =
+        boardId == null ? const <AnnouncementPost>[] : s.postsForBoard(boardId);
     final pending = s.pendingBoardKeyRequests;
 
     return Scaffold(
@@ -372,17 +517,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(
-                                    plain ?? l10n.announceLockedPlaceholder,
-                                    style: TextStyle(
-                                      color: plain == null
-                                          ? Colors.white54
-                                          : Colors.white,
-                                      fontStyle: plain == null
-                                          ? FontStyle.italic
-                                          : FontStyle.normal,
-                                    ),
-                                  ),
+                                  _buildPostBody(s, p, plain),
                                   if (plain == null &&
                                       !p.isOpen &&
                                       board.ownerId != s.myUserId &&
@@ -406,12 +541,14 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Row(
                               children: [
                                 ChoiceChip(
                                   label: Text(l10n.announceModeLocked),
-                                  selected: _mode == AnnouncementPostMode.locked,
+                                  selected:
+                                      _mode == AnnouncementPostMode.locked,
                                   onSelected: board.allowLocked
                                       ? (_) => setState(
                                             () => _mode =
@@ -425,19 +562,52 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                                   selected: _mode == AnnouncementPostMode.open,
                                   onSelected: board.allowOpen
                                       ? (_) => setState(
-                                            () =>
-                                                _mode = AnnouncementPostMode.open,
+                                            () => _mode =
+                                                AnnouncementPostMode.open,
                                           )
                                       : null,
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 4),
+                            Text(
+                              l10n.announceMediaInternetOnly,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(color: Colors.white38),
+                            ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
+                                IconButton(
+                                  tooltip: l10n.chatAttachImage,
+                                  onPressed: _posting || _recordingVoice
+                                      ? null
+                                      : () => unawaited(_attachImage(s, board)),
+                                  icon: const Icon(Icons.image_outlined),
+                                ),
+                                IconButton(
+                                  tooltip: _recordingVoice
+                                      ? l10n.voicePttRecording
+                                      : l10n.voicePttHold,
+                                  onPressed: _posting
+                                      ? null
+                                      : () =>
+                                          unawaited(_toggleVoice(s, board)),
+                                  icon: Icon(
+                                    _recordingVoice
+                                        ? Icons.mic
+                                        : Icons.mic_none_outlined,
+                                    color: _recordingVoice
+                                        ? Colors.redAccent
+                                        : null,
+                                  ),
+                                ),
                                 Expanded(
                                   child: TextField(
                                     controller: _compose,
+                                    enabled: !_posting && !_recordingVoice,
                                     minLines: 1,
                                     maxLines: 3,
                                     decoration: InputDecoration(
@@ -447,9 +617,9 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                                 ),
                                 const SizedBox(width: 8),
                                 IconButton.filled(
-                                  onPressed: _posting
+                                  onPressed: _posting || _recordingVoice
                                       ? null
-                                      : () => _post(s, board),
+                                      : () => unawaited(_post(s, board)),
                                   icon: _posting
                                       ? const SizedBox(
                                           width: 18,

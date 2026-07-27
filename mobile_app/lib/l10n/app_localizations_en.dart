@@ -480,7 +480,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatNeedPeerKey =>
-      'Scan a peer QR or paste their public key first';
+      'Scan this peer\'s QR first (verified public key required)';
+
+  @override
+  String get chatPeerKeyMismatch =>
+      'Stored public key does not match this peer id';
 
   @override
   String chatVoiceFailed(String error) {
@@ -518,6 +522,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get chatEmptyThread =>
       'No messages yet\nType below to send over the mesh';
+
+  @override
+  String chatLoadFailed(String error) {
+    return 'Could not load conversation: $error';
+  }
 
   @override
   String get chatEmojiTooltip => 'Emoji';
@@ -568,6 +577,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get qrInvalid => 'Scan failed: invalid QR';
+
+  @override
+  String get qrIdKeyMismatch => 'QR rejected: id does not match public key';
 
   @override
   String get qrCameraNotReady => 'Camera not ready';
@@ -672,10 +684,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messageExpiryTitle => 'expires in';
 
   @override
-  String get voicePttHold => 'Hold to record voice (PTT)';
+  String get voicePttHold => 'Tap mic to record';
 
   @override
-  String get voicePttRelease => 'Release to send voice note';
+  String get voicePttRelease => 'Tap again to send voice note';
+
+  @override
+  String get voicePttRecording => 'Recording… tap to send';
 
   @override
   String get identityDisplayNameTitle => 'Display name';
@@ -968,6 +983,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get announceComposeHint => 'Write an announcement…';
+
+  @override
+  String get announceMediaInternetOnly =>
+      'Photo/voice announcements send over the internet (not BLE)';
+
+  @override
+  String get announceNeedInternet =>
+      'Connect to the internet to send photo or voice announcements';
+
+  @override
+  String announceVoiceFailed(String error) {
+    return 'Could not record voice: $error';
+  }
+
+  @override
+  String get announceImageTooLarge => 'Image is too large (max ~180 KB)';
+
+  @override
+  String get announcePlayVoice => 'Play voice note';
+
+  @override
+  String get announceImageLabel => '📷 Image';
+
+  @override
+  String get announceAudioLabel => '🎤 Voice note';
 
   @override
   String get announceModeLocked => 'Locked';

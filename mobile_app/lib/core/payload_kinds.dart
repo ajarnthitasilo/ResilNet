@@ -26,11 +26,15 @@ class PayloadKinds {
   /// Owner grants wrapped board private key (Prompt C).
   static const boardKeyGrant = 'board_key_grant';
 
+  /// Locked announcement post ciphertext sync (sealed 1:1 fan-out).
+  static const boardPost = 'board_post';
+
   static bool isChatVisible(String? kind) {
     final k = (kind ?? text).trim();
     return k != presence &&
         k != boardKeyRequest &&
-        k != boardKeyGrant;
+        k != boardKeyGrant &&
+        k != boardPost;
   }
 
   static bool isSystemLine(String? kind) => (kind ?? '') == system;

@@ -15,6 +15,7 @@ import '../l10n/l10n_ext.dart';
 import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
 import '../services/audio_recorder_service.dart';
+import '../services/crypto_service.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
@@ -30,12 +31,19 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _text = TextEditingController();
-  final _peerPublicPem = TextEditingController();
   final _focusNode = FocusNode();
   final _uuid = const Uuid();
   final _audio = AudioRecorderService();
   bool _showEmojiPicker = false;
   bool _recordingVoice = false;
+
+  List<ChatMessage> _messages = const [];
+  final Map<String, String> _plainById = {};
+  bool _loading = true;
+  String? _loadError;
+  int _boundEpoch = -1;
+  bool _reloadQueued = false;
+  AppState? _appState;
 
   static const _pickerBg = Color(0xFF1A2332);
   static const _pickerAccent = Color(0xFF10B981);
@@ -128,26 +136,67 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      unawaited(context.read<AppState>().markConversationRead(widget.peerId));
+      final s = context.read<AppState>();
+      _appState = s;
+      s.addListener(_onAppState);
+      unawaited(s.markConversationRead(widget.peerId));
+      unawaited(_reloadMessages(force: true));
     });
   }
 
   @override
   void dispose() {
+    _appState?.removeListener(_onAppState);
     _text.dispose();
-    _peerPublicPem.dispose();
     _focusNode.dispose();
     _audio.dispose();
     super.dispose();
   }
 
-  Future<String?> _resolveReceiverPub(AppState s) async {
-    var receiverPub = _peerPublicPem.text.trim();
-    if (receiverPub.isEmpty) {
-      final peer = await s.db.getPeer(widget.peerId);
-      receiverPub = peer?.publicKey.trim() ?? '';
-      if (receiverPub.isNotEmpty) _peerPublicPem.text = receiverPub;
+  void _onAppState() {
+    if (!mounted) return;
+    final epoch = context.read<AppState>().chatDataEpoch;
+    if (epoch == _boundEpoch) return;
+    unawaited(_reloadMessages());
+  }
+
+  Future<void> _reloadMessages({bool force = false}) async {
+    if (_reloadQueued && !force) return;
+    _reloadQueued = true;
+    try {
+      final s = context.read<AppState>();
+      final epoch = s.chatDataEpoch;
+      if (!force && epoch == _boundEpoch) return;
+      final l10n = context.l10n;
+      final items = await s.messagesForConversation(s.myUserId, widget.peerId);
+      if (!mounted) return;
+      final plains = <String, String>{};
+      for (final m in items) {
+        plains[m.id] = _tryDecrypt(s, l10n, m);
+      }
+      setState(() {
+        _messages = items;
+        _plainById
+          ..clear()
+          ..addAll(plains);
+        _boundEpoch = epoch;
+        _loading = false;
+        _loadError = null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _loadError = '$e';
+      });
+    } finally {
+      _reloadQueued = false;
     }
+  }
+
+  Future<String?> _resolveReceiverPub(AppState s) async {
+    final peer = await s.db.getPeer(widget.peerId);
+    final receiverPub = peer?.publicKey.trim() ?? '';
     if (receiverPub.isEmpty) {
       if (!mounted) return null;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -155,7 +204,17 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       return null;
     }
-    return receiverPub;
+    final bound = CryptoService.publicKeyHash(
+      CryptoService.normalizePublicKey(receiverPub),
+    );
+    if (bound != widget.peerId) {
+      if (!mounted) return null;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chatPeerKeyMismatch)),
+      );
+      return null;
+    }
+    return CryptoService.normalizePublicKey(receiverPub);
   }
 
   Future<void> _startVoiceNote() async {
@@ -422,6 +481,123 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  Widget _buildThread(
+    BuildContext context,
+    AppState s,
+    AppLocalizations l10n,
+    String myId,
+  ) {
+    if (_loading && _messages.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_loadError != null && _messages.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.chatLoadFailed(_loadError!),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.8),
+                ),
+              ),
+              const SizedBox(height: 12),
+              FilledButton(
+                onPressed: () => unawaited(_reloadMessages(force: true)),
+                child: Text(l10n.retry),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (_messages.isEmpty) {
+      return Center(
+        child: Text(
+          l10n.chatEmptyThread,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.white.withValues(alpha: 0.7),
+            height: 1.4,
+          ),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(14, 4, 14, 14),
+      itemCount: _messages.length,
+      itemBuilder: (context, i) {
+        final m = _messages[i];
+        final isMe = m.senderId == myId;
+        final text = _plainById[m.id] ?? '…';
+        return Align(
+          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 340),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (m.payloadKind == PayloadKinds.areaPublic) ...[
+                      Text(
+                        l10n.areaPublicBadge,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Colors.tealAccent.withValues(alpha: 0.9),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                    ],
+                    Text(
+                      text,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    if (m.payloadKind == 'audio') ...[
+                      const SizedBox(height: 8),
+                      FilledButton.tonalIcon(
+                        onPressed: () => _playVoiceNote(s, m),
+                        icon: const Icon(Icons.play_arrow),
+                        label: Text(l10n.chatPlayVoice),
+                      ),
+                    ],
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isMe) ...[
+                          _statusTicks(m.status),
+                          const SizedBox(width: 6),
+                        ],
+                        Text(
+                          _statusLabel(l10n, m.status),
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.65),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'TTL ${m.ttl}',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.45),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
@@ -439,15 +615,7 @@ class _ChatScreenState extends State<ChatScreen> {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const QrScannerScreen()),
               );
-              if (!context.mounted) return;
-              final peer = await context.read<AppState>().db.getPeer(
-                widget.peerId,
-              );
-              if (!context.mounted) return;
-              if (peer?.publicKey.isNotEmpty == true) {
-                _peerPublicPem.text = peer!.publicKey;
-                setState(() {});
-              }
+              if (mounted) setState(() {});
             },
             icon: const Icon(Icons.qr_code_scanner),
           ),
@@ -511,129 +679,7 @@ class _ChatScreenState extends State<ChatScreen> {
         decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
         child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: TextField(
-              controller: _peerPublicPem,
-              minLines: 2,
-              maxLines: 4,
-              decoration: InputDecoration(
-                labelText: l10n.chatReceiverPemLabel,
-                hintText: l10n.chatReceiverPemHint,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListenableBuilder(
-              listenable: s,
-              builder: (context, _) {
-                return FutureBuilder<List<ChatMessage>>(
-                  future: s.messagesForConversation(myId, widget.peerId),
-                  builder: (context, snap) {
-                    final items = snap.data ?? const [];
-                if (items.isEmpty) {
-                  return Center(
-                    child: Text(
-                      l10n.chatEmptyThread,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        height: 1.4,
-                      ),
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(14, 4, 14, 14),
-                  itemCount: items.length,
-                  itemBuilder: (context, i) {
-                    final m = items[i];
-                    final isMe = m.senderId == myId;
-                    final text = _tryDecrypt(s, l10n, m);
-                    return Align(
-                      alignment: isMe
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 340),
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (m.payloadKind == PayloadKinds.areaPublic) ...[
-                                  Text(
-                                    l10n.areaPublicBadge,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(
-                                          color: Colors.tealAccent
-                                              .withValues(alpha: 0.9),
-                                        ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                ],
-                                Text(
-                                  text,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                if (m.payloadKind == 'audio') ...[
-                                  const SizedBox(height: 8),
-                                  FilledButton.tonalIcon(
-                                    onPressed: () => _playVoiceNote(s, m),
-                                    icon: const Icon(Icons.play_arrow),
-                                    label: Text(l10n.chatPlayVoice),
-                                  ),
-                                ],
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (isMe) ...[
-                                      _statusTicks(m.status),
-                                      const SizedBox(width: 6),
-                                    ],
-                                    Text(
-                                      _statusLabel(l10n, m.status),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.65,
-                                            ),
-                                          ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      'TTL ${m.ttl}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.45,
-                                            ),
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-                  },
-                );
-              },
-            ),
-          ),
+          Expanded(child: _buildThread(context, s, l10n, myId)),
           SafeArea(
             top: false,
             child: Column(
@@ -643,36 +689,30 @@ class _ChatScreenState extends State<ChatScreen> {
                   padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
                   child: Row(
                     children: [
-                      Tooltip(
-                        message: _recordingVoice
-                            ? l10n.voicePttRelease
+                      IconButton(
+                        tooltip: _recordingVoice
+                            ? l10n.voicePttRecording
                             : l10n.voicePttHold,
-                        child: GestureDetector(
-                          onLongPressStart: (_) {
-                            if (!_recordingVoice) unawaited(_startVoiceNote());
-                          },
-                          onLongPressEnd: (_) {
-                            if (_recordingVoice) {
-                              unawaited(_stopAndSendVoiceNote());
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Icon(
-                              _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
-                              color: _recordingVoice ? Colors.redAccent : null,
-                            ),
-                          ),
+                        onPressed: () {
+                          if (_recordingVoice) {
+                            unawaited(_stopAndSendVoiceNote());
+                          } else {
+                            unawaited(_startVoiceNote());
+                          }
+                        },
+                        icon: Icon(
+                          _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
+                          color: _recordingVoice ? Colors.redAccent : null,
                         ),
                       ),
                       IconButton(
                         tooltip: l10n.chatAttachImage,
-                        onPressed: _sendImage,
+                        onPressed: _recordingVoice ? null : _sendImage,
                         icon: const Icon(Icons.image_outlined),
                       ),
                       IconButton(
                         tooltip: l10n.chatEmojiTooltip,
-                        onPressed: _toggleEmojiPicker,
+                        onPressed: _recordingVoice ? null : _toggleEmojiPicker,
                         icon: Icon(
                           _showEmojiPicker
                               ? Icons.keyboard_outlined
@@ -684,6 +724,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: TextField(
                           controller: _text,
                           focusNode: _focusNode,
+                          enabled: !_recordingVoice,
                           minLines: 1,
                           maxLines: 4,
                           onTap: () {
@@ -698,7 +739,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       const SizedBox(width: 8),
                       IconButton.filled(
-                        onPressed: _send,
+                        onPressed: _recordingVoice ? null : _send,
                         style: IconButton.styleFrom(
                           backgroundColor: Colors.white.withValues(alpha: 0.12),
                         ),

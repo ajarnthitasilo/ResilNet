@@ -7,8 +7,8 @@ use crate::api::dto::{
 };
 use crate::hybrid_router::DedupDecision;
 use crate::api::state::{
-    get_network_status_mapped, get_handle, ingest_packet_async, init_router_state,
-    offline_queue_len_async, route_packet_async_mapped, set_stream_task,
+    clear_offline_queue_async, get_network_status_mapped, get_handle, ingest_packet_async,
+    init_router_state, offline_queue_len_async, route_packet_async_mapped, set_stream_task,
     update_network_status_mapped,
 };
 use crate::hybrid_router::{RouterError, RouterEvent};
@@ -65,6 +65,13 @@ pub async fn ingest_packet(packet: MessagePacketDto) -> Result<(), String> {
 pub async fn offline_queue_len() -> Result<u32, String> {
     let len = offline_queue_len_async().await?;
     Ok(len as u32)
+}
+
+/// Drop all offline-queue packets without publishing (panic wipe).
+#[frb]
+pub async fn clear_offline_queue() -> Result<u32, String> {
+    let n = clear_offline_queue_async().await?;
+    Ok(n as u32)
 }
 
 /// สร้าง Stream ข้อความเข้าแบบ real-time ไปยัง Flutter UI

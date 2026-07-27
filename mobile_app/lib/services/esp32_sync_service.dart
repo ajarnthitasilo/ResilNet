@@ -6,6 +6,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import '../core/resilnet_protocol.dart';
 import '../models/chat_message.dart';
+import 'crypto_service.dart';
 import 'database_service.dart';
 
 /// บริการซิงก์ข้อมูลกับ ESP32 Data Mule Node
@@ -15,9 +16,11 @@ import 'database_service.dart';
 /// 2) เชื่อมต่ออัตโนมัติเมื่ออยู่ในรัศมี
 /// 3) Handshake ID → Push ข้อความใหม่ → Pull ข้อความที่ขาด → Disconnect
 class Esp32SyncService extends ChangeNotifier {
-  Esp32SyncService({required DatabaseService database}) : _db = database;
+  Esp32SyncService({required DatabaseService database, this.crypto})
+      : _db = database;
 
   final DatabaseService _db;
+  final CryptoService? crypto;
   final _ble = FlutterReactiveBle();
 
   SyncPhase _phase = SyncPhase.idle;
@@ -215,8 +218,43 @@ class Esp32SyncService extends ChangeNotifier {
         continue;
       }
       if (await _db.isMessageDuplicate(mule.id)) continue;
+      if (!await _acceptSignedMule(mule)) continue;
       await _db.saveMuleMessage(mule);
     }
+  }
+
+  Future<bool> _acceptSignedMule(MuleMessage mule) async {
+    final c = crypto;
+    if (c == null) {
+      debugPrint('[Esp32Sync] drop id=${mule.id} — no crypto');
+      return false;
+    }
+    final receiverId = mule.receiverId ?? '';
+    if (receiverId.isEmpty) {
+      debugPrint('[Esp32Sync] drop id=${mule.id} — missing receiver');
+      return false;
+    }
+    final peer = await _db.getPeer(mule.sender);
+    final pub = peer?.publicKey.trim() ?? '';
+    if (pub.isEmpty) {
+      debugPrint('[Esp32Sync] drop unknown sender=${mule.sender} id=${mule.id}');
+      return false;
+    }
+    final ok = c.verifyInboundEnvelope(
+      signature: mule.signature,
+      senderPublicPem: pub,
+      encryptedPayload: mule.payload,
+      encryptedKey: mule.encryptedKey ?? '',
+      senderId: mule.sender,
+      receiverId: receiverId,
+      timestamp: mule.timestamp,
+    );
+    if (!ok) {
+      debugPrint(
+        '[Esp32Sync] drop bad/missing signature id=${mule.id} sender=${mule.sender}',
+      );
+    }
+    return ok;
   }
 
   MuleMessage _toMule(ChatMessage msg) {

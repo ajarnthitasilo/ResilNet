@@ -13,6 +13,7 @@ import '../models/peer.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
 import '../src/rust/api/dto.dart';
+import 'crypto_service.dart';
 import 'database_service.dart';
 import 'resilnet_packet_codec.dart';
 import 'resilnet_service.dart';
@@ -24,6 +25,7 @@ class BleMeshService extends ChangeNotifier {
   BleMeshService({
     required DatabaseService database,
     required this.myUserId,
+    this.crypto,
     this.resilnet,
     this.ackQueue,
     this.ackHandler,
@@ -33,6 +35,7 @@ class BleMeshService extends ChangeNotifier {
         _shouldPersistHistory = shouldPersistHistory ?? (() => true),
         _onEphemeralMessage = onEphemeralMessage;
 
+  final CryptoService? crypto;
   final ResilNetService? resilnet;
   final AckQueueManager? ackQueue;
   final AckHandlerService? ackHandler;
@@ -340,22 +343,28 @@ class BleMeshService extends ChangeNotifier {
     await applyIncomingFromRouter(msg);
   }
 
-  /// บันทึกข้อความที่ผ่าน dedup แล้วจาก Rust router
-  Future<void> applyIncomingFromRouter(ChatMessage msg) async {
+  /// บันทึกข้อความที่ผ่าน dedup แล้วจาก Rust router.
+  /// Returns false when the envelope was rejected (no persist / no UI).
+  Future<bool> applyIncomingFromRouter(ChatMessage msg) async {
     // Legacy village-broadcast product removed — drop quietly (no UI / no crash).
     if (msg.isBroadcast) {
       debugPrint('[BleMesh] drop legacy broadcast id=${msg.id}');
-      return;
+      return false;
     }
 
     // Geohash presence — update peer cell, never surface as chat.
+    // Presence envelopes are intentionally unsigned (mesh UX only).
     if (msg.payloadKind == PayloadKinds.presence) {
       final geo = (msg.content ?? '').trim().toLowerCase();
       if (geo.isNotEmpty) {
         await _db.updatePeerGeohash(msg.senderId, geo);
       }
       notifyListeners();
-      return;
+      return true;
+    }
+
+    if (!await _acceptSignedInbound(msg)) {
+      return false;
     }
 
     final persist = _shouldPersistHistory();
@@ -393,6 +402,39 @@ class BleMeshService extends ChangeNotifier {
       );
     }
     notifyListeners();
+    return true;
+  }
+
+  /// Reject chat/control with missing signature, unknown sender, or bad sig.
+  Future<bool> _acceptSignedInbound(ChatMessage msg) async {
+    final c = crypto;
+    if (c == null) {
+      debugPrint('[BleMesh] drop id=${msg.id} — no crypto for signature check');
+      return false;
+    }
+    final peer = await _db.getPeer(msg.senderId);
+    final pub = peer?.publicKey.trim() ?? '';
+    if (pub.isEmpty) {
+      debugPrint(
+        '[BleMesh] drop unknown sender=${msg.senderId} id=${msg.id}',
+      );
+      return false;
+    }
+    final ok = c.verifyInboundEnvelope(
+      signature: msg.signature,
+      senderPublicPem: pub,
+      encryptedPayload: msg.encryptedPayload,
+      encryptedKey: msg.encryptedKey,
+      senderId: msg.senderId,
+      receiverId: msg.receiverId,
+      timestamp: msg.timestamp,
+    );
+    if (!ok) {
+      debugPrint(
+        '[BleMesh] drop bad/missing signature id=${msg.id} sender=${msg.senderId}',
+      );
+    }
+    return ok;
   }
 
   /// Send a sealed message over BLE immediately (no SQLite pending queue).

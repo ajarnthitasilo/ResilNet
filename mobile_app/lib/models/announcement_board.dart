@@ -109,3 +109,29 @@ class AnnouncementPost {
     );
   }
 }
+
+/// Compact media payload embedded in announcement plaintext / openText.
+class AnnouncementMedia {
+  AnnouncementMedia._();
+
+  static const prefix = 'RNMEDIA:';
+
+  static String encodeImage(String b64) => '${prefix}image:$b64';
+  static String encodeAudio(String b64) => '${prefix}audio:$b64';
+
+  static bool isMedia(String? plain) =>
+      plain != null && plain.startsWith(prefix);
+
+  /// Returns `(kind, data)` where kind is `image` or `audio`.
+  static ({String kind, String data})? parse(String? plain) {
+    if (plain == null || !plain.startsWith(prefix)) return null;
+    final rest = plain.substring(prefix.length);
+    final i = rest.indexOf(':');
+    if (i <= 0 || i >= rest.length - 1) return null;
+    final kind = rest.substring(0, i);
+    final data = rest.substring(i + 1);
+    if (kind != 'image' && kind != 'audio') return null;
+    if (data.isEmpty) return null;
+    return (kind: kind, data: data);
+  }
+}

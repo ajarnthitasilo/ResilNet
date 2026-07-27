@@ -34,25 +34,44 @@ class AudioRecorderService {
     }
 
     final dir = await getTemporaryDirectory();
-    final path =
-        '${dir.path}/resilnet_voice_${DateTime.now().millisecondsSinceEpoch}.opus';
-    _activePath = path;
+    final stamp = DateTime.now().millisecondsSinceEpoch;
 
-    await _recorder.start(
-      const RecordConfig(
-        encoder: AudioEncoder.opus,
-        sampleRate: sampleRate,
-        bitRate: 32000,
-        numChannels: 1,
+    // Prefer Opus; fall back to AAC if the platform encoder is unavailable.
+    Object? lastError;
+    for (final attempt in [
+      (
+        path: '${dir.path}/resilnet_voice_$stamp.opus',
+        config: const RecordConfig(
+          encoder: AudioEncoder.opus,
+          sampleRate: sampleRate,
+          bitRate: 32000,
+          numChannels: 1,
+        ),
       ),
-      path: path,
-    );
-    _recording = true;
-
-    _maxTimer?.cancel();
-    _maxTimer = Timer(maxDuration, () {
-      unawaited(stopRecording());
-    });
+      (
+        path: '${dir.path}/resilnet_voice_$stamp.m4a',
+        config: const RecordConfig(
+          encoder: AudioEncoder.aacLc,
+          sampleRate: sampleRate,
+          bitRate: 32000,
+          numChannels: 1,
+        ),
+      ),
+    ]) {
+      try {
+        await _recorder.start(attempt.config, path: attempt.path);
+        _activePath = attempt.path;
+        _recording = true;
+        _maxTimer?.cancel();
+        _maxTimer = Timer(maxDuration, () {
+          unawaited(stopRecording());
+        });
+        return;
+      } catch (e) {
+        lastError = e;
+      }
+    }
+    throw StateError('เริ่มอัดเสียงไม่สำเร็จ: $lastError');
   }
 
   /// หยุดอัดแล้วคืน Opus bytes (null ถ้าว่างหรือเกินขนาด)
@@ -94,12 +113,20 @@ class AudioRecorderService {
     _activePath = null;
   }
 
-  Future<void> playBytes(Uint8List opusBytes) async {
+  Future<void> playBytes(Uint8List bytes) async {
     final dir = await getTemporaryDirectory();
+    // Detect container loosely; players accept both Opus and AAC in practice.
+    final ext = bytes.length >= 4 &&
+            bytes[0] == 0x4F &&
+            bytes[1] == 0x67 &&
+            bytes[2] == 0x67 &&
+            bytes[3] == 0x53
+        ? 'opus'
+        : 'm4a';
     final path =
-        '${dir.path}/resilnet_play_${DateTime.now().millisecondsSinceEpoch}.opus';
+        '${dir.path}/resilnet_play_${DateTime.now().millisecondsSinceEpoch}.$ext';
     final file = File(path);
-    await file.writeAsBytes(opusBytes, flush: true);
+    await file.writeAsBytes(bytes, flush: true);
     await _player.stop();
     await _player.play(DeviceFileSource(path));
   }
