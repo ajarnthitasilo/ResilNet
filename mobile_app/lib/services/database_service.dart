@@ -2,6 +2,7 @@ import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../core/peer_id.dart';
 import '../core/resilnet_protocol.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
@@ -26,7 +27,7 @@ class DatabaseService {
   Future<Database> _openDatabaseAt(String path) async {
     return openDatabase(
       path,
-      version: 12,
+      version: 14,
       onCreate: (db, _) async {
         await db.execute('''
           CREATE TABLE messages (
@@ -119,6 +120,13 @@ class DatabaseService {
             ackType TEXT NOT NULL,
             timestamp INTEGER NOT NULL,
             targetSenderId TEXT NOT NULL
+          )
+        ''');
+
+        await db.execute('''
+          CREATE TABLE app_meta (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
           )
         ''');
       },
@@ -253,6 +261,21 @@ class DatabaseService {
           await db.execute(
             'CREATE INDEX IF NOT EXISTS idx_messages_pending '
             'ON messages(status, timestamp)',
+          );
+        }
+
+        if (oldVersion < 13) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS app_meta (
+              key TEXT PRIMARY KEY,
+              value TEXT NOT NULL
+            )
+          ''');
+        }
+
+        if (oldVersion < 14) {
+          await db.execute(
+            "DELETE FROM messages WHERE IFNULL(payloadKind, 'text') = 'notice'",
           );
         }
       },
@@ -446,7 +469,7 @@ class DatabaseService {
       'messages',
       where:
           '((senderId = ? AND receiverId = ?) OR (senderId = ? AND receiverId = ?))'
-          " AND IFNULL(payloadKind, 'text') != 'presence'",
+          " AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')",
       whereArgs: [a, b, b, a],
       orderBy: 'timestamp ASC',
     );
@@ -465,7 +488,7 @@ class DatabaseService {
       WHERE (senderId = ? OR receiverId = ?)
         AND type != ?
         AND receiverId != ?
-        AND IFNULL(payloadKind, 'text') != 'presence'
+        AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')
       ORDER BY MAX(timestamp) DESC
     ''',
       [
@@ -711,14 +734,14 @@ class DatabaseService {
     return rows.first['aliasName'] as String?;
   }
 
-  /// ชื่อที่ควรแสดงใน UI: Alias (ถ้ามี) → ชื่อใน peers.displayName → fallback เป็น id
+  /// ชื่อที่ควรแสดงใน UI: Alias → peers.displayName → short hash (ไม่ใช้ id เต็ม)
   Future<String> resolveDisplayName(String publicKeyHash) async {
     final alias = await getContactAlias(publicKeyHash);
     if (alias != null && alias.trim().isNotEmpty) return alias.trim();
     final peer = await getPeer(publicKeyHash);
     final n = peer?.displayName?.trim();
     if (n != null && n.isNotEmpty) return n;
-    return publicKeyHash;
+    return formatShortPeerId(publicKeyHash);
   }
 
   /// Batch resolve for peer lists (avoids N+1 FutureBuilders).
@@ -728,6 +751,58 @@ class DatabaseService {
       out[id] = await resolveDisplayName(id);
     }
     return out;
+  }
+
+  static const _kIdentityUserId = 'identity_user_id';
+
+  /// Last known RSA user id (public key hash) — blocks silent remint when Keychain
+  /// reads empty but the device clearly had an identity before.
+  Future<String?> getIdentityUserId() async {
+    final rows = await _database.query(
+      'app_meta',
+      columns: ['value'],
+      where: 'key = ?',
+      whereArgs: [_kIdentityUserId],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    final v = (rows.first['value'] as String?)?.trim();
+    return (v == null || v.isEmpty) ? null : v;
+  }
+
+  Future<void> setIdentityUserId(String userId) async {
+    final id = userId.trim();
+    if (id.isEmpty) return;
+    await _database.insert(
+      'app_meta',
+      {'key': _kIdentityUserId, 'value': id},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> clearIdentityUserId() async {
+    await _database.delete(
+      'app_meta',
+      where: 'key = ?',
+      whereArgs: [_kIdentityUserId],
+    );
+  }
+
+  /// True when any chat row exists (onboarding / returning-user heuristic).
+  Future<bool> hasAnyMessages() async {
+    final rows = await _database.rawQuery(
+      'SELECT 1 AS ok FROM messages LIMIT 1',
+    );
+    return rows.isNotEmpty;
+  }
+
+  /// True when chat history or saved peers exist (returning-user heuristic).
+  Future<bool> hasAnyLocalUserData() async {
+    if (await hasAnyMessages()) return true;
+    final rows = await _database.rawQuery(
+      'SELECT 1 AS ok FROM peers LIMIT 1',
+    );
+    return rows.isNotEmpty;
   }
 
   /// ลบข้อความทั้งหมดใน SQLite และคืนพื้นที่ดิสก์ด้วย VACUUM
@@ -741,13 +816,14 @@ class DatabaseService {
     return deleted;
   }
 
-  /// Panic wipe: messages, peers, blocks, aliases, pending ACKs.
+  /// Panic wipe: messages, peers, blocks, aliases, pending ACKs, identity meta.
   Future<void> wipeLocalUserData() async {
     await _database.delete('messages');
     await _database.delete('peers');
     await _database.delete('blocked_peers');
     await _database.delete('contacts');
     await _database.delete('pending_acks');
+    await clearIdentityUserId();
     await _database.execute('VACUUM');
   }
 }

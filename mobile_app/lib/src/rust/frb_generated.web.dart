@@ -27,6 +27,11 @@ abstract class ResilNetCoreApiImplPlatform
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
+  RustStreamSink<GeoNoticeDto> dco_decode_StreamSink_geo_notice_dto_Sse(
+    dynamic raw,
+  );
+
+  @protected
   RustStreamSink<GeoPresenceDto> dco_decode_StreamSink_geo_presence_dto_Sse(
     dynamic raw,
   );
@@ -57,6 +62,12 @@ abstract class ResilNetCoreApiImplPlatform
   RouterConfigDto dco_decode_box_autoadd_router_config_dto(dynamic raw);
 
   @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  GeoNoticeDto dco_decode_geo_notice_dto(dynamic raw);
+
+  @protected
   GeoPresenceDto dco_decode_geo_presence_dto(dynamic raw);
 
   @protected
@@ -64,6 +75,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<GeoNoticeDto> dco_decode_list_geo_notice_dto(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
@@ -91,6 +105,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   PayloadTagDto? dco_decode_opt_box_autoadd_payload_tag_dto(dynamic raw);
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
   @protected
   List<String>? dco_decode_opt_list_String(dynamic raw);
@@ -132,6 +149,11 @@ abstract class ResilNetCoreApiImplPlatform
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
+  RustStreamSink<GeoNoticeDto> sse_decode_StreamSink_geo_notice_dto_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   RustStreamSink<GeoPresenceDto> sse_decode_StreamSink_geo_presence_dto_Sse(
     SseDeserializer deserializer,
   );
@@ -168,6 +190,12 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  GeoNoticeDto sse_decode_geo_notice_dto(SseDeserializer deserializer);
+
+  @protected
   GeoPresenceDto sse_decode_geo_presence_dto(SseDeserializer deserializer);
 
   @protected
@@ -175,6 +203,11 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<GeoNoticeDto> sse_decode_list_geo_notice_dto(
+    SseDeserializer deserializer,
+  );
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
@@ -212,6 +245,9 @@ abstract class ResilNetCoreApiImplPlatform
   PayloadTagDto? sse_decode_opt_box_autoadd_payload_tag_dto(
     SseDeserializer deserializer,
   );
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
   List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
@@ -258,6 +294,12 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  void sse_encode_StreamSink_geo_notice_dto_Sse(
+    RustStreamSink<GeoNoticeDto> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_StreamSink_geo_presence_dto_Sse(
     RustStreamSink<GeoPresenceDto> self,
     SseSerializer serializer,
@@ -300,6 +342,12 @@ abstract class ResilNetCoreApiImplPlatform
   );
 
   @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_geo_notice_dto(GeoNoticeDto self, SseSerializer serializer);
+
+  @protected
   void sse_encode_geo_presence_dto(
     GeoPresenceDto self,
     SseSerializer serializer,
@@ -310,6 +358,12 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_geo_notice_dto(
+    List<GeoNoticeDto> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_8_strict(
@@ -361,6 +415,9 @@ abstract class ResilNetCoreApiImplPlatform
     PayloadTagDto? self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);

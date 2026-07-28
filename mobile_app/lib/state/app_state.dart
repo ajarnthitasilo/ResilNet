@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,7 +12,9 @@ import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/geohash.dart';
+import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
+import '../core/peer_id.dart';
 import '../models/area_presence.dart';
 import '../models/ble_radio_state.dart';
 import '../models/ack_entry.dart';
@@ -21,6 +22,7 @@ import '../models/announcement_board.dart';
 import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
 import '../models/geo_discovery.dart';
+import '../models/geo_location_result.dart';
 import '../models/local_notice.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
@@ -65,6 +67,17 @@ class AppState extends ChangeNotifier {
   DateTime _lastPresenceAnnounce = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime _lastGeoRefreshAttempt = DateTime.fromMillisecondsSinceEpoch(0);
   final _uuid = const Uuid();
+  final String _sessionId = DateTime.now().microsecondsSinceEpoch.toString();
+  int _opSeq = 0;
+  bool _initStarted = false;
+  Future<void>? _initInFlight;
+  bool _resumingLifecycle = false;
+  bool _reconnectingRadios = false;
+  bool _reconnectingNostr = false;
+  bool _startingRadios = false;
+  bool _stoppingRadios = false;
+  DateTime _lastResumeAt = DateTime.fromMillisecondsSinceEpoch(0);
+  DateTime? _backgroundedAt;
 
   VoidCallback? _onAckHandlerChanged;
   VoidCallback? _onAckQueueChanged;
@@ -76,6 +89,8 @@ class AppState extends ChangeNotifier {
   VoidCallback? _onMeshChanged;
 
   AppLifecycleState get lifecycleState => _lifecycleState;
+
+  String _nextOpId(String scope) => '$scope-${++_opSeq}';
 
   FirmwareService get firmware {
     final f = _firmware;
@@ -145,6 +160,7 @@ class AppState extends ChangeNotifier {
       if (s.isPermanentlyDenied) return 'denied';
       return 'off';
     }
+
     var bt = '—';
     var loc = '—';
     for (final p in mesh) {
@@ -226,6 +242,17 @@ class AppState extends ChangeNotifier {
   final Set<String> _favoriteNearbyNotified = <String>{};
   final Set<String> _favoriteAreaNotified = <String>{};
 
+  /// Dedupe window for "someone came online" local notifications (any peer).
+  final Set<String> _peerOnlineNotified = <String>{};
+
+  /// noticeId → peerIds already fan-out (late-join catch-up).
+  final Map<String, Set<String>> _noticeDeliveredTo = {};
+  String? _lastNoticePublishWarning;
+  String? get lastNoticePublishWarning => _lastNoticePublishWarning;
+  int _lastPresenceSummaryMesh = -1;
+  int _lastPresenceSummaryNostr = -1;
+  Timer? _presenceSummaryDebounce;
+
   static const _kNostrExpiryDays = 'resilnet_nostr_expiry_days';
   NoticeExpiry _nostrExpiry = NoticeExpiry.sevenDays;
   NoticeExpiry get nostrExpiry => _nostrExpiry;
@@ -239,18 +266,18 @@ class AppState extends ChangeNotifier {
   static const _kAnnouncementPosts = 'resilnet_announcement_posts';
   final List<AnnouncementBoard> _boards = <AnnouncementBoard>[];
   final List<AnnouncementPost> _boardPosts = <AnnouncementPost>[];
+
   /// boardId → private PEM (owner or granted).
   final Map<String, String> _boardPrivateKeys = {};
+
   /// Pending inbound key requests: requestMsgId → meta
   final List<Map<String, String>> _pendingBoardKeyRequests =
       <Map<String, String>>[];
 
-  List<AnnouncementBoard> get announcementBoards =>
-      List.unmodifiable(_boards);
-  List<AnnouncementPost> postsForBoard(String boardId) => _boardPosts
-      .where((p) => p.boardId == boardId)
-      .toList()
-    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  List<AnnouncementBoard> get announcementBoards => List.unmodifiable(_boards);
+  List<AnnouncementPost> postsForBoard(String boardId) =>
+      _boardPosts.where((p) => p.boardId == boardId).toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   List<Map<String, String>> get pendingBoardKeyRequests =>
       List.unmodifiable(_pendingBoardKeyRequests);
 
@@ -271,6 +298,7 @@ class AppState extends ChangeNotifier {
   void _bumpChatData() => _chatDataEpoch++;
 
   static const _kOnboardingDone = 'resilnet_onboarding_done';
+  static const _kOnboardingDoneSecure = 'resilnet_onboarding_done';
   bool _onboardingCompleted = false;
   bool get onboardingCompleted => _onboardingCompleted;
 
@@ -288,6 +316,8 @@ class AppState extends ChangeNotifier {
   static const _kFeedChannel = 'resilnet_feed_channel';
   static const _kGeoPrecision = 'resilnet_geo_precision';
   static const _kTransportMode = 'resilnet_transport_mode';
+  static const _kManualGeohash = 'resilnet_manual_geohash';
+  static const _kCachedGeohash = 'resilnet_cached_geohash';
 
   FeedChannel _feedChannel = FeedChannel.directs;
   FeedChannel get feedChannel => _feedChannel;
@@ -301,14 +331,25 @@ class AppState extends ChangeNotifier {
   /// Anonymous Nostr presence sightings keyed by pubkey hex.
   final Map<String, NostrPresenceSighting> _nostrPresence = {};
   StreamSubscription<GeoPresenceDto>? _geoPresenceSub;
+  StreamSubscription<GeoNoticeDto>? _geoNoticeSub;
   Timer? _geoPresencePublishTimer;
+  bool _noticesBackfilling = false;
+  bool get noticesBackfilling => _noticesBackfilling;
+  int _lastNoticeBackfillCount = 0;
+  int get lastNoticeBackfillCount => _lastNoticeBackfillCount;
+  DateTime? _lastNoticeBackfillAt;
+  DateTime? get lastNoticeBackfillAt => _lastNoticeBackfillAt;
+  final Set<String> _seenNostrNoticeEvents = <String>{};
 
   String? _currentGeohash;
   String? get currentGeohash => _currentGeohash;
   bool _geoRefreshing = false;
   bool get geoRefreshing => _geoRefreshing;
-  bool _geoNeedsPermission = false;
-  bool get geoNeedsPermission => _geoNeedsPermission;
+  GeoLocationStatus _geoLocationStatus = GeoLocationStatus.unavailable;
+  GeoLocationStatus get geoLocationStatus => _geoLocationStatus;
+  bool get geoNeedsPermission =>
+      _geoLocationStatus == GeoLocationStatus.needsPermission;
+  bool get geoIsManual => _geoLocationStatus == GeoLocationStatus.manual;
   String? _geoError;
   String? get geoError => _geoError;
 
@@ -320,12 +361,9 @@ class AppState extends ChangeNotifier {
   }
 
   bool get isReady =>
-      _mesh != null &&
-      _esp32 != null &&
-      _nostr != null &&
-      _firmware != null;
+      _mesh != null && _esp32 != null && _nostr != null && _firmware != null;
 
-  /// สถานะรวมของระบบซิงก์ (BLE + Nostr)
+  /// สถานะรวมของระบบซิงก์ (BLE mesh + Nostr). ESP32 node scan is secondary.
   SyncPhase get syncPhase {
     final e = _esp32;
     final n = _nostr;
@@ -333,7 +371,8 @@ class AppState extends ChangeNotifier {
     if (_radioPaused) return SyncPhase.idle;
     if (e.phase == SyncPhase.syncing) return SyncPhase.syncing;
     if (n.phase == SyncPhase.cloudSync) return SyncPhase.cloudSync;
-    if (e.phase == SyncPhase.scanning) return SyncPhase.scanning;
+    // Do not surface ESP32 "scanning for nodes" as the primary mesh status —
+    // that label made users think phone↔phone discovery was broken.
     return SyncPhase.idle;
   }
 
@@ -344,32 +383,91 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> retryInit() async {
+    debugPrint('[Init] retry requested session=$_sessionId');
     _initDone = false;
     _initError = null;
     notifyListeners();
     try {
-      await init();
+      await init(reason: 'retryInit', force: true);
     } catch (e, st) {
       debugPrint('[ResilNet] retryInit failed: $e\n$st');
       markInitFailed(e.toString());
     }
   }
 
-  Future<void> init() async {
+  /// Explicit recovery path for boot failure:
+  /// wipe local identity/data and reinitialize app services.
+  Future<void> recoverFromBootFailure() async {
+    debugPrint('[Init] recoverFromBootFailure start session=$_sessionId');
+    _initDone = false;
+    _initError = null;
+    notifyListeners();
+    try {
+      await panicWipeLocalIdentity();
+      await init(reason: 'recoverFromBootFailure', force: true);
+      if (_initError != null) {
+        throw StateError(_initError!);
+      }
+      debugPrint('[Init] recoverFromBootFailure success');
+    } catch (e, st) {
+      debugPrint('[ResilNet] recoverFromBootFailure failed: $e\n$st');
+      markInitFailed(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> init({String reason = 'launch', bool force = false}) async {
+    if (_initInFlight != null) {
+      debugPrint('[Init] join in-flight reason=$reason session=$_sessionId');
+      return _initInFlight!;
+    }
+    if (_initStarted && !force) {
+      debugPrint(
+        '[Init] skip already-started reason=$reason session=$_sessionId',
+      );
+      return;
+    }
+    _initStarted = true;
+    final initOp = _nextOpId('init');
+    final runner = _runInit(reason: reason, initOp: initOp);
+    _initInFlight = runner;
+    try {
+      await runner;
+    } finally {
+      _initInFlight = null;
+    }
+  }
+
+  Future<void> _runInit({
+    required String reason,
+    required String initOp,
+  }) async {
+    final startedAt = DateTime.now();
+    debugPrint('[Session] appStart id=$_sessionId');
+    debugPrint(
+      '[Init] start op=$initOp reason=$reason at=${startedAt.toIso8601String()} session=$_sessionId',
+    );
     _initError = null;
     try {
       await db.init();
-      await crypto.init();
+      try {
+        await crypto.init(
+          readExpectedUserId: db.getIdentityUserId,
+          writeExpectedUserId: db.setIdentityUserId,
+          hasLocalUserData: db.hasAnyLocalUserData,
+        );
+      } on IdentityUnavailableException catch (e) {
+        debugPrint('[ResilNet] identity unavailable (no mint): $e');
+        _initError = e.toString();
+        return;
+      }
 
       // เริ่ม Rust Hybrid Router ผ่าน FFI
       await resilnet.initialize();
       await resilnet.subscribeIncoming();
       await _attachRustIncomingHandler();
 
-      _ackHandler = AckHandlerService(
-        database: db,
-        myUserId: crypto.myUserId,
-      );
+      _ackHandler = AckHandlerService(database: db, myUserId: crypto.myUserId);
       _onAckHandlerChanged = () {
         _bumpChatData();
         notifyListeners();
@@ -396,7 +494,7 @@ class AppState extends ChangeNotifier {
       resilnet.addListener(_onResilnetFlush!);
 
       await notifications.init();
-      unawaited(notifications.requestPermissions());
+      unawaited(notifications.requestPermissions(reason: 'init'));
 
       _mesh = BleMeshService(
         database: db,
@@ -415,11 +513,14 @@ class AppState extends ChangeNotifier {
       await _firmware!.refreshLocalInfo();
 
       _nostr = NostrSyncService();
-      try {
-        await _nostr!.start();
+      final nostrOk = await _nostr!.start();
+      if (nostrOk) {
         _attachGeoPresenceListener();
-      } catch (e, st) {
-        debugPrint('[ResilNet] Nostr start failed (offline ok): $e\n$st');
+      } else {
+        debugPrint(
+          '[ResilNet] Nostr start failed (will retry on reconnect): '
+          '${_nostr!.lastError}',
+        );
       }
 
       _onEsp32Changed = notifyListeners;
@@ -434,11 +535,12 @@ class AppState extends ChangeNotifier {
       _nostr!.addListener(_onNostrChanged!);
       _mesh!.addListener(_onMeshChanged!);
 
-      resilnet.startNetworkMonitoring(blePeerCount: () => _mesh?.nearbyPeerCount ?? 0);
+      resilnet.startNetworkMonitoring(
+        blePeerCount: () => _mesh?.nearbyPeerCount ?? 0,
+      );
       _onResilnetUi = () {
         if (resilnet.isInternetAvailable) {
           unawaited(_nostr?.flushOfflineQueue());
-          unawaited(_nostr?.reconnect());
         }
         notifyListeners();
       };
@@ -459,7 +561,11 @@ class AppState extends ChangeNotifier {
       _meshRetention = MeshRetention.fromDays(
         prefs.getInt(_kMeshRetentionDays),
       );
-      _e2eeEnabled = prefs.getBool(_kE2eeEnabled) ?? true;
+      _e2eeEnabled = true;
+      // Legacy preference may be false; force-on so send paths never soft-lock.
+      if (prefs.getBool(_kE2eeEnabled) == false) {
+        await prefs.setBool(_kE2eeEnabled, true);
+      }
       _screenshotAlerts = prefs.getBool(_kScreenshotAlerts) ?? true;
       _meshBridgeEnabled = prefs.getBool(_kMeshBridgeEnabled) ?? true;
       _loadFavorites(prefs);
@@ -467,9 +573,13 @@ class AppState extends ChangeNotifier {
       _loadNotices(prefs);
       await _loadAnnouncementBoards(prefs);
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
+      if (!_onboardingCompleted) {
+        await _restoreOnboardingIfReturningUser(prefs);
+      }
       final loc = prefs.getString(_kLocaleOverride);
-      _localeOverrideCode =
-          (loc == null || loc.isEmpty || loc == 'system') ? null : loc;
+      _localeOverrideCode = (loc == null || loc.isEmpty || loc == 'system')
+          ? null
+          : loc;
       _feedChannel = FeedChannel.values.firstWhere(
         (e) => e.name == prefs.getString(_kFeedChannel),
         orElse: () => FeedChannel.directs,
@@ -480,21 +590,82 @@ class AppState extends ChangeNotifier {
       );
       _transportMode = TransportMode.fromName(prefs.getString(_kTransportMode));
 
-      if (_feedChannel == FeedChannel.geo) {
+      _restoreStoredGeohash(prefs);
+      if (_currentGeohash != null &&
+          _currentGeohash!.isNotEmpty &&
+          _transportMode.usesInternet) {
+        unawaited(syncGeoPresence(forceAnnounce: true));
+      }
+
+      // Keep Area discovery alive in background (not only while on geo feed).
+      if (_transportMode.usesInternet) {
+        unawaited(refreshGeohash());
+      } else if (_feedChannel == FeedChannel.geo) {
         unawaited(refreshGeohash());
       }
 
       // ตรวจสิทธิ์ที่มีอยู่แล้ว (ไม่ขึ้น dialog) แล้วค่อยสตาร์ท radio
       _permissionsGranted = await _hasAllRequiredPermissions();
       if (_permissionsGranted) {
-        unawaited(_startRadios());
+        unawaited(_startRadios(reason: 'init-ready'));
       }
       _startRetentionTimer();
       unawaited(purgeExpiredMessages());
       unawaited(_startScreenshotWatch());
+      debugPrint(
+        '[Init] services ready op=$initOp in ${DateTime.now().difference(startedAt).inMilliseconds}ms',
+      );
     } finally {
       _initDone = true;
+      if (_initError != null) {
+        debugPrint('[Init] end op=$initOp status=error error=$_initError');
+      } else {
+        debugPrint('[Init] end op=$initOp status=ok');
+      }
       notifyListeners();
+    }
+  }
+
+  /// Returning user heuristics when prefs flag was lost (e.g. reinstall).
+  /// Panic wipe clears keychain identity + secure flag so intro still shows.
+  Future<void> _restoreOnboardingIfReturningUser(
+    SharedPreferences prefs,
+  ) async {
+    try {
+      final secureDone =
+          (await _storage.read(key: _kOnboardingDoneSecure))?.trim() == '1';
+      if (secureDone) {
+        await _persistOnboardingDone(prefs);
+        debugPrint('[ResilNet] onboarding restored from keychain flag');
+        return;
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] onboarding secure read failed: $e');
+    }
+
+    final existingPeers = await db.getAllPeers(limit: 1);
+    final hasMessages = await db.hasAnyMessages();
+    final restoredIdentity = crypto.restoredFromKeychain;
+    if (existingPeers.isNotEmpty ||
+        _displayName.isNotEmpty ||
+        hasMessages ||
+        restoredIdentity) {
+      await _persistOnboardingDone(prefs);
+      debugPrint(
+        '[ResilNet] onboarding restored '
+        '(peers=${existingPeers.isNotEmpty} name=${_displayName.isNotEmpty} '
+        'msgs=$hasMessages identity=$restoredIdentity)',
+      );
+    }
+  }
+
+  Future<void> _persistOnboardingDone(SharedPreferences prefs) async {
+    _onboardingCompleted = true;
+    await prefs.setBool(_kOnboardingDone, true);
+    try {
+      await _storage.write(key: _kOnboardingDoneSecure, value: '1');
+    } catch (e) {
+      debugPrint('[ResilNet] onboarding secure write failed: $e');
     }
   }
 
@@ -658,7 +829,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-AnnouncementBoard? boardById(String id) {
+  AnnouncementBoard? boardById(String id) {
     for (final b in _boards) {
       if (b.id == id) return b;
     }
@@ -676,7 +847,9 @@ AnnouncementBoard? boardById(String id) {
     if (body.isEmpty) return null;
     final isMedia = AnnouncementMedia.isMedia(body);
     // Large photo/voice payloads are internet-only (avoid BLE mesh MTU pain).
-    if (isMedia && !resilnet.isInternetAvailable && !(_nostr?.isOnline ?? false)) {
+    if (isMedia &&
+        !resilnet.isInternetAvailable &&
+        !(_nostr?.isOnline ?? false)) {
       debugPrint('[ResilNet] announcement media blocked — no internet');
       return null;
     }
@@ -1018,9 +1191,15 @@ AnnouncementBoard? boardById(String id) {
   }
 
   Future<void> setE2eeEnabled(bool enabled) async {
-    _e2eeEnabled = enabled;
+    // E2EE is always on — keep preference true for older builds that read it.
+    _e2eeEnabled = true;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kE2eeEnabled, enabled);
+    await prefs.setBool(_kE2eeEnabled, true);
+    if (!enabled) {
+      debugPrint(
+        '[ResilNet] setE2eeEnabled(false) ignored — E2EE is mandatory',
+      );
+    }
     notifyListeners();
   }
 
@@ -1079,7 +1258,7 @@ AnnouncementBoard? boardById(String id) {
   }
 
   void _onMeshPeersChanged() {
-    unawaited(_notifyFavoriteNearby());
+    unawaited(_notifyOnlineAppearancesFromMesh());
   }
 
   void _scheduleMeshUiNotify() {
@@ -1089,48 +1268,170 @@ AnnouncementBoard? boardById(String id) {
     });
   }
 
-  Future<void> _notifyFavoriteNearby() async {
-    if (!_notificationsEnabled || _favoritePeerIds.isEmpty || !isReady) return;
+  Future<void> _notifyOnlineAppearancesFromMesh() async {
+    if (!isReady) return;
     final nearby = _mesh?.nearbyPeers ?? const [];
+    final nearbyIds = <String>{};
     for (final peer in nearby) {
-      if (!_favoritePeerIds.contains(peer.id) || peer.isBlocked) continue;
-      if (_favoriteNearbyNotified.contains(peer.id)) continue;
-      _favoriteNearbyNotified.add(peer.id);
-      final name = await db.resolveDisplayName(peer.id);
-      final th = _localeOverrideCode == 'th';
-      await notifications.showFavoriteAlert(
-        id: peer.id.hashCode & 0x7fffffff,
-        title: th ? 'คนโปรดอยู่ใกล้' : 'Favorite nearby',
-        body: th ? '$name อยู่ใกล้บน mesh' : '$name is nearby on mesh',
-      );
+      if (peer.id == myUserId || peer.isBlocked) continue;
+      nearbyIds.add(peer.id);
+      unawaited(_catchUpNoticesForPeer(peer));
+      if (_notificationsEnabled) {
+        debugPrint('[Notify] enqueue peer=${peer.id} via=mesh');
+        await _notifyPeerCameOnline(
+          peerId: peer.id,
+          displayName: peer.displayName,
+          viaMesh: true,
+        );
+      }
     }
-    // Drop notified set entries that left nearby so we can re-alert later.
-    final nearbyIds = nearby.map((p) => p.id).toSet();
+    _peerOnlineNotified.removeWhere(
+      (id) => id.startsWith('mesh:') && !nearbyIds.contains(id.substring(5)),
+    );
     _favoriteNearbyNotified.removeWhere((id) => !nearbyIds.contains(id));
+    _schedulePresenceSummaryNotification();
   }
 
-  Future<void> _notifyFavoriteInArea() async {
-    if (!_notificationsEnabled || _favoritePeerIds.isEmpty) return;
-    final online = peersOnlineInSelectedArea();
-    final onlineIds = online.map((p) => p.id).toSet();
-    for (final peer in online) {
-      if (!_favoritePeerIds.contains(peer.id) || peer.isBlocked) continue;
-      if (_favoriteAreaNotified.contains(peer.id)) continue;
-      // Skip if already notified as nearby (same moment).
-      if (_favoriteNearbyNotified.contains(peer.id)) continue;
-      _favoriteAreaNotified.add(peer.id);
-      final name = await db.resolveDisplayName(peer.id);
-      final th = _localeOverrideCode == 'th';
-      await notifications.showFavoriteAlert(
-        id: (peer.id.hashCode ^ 0x51) & 0x7fffffff,
-        title: th ? 'คนโปรดในพื้นที่' : 'Favorite in area',
-        body: th ? '$name ออนไลน์ในพื้นที่นี้' : '$name is online in this area',
-      );
+  Future<void> _notifyOnlineAppearancesFromNostr() async {
+    final online = areaPresenceOnline();
+    final onlineIds = <String>{};
+    for (final e in online) {
+      if (e.id == myUserId) continue;
+      if (!e.source.isInternet) continue;
+      onlineIds.add(e.id);
+      final peer = e.peer;
+      if (peer != null) unawaited(_catchUpNoticesForPeer(peer));
+      if (_notificationsEnabled) {
+        debugPrint('[Notify] enqueue peer=${e.id} via=nostr');
+        await _notifyPeerCameOnline(
+          peerId: e.id,
+          displayName: e.label,
+          viaMesh: false,
+        );
+      }
     }
+    _peerOnlineNotified.removeWhere(
+      (id) => id.startsWith('nostr:') && !onlineIds.contains(id.substring(6)),
+    );
     _favoriteAreaNotified.removeWhere((id) => !onlineIds.contains(id));
+    _schedulePresenceSummaryNotification();
+  }
+
+  void _schedulePresenceSummaryNotification() {
+    _presenceSummaryDebounce?.cancel();
+    _presenceSummaryDebounce = Timer(const Duration(seconds: 2), () {
+      unawaited(_publishPresenceSummaryNotification());
+    });
+  }
+
+  Future<void> _publishPresenceSummaryNotification() async {
+    if (!isReady) return;
+    final me = myUserIdReady ? myUserId : '';
+    final nearbyPeers = _mesh?.nearbyPeers ?? <Peer>[];
+    final meshCount = nearbyPeers
+        .where((p) => p.id != me && !p.isBlocked)
+        .length;
+    final nostrCount = _transportMode.usesInternet
+        ? areaPresenceOnline()
+              .where((e) => e.id != me && e.source.isInternet)
+              .length
+        : 0;
+
+    if (!_notificationsEnabled) {
+      await notifications.clearPresenceSummary();
+      _lastPresenceSummaryMesh = -1;
+      _lastPresenceSummaryNostr = -1;
+      return;
+    }
+
+    if (meshCount == 0 && nostrCount == 0) {
+      await notifications.clearPresenceSummary();
+      _lastPresenceSummaryMesh = 0;
+      _lastPresenceSummaryNostr = 0;
+      return;
+    }
+
+    if (meshCount == _lastPresenceSummaryMesh &&
+        nostrCount == _lastPresenceSummaryNostr) {
+      return;
+    }
+    _lastPresenceSummaryMesh = meshCount;
+    _lastPresenceSummaryNostr = nostrCount;
+
+    final th = _localeOverrideCode == 'th';
+    final title = th ? 'ResilNet — คนออนไลน์' : 'ResilNet — people online';
+    final body = th
+        ? 'Mesh $meshCount คน · Nostr $nostrCount คน'
+        : 'Mesh $meshCount · Nostr $nostrCount';
+    await notifications.showPresenceSummary(title: title, body: body);
+  }
+
+  Future<void> _notifyPeerCameOnline({
+    required String peerId,
+    String? displayName,
+    required bool viaMesh,
+  }) async {
+    if (!_notificationsEnabled || !isReady) return;
+    if (peerId.isEmpty || peerId == myUserId) return;
+
+    final key = viaMesh ? 'mesh:$peerId' : 'nostr:$peerId';
+    if (_peerOnlineNotified.contains(key)) {
+      debugPrint(
+        '[Notify] skipped peer=$peerId via=${viaMesh ? "mesh" : "nostr"} reason=dedupe-key',
+      );
+      return;
+    }
+    // Already alerted via mesh — don't double-notify for the same peer on Nostr.
+    if (!viaMesh && _peerOnlineNotified.contains('mesh:$peerId')) {
+      _peerOnlineNotified.add(key);
+      debugPrint('[Notify] skipped peer=$peerId via=nostr reason=already-mesh');
+      return;
+    }
+    _peerOnlineNotified.add(key);
+
+    final isFav = _favoritePeerIds.contains(peerId);
+    if (isFav) {
+      if (viaMesh) {
+        _favoriteNearbyNotified.add(peerId);
+      } else {
+        _favoriteAreaNotified.add(peerId);
+      }
+    }
+
+    final name = (displayName != null && displayName.trim().isNotEmpty)
+        ? displayName.trim()
+        : await db.resolveDisplayName(peerId);
+    final th = _localeOverrideCode == 'th';
+    final title = isFav
+        ? (viaMesh
+              ? (th ? 'คนโปรดอยู่ใกล้' : 'Favorite nearby')
+              : (th ? 'คนโปรดในพื้นที่' : 'Favorite in area'))
+        : (viaMesh
+              ? (th ? 'มีคนออนไลน์บน mesh' : 'Someone nearby on mesh')
+              : (th ? 'มีคนออนไลน์ในพื้นที่' : 'Someone online in area'));
+    final body = isFav
+        ? (viaMesh
+              ? (th ? '$name อยู่ใกล้บน mesh' : '$name is nearby on mesh')
+              : (th
+                    ? '$name ออนไลน์ในพื้นที่นี้'
+                    : '$name is online in this area'))
+        : (viaMesh
+              ? (th ? '$name อยู่ใกล้บน mesh' : '$name is nearby on mesh')
+              : (th ? '$name ออนไลน์ผ่าน Nostr' : '$name is online via Nostr'));
+
+    await notifications.showPresenceAlert(
+      id: (peerId.hashCode ^ (viaMesh ? 0 : 0x51)) & 0x7fffffff,
+      title: title,
+      body: body,
+    );
+    debugPrint(
+      '[Notify] sent peer=$peerId via=${viaMesh ? "mesh" : "nostr"} title=$title',
+    );
   }
 
   /// Prefer a single transport when mesh bridge is off (no dual-path fan-out).
+  /// Large media (audio/image) always keeps Nostr when available — BLE alone
+  /// often cannot carry sealed voice envelopes.
   List<TransportTypeDto> _applyBridgePolicy(List<TransportTypeDto> transports) {
     if (_meshBridgeEnabled || transports.length <= 1) return transports;
     final hasNostr = transports.contains(TransportTypeDto.nostr);
@@ -1142,11 +1443,26 @@ AnnouncementBoard? boardById(String id) {
         .toList();
     if (hasNostr && meshLike.isNotEmpty) {
       final ble = _mesh?.nearbyPeerCount ?? 0;
-      final picked =
-          ble > 0 ? meshLike : const [TransportTypeDto.nostr];
+      final picked = ble > 0 ? meshLike : const [TransportTypeDto.nostr];
       return picked.isNotEmpty ? picked : transports;
     }
     return transports;
+  }
+
+  List<TransportTypeDto> _applyBridgePolicyForMessage(
+    ChatMessage msg,
+    List<TransportTypeDto> transports,
+  ) {
+    final kind = msg.payloadKind;
+    final isMedia =
+        kind == PayloadKinds.audio || kind == PayloadKinds.image;
+    if (isMedia && transports.contains(TransportTypeDto.nostr)) {
+      // Always keep Nostr for media even when bridge prefers BLE-only.
+      final base = _applyBridgePolicy(transports);
+      if (base.contains(TransportTypeDto.nostr)) return base;
+      return [...base, TransportTypeDto.nostr];
+    }
+    return _applyBridgePolicy(transports);
   }
 
   Future<void> setNostrExpiry(NoticeExpiry expiry) async {
@@ -1167,6 +1483,8 @@ AnnouncementBoard? boardById(String id) {
   }
 
   /// Pin a public notice on #mesh or Area and fan-out sealed envelopes.
+  /// Late joiners receive catch-up when they appear online (see
+  /// [_catchUpNoticesForPeer]).
   Future<LocalNotice?> postNotice({
     required String scope,
     required String channelLabel,
@@ -1177,6 +1495,7 @@ AnnouncementBoard? boardById(String id) {
     if (!_e2eeEnabled) return null;
     final body = text.trim();
     if (body.isEmpty) return null;
+    _lastNoticePublishWarning = null;
     final notice = LocalNotice(
       id: _uuid.v4(),
       scope: scope,
@@ -1185,19 +1504,176 @@ AnnouncementBoard? boardById(String id) {
       createdAt: DateTime.now().millisecondsSinceEpoch,
       expiresAt: expiry.expiresAtMs,
       urgent: urgent,
+      senderId: myUserId,
     );
     _notices.insert(0, notice);
+    _noticeDeliveredTo[notice.id] = <String>{};
     await _persistNotices();
 
-    final prefix = urgent ? '[URGENT] ' : '';
-    final payload = '$prefix${notice.text}';
+    debugPrint('[Notice] post id=${notice.id} scope=$scope');
+
     if (scope == 'geo') {
-      await sendAreaPublicText(payload, kind: PayloadKinds.notice);
+      final hash = selectedAreaHash;
+      if (hash == null || hash.isEmpty) {
+        _lastNoticePublishWarning = 'no_area';
+        debugPrint('[Notice] nostr-publish skipped — no area hash');
+      } else {
+        final wireJson = encodeNoticeWire(notice: notice, senderId: myUserId);
+        final expiresSec =
+            notice.expiresAt == null ? null : notice.expiresAt! ~/ 1000;
+        final ok = await _nostr?.publishGeoNotice(
+              hash,
+              wireJson,
+              expiresAtSec: expiresSec,
+            ) ??
+            false;
+        if (!ok) {
+          _lastNoticePublishWarning = 'nostr_failed';
+          debugPrint('[Notice] nostr-publish failed id=${notice.id} g=$hash');
+        } else {
+          debugPrint('[Notice] nostr-publish ok id=${notice.id} g=$hash');
+        }
+      }
     } else {
-      await _fanOutToNearby(payload, kind: PayloadKinds.notice);
+      // #mesh: best-effort P2P fan-out (never persisted as 1:1 chat).
+      final wire = _encodeNoticeWire(notice);
+      final peers = _mesh?.nearbyPeers ?? const <Peer>[];
+      debugPrint('[Notice] mesh fanout peers=${peers.length}');
+      final delivered = _noticeDeliveredTo.putIfAbsent(
+        notice.id,
+        () => <String>{},
+      );
+      for (final p in peers) {
+        if (p.id == myUserId || p.publicKey.isEmpty) continue;
+        final n = await _sendSealedFanOut(
+          peers: [p],
+          body: wire,
+          kind: PayloadKinds.notice,
+        );
+        if (n > 0) delivered.add(p.id);
+      }
+      debugPrint(
+        '[ResilNet] notice posted id=${notice.id} meshDelivered=${delivered.length}',
+      );
     }
+
     notifyListeners();
     return notice;
+  }
+
+  String _encodeNoticeWire(LocalNotice notice) {
+    return encodeNoticeWire(notice: notice, senderId: myUserId);
+  }
+
+  Future<void> _ingestIncomingNotice(ChatMessage msg) async {
+    if (msg.senderId == myUserId) return;
+    String plain;
+    try {
+      plain = crypto.decryptFromSender(
+        encryptedPayload: msg.encryptedPayload,
+        encryptedKey: msg.encryptedKey,
+      );
+    } catch (e) {
+      debugPrint('[ResilNet] notice decrypt failed: $e');
+      return;
+    }
+    if (plain.isEmpty) return;
+
+    final wire = parseNoticeWire(plain);
+    if (wire != null) {
+      if (_notices.any((n) => n.id == wire.noticeId)) return;
+      final notice = wire.toLocalNotice().withSender(msg.senderId);
+      if (notice.isExpired) return;
+      _notices.insert(0, notice);
+      await _persistNotices();
+      notifyListeners();
+      debugPrint('[ResilNet] ingested notice id=${wire.noticeId} from ${msg.senderId}');
+      return;
+    }
+
+    String text = plain;
+    var scope = 'geo';
+    var channel = geoChannelLabel;
+    var noticeId = msg.id;
+    var urgent = false;
+    int? expiresAt;
+    var createdAt = msg.timestamp;
+    try {
+      final obj = jsonDecode(plain);
+      if (obj is Map) {
+        final map = Map<String, Object?>.from(obj);
+        if ((map['type'] as String?) == 'notice' ||
+            map.containsKey('noticeId')) {
+          noticeId = (map['noticeId'] as String?)?.trim().isNotEmpty == true
+              ? map['noticeId'] as String
+              : msg.id;
+          scope = (map['scope'] as String?) ?? 'geo';
+          channel = (map['channel'] as String?) ?? channel;
+          text = (map['text'] as String?) ?? plain;
+          urgent = map['urgent'] == true;
+          expiresAt = map['expiresAt'] as int?;
+          createdAt = (map['createdAt'] as int?) ?? createdAt;
+        }
+      }
+    } catch (_) {
+      if (plain.startsWith('[URGENT] ')) {
+        urgent = true;
+        text = plain.substring(9);
+      }
+    }
+
+    if (_notices.any((n) => n.id == noticeId)) return;
+    final notice = LocalNotice(
+      id: noticeId,
+      scope: scope,
+      channelLabel: channel,
+      text: text,
+      createdAt: createdAt,
+      expiresAt: expiresAt,
+      urgent: urgent,
+      senderId: msg.senderId,
+    );
+    if (notice.isExpired) return;
+    _notices.insert(0, notice);
+    await _persistNotices();
+    notifyListeners();
+    debugPrint('[ResilNet] ingested notice id=$noticeId from ${msg.senderId}');
+  }
+
+  /// Re-send active notices to a newly discovered messageable peer.
+  Future<void> _catchUpNoticesForPeer(Peer peer) async {
+    if (peer.id == myUserId || peer.publicKey.isEmpty) return;
+    final active = _notices.where((n) => !n.isExpired).toList();
+    for (final notice in active) {
+      final delivered = _noticeDeliveredTo.putIfAbsent(
+        notice.id,
+        () => <String>{},
+      );
+      if (delivered.contains(peer.id)) continue;
+      if (notice.scope == 'geo') {
+        // Geo notices use Nostr bulletin board — no P2P catch-up.
+        continue;
+      } else if (notice.scope == 'mesh') {
+        final nearbyIds = (_mesh?.nearbyPeers ?? const <Peer>[])
+            .map((p) => p.id)
+            .toSet();
+        if (!nearbyIds.contains(peer.id)) continue;
+      }
+      try {
+        debugPrint(
+          '[Notice] catch-up notice=${notice.id} peer=${peer.id} scope=${notice.scope}',
+        );
+        await _sendSealedFanOut(
+          peers: [peer],
+          body: _encodeNoticeWire(notice),
+          kind: PayloadKinds.notice,
+        );
+        delivered.add(peer.id);
+        debugPrint('[Notice] catch-up delivered id=${notice.id} peer=${peer.id}');
+      } catch (e) {
+        debugPrint('[Notice] catch-up failed id=${notice.id} peer=${peer.id} err=$e');
+      }
+    }
   }
 
   Future<int> _fanOutToNearby(
@@ -1253,68 +1729,109 @@ AnnouncementBoard? boardById(String id) {
 
   /// เรียกจาก `WidgetsBindingObserver` เมื่อสถานะแอปเปลี่ยน
   void handleAppLifecycleState(AppLifecycleState state) {
+    final previous = _lifecycleState;
     _lifecycleState = state;
+    debugPrint('[Lifecycle] transition $previous->$state session=$_sessionId');
+    if (previous == state) return;
     if (state == AppLifecycleState.resumed) {
-      unawaited(onAppResumed());
+      unawaited(onAppResumed(reason: 'lifecycle-resumed'));
     } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
+      _backgroundedAt = DateTime.now();
+      if (Platform.isIOS) {
+        debugPrint(
+          '[BLE] iOS background mode active; discovery may be reduced by system policy',
+        );
+      }
+      debugPrint('[ACK] persist queue reason=lifecycle-$state');
       unawaited(_ackQueue?.persistToDatabase());
+      if (_transportMode.usesInternet) {
+        unawaited(announceGeohashPresence(force: true));
+      }
     }
   }
 
   /// กลับมาจาก background — reconnect BLE, Nostr และ Rust stream
-  Future<void> onAppResumed() async {
+  Future<void> onAppResumed({String reason = 'manual'}) async {
     if (!isReady) return;
-    debugPrint('[ResilNet] onAppResumed — reconnecting services');
-
-    await refreshPermissions();
-
-    try {
-      await resilnet.reconnectIncomingBridge();
-      await _attachRustIncomingHandler();
-    } catch (e, st) {
-      debugPrint('[ResilNet] Rust stream reconnect failed: $e\n$st');
+    if (_resumingLifecycle) {
+      debugPrint('[Reconnect] skip resume reason=already-running');
+      return;
     }
-
-    try {
-      await resilnet.refreshNetworkStatus(
-        blePeerCount: () => _mesh?.nearbyPeerCount ?? 0,
+    final sinceLast = DateTime.now().difference(_lastResumeAt);
+    if (sinceLast < const Duration(seconds: 2)) {
+      debugPrint(
+        '[Reconnect] skip resume reason=debounced sinceMs=${sinceLast.inMilliseconds}',
       );
-    } catch (e) {
-      debugPrint('[ResilNet] network status refresh failed: $e');
+      return;
     }
+    _resumingLifecycle = true;
+    _lastResumeAt = DateTime.now();
+    final op = _nextOpId('resume');
+    debugPrint('[Reconnect] begin op=$op reason=$reason session=$_sessionId');
+    final bgSince = _backgroundedAt;
+    if (bgSince != null &&
+        DateTime.now().difference(bgSince) > const Duration(seconds: 20)) {
+      _peerOnlineNotified.clear();
+      debugPrint('[Notify] reset dedupe reason=long-background');
+    }
+    unawaited(notifications.logPermissionStatus(reason: 'resume'));
+
+    await refreshPermissions(startRadiosIfGranted: false);
 
     try {
-      await _udp?.refresh();
-    } catch (e) {
-      debugPrint('[ResilNet] UDP refresh failed: $e');
-    }
-
-    if (_permissionsGranted && !_radioPaused) {
       try {
-        await _reconnectRadios();
+        await resilnet.reconnectIncomingBridge();
+        await _attachRustIncomingHandler();
+      } catch (e, st) {
+        debugPrint('[ResilNet] Rust stream reconnect failed: $e\n$st');
+      }
+
+      try {
+        await resilnet.refreshNetworkStatus(
+          blePeerCount: () => _mesh?.nearbyPeerCount ?? 0,
+        );
+      } catch (e) {
+        debugPrint('[ResilNet] network status refresh failed: $e');
+      }
+
+      try {
+        await _udp?.refresh();
+      } catch (e) {
+        debugPrint('[ResilNet] UDP refresh failed: $e');
+      }
+
+      try {
+        if (_permissionsGranted && !_radioPaused) {
+          await _reconnectRadios(reason: 'resume');
+        } else {
+          await _stopRadios(reason: 'resume-no-permission');
+        }
       } catch (e) {
         debugPrint('[ResilNet] radio reconnect failed: $e');
       }
-    }
 
-    try {
-      await _reconnectNostr();
-      unawaited(_nostr?.flushOfflineQueue());
-    } catch (e) {
-      debugPrint('[ResilNet] Nostr reconnect failed: $e');
-    }
-
-    unawaited(purgeExpiredMessages());
-    if (_feedChannel == FeedChannel.geo) {
-      if (_currentGeohash == null || _currentGeohash!.isEmpty) {
-        unawaited(refreshGeohash());
-      } else {
-        unawaited(syncGeoPresence(forceAnnounce: true));
+      try {
+        await _reconnectNostr(reason: 'resume');
+        unawaited(_nostr?.flushOfflineQueue());
+      } catch (e) {
+        debugPrint('[ResilNet] Nostr reconnect failed: $e');
       }
-    }
 
-    notifyListeners();
+      unawaited(purgeExpiredMessages());
+      if (_transportMode.usesInternet || _feedChannel == FeedChannel.geo) {
+        if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+          unawaited(refreshGeohash());
+        } else {
+          unawaited(syncGeoPresence(forceAnnounce: true));
+        }
+      }
+      notifyListeners();
+    } finally {
+      _resumingLifecycle = false;
+      debugPrint('[Reconnect] end op=$op reason=$reason');
+    }
   }
 
   Future<void> _attachRustIncomingHandler() async {
@@ -1331,31 +1848,92 @@ AnnouncementBoard? boardById(String id) {
     );
   }
 
-  Future<void> _reconnectRadios() async {
-    await _stopRadios();
-    await _startRadios();
+  Future<void> _reconnectRadios({String reason = 'unknown'}) async {
+    if (_reconnectingRadios) {
+      debugPrint(
+        '[Radio] reconnect skip reason=already-running trigger=$reason',
+      );
+      return;
+    }
+    _reconnectingRadios = true;
+    final op = _nextOpId('radio');
+    debugPrint('[Radio] reconnect begin op=$op reason=$reason');
+    try {
+      await _startRadios(reason: 'reconnect:$reason');
+    } finally {
+      _reconnectingRadios = false;
+      debugPrint('[Radio] reconnect end op=$op reason=$reason');
+    }
   }
 
-  Future<void> _reconnectNostr() async {
+  Future<void> _reconnectNostr({String reason = 'unknown'}) async {
     final sync = _nostr;
     if (sync == null) return;
-    await sync.reconnect();
-    await sync.flushOfflineQueue();
-    if (_feedChannel == FeedChannel.geo && _transportMode.usesInternet) {
-      unawaited(syncGeoPresence(forceAnnounce: true));
+    if (_reconnectingNostr) {
+      debugPrint(
+        '[Nostr] reconnect skip reason=already-running trigger=$reason',
+      );
+      return;
+    }
+    _reconnectingNostr = true;
+    final op = _nextOpId('nostr');
+    debugPrint('[Nostr] reconnect begin op=$op reason=$reason');
+    try {
+      final ok = await sync.reconnect();
+      if (ok || sync.isInitialized) {
+        _attachGeoPresenceListener();
+      }
+      if (ok) {
+        await sync.flushOfflineQueue();
+      }
+      if (_transportMode.usesInternet) {
+        unawaited(syncGeoPresence(forceAnnounce: true));
+      }
+      debugPrint(
+        '[Nostr] reconnect end op=$op reason=$reason online=${sync.isOnline}',
+      );
+    } finally {
+      _reconnectingNostr = false;
     }
   }
 
   /// Reconnect Nostr relays and re-sync Area presence (UI action).
-  Future<void> reconnectNostrAndSyncGeo() async {
-    await _reconnectNostr();
+  /// Returns true when at least one relay is connected afterwards.
+  Future<bool> reconnectNostrAndSyncGeo() async {
+    await _reconnectNostr(reason: 'user-action');
     notifyListeners();
+    return isNostrOnline;
+  }
+
+  /// Snapshot of relay URLs for Settings UI.
+  List<({String url, bool connected})> get nostrRelayRows {
+    final n = _nostr;
+    if (n == null) return const [];
+    return [for (final r in n.relays) (url: r.url, connected: r.connected)];
+  }
+
+  String? get nostrLastError => _nostr?.lastError;
+  bool get nostrReconnecting => _nostr?.reconnecting ?? false;
+  bool get nostrInitialized => _nostr?.isInitialized ?? false;
+
+  /// Label for status chips: `0/0`, `0/8`, or `2/8`.
+  String get nostrRelayLabel {
+    final n = _nostr;
+    if (n == null || !n.isInitialized) return '0/0';
+    return '${n.connectedRelays}/${n.totalRelays}';
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     _notificationsEnabled = enabled;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kNotificationsEnabled, enabled);
+    if (!enabled) {
+      await notifications.clearPresenceSummary();
+      _lastPresenceSummaryMesh = -1;
+      _lastPresenceSummaryNostr = -1;
+    } else {
+      _schedulePresenceSummaryNotification();
+    }
     notifyListeners();
   }
 
@@ -1425,10 +2003,7 @@ AnnouncementBoard? boardById(String id) {
   }
 
   /// Conversation view: SQLite history (if enabled) + sealed session-only envelopes.
-  Future<List<ChatMessage>> messagesForConversation(
-    String a,
-    String b,
-  ) async {
+  Future<List<ChatMessage>> messagesForConversation(String a, String b) async {
     final persisted = _saveMessageHistory
         ? await db.getConversation(a, b)
         : const <ChatMessage>[];
@@ -1449,8 +2024,9 @@ AnnouncementBoard? boardById(String id) {
 
   /// Peer IDs for the home chat list (disk + ephemeral session).
   Future<List<String>> chatPeerIds() async {
-    final fromDb =
-        _saveMessageHistory ? await db.getChatPeersFor(myUserId) : <String>[];
+    final fromDb = _saveMessageHistory
+        ? await db.getChatPeersFor(myUserId)
+        : <String>[];
     final fromSession = <String>{};
     for (final m in _sessionMessages) {
       if (!PayloadKinds.isChatVisible(m.payloadKind)) continue;
@@ -1474,10 +2050,30 @@ AnnouncementBoard? boardById(String id) {
     }
   }
 
+  /// After QR import: refresh nearby list + force Area presence so both sides
+  /// can discover each other without waiting for the periodic timer.
+  Future<void> onPeerImportedViaQr(String peerId) async {
+    debugPrint('[ResilNet] peer imported via QR id=$peerId');
+    try {
+      await _mesh?.refreshNearbyPeers();
+    } catch (e) {
+      debugPrint('[ResilNet] refreshNearby after QR failed: $e');
+    }
+    final peer = await db.getPeer(peerId);
+    if (peer != null) unawaited(_catchUpNoticesForPeer(peer));
+    if (_feedChannel == FeedChannel.geo) {
+      unawaited(syncGeoPresence(forceAnnounce: true));
+    } else if (_transportMode.usesInternet) {
+      // Even on Directs/mesh tab, publish once if we already know our geohash.
+      unawaited(announceGeohashPresence(force: true));
+    }
+    _schedulePresenceSummaryNotification();
+    notifyListeners();
+  }
+
   Future<void> completeOnboarding() async {
-    _onboardingCompleted = true;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kOnboardingDone, true);
+    await _persistOnboardingDone(prefs);
     notifyListeners();
   }
 
@@ -1499,7 +2095,15 @@ AnnouncementBoard? boardById(String id) {
     _feedChannel = channel;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kFeedChannel, channel.name);
-    if (channel == FeedChannel.geo) {
+    // Keep Nostr Area discovery running in the background for all feeds
+    // when Internet/Auto is selected — otherwise badge stays at 0 on 1:1.
+    if (_transportMode.usesInternet) {
+      if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+        unawaited(refreshGeohash());
+      } else {
+        unawaited(syncGeoPresence(forceAnnounce: true));
+      }
+    } else if (channel == FeedChannel.geo) {
       if (_currentGeohash == null || _currentGeohash!.isEmpty) {
         unawaited(refreshGeohash());
       } else {
@@ -1517,7 +2121,7 @@ AnnouncementBoard? boardById(String id) {
     _geoPrecision = precision;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kGeoPrecision, precision.name);
-    if (_feedChannel == FeedChannel.geo) {
+    if (_transportMode.usesInternet || _feedChannel == FeedChannel.geo) {
       unawaited(syncGeoPresence(forceAnnounce: true));
     }
     notifyListeners();
@@ -1528,10 +2132,18 @@ AnnouncementBoard? boardById(String id) {
     _transportMode = mode;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kTransportMode, mode.name);
-    if (_feedChannel == FeedChannel.geo) {
-      unawaited(syncGeoPresence(forceAnnounce: true));
-    } else if (!mode.usesInternet) {
+    if (mode.usesInternet) {
+      if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+        unawaited(refreshGeohash());
+      } else {
+        unawaited(syncGeoPresence(forceAnnounce: true));
+      }
+    } else {
       unawaited(_clearNostrGeoSubscription());
+      _stopGeoPresencePublishTimer();
+      if (_feedChannel == FeedChannel.geo) {
+        unawaited(syncGeoPresence(forceAnnounce: true));
+      }
     }
     notifyListeners();
   }
@@ -1541,6 +2153,110 @@ AnnouncementBoard? boardById(String id) {
     if (n == null) return;
     _geoPresenceSub?.cancel();
     _geoPresenceSub = n.geoPresenceStream.listen(_onNostrGeoPresence);
+    _geoNoticeSub?.cancel();
+    _geoNoticeSub = n.geoNoticeStream.listen(_onNostrGeoNotice);
+  }
+
+  int _geoNoticeBackfillSecs() {
+    final days = _nostrExpiry.days;
+    final effectiveDays = days <= 0 ? 7 : (days > 7 ? days : 7);
+    return effectiveDays * 24 * 3600;
+  }
+
+  Future<void> backfillGeoNotices() async {
+    if (!_transportMode.usesInternet) return;
+    final full = _currentGeohash;
+    if (full == null || full.isEmpty) return;
+    final n = _nostr;
+    if (n == null) return;
+
+    _noticesBackfilling = true;
+    notifyListeners();
+    try {
+      if (!n.isOnline) {
+        await n.reconnect();
+      }
+      if (!n.isOnline) {
+        debugPrint('[Notice] backfill skip reason=nostr-offline');
+        return;
+      }
+
+      final cells = Geohash.nostrSubscribeCells(full, _geoPrecision);
+      final since = _geoNoticeBackfillSecs();
+      final channel = selectedAreaHash;
+
+      final fetched = await n.fetchGeoNotices(cells, sinceSecsAgo: since);
+      var ingested = 0;
+      for (final ev in fetched) {
+        if (await _ingestGeoNoticeDto(ev, channel: channel)) ingested++;
+      }
+
+      await n.setGeoNoticeFilter(cells, sinceSecsAgo: since);
+
+      _lastNoticeBackfillCount = fetched.length;
+      _lastNoticeBackfillAt = DateTime.now();
+      debugPrint(
+        '[Notice] backfill done fetch=${fetched.length} ingested=$ingested cells=$cells',
+      );
+    } finally {
+      _noticesBackfilling = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> _ingestGeoNoticeDto(GeoNoticeDto ev, {String? channel}) async {
+    final eventId = ev.eventId.trim();
+    if (eventId.isNotEmpty) {
+      if (_seenNostrNoticeEvents.contains(eventId)) return false;
+      _seenNostrNoticeEvents.add(eventId);
+    }
+
+    final area = channel ?? selectedAreaHash;
+    if (area == null || area.isEmpty) {
+      debugPrint('[Notice] drop event=$eventId reason=no-area');
+      return false;
+    }
+    final geo = ev.geohash.trim().toLowerCase();
+    if (geo.isEmpty || !Geohash.matchesChannel(geo, area)) {
+      debugPrint(
+        '[Notice] drop event=$eventId geohash=$geo channel=$area reason=mismatch',
+      );
+      return false;
+    }
+
+    final wire = parseNoticeWire(ev.contentJson);
+    if (wire == null) {
+      debugPrint('[Notice] drop event=$eventId reason=parse-failed');
+      return false;
+    }
+    if (wire.scope != 'geo') {
+      debugPrint('[Notice] drop event=$eventId reason=scope-${wire.scope}');
+      return false;
+    }
+    return _upsertNoticeFromWire(wire);
+  }
+
+  void _onNostrGeoNotice(GeoNoticeDto ev) {
+    unawaited(_ingestGeoNoticeDto(ev));
+  }
+
+  Future<bool> _upsertNoticeFromWire(
+    NoticeWireData wire, {
+    String? fallbackSenderId,
+  }) async {
+    if (_notices.any((n) => n.id == wire.noticeId)) return false;
+    if (wire.senderId == myUserId || fallbackSenderId == myUserId) {
+      return false;
+    }
+    final notice = wire.toLocalNotice().withSender(
+      wire.senderId ?? fallbackSenderId,
+    );
+    if (notice.isExpired) return false;
+    _notices.insert(0, notice);
+    await _persistNotices();
+    notifyListeners();
+    debugPrint('[Notice] backfill ingested id=${notice.id} scope=${notice.scope}');
+    return true;
   }
 
   void _onNostrGeoPresence(GeoPresenceDto ev) {
@@ -1585,6 +2301,14 @@ AnnouncementBoard? boardById(String id) {
     }
 
     final cacheKey = boundPeer?.id ?? pkHex;
+    if (boundPeer != null && rid.isNotEmpty) {
+      _pruneRotatedPeerPresence(
+        newRid: rid,
+        nick: ev.nick.trim(),
+        geohash: ev.geohash.trim().toLowerCase(),
+        keepKey: cacheKey,
+      );
+    }
     if (boundPeer != null) {
       // Drop legacy anon row for the same ephemeral Nostr pubkey if present.
       _nostrPresence.remove(pkHex);
@@ -1604,9 +2328,9 @@ AnnouncementBoard? boardById(String id) {
         nick: ev.nick.isNotEmpty
             ? ev.nick
             : (boundPeer != null
-                ? (boundPeer.displayName ??
-                    'peer·${rid.length >= 4 ? rid.substring(0, 4) : rid}')
-                : 'anon·${pkHex.length >= 4 ? pkHex.substring(0, 4) : pkHex}'),
+                  ? (boundPeer.displayName ??
+                        'peer·${rid.length >= 4 ? rid.substring(0, 4) : rid}')
+                  : 'anon·${pkHex.length >= 4 ? pkHex.substring(0, 4) : pkHex}'),
         geohash: ev.geohash,
         lastSeen: lastSeen,
         resilnetId: boundPeer?.id,
@@ -1615,17 +2339,125 @@ AnnouncementBoard? boardById(String id) {
     }
     _pruneNostrPresence();
     notifyListeners();
-    unawaited(_notifyFavoriteInArea());
+    unawaited(_notifyOnlineAppearancesFromNostr());
   }
 
   void _pruneNostrPresence() {
-    final cutoff = DateTime.now().millisecondsSinceEpoch -
+    final cutoff =
+        DateTime.now().millisecondsSinceEpoch -
         kNostrPresenceOnlineWindow.inMilliseconds;
     _nostrPresence.removeWhere((_, v) => v.lastSeen < cutoff);
   }
 
+  /// Drop stale rid when the same nick appears in the same geohash cell with a
+  /// newer identity (common after remote peer reminted RSA).
+  void _pruneRotatedPeerPresence({
+    required String newRid,
+    required String nick,
+    required String geohash,
+    required String keepKey,
+  }) {
+    if (nick.isEmpty || geohash.isEmpty) return;
+    final staleKeys = <String>[];
+    _nostrPresence.forEach((key, s) {
+      if (key == keepKey) return;
+      final otherId = s.resilnetId;
+      if (otherId != null &&
+          otherId != newRid &&
+          s.nick == nick &&
+          s.geohash.trim().toLowerCase() == geohash) {
+        staleKeys.add(key);
+      }
+    });
+    for (final k in staleKeys) {
+      final oldId = _nostrPresence[k]?.resilnetId;
+      _nostrPresence.remove(k);
+      debugPrint('[GeoPresence] pruned rotated identity $oldId -> $newRid');
+    }
+  }
+
+  /// Latest peer record for outbound E2EE — presence/mesh first, then SQLite.
+  Future<Peer?> resolveMessageablePeer(String peerId) async {
+    final id = peerId.trim();
+    if (id.isEmpty) return null;
+
+    Peer? latest;
+    final direct = _nostrPresence[id]?.peer;
+    if (direct != null && direct.publicKey.trim().isNotEmpty) {
+      latest = direct;
+    } else {
+      for (final s in _nostrPresence.values) {
+        if (s.resilnetId == id &&
+            s.peer != null &&
+            s.peer!.publicKey.trim().isNotEmpty) {
+          latest = s.peer;
+          break;
+        }
+      }
+    }
+    if (latest == null) {
+      for (final p in _mesh?.nearbyPeers ?? const <Peer>[]) {
+        if (p.id == id && p.publicKey.trim().isNotEmpty) {
+          latest = p;
+          break;
+        }
+      }
+    }
+    if (latest != null) {
+      await db.upsertPeer(latest);
+      return latest;
+    }
+    return db.getPeer(id);
+  }
+
+  /// Send a short sealed 1:1 text (hug/slap/mention follow-ups).
+  /// Returns false when peer has no known public key.
+  Future<bool> sendSealedTextToPeer({
+    required String peerId,
+    required String text,
+  }) async {
+    final body = text.trim();
+    if (body.isEmpty || !_e2eeEnabled) return false;
+    final peer = await resolveMessageablePeer(peerId);
+    final pub = peer?.publicKey.trim() ?? '';
+    if (peer == null || pub.isEmpty) return false;
+    final normalized = CryptoService.normalizePublicKey(pub);
+    if (CryptoService.publicKeyHash(normalized) != peer.id) return false;
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final pkg = crypto.encryptForRecipient(
+      plaintext: body,
+      receiverPublicPem: normalized,
+      senderId: myUserId,
+      receiverId: peer.id,
+      timestamp: ts,
+    );
+    final msg = ChatMessage(
+      id: _uuid.v4(),
+      senderId: myUserId,
+      receiverId: peer.id,
+      content: body,
+      encryptedPayload: pkg.encryptedPayload,
+      encryptedKey: pkg.encryptedKey,
+      signature: pkg.signature,
+      ttl: 5,
+      timestamp: ts,
+      status: MessageStatus.pending,
+      type: MessageType.direct,
+      payloadKind: PayloadKinds.text,
+    );
+    await persistChatMessage(msg);
+    await routeOutbound(msg);
+    return true;
+  }
+
+  Future<void> setPeerBlocked(String peerId, {required bool blocked}) async {
+    await db.setPeerBlocked(peerId, blocked);
+    notifyListeners();
+  }
+
   Future<void> _clearNostrGeoSubscription() async {
     await _nostr?.setGeoPresenceFilter(const []);
+    await _nostr?.setGeoNoticeFilter(const []);
   }
 
   void _stopGeoPresencePublishTimer() {
@@ -1638,21 +2470,19 @@ AnnouncementBoard? boardById(String id) {
       _stopGeoPresencePublishTimer();
       return;
     }
-    if (_feedChannel != FeedChannel.geo) {
-      _stopGeoPresencePublishTimer();
-      return;
-    }
     _geoPresencePublishTimer ??= Timer.periodic(
-      const Duration(seconds: 60),
+      const Duration(seconds: 45),
       (_) => unawaited(announceGeohashPresence()),
     );
   }
 
   /// Refresh mesh + Nostr presence for the current Area channel.
+  /// Runs whenever Internet/Auto is selected — not only on the Area feed —
+  /// so 1:1 / mesh UIs can still show Nostr-discovered people.
   Future<void> syncGeoPresence({bool forceAnnounce = false}) async {
-    if (!_transportMode.usesInternet || _feedChannel != FeedChannel.geo) {
+    if (!_transportMode.usesInternet) {
       await _clearNostrGeoSubscription();
-      if (!_transportMode.usesInternet) _stopGeoPresencePublishTimer();
+      _stopGeoPresencePublishTimer();
       await announceGeohashPresence(force: forceAnnounce);
       return;
     }
@@ -1673,6 +2503,7 @@ AnnouncementBoard? boardById(String id) {
       final cells = Geohash.nostrSubscribeCells(full, _geoPrecision);
       debugPrint('[GeoPresence] subscribe $cells');
       await _nostr?.setGeoPresenceFilter(cells);
+      unawaited(backfillGeoNotices());
       _ensureGeoPresencePublishTimer();
     } else {
       await _clearNostrGeoSubscription();
@@ -1682,31 +2513,95 @@ AnnouncementBoard? boardById(String id) {
 
   /// Resolve device location → geohash for the geo channel label.
   /// Also announces truncated geohash presence to nearby peers for Area UX.
+  /// GPS success overwrites manual geohash; on failure keeps manual/cached cell.
   Future<void> refreshGeohash() async {
     if (_geoRefreshing) return;
     _geoRefreshing = true;
     _geoError = null;
-    _geoNeedsPermission = false;
     notifyListeners();
     try {
-      final pos = await GeoService.getCurrentPosition();
-      if (pos == null) {
-        _geoNeedsPermission = true;
-        _currentGeohash = null;
-      } else {
+      final result = await GeoService.resolvePosition();
+      if (result.isSuccess) {
+        final pos = result.position!;
         _currentGeohash = Geohash.encode(
           pos.latitude,
           pos.longitude,
           precision: GeoPrecision.block.length,
         );
+        _geoLocationStatus = GeoLocationStatus.resolved;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove(_kManualGeohash);
+        await prefs.setString(_kCachedGeohash, _currentGeohash!);
+        debugPrint(
+          '[Geo] gps geohash=$_currentGeohash lastKnown=${result.usedLastKnown}',
+        );
         unawaited(syncGeoPresence(forceAnnounce: true));
+      } else {
+        _geoLocationStatus = result.status;
+        debugPrint('[Geo] refresh failed status=${result.status}');
+        if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+          _geoError = result.status.name;
+        }
       }
     } catch (e) {
       _geoError = e.toString();
-      debugPrint('[ResilNet] refreshGeohash failed: $e');
+      debugPrint('[Geo] refreshGeohash failed: $e');
+      if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+        _geoLocationStatus = GeoLocationStatus.unavailable;
+      }
     } finally {
       _geoRefreshing = false;
       notifyListeners();
+    }
+  }
+
+  /// Clear GPS/manual geohash so Area resets to `#—` until refresh/teleport.
+  Future<void> clearStoredGeohash() async {
+    _currentGeohash = null;
+    _geoLocationStatus = GeoLocationStatus.unavailable;
+    _geoError = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kManualGeohash);
+    await prefs.remove(_kCachedGeohash);
+    await _clearNostrGeoSubscription();
+    debugPrint('[Geo] cleared stored geohash');
+    notifyListeners();
+  }
+
+  /// Set geohash manually (teleport) — for iPads without GPS fix.
+  Future<bool> setManualGeohash(String raw) async {
+    final normalized = Geohash.normalizeFull(raw);
+    if (normalized.isEmpty) {
+      debugPrint('[Geo] manual geohash invalid raw=$raw');
+      return false;
+    }
+    _currentGeohash = normalized;
+    _geoLocationStatus = GeoLocationStatus.manual;
+    _geoError = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kManualGeohash, normalized);
+    debugPrint('[Geo] manual geohash set g=$normalized');
+    notifyListeners();
+    unawaited(syncGeoPresence(forceAnnounce: true));
+    return true;
+  }
+
+  void _restoreStoredGeohash(SharedPreferences prefs) {
+    final manual = prefs.getString(_kManualGeohash)?.trim();
+    if (manual != null && manual.isNotEmpty) {
+      final normalized = Geohash.normalizeFull(manual);
+      if (normalized.isNotEmpty) {
+        _currentGeohash = normalized;
+        _geoLocationStatus = GeoLocationStatus.manual;
+        debugPrint('[Geo] restored manual geohash g=$normalized');
+        return;
+      }
+    }
+    final cached = prefs.getString(_kCachedGeohash)?.trim();
+    if (cached != null && cached.isNotEmpty) {
+      _currentGeohash = cached;
+      _geoLocationStatus = GeoLocationStatus.resolved;
+      debugPrint('[Geo] restored cached geohash g=$cached');
     }
   }
 
@@ -1717,31 +2612,26 @@ AnnouncementBoard? boardById(String id) {
     return Geohash.atPrecision(h, _geoPrecision);
   }
 
-  /// Why Area people list is empty (for UI). [none] when not applicable or peers exist.
+  /// Why people list is empty (Area / 1:1 with internet discovery).
   GeoDiscoveryEmptyReason get geoDiscoveryEmptyReason {
-    if (_feedChannel != FeedChannel.geo) return GeoDiscoveryEmptyReason.none;
-    if (_geoNeedsPermission ||
-        _currentGeohash == null ||
-        _currentGeohash!.isEmpty) {
+    final discoveryFeed =
+        _feedChannel == FeedChannel.geo || _feedChannel == FeedChannel.directs;
+    if (!discoveryFeed) return GeoDiscoveryEmptyReason.none;
+    if (_transportMode.usesInternet &&
+        (_currentGeohash == null || _currentGeohash!.isEmpty)) {
       return GeoDiscoveryEmptyReason.noLocation;
     }
-    if (_transportMode == TransportMode.mesh) {
+    if (_transportMode == TransportMode.mesh &&
+        _feedChannel == FeedChannel.geo) {
       return GeoDiscoveryEmptyReason.meshOnly;
     }
     if (_transportMode.usesInternet && !isNostrOnline) {
       return GeoDiscoveryEmptyReason.noNostr;
     }
-    if (areaPresenceOnline().isEmpty) {
+    if (onlinePresenceForUi().isEmpty) {
       return GeoDiscoveryEmptyReason.waiting;
     }
     return GeoDiscoveryEmptyReason.none;
-  }
-
-  /// Nostr relay connection label for Area discovery UI, e.g. `2/4`.
-  String get nostrRelayLabel {
-    final n = _nostr;
-    if (n == null) return '0/0';
-    return '${n.connectedRelays}/${n.totalRelays}';
   }
 
   /// Merged Area people list (BLE mesh + anonymous Nostr presence).
@@ -1767,6 +2657,45 @@ AnnouncementBoard? boardById(String id) {
     );
   }
 
+  /// People icon / badge for the current feed (excludes self).
+  List<AreaPresenceEntry> onlinePresenceForUi() {
+    _pruneNostrPresence();
+    final me = myUserIdReady ? myUserId : '';
+    List<AreaPresenceEntry> list;
+    switch (_feedChannel) {
+      case FeedChannel.mesh:
+        final peers = _mesh?.nearbyPeers ?? const <Peer>[];
+        list = [
+          for (final p in peers)
+            if (p.id != me)
+              AreaPresenceEntry(
+                id: p.id,
+                label: p.displayName?.trim().isNotEmpty == true
+                    ? p.displayName!.trim()
+                    : formatShortPeerId(p.id),
+                source: PresenceSource.mesh,
+                geohash: p.geohash,
+                lastSeen: p.lastSeen,
+                peer: p,
+              ),
+        ];
+      case FeedChannel.geo:
+        list = areaPresenceOnline().where((e) => e.id != me).toList();
+      case FeedChannel.directs:
+        // 1:1: show BLE nearby + Nostr area presence when Internet/Auto.
+        list = mergeAreaPresence(
+          meshPeers: _mesh?.nearbyPeers ?? const <Peer>[],
+          nostrSightings: _nostrPresence.values.toList(),
+          channel: selectedAreaHash,
+          mode: _transportMode,
+          nowMs: DateTime.now().millisecondsSinceEpoch,
+        ).where((e) => e.id != me).toList();
+    }
+    return list;
+  }
+
+  int get onlinePresenceCount => onlinePresenceForUi().length;
+
   /// Nearby BLE peers considered online in the selected geohash area.
   ///
   /// Used for sealed area fan-out (must have RSA keys). Anonymous Nostr-only
@@ -1782,7 +2711,7 @@ AnnouncementBoard? boardById(String id) {
   Future<void> announceGeohashPresence({bool force = false}) async {
     var full = _currentGeohash;
     if (full == null || full.isEmpty) {
-      if (_feedChannel == FeedChannel.geo && _transportMode.usesInternet) {
+      if (_transportMode.usesInternet) {
         final since = DateTime.now().difference(_lastGeoRefreshAttempt);
         if (since >= const Duration(seconds: 30)) {
           _lastGeoRefreshAttempt = DateTime.now();
@@ -1794,7 +2723,7 @@ AnnouncementBoard? boardById(String id) {
     final channel = Geohash.atPrecision(full, _geoPrecision);
     if (channel.isEmpty) return;
     final since = DateTime.now().difference(_lastPresenceAnnounce);
-    if (!force && since < const Duration(seconds: 45)) return;
+    if (!force && since < const Duration(seconds: 30)) return;
     _lastPresenceAnnounce = DateTime.now();
 
     // Internet: geohash presence with ResilNet RSA rid+pk (messageable without QR).
@@ -1875,11 +2804,7 @@ AnnouncementBoard? boardById(String id) {
     if (!_e2eeEnabled || !isReady) return 0;
     final body = text.trim();
     if (body.isEmpty) return 0;
-    return _sendSealedFanOut(
-      peers: mesh.nearbyPeers,
-      body: body,
-      kind: kind,
-    );
+    return _sendSealedFanOut(peers: mesh.nearbyPeers, body: body, kind: kind);
   }
 
   Future<int> _sendSealedFanOut({
@@ -1890,20 +2815,30 @@ AnnouncementBoard? boardById(String id) {
   }) async {
     var sent = 0;
     for (final peer in peers) {
-      if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
+      if (peer.id == myUserId) continue;
+      final resolved = await resolveMessageablePeer(peer.id) ?? peer;
+      final pub = resolved.publicKey.trim();
+      if (pub.isEmpty) continue;
       try {
+        final normalized = CryptoService.normalizePublicKey(pub);
+        if (CryptoService.publicKeyHash(normalized) != resolved.id) {
+          debugPrint(
+            '[ResilNet] skip sealed fan-out — peer ${resolved.id} pubkey mismatch',
+          );
+          continue;
+        }
         final ts = DateTime.now().millisecondsSinceEpoch;
         final pkg = crypto.encryptForRecipient(
           plaintext: body,
-          receiverPublicPem: peer.publicKey,
+          receiverPublicPem: normalized,
           senderId: myUserId,
-          receiverId: peer.id,
+          receiverId: resolved.id,
           timestamp: ts,
         );
         final msg = ChatMessage(
           id: _uuid.v4(),
           senderId: myUserId,
-          receiverId: peer.id,
+          receiverId: resolved.id,
           encryptedPayload: pkg.encryptedPayload,
           encryptedKey: pkg.encryptedKey,
           signature: pkg.signature,
@@ -1913,7 +2848,9 @@ AnnouncementBoard? boardById(String id) {
           type: MessageType.direct,
           payloadKind: kind,
         );
-        await persistChatMessage(msg);
+        if (kind != PayloadKinds.notice) {
+          await persistChatMessage(msg);
+        }
         await routeOutbound(msg, internetOnly: internetOnly);
         sent++;
       } catch (e) {
@@ -1943,7 +2880,7 @@ AnnouncementBoard? boardById(String id) {
   Future<void> panicWipeLocalIdentity() async {
     final oldId = myUserIdReady ? myUserId : null;
     debugPrint('[ResilNet] panicWipeLocalIdentity start oldId=$oldId');
-    await _stopRadios();
+    await _stopRadios(reason: 'panic-wipe', includeNostr: true);
 
     // Drop queued sealed envelopes BEFORE any post-wipe Nostr flush.
     try {
@@ -1972,10 +2909,15 @@ AnnouncementBoard? boardById(String id) {
     _sessionMessages.clear();
     _systemLines.clear();
     _notices.clear();
+    _noticeDeliveredTo.clear();
     _nostrPresence.clear();
     _favoritePeerIds.clear();
     _favoriteNearbyNotified.clear();
     _favoriteAreaNotified.clear();
+    _peerOnlineNotified.clear();
+    _lastPresenceSummaryMesh = -1;
+    _lastPresenceSummaryNostr = -1;
+    unawaited(notifications.clearPresenceSummary());
     _bumpChatData();
 
     final prefs = await SharedPreferences.getInstance();
@@ -1995,6 +2937,9 @@ AnnouncementBoard? boardById(String id) {
     _pendingBoardKeyRequests.clear();
     await prefs.setBool(_kOnboardingDone, false);
     _onboardingCompleted = false;
+    try {
+      await _storage.delete(key: _kOnboardingDoneSecure);
+    } catch (_) {}
 
     try {
       await _storage.delete(key: _kDisplayName);
@@ -2003,10 +2948,7 @@ AnnouncementBoard? boardById(String id) {
 
     await crypto.wipeAndRegenerate();
 
-    _ackHandler = AckHandlerService(
-      database: db,
-      myUserId: crypto.myUserId,
-    );
+    _ackHandler = AckHandlerService(database: db, myUserId: crypto.myUserId);
     _onAckHandlerChanged = () {
       _bumpChatData();
       notifyListeners();
@@ -2106,7 +3048,8 @@ AnnouncementBoard? boardById(String id) {
       return routed;
     }
 
-    var transports = _applyBridgePolicy(
+    var transports = _applyBridgePolicyForMessage(
+      msg,
       routed.transports.isNotEmpty
           ? routed.transports
           : <TransportTypeDto>[routed.transport],
@@ -2193,11 +3136,15 @@ AnnouncementBoard? boardById(String id) {
 
   Future<bool> _publishOutboundViaNostr(MessagePacketDto packet) async {
     final sync = _nostr;
-    if (sync == null || !sync.running) {
+    if (sync == null) {
       debugPrint('[ResilNet] Nostr unavailable — keep pending id=${packet.id}');
       return false;
     }
     try {
+      if (!sync.running) {
+        await sync.start();
+        _attachGeoPresenceListener();
+      }
       return await sync.publishPacket(packet);
     } catch (e, st) {
       debugPrint('[ResilNet] Nostr publish failed id=${packet.id}: $e\n$st');
@@ -2228,6 +3175,15 @@ AnnouncementBoard? boardById(String id) {
       final msg = meta.message;
       if (msg == null) return;
 
+      if (msg.payloadKind == PayloadKinds.notice) {
+        final accepted = await mesh.applyIncomingFromRouter(msg);
+        if (accepted) {
+          await _ingestIncomingNotice(msg);
+        }
+        notifyListeners();
+        return;
+      }
+
       final accepted = await mesh.applyIncomingFromRouter(msg);
       if (!accepted) return;
       if (msg.payloadKind != PayloadKinds.presence) {
@@ -2250,6 +3206,9 @@ AnnouncementBoard? boardById(String id) {
   Future<void> markConversationRead(String peerId) async {
     final unread = await db.getUnreadIncomingMessages(myUserId, peerId);
     if (unread.isEmpty) return;
+    debugPrint(
+      '[ACK] markConversationRead peer=$peerId unread=${unread.length}',
+    );
     final now = DateTime.now();
     for (final m in unread) {
       await db.markMessagesRead([m.id], now);
@@ -2281,17 +3240,19 @@ AnnouncementBoard? boardById(String id) {
       ttl: dto.ttl,
       payloadTag: PayloadTagDto.ack,
     );
-    final ts = routed.transports.isNotEmpty ? routed.transports : [routed.transport];
+    final ts = routed.transports.isNotEmpty
+        ? routed.transports
+        : [routed.transport];
     return !ts.every((t) => t == TransportTypeDto.offlineQueue);
   }
 
-  Future<void> refreshPermissions() async {
+  Future<void> refreshPermissions({bool startRadiosIfGranted = true}) async {
     if (!isReady) return;
     _permissionsGranted = await _hasAllRequiredPermissions();
-    if (_permissionsGranted && !_radioPaused) {
-      unawaited(_startRadios());
+    if (startRadiosIfGranted && _permissionsGranted && !_radioPaused) {
+      unawaited(_startRadios(reason: 'refresh-permissions'));
     } else if (!_permissionsGranted) {
-      await _stopRadios();
+      await _stopRadios(reason: 'permissions-missing');
     }
     notifyListeners();
   }
@@ -2302,7 +3263,7 @@ AnnouncementBoard? boardById(String id) {
     if (_permissionsGranted && !_radioPaused && isReady) {
       try {
         if (!(_mesh?.running ?? false)) {
-          await _startRadios();
+          await _startRadios(reason: 'ensure-ble-radios-started');
         }
       } catch (e) {
         debugPrint('[ResilNet] ensureBleRadiosStarted failed: $e');
@@ -2329,21 +3290,27 @@ AnnouncementBoard? boardById(String id) {
     });
     debugPrint('[ResilNet] permissionsGranted=$_permissionsGranted');
     if (_permissionsGranted && !_radioPaused) {
-      unawaited(_startRadios());
+      unawaited(_startRadios(reason: 'request-permissions-granted'));
     }
     notifyListeners();
     return _permissionsGranted;
   }
 
-  /// หยุด BLE ชั่วคราวตอนเปิดกล้อง (กันชน radio / UI ค้างบน iOS)
+  /// หยุด BLE ชั่วคราวตอนเปิดกล้อง (กันชน radio / UI ค้างบน iOS).
+  /// ไม่หยุด Nostr — ไม่งั้น geo presence จะเงียบหลังสแกน QR.
   Future<void> pauseRadiosForCamera() async {
     if (_radioPaused) return;
     _radioPaused = true;
     notifyListeners();
     try {
-      await _stopRadios();
+      await _mesh?.stop();
     } catch (e) {
-      debugPrint('[ResilNet] pauseRadiosForCamera: $e');
+      debugPrint('[ResilNet] pause mesh for camera: $e');
+    }
+    try {
+      await _esp32?.stop();
+    } catch (e) {
+      debugPrint('[ResilNet] pause esp32 for camera: $e');
     }
   }
 
@@ -2353,47 +3320,79 @@ AnnouncementBoard? boardById(String id) {
     _radioPaused = false;
     notifyListeners();
     if (_permissionsGranted && isReady) {
-      unawaited(_startRadios());
+      unawaited(_startRadios(reason: 'camera-resume'));
+    }
+    if (_transportMode.usesInternet || _feedChannel == FeedChannel.geo) {
+      unawaited(syncGeoPresence(forceAnnounce: true));
     }
   }
 
-  Future<void> _startRadios() async {
+  Future<void> _startRadios({String reason = 'unknown'}) async {
     if (!isReady || _radioPaused) return;
-    try {
-      await mesh.start();
-    } catch (e) {
-      debugPrint('[ResilNet] mesh.start failed: $e');
+    if (_startingRadios) {
+      debugPrint('[Radio] start skip reason=already-running trigger=$reason');
+      return;
     }
+    _startingRadios = true;
+    final op = _nextOpId('radio-start');
+    debugPrint(
+      '[Radio] start begin op=$op reason=$reason permissions=$_permissionsGranted paused=$_radioPaused',
+    );
     try {
-      await esp32.startBackgroundScan();
-    } catch (e) {
-      debugPrint('[ResilNet] esp32.start failed: $e');
-    }
-    try {
-      await _udp?.start();
-    } catch (e) {
-      debugPrint('[ResilNet] udp.start failed: $e');
-    }
-    try {
-      await _nostr?.reconnect();
-    } catch (e) {
-      debugPrint('[ResilNet] nostr.reconnect failed: $e');
+      try {
+        await mesh.start();
+        debugPrint('[BLE] mesh.start ok');
+      } catch (e) {
+        debugPrint('[ResilNet] mesh.start failed: $e');
+      }
+      try {
+        await esp32.startBackgroundScan();
+      } catch (e) {
+        debugPrint('[ResilNet] esp32.start failed: $e');
+      }
+      try {
+        await _udp?.start();
+      } catch (e) {
+        debugPrint('[ResilNet] udp.start failed: $e');
+      }
+    } finally {
+      _startingRadios = false;
+      debugPrint('[Radio] start end op=$op reason=$reason');
     }
   }
 
-  Future<void> _stopRadios() async {
+  Future<void> _stopRadios({
+    String reason = 'unknown',
+    bool includeNostr = false,
+  }) async {
+    if (_stoppingRadios) {
+      debugPrint('[Radio] stop skip reason=already-running trigger=$reason');
+      return;
+    }
+    _stoppingRadios = true;
+    final op = _nextOpId('radio-stop');
+    debugPrint(
+      '[Radio] stop begin op=$op reason=$reason includeNostr=$includeNostr',
+    );
     try {
-      await _mesh?.stop();
-    } catch (_) {}
-    try {
-      await _esp32?.stop();
-    } catch (_) {}
-    try {
-      await _udp?.stop();
-    } catch (_) {}
-    try {
-      await _nostr?.stop();
-    } catch (_) {}
+      try {
+        await _mesh?.stop();
+      } catch (_) {}
+      try {
+        await _esp32?.stop();
+      } catch (_) {}
+      try {
+        await _udp?.stop();
+      } catch (_) {}
+      if (includeNostr) {
+        try {
+          await _nostr?.stop();
+        } catch (_) {}
+      }
+    } finally {
+      _stoppingRadios = false;
+      debugPrint('[Radio] stop end op=$op reason=$reason');
+    }
   }
 
   Future<bool> _hasAllRequiredPermissions() async {
@@ -2428,6 +3427,7 @@ AnnouncementBoard? boardById(String id) {
     _retentionTimer?.cancel();
     _stopGeoPresencePublishTimer();
     unawaited(_geoPresenceSub?.cancel());
+    unawaited(_geoNoticeSub?.cancel());
     unawaited(_clearNostrGeoSubscription());
     _rustIncomingSub?.cancel();
 
@@ -2452,7 +3452,7 @@ AnnouncementBoard? boardById(String id) {
     final uiCb = _onResilnetUi;
     if (uiCb != null) resilnet.removeListener(uiCb);
 
-    unawaited(_stopRadios());
+    unawaited(_stopRadios(reason: 'dispose', includeNostr: true));
     _ackQueue?.dispose();
     _udp?.dispose();
     resilnet.dispose();

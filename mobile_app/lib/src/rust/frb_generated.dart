@@ -70,7 +70,7 @@ class ResilNetCore
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 760302760;
+  int get rustContentHash => 1043576424;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -115,9 +115,20 @@ abstract class ResilNetCoreApi extends BaseApi {
 
   bool crateApiRouterApiIsRouterInitialized();
 
+  Future<List<GeoNoticeDto>> crateApiNostrApiNostrFetchGeoNotices({
+    required List<String> geohashes,
+    BigInt? sinceSecsAgo,
+  });
+
   Future<String> crateApiNostrApiNostrPublish({
     required ResilNetEnvelopeDto envelope,
     required String kind,
+  });
+
+  Future<String> crateApiNostrApiNostrPublishGeoNotice({
+    required String geohash,
+    required String contentJson,
+    BigInt? expiresAt,
   });
 
   Future<String> crateApiNostrApiNostrPublishGeoPresence({
@@ -133,9 +144,16 @@ abstract class ResilNetCoreApi extends BaseApi {
 
   Future<void> crateApiNostrApiNostrReconnect();
 
+  Future<void> crateApiNostrApiNostrSetGeoNoticeFilter({
+    required List<String> geohashes,
+    BigInt? sinceSecsAgo,
+  });
+
   Future<void> crateApiNostrApiNostrSetGeoPresenceFilter({
     required List<String> geohashes,
   });
+
+  Stream<GeoNoticeDto> crateApiNostrApiNostrSubscribeGeoNotices();
 
   Stream<GeoPresenceDto> crateApiNostrApiNostrSubscribeGeoPresence();
 
@@ -512,6 +530,41 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       const TaskConstMeta(debugName: "is_router_initialized", argNames: []);
 
   @override
+  Future<List<GeoNoticeDto>> crateApiNostrApiNostrFetchGeoNotices({
+    required List<String> geohashes,
+    BigInt? sinceSecsAgo,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_String(geohashes, serializer);
+          sse_encode_opt_box_autoadd_u_64(sinceSecsAgo, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 13,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_geo_notice_dto,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiNostrApiNostrFetchGeoNoticesConstMeta,
+        argValues: [geohashes, sinceSecsAgo],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNostrApiNostrFetchGeoNoticesConstMeta =>
+      const TaskConstMeta(
+        debugName: "nostr_fetch_geo_notices",
+        argNames: ["geohashes", "sinceSecsAgo"],
+      );
+
+  @override
   Future<String> crateApiNostrApiNostrPublish({
     required ResilNetEnvelopeDto envelope,
     required String kind,
@@ -525,7 +578,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 14,
             port: port_,
           );
         },
@@ -547,6 +600,43 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       );
 
   @override
+  Future<String> crateApiNostrApiNostrPublishGeoNotice({
+    required String geohash,
+    required String contentJson,
+    BigInt? expiresAt,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(geohash, serializer);
+          sse_encode_String(contentJson, serializer);
+          sse_encode_opt_box_autoadd_u_64(expiresAt, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 15,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiNostrApiNostrPublishGeoNoticeConstMeta,
+        argValues: [geohash, contentJson, expiresAt],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNostrApiNostrPublishGeoNoticeConstMeta =>
+      const TaskConstMeta(
+        debugName: "nostr_publish_geo_notice",
+        argNames: ["geohash", "contentJson", "expiresAt"],
+      );
+
+  @override
   Future<String> crateApiNostrApiNostrPublishGeoPresence({
     required String geohash,
     required String nick,
@@ -564,7 +654,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 16,
             port: port_,
           );
         },
@@ -597,7 +687,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 17,
             port: port_,
           );
         },
@@ -627,7 +717,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 18,
             port: port_,
           );
         },
@@ -646,6 +736,41 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       const TaskConstMeta(debugName: "nostr_reconnect", argNames: []);
 
   @override
+  Future<void> crateApiNostrApiNostrSetGeoNoticeFilter({
+    required List<String> geohashes,
+    BigInt? sinceSecsAgo,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_String(geohashes, serializer);
+          sse_encode_opt_box_autoadd_u_64(sinceSecsAgo, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 19,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiNostrApiNostrSetGeoNoticeFilterConstMeta,
+        argValues: [geohashes, sinceSecsAgo],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNostrApiNostrSetGeoNoticeFilterConstMeta =>
+      const TaskConstMeta(
+        debugName: "nostr_set_geo_notice_filter",
+        argNames: ["geohashes", "sinceSecsAgo"],
+      );
+
+  @override
   Future<void> crateApiNostrApiNostrSetGeoPresenceFilter({
     required List<String> geohashes,
   }) {
@@ -657,7 +782,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 20,
             port: port_,
           );
         },
@@ -679,6 +804,41 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       );
 
   @override
+  Stream<GeoNoticeDto> crateApiNostrApiNostrSubscribeGeoNotices() {
+    final sink = RustStreamSink<GeoNoticeDto>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_StreamSink_geo_notice_dto_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 21,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_String,
+          ),
+          constMeta: kCrateApiNostrApiNostrSubscribeGeoNoticesConstMeta,
+          argValues: [sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiNostrApiNostrSubscribeGeoNoticesConstMeta =>
+      const TaskConstMeta(
+        debugName: "nostr_subscribe_geo_notices",
+        argNames: ["sink"],
+      );
+
+  @override
   Stream<GeoPresenceDto> crateApiNostrApiNostrSubscribeGeoPresence() {
     final sink = RustStreamSink<GeoPresenceDto>();
     unawaited(
@@ -690,7 +850,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 18,
+              funcId: 22,
               port: port_,
             );
           },
@@ -722,7 +882,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 23,
             port: port_,
           );
         },
@@ -750,7 +910,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 20,
+            funcId: 24,
             port: port_,
           );
         },
@@ -780,7 +940,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 25,
             port: port_,
           );
         },
@@ -808,7 +968,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 22,
+            funcId: 26,
             port: port_,
           );
         },
@@ -836,7 +996,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_u_8(value, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_opt_box_autoadd_payload_tag_dto,
@@ -867,7 +1027,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 28,
             port: port_,
           );
         },
@@ -894,7 +1054,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 25,
+            funcId: 29,
             port: port_,
           );
         },
@@ -924,7 +1084,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 26,
+              funcId: 30,
               port: port_,
             );
           },
@@ -963,7 +1123,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 27,
+            funcId: 31,
             port: port_,
           );
         },
@@ -992,6 +1152,14 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return AnyhowException(raw as String);
+  }
+
+  @protected
+  RustStreamSink<GeoNoticeDto> dco_decode_StreamSink_geo_notice_dto_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
   }
 
   @protected
@@ -1049,6 +1217,26 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_u_64(raw);
+  }
+
+  @protected
+  GeoNoticeDto dco_decode_geo_notice_dto(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return GeoNoticeDto(
+      eventId: dco_decode_String(arr[0]),
+      geohash: dco_decode_String(arr[1]),
+      contentJson: dco_decode_String(arr[2]),
+      createdAt: dco_decode_u_64(arr[3]),
+    );
+  }
+
+  @protected
   GeoPresenceDto dco_decode_geo_presence_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1075,6 +1263,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   List<String> dco_decode_list_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
+  List<GeoNoticeDto> dco_decode_list_geo_notice_dto(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_geo_notice_dto).toList();
   }
 
   @protected
@@ -1163,6 +1357,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   PayloadTagDto? dco_decode_opt_box_autoadd_payload_tag_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_payload_tag_dto(raw);
+  }
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
   }
 
   @protected
@@ -1280,6 +1480,14 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  RustStreamSink<GeoNoticeDto> sse_decode_StreamSink_geo_notice_dto_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
   RustStreamSink<GeoPresenceDto> sse_decode_StreamSink_geo_presence_dto_Sse(
     SseDeserializer deserializer,
   ) {
@@ -1341,6 +1549,27 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
+  GeoNoticeDto sse_decode_geo_notice_dto(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_eventId = sse_decode_String(deserializer);
+    var var_geohash = sse_decode_String(deserializer);
+    var var_contentJson = sse_decode_String(deserializer);
+    var var_createdAt = sse_decode_u_64(deserializer);
+    return GeoNoticeDto(
+      eventId: var_eventId,
+      geohash: var_geohash,
+      contentJson: var_contentJson,
+      createdAt: var_createdAt,
+    );
+  }
+
+  @protected
   GeoPresenceDto sse_decode_geo_presence_dto(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_eventId = sse_decode_String(deserializer);
@@ -1375,6 +1604,20 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     var ans_ = <String>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<GeoNoticeDto> sse_decode_list_geo_notice_dto(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <GeoNoticeDto>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_geo_notice_dto(deserializer));
     }
     return ans_;
   }
@@ -1501,6 +1744,17 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_payload_tag_dto(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_64(deserializer));
     } else {
       return null;
     }
@@ -1635,6 +1889,23 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  void sse_encode_StreamSink_geo_notice_dto_Sse(
+    RustStreamSink<GeoNoticeDto> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_geo_notice_dto,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
   void sse_encode_StreamSink_geo_presence_dto_Sse(
     RustStreamSink<GeoPresenceDto> self,
     SseSerializer serializer,
@@ -1717,6 +1988,21 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_geo_notice_dto(GeoNoticeDto self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.eventId, serializer);
+    sse_encode_String(self.geohash, serializer);
+    sse_encode_String(self.contentJson, serializer);
+    sse_encode_u_64(self.createdAt, serializer);
+  }
+
+  @protected
   void sse_encode_geo_presence_dto(
     GeoPresenceDto self,
     SseSerializer serializer,
@@ -1743,6 +2029,18 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_geo_notice_dto(
+    List<GeoNoticeDto> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_geo_notice_dto(item, serializer);
     }
   }
 
@@ -1850,6 +2148,16 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_payload_tag_dto(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_64(self, serializer);
     }
   }
 

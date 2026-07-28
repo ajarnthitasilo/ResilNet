@@ -7,6 +7,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
+import '../core/resilnet_payload_type.dart';
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_radio_codec.dart';
 import '../models/chat_message.dart';
@@ -361,7 +362,10 @@ class UdpTransportService extends ChangeNotifier {
     ChatMessage msg, {
     void Function(List<Uint8List> chunks)? onChunksEncoded,
   }) async {
-    final ciphertext = ResilNetChunkCodec.ciphertextFromMessage(msg);
+    final ciphertext = ResilNetChunkCodec.ciphertextFromMessage(
+      msg,
+      payloadType: ResilNetPayloadType.fromMessageKind(msg.payloadKind),
+    );
     final chunks = ResilNetChunkCodec.encodeChunks(ciphertext);
     onChunksEncoded?.call(chunks);
     return _sendChunkPayloads(

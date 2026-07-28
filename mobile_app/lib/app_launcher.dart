@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,7 @@ import 'widgets/app_lifecycle_handler.dart';
 
 /// โหลดหลังเฟรม BootSplash — Rust / Nostr / BLE
 Future<void> launchFullApp() async {
+  debugPrint('[Bootstrap] launchFullApp');
   final appState = AppState();
   runApp(ResilNetApp(appState: appState));
   await Future<void>.delayed(Duration.zero);
@@ -23,16 +23,19 @@ Future<void> launchFullApp() async {
 
 Future<void> _bootstrap(AppState appState) async {
   try {
-    await appState.init().timeout(
-      const Duration(seconds: 25),
-      onTimeout: () {
-        debugPrint('[ResilNet] AppState.init timed out (25s)');
-        throw TimeoutException('AppState.init');
-      },
-    );
-    debugPrint('[ResilNet] AppState.init complete');
+    debugPrint('[Bootstrap] init begin');
+    await appState
+        .init(reason: 'bootstrap')
+        .timeout(
+          const Duration(seconds: 25),
+          onTimeout: () {
+            debugPrint('[ResilNet] AppState.init timed out (25s)');
+            throw TimeoutException('AppState.init');
+          },
+        );
+    debugPrint('[Bootstrap] init complete');
   } catch (e, st) {
-    debugPrint('[ResilNet] startup init failed: $e\n$st');
+    debugPrint('[Bootstrap] init failed: $e\n$st');
     appState.markInitFailed(e.toString());
   }
 }
@@ -74,12 +77,12 @@ class ResilNetApp extends StatelessWidget {
               home: !s.initDone
                   ? const _BootScreen()
                   : (s.initError != null && !s.isReady)
-                      ? _BootErrorScreen(message: s.initError!)
-                      : !s.permissionsGranted
-                          ? const PermissionScreen()
-                          : !s.onboardingCompleted
-                              ? const OnboardingScreen()
-                              : const ChatListScreen(),
+                  ? _BootErrorScreen(message: s.initError!)
+                  : !s.permissionsGranted
+                  ? const PermissionScreen()
+                  : !s.onboardingCompleted
+                  ? const OnboardingScreen()
+                  : const ChatListScreen(),
             );
           },
         ),
@@ -103,9 +106,9 @@ class _BootScreen extends StatelessWidget {
             Text(
               l10n.appTitle,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: const Color(0xFF10B981),
-                    fontWeight: FontWeight.w700,
-                  ),
+                color: const Color(0xFF10B981),
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: 18),
             const SizedBox(
@@ -120,10 +123,60 @@ class _BootScreen extends StatelessWidget {
   }
 }
 
-class _BootErrorScreen extends StatelessWidget {
+class _BootErrorScreen extends StatefulWidget {
   const _BootErrorScreen({required this.message});
 
   final String message;
+
+  @override
+  State<_BootErrorScreen> createState() => _BootErrorScreenState();
+}
+
+class _BootErrorScreenState extends State<_BootErrorScreen> {
+  bool _recovering = false;
+
+  Future<void> _runRecovery() async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.bootRecoveryConfirmTitle),
+          content: Text(l10n.bootRecoveryConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
+              child: Text(l10n.bootRecoveryAction),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _recovering = true);
+    try {
+      await context.read<AppState>().recoverFromBootFailure();
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.bootRecoverySuccess)));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.bootRecoveryFailed('$e'))));
+    } finally {
+      if (mounted) {
+        setState(() => _recovering = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +189,11 @@ class _BootErrorScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, color: Colors.orangeAccent, size: 42),
+              const Icon(
+                Icons.error_outline,
+                color: Colors.orangeAccent,
+                size: 42,
+              ),
               const SizedBox(height: 16),
               Text(
                 l10n.bootFailedTitle,
@@ -144,15 +201,40 @@ class _BootErrorScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                message,
+                widget.message,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 20),
               FilledButton(
-                onPressed: () => context.read<AppState>().retryInit(),
+                onPressed: _recovering
+                    ? null
+                    : () => context.read<AppState>().retryInit(),
                 child: Text(l10n.retry),
               ),
+              const SizedBox(height: 12),
+              OutlinedButton(
+                onPressed: _recovering ? null : _runRecovery,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.redAccent,
+                  side: const BorderSide(color: Colors.redAccent),
+                ),
+                child: Text(l10n.bootRecoveryAction),
+              ),
+              if (_recovering) ...[
+                const SizedBox(height: 16),
+                const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.bootRecoveryRunning,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ],
           ),
         ),

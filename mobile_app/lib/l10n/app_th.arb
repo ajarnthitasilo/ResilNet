@@ -5,6 +5,19 @@
   "preparingSystem": "กำลังเตรียมระบบ…",
   "bootFailedTitle": "เริ่มระบบไม่สำเร็จ",
   "retry": "ลองอีกครั้ง",
+  "bootRecoveryAction": "เริ่มตัวตนใหม่ (ลบข้อมูลในเครื่อง)",
+  "bootRecoveryConfirmTitle": "เริ่มตัวตนใหม่?",
+  "bootRecoveryConfirmBody": "การกระทำนี้จะลบแชท กุญแจ และตัวตนในเครื่องนี้ถาวร\nเพื่อนต้องสแกน QR ของคุณใหม่\nย้อนกลับไม่ได้",
+  "bootRecoveryRunning": "กำลังรีเซ็ตตัวตนในเครื่อง…",
+  "bootRecoverySuccess": "รีเซ็ตตัวตนในเครื่องแล้ว",
+  "bootRecoveryFailed": "รีเซ็ตตัวตนไม่สำเร็จ: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "cancel": "ยกเลิก",
   "save": "บันทึก",
   "close": "ปิด",
@@ -48,12 +61,67 @@
   "geoPeerDiscoverOnlySnack": "presence นิรนามแบบเก่า — รอ peer ที่ผูกกุญแจ หรือสแกน QR",
   "geoInternetDiscoverHint": "การค้นพบ Area ผ่านเน็ตต้องต่อ Nostr (Settings → Transport → Internet/Auto)",
   "geoEmptyNoLocation": "ยังไม่ได้พิกัด — อนุญาต GPS แล้วกด refresh เพื่อประกาศ geohash บน Nostr",
-  "geoEmptyNoNostr": "Nostr relay ยังไม่ต่อ — ตรวจเน็ตแล้ว reconnect",
+  "geoEmptyNeedsPermission": "ไม่อนุญาตตำแหน่ง — เปิดใน Settings → Privacy → Location",
+  "geoEmptyServicesDisabled": "ปิด Location Services — เปิดใน Settings",
+  "geoEmptyNoGpsFix": "หาพิกัดไม่ได้ (iPad Wi‑Fi มักเจอ) — ใส่ geohash เองด้านล่าง",
+  "geoEmptyTeleportHint": "แตะไอคอนสถานที่ → ใส่ geohash (เช่น w5) → เทเลพอร์ต",
+  "geoSetGeohashManually": "ใส่ geohash",
+  "geoTeleportHint": "ไม่มี GPS? ใส่ geohash 2–7 ตัว (เช่น w5) แล้วกดเทเลพอร์ต",
+  "geoTeleportInvalid": "geohash ไม่ถูกต้อง — ใช้ตัวอักษร base32 เท่านั้น (เช่น w5 หรือ w5jt8)",
+  "geoTeleportOk": "ตั้ง Area เป็น {channel} แล้ว",
+  "geoManualActive": "Area แบบ manual: {channel} (refresh GPS จะทับค่านี้)",
+  "geoEmptyNoNostr": "Nostr ยังไม่พร้อม — กด Reconnect (จะเป็น 0/0 จนกว่า init สำเร็จ)",
   "geoEmptyMeshOnly": "Transport เป็น Mesh อย่างเดียว — เปลี่ยนเป็น Internet หรือ Auto เพื่อค้นหาผ่าน Nostr",
   "geoEmptyWaiting": "ยังไม่มีใครใน {channel} — เปิด Area + Internet ทั้งสองเครื่อง แล้วรอ ~60 วินาที",
   "geoChannelFallback": "#area",
   "geoRefreshLocation": "Refresh ตำแหน่ง",
+  "settingsClearLocationTitle": "ลบพิกัดตำแหน่ง",
+  "settingsClearLocationSubtitle": "ลบ GPS / geohash ที่เทเลพอร์ตไว้ (Area กลับเป็น #—)",
+  "settingsClearLocationConfirmTitle": "ลบพิกัด?",
+  "settingsClearLocationConfirmBody": "ลบ geohash ที่เก็บในเครื่องนี้ คุณสามารถรีเฟรช GPS หรือเทเลพอร์ตใหม่ได้ภายหลัง",
+  "settingsClearLocationAction": "ลบพิกัด",
+  "settingsClearLocationSnack": "ลบพิกัดแล้ว",
+  "chatVoiceTooLarge": "ข้อความเสียงใหญ่เกินไป — อัดไม่เกิน ~8 วินาที",
+  "chatVoiceNeedInternet": "ข้อความเสียงต้องใช้ Internet (Nostr) — ใหญ่เกินสำหรับ BLE อย่างเดียว",
+  "chatVoiceSentInternet": "ส่งข้อความเสียงผ่าน Internet แล้ว",
+  "noticeAnonMention": "mention",
+  "noticeAnonDm": "ข้อความตรง",
+  "noticeAnonHug": "hug",
+  "noticeAnonSlap": "slap",
+  "noticeAnonBlock": "บล็อก",
+  "noticeAnonNeedKey": "ยังไม่มีกุญแจสาธารณะ — แลก QR ก่อนส่ง 1:1",
+  "noticeAnonActionSent": "ส่งแล้ว",
+  "noticeAnonBlocked": "บล็อก {anon} แล้ว",
+  "noticeAnonHugMessage": "* กอด {anon} *",
+  "noticeAnonSlapMessage": "* ตบ {anon} *",
   "geoReconnectNostr": "Reconnect Nostr",
+  "nostrSectionTitle": "Nostr relays",
+  "nostrSectionSubtitle": "ข้อความผ่านอินเทอร์เน็ตและการค้นหา Area ใช้ relay เหล่านี้ หากออฟไลน์ค้าง ให้กด reconnect",
+  "nostrStatusOnline": "เชื่อมต่อแล้ว {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "nostrStatusOffline": "ออฟไลน์ — มีรายการ relay แต่ยังไม่ต่อ",
+  "nostrStatusNotInit": "ยังไม่เริ่ม (0/0) — กด Reconnect เพื่อเริ่มระบบ",
+  "nostrReconnectAction": "Reconnect Nostr",
+  "nostrReconnectOk": "เชื่อม Nostr แล้ว ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "nostrReconnectFailed": "ยังออฟไลน์ — ตรวจ Wi‑Fi/เซลลูลาร์ หรือลองใหม่",
+  "nostrReconnectFailedDetail": "ล้มเหลว: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "nostrReconnecting": "กำลังเชื่อม relay…",
   "geoDiscoveryStatus": "{channel} · Nostr {relays}",
   "geoPeerInternetSubtitle": "อินเทอร์เน็ต (Nostr) ใน {channel} • พร้อมแชตผนึก",
   "@geoPeerInternetSubtitle": {
@@ -87,10 +155,10 @@
   "settingsData": "จัดการข้อมูล",
   "settingsDataHint": "ลบข้อความในเครื่องเพื่อลดขนาดฐานข้อมูล — ไม่กระทบตัวตน คีย์ หรือรายชื่อเพื่อน",
   "settingsSaveHistoryTitle": "บันทึกประวัติข้อความ",
-  "settingsSaveHistorySubtitle": "เมื่อปิด ข้อความยังถูกเข้ารหัส E2EE และส่งตามปกติ แต่จะไม่เก็บในประวัติแชตบนเครื่อง (โหมดชั่วคราว)",
+  "settingsSaveHistorySubtitle": "เมื่อปิด ข้อความยังถูกเข้ารหัส E2EE ตอนส่ง และเก็บเฉพาะในเซสชันนี้ (ไม่ลงประวัติแชต) — ข้อความที่คุณพิมพ์ยังอ่านได้บนเครื่องนี้",
   "settingsPrivacy": "ความเป็นส่วนตัว",
   "settingsE2eeTitle": "การเข้ารหัสปลายทางถึงปลายทาง (E2EE)",
-  "settingsE2eeSubtitle": "ผนึกข้อความด้วย RSA-OAEP + AES-GCM ก่อนส่ง (แนะนำให้เปิด)",
+  "settingsE2eeSubtitle": "เปิดตลอด — ผนึกข้อความด้วย RSA-OAEP + AES-GCM ก่อนส่ง โหนดกลางอ่านเนื้อหาไม่ได้",
   "settingsScreenshotTitle": "แจ้งเตือนการแคปหน้าจอ",
   "settingsScreenshotSubtitle": "แสดงบรรทัดระบบในแชตเมื่ออุปกรณ์นี้แคปหน้าจอ",
   "settingsNostrExpiryTitle": "ระยะเวลาเก็บข้อความบน Nostr",
@@ -118,9 +186,16 @@
   "settingsClearedSnack": "ล้างข้อมูลเรียบร้อยแล้ว",
   "settingsVersion": "เวอร์ชัน {version}",
   "meshBleScanning": "BLE: กำลังค้นหา Node",
+  "meshBleEsp32Scanning": "ESP32: กำลังหาโหนดใกล้ ๆ",
   "meshBleSyncing": "BLE: กำลังซิงก์กับ ESP32",
   "meshNostrPublishing": "Nostr: กำลังเผยแพร่",
-  "meshBleIdle": "BLE: สแตนด์บาย",
+  "meshBleIdle": "BLE mesh เปิด — ยังไม่พบมือถือใกล้ ๆ",
+  "meshBlePeersNearby": "BLE mesh — พบมือถือใกล้ ๆ {count} เครื่อง",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "meshBleNeedsPermission": "BLE: ต้องขอสิทธิ์ก่อน",
   "meshBlePausedCamera": "BLE หยุดชั่วคราว (กล้อง) — แตะ เริ่ม BLE",
   "meshBleStopped": "BLE ปิดอยู่ — เปิด Bluetooth แล้วแตะ เริ่ม BLE",
@@ -218,6 +293,7 @@
   "peersBlocked": "บล็อกแล้ว",
   "peersNearbyBle": "ใกล้เคียง (BLE)",
   "peersRecentlyOnline": "ออนไลน์ล่าสุด",
+  "peersOnlineInArea": "ออนไลน์ในพื้นที่",
   "peersSeenMinutesAgo": "เห็นเมื่อ {minutes} นาทีที่แล้ว",
   "peersOffline": "ออฟไลน์",
   "peersBlockedSnack": "บล็อก {id} แล้ว",
@@ -233,6 +309,21 @@
   "onlinePeopleTitle": "คนออนไลน์",
   "onlinePeopleEmpty": "ยังไม่มีใครออนไลน์ที่นี่",
   "onlinePeopleCount": "ออนไลน์ {count} คน",
+  "onlinePeopleDirectsChannel": "1:1 · ใกล้ตัว + พื้นที่",
+  "peerOnlineMeshTitle": "มีคนออนไลน์บน mesh",
+  "peerOnlineMeshBody": "{name} อยู่ใกล้บน mesh",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "peerOnlineAreaTitle": "มีคนออนไลน์ในพื้นที่",
+  "peerOnlineAreaBody": "{name} ออนไลน์ผ่าน Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "locationSheetTitle": "#ช่องตามตำแหน่ง",
   "locationSheetIntro": "คุยกับคนใกล้ตัวผ่าน geohash แบบหยาบ — ไม่ใช่ GPS แม่นยำ Presence บน Internet ใช้นามแฝง Nostr",
   "locationMeshSubtitle": "#bluetooth • ~10–50 ม.",
@@ -241,9 +332,29 @@
   "homeComposeHint": "ข้อความถึง {channel}",
   "homeComposePublicHint": "ส่งข้อความถึง {channel} — สาธารณะ",
   "messageExpiryTitle": "หมดอายุใน",
-  "voicePttHold": "แตะไมค์เพื่ออัดเสียง",
-  "voicePttRelease": "แตะอีกครั้งเพื่อส่ง",
-  "voicePttRecording": "กำลังอัด… แตะเพื่อส่ง",
+  "voiceRecordTapToStart": "แตะเพื่อบันทึกข้อความเสียง",
+  "voiceRecordTooShort": "อัดสั้นเกินไป — ลองใหม่",
+  "voiceRecordFailed": "บันทึกเสียงไม่สำเร็จ — ลองใหม่",
+  "voicePttHold": "กดค้างเพื่ออัด",
+  "voicePttRelease": "ปล่อยเพื่อดูตัวอย่าง",
+  "voicePttRecording": "กำลังบันทึก…",
+  "voicePttDraftReady": "พร้อมส่งข้อความเสียง",
+  "voicePttDiscard": "ลบ",
+  "voicePttReRecord": "อัดใหม่",
+  "voicePttSend": "ส่งข้อความเสียง",
+  "voicePttPlayPreview": "ฟังตัวอย่าง",
+  "voicePttStopPreview": "หยุดฟัง",
+  "noticesBackfilling": "กำลังโหลดประกาศ…",
+  "noticesNostrOnline": "Nostr ออนไลน์",
+  "noticesNostrOffline": "Nostr ออฟไลน์ — กระดานประกาศต้องใช้อินเทอร์เน็ต",
+  "noticesBackfillLoaded": "ดึงประกาศแล้ว {count} รายการ",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noticePublishFailed": "โพสต์ประกาศไปกระดานพื้นที่ไม่สำเร็จ ตรวจการเชื่อมต่อ Nostr",
+  "chatNoticeHidden": "ประกาศพื้นที่ — เปิดหน้าประกาศ",
   "identityDisplayNameTitle": "ชื่อที่แสดง",
   "identitySaveName": "บันทึกชื่อ",
   "identityUserIdLabel": "รหัสผู้ใช้ (Public Key Hash)",

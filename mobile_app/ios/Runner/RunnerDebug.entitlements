@@ -2,9 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>keychain-access-groups</key>
-	<array>
-		<string>$(AppIdentifierPrefix)com.ajarnnarin.resilnet</string>
-	</array>
+	<!-- Default app Keychain only — no Keychain Sharing group.
+	     Custom groupId previously caused SecItem -34018 on device. -->
 </dict>
 </plist>

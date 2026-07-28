@@ -3,18 +3,20 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
 import '../core/payload_kinds.dart';
+import '../core/voice_payload.dart';
+import '../core/peer_id.dart';
 import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
-import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
 import '../state/app_state.dart';
 import '../widgets/geo_discovery_empty.dart';
@@ -29,8 +31,8 @@ import 'location_channel_sheet.dart';
 import 'notices_sheet.dart';
 import 'online_people_sheet.dart';
 import 'panic_wipe.dart';
-import 'peer_list_screen.dart';
 import 'settings_screen.dart';
+import 'voice_record_sheet.dart';
 
 /// Home feed — clean bitchat-style chrome with sheets for mode pickers.
 class ChatListScreen extends StatefulWidget {
@@ -43,10 +45,8 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   final _peerController = TextEditingController();
   final _compose = TextEditingController();
-  final _audio = AudioRecorderService();
   NoticeExpiry _expiry = NoticeExpiry.sevenDays;
   bool _sending = false;
-  bool _recordingVoice = false;
   int _titleTapCount = 0;
   DateTime? _titleTapAt;
 
@@ -54,7 +54,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void dispose() {
     _peerController.dispose();
     _compose.dispose();
-    _audio.dispose();
     super.dispose();
   }
 
@@ -237,18 +236,39 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
   }
 
-  Future<void> _startPublicVoice(AppState s) async {
-    if (_recordingVoice || _sending) return;
+  Future<void> _openPublicVoice(AppState s) async {
+    if (_sending) return;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
+
+    debugPrint('[PTT] mic-tap public channel=${s.feedChannel}');
+    HapticFeedback.lightImpact();
     try {
-      await _audio.startRecording();
-      if (mounted) setState(() => _recordingVoice = true);
+      final result = await showVoiceRecordSheet(context);
+      if (!mounted || result == null) return;
+
+      final wirePlain = VoicePayload.encodeWire(
+        bytes: result.bytes,
+        ext: result.ext,
+      );
+      setState(() => _sending = true);
+      try {
+        final n = s.feedChannel == FeedChannel.geo
+            ? await s.sendAreaPublicText(wirePlain, kind: PayloadKinds.audio)
+            : await s.sendMeshPublicText(wirePlain, kind: PayloadKinds.audio);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
+        );
+      } finally {
+        if (mounted) setState(() => _sending = false);
+      }
     } catch (e) {
+      debugPrint('[PTT] public voice failed: $e');
       if (!mounted) return;
       showMicPermissionError(
         context,
@@ -260,36 +280,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
   }
 
-  Future<void> _stopAndSendPublicVoice(AppState s) async {
-    if (!_recordingVoice) return;
-    final opus = await _audio.stopRecording();
-    if (mounted) setState(() => _recordingVoice = false);
-    if (opus == null || opus.isEmpty) return;
-    if (!s.e2eeEnabled) return;
-
-    final b64 = base64Encode(opus);
-    setState(() => _sending = true);
-    try {
-      final n = s.feedChannel == FeedChannel.geo
-          ? await s.sendAreaPublicText(b64, kind: PayloadKinds.audio)
-          : await s.sendMeshPublicText(b64, kind: PayloadKinds.audio);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.geoPublicSent(n))),
-      );
-    } finally {
-      if (mounted) setState(() => _sending = false);
-    }
-  }
-
   void _onPeoplePressed(AppState s) {
-    if (s.feedChannel == FeedChannel.directs) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const PeerListScreen()),
-      );
-    } else {
-      showOnlinePeopleSheet(context);
-    }
+    // Always open online people sheet so badge and list stay consistent.
+    // Full member directory remains available from PeerList / identity flows.
+    showOnlinePeopleSheet(context);
   }
 
   Widget _compactIcon({
@@ -311,9 +305,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
-    final onlineCount = s.feedChannel == FeedChannel.mesh
-        ? (s.isReady ? s.mesh.nearbyPeers.length : 0)
-        : s.areaPresenceOnline().length;
+    final onlineCount = s.isReady ? s.onlinePresenceCount : 0;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -373,13 +365,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
               icon: const Icon(Icons.campaign_outlined),
             ),
           _compactIcon(
-            tooltip: s.feedChannel == FeedChannel.directs
-                ? l10n.networkMembersTooltip
-                : '${l10n.onlinePeopleTooltip} ($onlineCount)',
+            tooltip: '${l10n.onlinePeopleTooltip} ($onlineCount)',
             onPressed: () => _onPeoplePressed(s),
             icon: Badge(
-              isLabelVisible: s.feedChannel != FeedChannel.directs &&
-                  onlineCount > 0,
+              isLabelVisible: onlineCount > 0,
               label: Text('$onlineCount'),
               child: const Icon(Icons.groups_outlined),
             ),
@@ -507,33 +496,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
               children: [
                 IconButton(
                   tooltip: l10n.chatAttachImage,
-                  onPressed: _sending || _recordingVoice
-                      ? null
-                      : () => _sendPublicImage(s),
+                  onPressed: _sending ? null : () => _sendPublicImage(s),
                   icon: const Icon(Icons.image_outlined),
                 ),
                 IconButton(
-                  tooltip: _recordingVoice
-                      ? l10n.voicePttRecording
-                      : l10n.voicePttHold,
-                  onPressed: _sending
-                      ? null
-                      : () {
-                          if (_recordingVoice) {
-                            unawaited(_stopAndSendPublicVoice(s));
-                          } else {
-                            unawaited(_startPublicVoice(s));
-                          }
-                        },
-                  icon: Icon(
-                    _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
-                    color: _recordingVoice ? Colors.redAccent : null,
-                  ),
+                  tooltip: l10n.chatVoiceLabel,
+                  onPressed: _sending ? null : () => unawaited(_openPublicVoice(s)),
+                  icon: const Icon(Icons.mic_none_outlined),
                 ),
                 Expanded(
                   child: TextField(
                     controller: _compose,
-                    enabled: !_sending && !_recordingVoice,
+                    enabled: !_sending,
                     minLines: 1,
                     maxLines: 4,
                     decoration: InputDecoration(
@@ -545,9 +519,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
                 const SizedBox(width: 6),
                 IconButton.filled(
-                  onPressed: _sending || _recordingVoice
-                      ? null
-                      : () => unawaited(_sendPublic(s)),
+                  onPressed: _sending ? null : () => unawaited(_sendPublic(s)),
                   icon: _sending
                       ? const SizedBox(
                           width: 18,
@@ -664,13 +636,15 @@ class _DirectsBody extends StatelessWidget {
                     title: FutureBuilder<String>(
                       future: s.db.resolveDisplayName(peer.id),
                       builder: (context, nameSnap) => Text(
-                        nameSnap.data ?? peer.displayName ?? peer.id,
+                        nameSnap.data ??
+                            peer.displayName ??
+                            formatShortPeerId(peer.id),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     subtitle: Text(
-                      peer.id,
+                      formatShortPeerId(peer.id),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontFamily: 'monospace'),
@@ -751,7 +725,11 @@ class _MeshListBody extends StatelessWidget {
                     final peer = peers[i];
                     return ListTile(
                       leading: Identicon(id: peer.id),
-                      title: Text(peer.displayName ?? peer.id),
+                      title: Text(
+                        peer.displayName ?? formatShortPeerId(peer.id),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       trailing: const Icon(Icons.lock_outline, size: 18),
                       onTap: () => onOpen(context, peer.id),
                     );
@@ -772,11 +750,7 @@ class _GeoListBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
-    final presence = s.areaPresenceOnline();
-
-    if (s.geoNeedsPermission) {
-      return GeoDiscoveryEmptyPanel(channelLabel: s.geoChannelLabel);
-    }
+    final presence = s.onlinePresenceForUi();
 
     return presence.isEmpty
         ? GeoDiscoveryEmptyPanel(channelLabel: s.geoChannelLabel)

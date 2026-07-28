@@ -32,6 +32,7 @@ class PayloadKinds {
   static bool isChatVisible(String? kind) {
     final k = (kind ?? text).trim();
     return k != presence &&
+        k != notice &&
         k != boardKeyRequest &&
         k != boardKeyGrant &&
         k != boardPost;

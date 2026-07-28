@@ -1,14 +1,64 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
 import 'mic_permission.dart';
 
-/// Push-to-Talk voice note recorder — 16 kHz Opus, สูงสุด 15 วินาที / <20 KB
+/// Bytes + container extension from a completed recording.
+class VoiceRecordingStopResult {
+  const VoiceRecordingStopResult({
+    required this.bytes,
+    required this.ext,
+    this.filePath,
+  });
+
+  final Uint8List bytes;
+  /// File extension used for playback, e.g. `opus` or `m4a`.
+  final String ext;
+  /// Temp file kept alive for reliable preview playback (optional).
+  final String? filePath;
+}
+
+/// Detect container from magic bytes.
+String detectAudioExt(Uint8List bytes) {
+  if (bytes.length >= 4 &&
+      bytes[0] == 0x4F &&
+      bytes[1] == 0x67 &&
+      bytes[2] == 0x67 &&
+      bytes[3] == 0x53) {
+    return 'opus';
+  }
+  if (bytes.length >= 4 &&
+      bytes[0] == 0x63 &&
+      bytes[1] == 0x61 &&
+      bytes[2] == 0x66 &&
+      bytes[3] == 0x66) {
+    return 'caf';
+  }
+  if (bytes.length >= 8 &&
+      bytes[4] == 0x66 &&
+      bytes[5] == 0x74 &&
+      bytes[6] == 0x79 &&
+      bytes[7] == 0x70) {
+    return 'm4a';
+  }
+  return 'm4a';
+}
+
+/// True when [bytes] look like a playable audio container (not just non-empty).
+@visibleForTesting
+bool isValidAudioBytes(Uint8List bytes) {
+  if (bytes.length < 64) return false;
+  final ext = detectAudioExt(bytes);
+  if (ext == 'opus' || ext == 'caf' || ext == 'm4a') return true;
+  return false;
+}
+
+/// Push-to-Talk voice note recorder — 16 kHz, สูงสุด 15 วินาที
 class AudioRecorderService {
   AudioRecorderService()
       : _recorder = AudioRecorder(),
@@ -17,51 +67,92 @@ class AudioRecorderService {
   final AudioRecorder _recorder;
   final AudioPlayer _player;
 
-  static const maxDuration = Duration(seconds: 15);
+  static const maxDuration = Duration(seconds: 8);
   static const sampleRate = 16000;
-  static const maxBytes = 20 * 1024;
+  /// Soft cap so sealed voice fits BLE chunk limit (~51 KB ciphertext) and Nostr.
+  static const maxBytes = 18 * 1024;
+
+  static bool _playbackContextReady = false;
 
   Timer? _maxTimer;
   String? _activePath;
+  String? _activeExt;
+  String? _previewPath;
   bool _recording = false;
 
   bool get isRecording => _recording;
+  String? get activeExt => _activeExt;
 
   Future<bool> hasPermission() => micPermissionGranted();
+
+  Future<void> _ensurePlaybackContext() async {
+    if (_playbackContextReady) return;
+    await AudioPlayer.global.setAudioContext(
+      AudioContext(
+        iOS: AudioContextIOS(
+          category: AVAudioSessionCategory.playAndRecord,
+          options: {
+            AVAudioSessionOptions.defaultToSpeaker,
+            AVAudioSessionOptions.allowBluetooth,
+          },
+        ),
+        android: const AudioContextAndroid(
+          isSpeakerphoneOn: true,
+          stayAwake: true,
+          contentType: AndroidContentType.speech,
+          usageType: AndroidUsageType.voiceCommunication,
+          audioFocus: AndroidAudioFocus.gain,
+        ),
+      ),
+    );
+    _playbackContextReady = true;
+  }
+
+  List<({String path, String ext, RecordConfig config})> _encoderAttempts(
+    String dir,
+    int stamp,
+  ) {
+    final m4a = (
+      path: '$dir/resilnet_voice_$stamp.m4a',
+      ext: 'm4a',
+      config: const RecordConfig(
+        encoder: AudioEncoder.aacLc,
+        sampleRate: sampleRate,
+        bitRate: 24000,
+        numChannels: 1,
+      ),
+    );
+    final opus = (
+      path: '$dir/resilnet_voice_$stamp.opus',
+      ext: 'opus',
+      config: const RecordConfig(
+        encoder: AudioEncoder.opus,
+        sampleRate: sampleRate,
+        bitRate: 24000,
+        numChannels: 1,
+      ),
+    );
+    // iOS AAC is reliable; Opus often yields empty files on device.
+    if (Platform.isIOS) return [m4a, opus];
+    return [opus, m4a];
+  }
 
   Future<void> startRecording() async {
     if (_recording) return;
     await ensureMicPermission();
+    await _deletePreviewFile();
 
-    final dir = await getTemporaryDirectory();
+    final dir = (await getTemporaryDirectory()).path;
     final stamp = DateTime.now().millisecondsSinceEpoch;
 
-    // Prefer Opus; fall back to AAC if the platform encoder is unavailable.
     Object? lastError;
-    for (final attempt in [
-      (
-        path: '${dir.path}/resilnet_voice_$stamp.opus',
-        config: const RecordConfig(
-          encoder: AudioEncoder.opus,
-          sampleRate: sampleRate,
-          bitRate: 32000,
-          numChannels: 1,
-        ),
-      ),
-      (
-        path: '${dir.path}/resilnet_voice_$stamp.m4a',
-        config: const RecordConfig(
-          encoder: AudioEncoder.aacLc,
-          sampleRate: sampleRate,
-          bitRate: 32000,
-          numChannels: 1,
-        ),
-      ),
-    ]) {
+    for (final attempt in _encoderAttempts(dir, stamp)) {
       try {
         await _recorder.start(attempt.config, path: attempt.path);
         _activePath = attempt.path;
+        _activeExt = attempt.ext;
         _recording = true;
+        debugPrint('[PTT] recording to ${attempt.path} ext=${attempt.ext}');
         _maxTimer?.cancel();
         _maxTimer = Timer(maxDuration, () {
           unawaited(stopRecording());
@@ -69,66 +160,142 @@ class AudioRecorderService {
         return;
       } catch (e) {
         lastError = e;
+        debugPrint('[PTT] encoder ${attempt.ext} failed: $e');
       }
     }
     throw StateError('เริ่มอัดเสียงไม่สำเร็จ: $lastError');
   }
 
-  /// หยุดอัดแล้วคืน Opus bytes (null ถ้าว่างหรือเกินขนาด)
-  Future<Uint8List?> stopRecording() async {
+  Future<({Uint8List bytes, String ext})?> _readRecordingFile(
+    String filePath,
+    String fallbackExt,
+  ) async {
+    if (filePath.isEmpty) return null;
+    final file = File(filePath);
+    final attempts = Platform.isIOS ? 20 : 10;
+    for (var attempt = 0; attempt < attempts; attempt++) {
+      if (await file.exists()) {
+        final len = await file.length();
+        if (len >= 64) {
+          final raw = await file.readAsBytes();
+          if (raw.isNotEmpty && isValidAudioBytes(raw)) {
+            final ext = detectAudioExt(raw);
+            if (raw.length > maxBytes) {
+              debugPrint('[PTT] recording too large: ${raw.length}');
+              return null;
+            }
+            return (bytes: Uint8List.fromList(raw), ext: ext);
+          }
+          if (raw.isNotEmpty && attempt >= attempts - 3) {
+            debugPrint(
+              '[PTT] invalid audio header len=${raw.length} '
+              'ext=$fallbackExt magic=${raw.take(8).toList()}',
+            );
+          }
+        }
+      }
+      await Future<void>.delayed(
+        Duration(milliseconds: Platform.isIOS ? 100 : 60),
+      );
+    }
+    return null;
+  }
+
+  Future<void> _deletePreviewFile() async {
+    final path = _previewPath;
+    _previewPath = null;
+    if (path != null && path.isNotEmpty) {
+      await File(path).delete().catchError((_) => File(path));
+    }
+  }
+
+  /// Stop recording and return bytes + container extension.
+  Future<VoiceRecordingStopResult?> stopRecording() async {
     _maxTimer?.cancel();
     _maxTimer = null;
     if (!_recording) return null;
 
-    final path = await _recorder.stop();
+    final fallbackExt = _activeExt ?? 'm4a';
+    final savedPath = _activePath;
+
+    String? stopPath;
+    try {
+      stopPath = await _recorder.stop();
+    } catch (e) {
+      debugPrint('[PTT] recorder.stop error: $e');
+    }
     _recording = false;
     _activePath = null;
+    _activeExt = null;
 
-    final filePath = path ?? '';
-    if (filePath.isEmpty) return null;
-
-    final file = File(filePath);
-    if (!await file.exists()) return null;
-
-    final bytes = await file.readAsBytes();
-    await file.delete().catchError((_) => file);
-
-    if (bytes.isEmpty) return null;
-    if (bytes.length > maxBytes) {
-      return Uint8List.sublistView(bytes, 0, maxBytes);
+    if (Platform.isIOS) {
+      await Future<void>.delayed(const Duration(milliseconds: 200));
     }
-    return Uint8List.fromList(bytes);
+
+    final filePath = (stopPath != null && stopPath.isNotEmpty)
+        ? stopPath
+        : (savedPath ?? '');
+    debugPrint('[PTT] stop path=$filePath ext=$fallbackExt stopReturn=$stopPath');
+
+    final read = await _readRecordingFile(filePath, fallbackExt);
+    if (read == null) {
+      debugPrint('[PTT] stopRecording invalid or empty path=$filePath');
+      if (filePath.isNotEmpty) {
+        await File(filePath).delete().catchError((_) => File(filePath));
+      }
+      return null;
+    }
+
+    await _deletePreviewFile();
+    _previewPath = filePath;
+    debugPrint(
+      '[PTT] stop ok bytes=${read.bytes.length} ext=${read.ext} path=$filePath',
+    );
+    return VoiceRecordingStopResult(
+      bytes: read.bytes,
+      ext: read.ext,
+      filePath: filePath,
+    );
   }
 
   Future<void> cancelRecording() async {
     _maxTimer?.cancel();
     _maxTimer = null;
+    final savedPath = _activePath;
     if (_recording) {
-      final path = await _recorder.stop();
-      _recording = false;
-      if (path != null) {
-        await File(path).delete().catchError((_) => File(path));
+      try {
+        final path = await _recorder.stop();
+        final toDelete = (path != null && path.isNotEmpty) ? path : savedPath;
+        if (toDelete != null && toDelete.isNotEmpty) {
+          await File(toDelete).delete().catchError((_) => File(toDelete));
+        }
+      } catch (e) {
+        debugPrint('[PTT] cancelRecording error: $e');
       }
+      _recording = false;
     }
     _activePath = null;
+    _activeExt = null;
   }
 
-  Future<void> playBytes(Uint8List bytes) async {
+  Future<void> playFile(String path, {String? ext}) async {
+    await _ensurePlaybackContext();
+    await _player.stop();
+    await _player.setReleaseMode(ReleaseMode.stop);
+    await _player.setPlayerMode(PlayerMode.mediaPlayer);
+    final source = DeviceFileSource(path);
+    debugPrint('[PTT] play file=$path ext=$ext');
+    await _player.play(source);
+  }
+
+  Future<void> playBytes(Uint8List bytes, {String? ext}) async {
+    final resolvedExt = ext ?? detectAudioExt(bytes);
     final dir = await getTemporaryDirectory();
-    // Detect container loosely; players accept both Opus and AAC in practice.
-    final ext = bytes.length >= 4 &&
-            bytes[0] == 0x4F &&
-            bytes[1] == 0x67 &&
-            bytes[2] == 0x67 &&
-            bytes[3] == 0x53
-        ? 'opus'
-        : 'm4a';
     final path =
-        '${dir.path}/resilnet_play_${DateTime.now().millisecondsSinceEpoch}.$ext';
+        '${dir.path}/resilnet_play_${DateTime.now().millisecondsSinceEpoch}.$resolvedExt';
     final file = File(path);
     await file.writeAsBytes(bytes, flush: true);
-    await _player.stop();
-    await _player.play(DeviceFileSource(path));
+    await playFile(path, ext: resolvedExt);
   }
 
   Future<void> stopPlayback() => _player.stop();
@@ -140,5 +307,6 @@ class AudioRecorderService {
     if (_activePath != null) {
       File(_activePath!).delete().catchError((_) => File(_activePath!));
     }
+    unawaited(_deletePreviewFile());
   }
 }

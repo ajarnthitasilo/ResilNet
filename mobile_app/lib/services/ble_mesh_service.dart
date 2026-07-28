@@ -7,6 +7,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
 import '../core/resilnet_ack_codec.dart';
+import '../core/resilnet_payload_type.dart';
 import '../core/payload_kinds.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
@@ -51,6 +52,7 @@ class BleMeshService extends ChangeNotifier {
   final _ble = FlutterReactiveBle();
 
   StreamSubscription<DiscoveredDevice>? _scanSub;
+  StreamSubscription<BleStatus>? _bleStatusSub;
   StreamSubscription<ConnectionStateUpdate>? _connSub;
   StreamSubscription<List<int>>? _notifySub;
   Timer? _sendTimer;
@@ -66,21 +68,25 @@ class BleMeshService extends ChangeNotifier {
 
   String? _connectedDeviceId;
   String? get connectedDeviceId => _connectedDeviceId;
+  DateTime _lastNearbyLog = DateTime.fromMillisecondsSinceEpoch(0);
 
   Future<void> start() async {
     if (_running) return;
     _running = true;
     _wireChunkArqCallbacks();
+    debugPrint('[BLE] start scan+mesh requested');
     notifyListeners();
 
-    _scanSub = _ble
-        .scanForDevices(withServices: const [], scanMode: ScanMode.balanced)
-        .listen((d) {
-      _nearby[d.id] = d;
-      unawaited(_handleDiscoveredDevice(d));
-    }, onError: (e) {
-      debugPrint('[BleMesh] scan error: $e');
+    _bleStatusSub?.cancel();
+    _bleStatusSub = _ble.statusStream.listen((status) {
+      debugPrint('[BLE] adapter status=$status');
+      if (!_running) return;
+      if (status == BleStatus.ready && _scanSub == null) {
+        _startScanning();
+      }
     });
+
+    _startScanning();
 
     _sendTimer = Timer.periodic(const Duration(seconds: 3), (_) {
       unawaited(_pumpSendQueue());
@@ -94,9 +100,11 @@ class BleMeshService extends ChangeNotifier {
   Future<void> stop() async {
     _running = false;
     await _scanSub?.cancel();
+    await _bleStatusSub?.cancel();
     await _connSub?.cancel();
     await _notifySub?.cancel();
     _scanSub = null;
+    _bleStatusSub = null;
     _connSub = null;
     _notifySub = null;
     _sendTimer?.cancel();
@@ -109,6 +117,27 @@ class BleMeshService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _startScanning() {
+    _scanSub?.cancel();
+    _scanSub = _ble
+        .scanForDevices(
+          withServices: const [],
+          scanMode: ScanMode.lowLatency,
+          requireLocationServicesEnabled: false,
+        )
+        .listen((d) {
+          _nearby[d.id] = d;
+          if (d.name.isNotEmpty) {
+            debugPrint('[BLE] discovered device=${d.id} name=${d.name}');
+          } else {
+            debugPrint('[BLE] discovered device=${d.id}');
+          }
+          unawaited(_handleDiscoveredDevice(d));
+        }, onError: (e) {
+          debugPrint('[BLE] scan error: $e');
+        });
+  }
+
   DateTime _lastIdentityAttempt = DateTime.fromMillisecondsSinceEpoch(0);
   final Set<String> _identityAttempted = {};
 
@@ -118,6 +147,10 @@ class BleMeshService extends ChangeNotifier {
     final parsed = _tryParsePeerFromServiceData(d, now);
     if (parsed != null) {
       await _db.upsertPeer(parsed.copyWith(deviceId: d.id, lastSeen: now));
+      debugPrint('[BLE] discovered peer id=${parsed.id} via serviceData');
+      if (_connectedDeviceId == null) {
+        unawaited(connect(d.id));
+      }
       return;
     }
 
@@ -133,7 +166,13 @@ class BleMeshService extends ChangeNotifier {
     try {
       final peer = await readPeerIdentity(d.id).timeout(const Duration(seconds: 3));
       await _db.upsertPeer(peer.copyWith(deviceId: d.id, lastSeen: now));
-    } catch (_) {}
+      debugPrint('[BLE] discovered peer id=${peer.id} via identity characteristic');
+      if (_connectedDeviceId == null) {
+        unawaited(connect(d.id));
+      }
+    } catch (e) {
+      debugPrint('[BLE] identity read failed device=${d.id}: $e');
+    }
   }
 
   Peer? _tryParsePeerFromServiceData(DiscoveredDevice d, int now) {
@@ -185,10 +224,46 @@ class BleMeshService extends ChangeNotifier {
   }
 
   Future<void> _recomputeNearbyPeers() async {
-    _nearbyPeers = await _db.getActivePeers(activeWithinMs: 15000);
+    // 45s window — BLE + presence/QR lastSeen bumps stay visible a bit longer.
+    _nearbyPeers = await _db.getActivePeers(activeWithinMs: 45000);
+    if (_nearbyPeers.isEmpty && _nearby.isNotEmpty) {
+      // Discovery-only fallback for iOS where identity characteristic read can
+      // intermittently fail in background/locked states.
+      final fallback = _nearby.values
+          .where(
+            (d) =>
+                d.name.toLowerCase().contains('resil') ||
+                d.serviceData.containsKey(_svcDataIdKey),
+          )
+          .map(
+            (d) => Peer(
+              id: 'ble:${d.id}',
+              publicKey: '',
+              displayName: d.name.isNotEmpty ? d.name : 'BLE peer',
+              geohash: null,
+              isVerifiedIssuer: false,
+              isBlocked: false,
+              lastSeen: DateTime.now().millisecondsSinceEpoch,
+            ),
+          )
+          .toList();
+      if (fallback.isNotEmpty) {
+        _nearbyPeers = fallback;
+      }
+    }
     notifyListeners();
     await resilnet?.refreshBlePeerCount(nearbyPeerCount);
+    final now = DateTime.now();
+    if (now.difference(_lastNearbyLog) >= const Duration(seconds: 15)) {
+      _lastNearbyLog = now;
+      debugPrint(
+        '[BLE] heartbeat nearbyRaw=${_nearby.length} nearbyPeers=${_nearbyPeers.length} connected=${_connectedDeviceId != null}',
+      );
+    }
   }
+
+  /// Refresh nearby list after QR import or external lastSeen update.
+  Future<void> refreshNearbyPeers() => _recomputeNearbyPeers();
 
   void _wireChunkArqCallbacks() {
     final rust = resilnet;
@@ -237,21 +312,26 @@ class BleMeshService extends ChangeNotifier {
   }
 
   Future<void> connect(String deviceId) async {
+    if (_connectedDeviceId == deviceId) return;
     await _connSub?.cancel();
     await _notifySub?.cancel();
+    debugPrint('[BLE] connect attempt device=$deviceId');
 
     _connSub = _ble.connectToDevice(id: deviceId, connectionTimeout: const Duration(seconds: 8)).listen(
       (u) async {
         if (u.connectionState == DeviceConnectionState.connected) {
           _connectedDeviceId = deviceId;
+          debugPrint('[BLE] connected device=$deviceId');
           notifyListeners();
           await _subscribeIncoming(deviceId);
         } else if (u.connectionState == DeviceConnectionState.disconnected) {
+          debugPrint('[BLE] disconnected device=$deviceId');
           _connectedDeviceId = null;
           notifyListeners();
         }
       },
-      onError: (_) {
+      onError: (e) {
+        debugPrint('[BLE] connect failed device=$deviceId err=$e');
         _connectedDeviceId = null;
         notifyListeners();
       },
@@ -358,6 +438,15 @@ class BleMeshService extends ChangeNotifier {
       final geo = (msg.content ?? '').trim().toLowerCase();
       if (geo.isNotEmpty) {
         await _db.updatePeerGeohash(msg.senderId, geo);
+      }
+      notifyListeners();
+      return true;
+    }
+
+    // Area/mesh notices — bulletin ingest only; never chat history.
+    if (msg.payloadKind == PayloadKinds.notice) {
+      if (!await _acceptSignedInbound(msg)) {
+        return false;
       }
       notifyListeners();
       return true;
@@ -512,7 +601,10 @@ class BleMeshService extends ChangeNotifier {
       deviceId: deviceId,
     );
 
-    final ciphertext = ResilNetChunkCodec.ciphertextFromMessage(msg);
+    final ciphertext = ResilNetChunkCodec.ciphertextFromMessage(
+      msg,
+      payloadType: ResilNetPayloadType.fromMessageKind(msg.payloadKind),
+    );
     final chunks = ResilNetChunkCodec.encodeChunks(ciphertext);
     final rust = resilnet;
     if (rust != null) {

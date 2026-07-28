@@ -26,6 +26,7 @@ class _LocationChannelSheet extends StatefulWidget {
 
 class _LocationChannelSheetState extends State<_LocationChannelSheet> {
   final _teleport = TextEditingController();
+  String? _teleportError;
 
   @override
   void dispose() {
@@ -46,6 +47,34 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
   int _peopleCount(AppState s, {required bool mesh}) {
     if (mesh) return s.isReady ? s.mesh.nearbyPeers.length : 0;
     return s.areaPresenceOnline().length;
+  }
+
+  Future<void> _teleportToGeohash(AppState s) async {
+    final raw = _teleport.text.trim();
+    final parsed = Geohash.parseInput(raw);
+    if (parsed == null) {
+      setState(() => _teleportError = context.l10n.geoTeleportInvalid);
+      return;
+    }
+    setState(() => _teleportError = null);
+    final ok = await s.setManualGeohash(parsed);
+    if (!mounted) return;
+    if (!ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.geoTeleportInvalid)),
+      );
+      return;
+    }
+    await s.setFeedChannel(FeedChannel.geo);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          context.l10n.geoTeleportOk(Geohash.channelLabel(parsed)),
+        ),
+      ),
+    );
+    Navigator.pop(context);
   }
 
   @override
@@ -86,6 +115,15 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                   color: Colors.white.withValues(alpha: 0.55),
                 ),
           ),
+          if (s.geoIsManual) ...[
+            const SizedBox(height: 8),
+            Text(
+              l10n.geoManualActive(s.geoChannelLabel),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: const Color(0xFF7EB6FF),
+                  ),
+            ),
+          ],
           const SizedBox(height: 12),
           Expanded(
             child: ListView(
@@ -118,7 +156,6 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                       final selected = !meshSelected &&
                           s.feedChannel == FeedChannel.geo &&
                           s.geoPrecision == p;
-                      // Count for selected precision uses live presence when active.
                       final count = selected
                           ? _peopleCount(s, mesh: false)
                           : null;
@@ -126,8 +163,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                         context,
                         title: _precisionLabel(l10n, p),
                         count: count,
-                        subtitle:
-                            '#$hash • ${p.approxRadiusLabel}',
+                        subtitle: '#$hash • ${p.approxRadiusLabel}',
                         selected: selected,
                         onTap: () async {
                           await s.setFeedChannel(FeedChannel.geo);
@@ -141,7 +177,15 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
               ],
             ),
           ),
+          Text(
+            l10n.geoTeleportHint,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Colors.white38,
+                ),
+          ),
+          const SizedBox(height: 6),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: TextField(
@@ -149,21 +193,32 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                   decoration: InputDecoration(
                     hintText: l10n.locationTeleportHint,
                     isDense: true,
+                    errorText: _teleportError,
                   ),
                   style: const TextStyle(fontFamily: 'monospace'),
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _teleportToGeohash(s),
                 ),
               ),
               const SizedBox(width: 8),
               TextButton.icon(
-                onPressed: () {
-                  // Teleport is a future UX hook — refresh location for now.
-                  s.refreshGeohash();
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.mood_outlined, size: 18),
+                onPressed: () => _teleportToGeohash(s),
+                icon: const Icon(Icons.near_me_outlined, size: 18),
                 label: Text(l10n.locationTeleport),
               ),
             ],
+          ),
+          const SizedBox(height: 4),
+          TextButton.icon(
+            onPressed: s.geoRefreshing ? null : () => s.refreshGeohash(),
+            icon: s.geoRefreshing
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.my_location_outlined, size: 18),
+            label: Text(l10n.geoRefreshLocation),
           ),
         ],
       ),

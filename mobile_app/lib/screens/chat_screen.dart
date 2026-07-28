@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../app/theme.dart';
+import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
+import '../core/voice_payload.dart';
+import '../core/peer_id.dart';
 import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/chat_message.dart';
@@ -17,9 +21,11 @@ import '../models/feed_channel.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/crypto_service.dart';
 import '../services/mic_permission.dart';
+import '../services/resilnet_packet_codec.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
+import 'voice_record_sheet.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.peerId});
@@ -36,7 +42,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final _uuid = const Uuid();
   final _audio = AudioRecorderService();
   bool _showEmojiPicker = false;
-  bool _recordingVoice = false;
+  bool _sendingOutbound = false;
+  String? _lastSendFingerprint;
+  int _lastSendAtMs = 0;
 
   List<ChatMessage> _messages = const [];
   final Map<String, String> _plainById = {};
@@ -48,6 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   static const _pickerBg = Color(0xFF1A2332);
   static const _pickerAccent = Color(0xFF10B981);
+  static const _sendDupWindowMs = 2200;
 
   void _toggleEmojiPicker() {
     setState(() => _showEmojiPicker = !_showEmojiPicker);
@@ -196,7 +205,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<String?> _resolveReceiverPub(AppState s) async {
-    final peer = await s.db.getPeer(widget.peerId);
+    final peer = await s.resolveMessageablePeer(widget.peerId);
     final receiverPub = peer?.publicKey.trim() ?? '';
     if (receiverPub.isEmpty) {
       if (!mounted) return null;
@@ -218,12 +227,25 @@ class _ChatScreenState extends State<ChatScreen> {
     return CryptoService.normalizePublicKey(receiverPub);
   }
 
-  Future<void> _startVoiceNote() async {
-    if (_recordingVoice) return;
+  Future<void> _openVoiceRecorder() async {
+    if (_sendingOutbound) return;
+    final s = context.read<AppState>();
+    if (!s.e2eeEnabled) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+      );
+      return;
+    }
+
+    debugPrint('[PTT] mic-tap peer=${widget.peerId}');
+    HapticFeedback.lightImpact();
     try {
-      await _audio.startRecording();
-      if (mounted) setState(() => _recordingVoice = true);
+      final result = await showVoiceRecordSheet(context);
+      if (!mounted || result == null) return;
+      await _sendVoiceBytes(result.bytes, ext: result.ext);
     } catch (e) {
+      debugPrint('[PTT] voice session failed: $e');
       if (!mounted) return;
       showMicPermissionError(
         context,
@@ -235,23 +257,36 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<void> _stopAndSendVoiceNote() async {
-    if (!_recordingVoice) return;
+  Future<void> _sendVoiceBytes(Uint8List bytes, {String ext = 'm4a'}) async {
+    if (bytes.isEmpty || _sendingOutbound) return;
     final s = context.read<AppState>();
-    if (!s.e2eeEnabled) {
-      await _audio.stopRecording();
-      if (mounted) setState(() => _recordingVoice = false);
+    if (!s.e2eeEnabled) return;
+
+    setState(() => _sendingOutbound = true);
+    final receiverPub = await _resolveReceiverPub(s);
+    if (receiverPub == null) {
+      if (mounted) setState(() => _sendingOutbound = false);
       return;
     }
-    final receiverPub = await _resolveReceiverPub(s);
-    final opus = await _audio.stopRecording();
-    if (mounted) setState(() => _recordingVoice = false);
-    if (receiverPub == null || opus == null || opus.isEmpty) return;
+
+    final resolvedExt = ext.trim().isEmpty ? 'm4a' : ext.trim().toLowerCase();
+    debugPrint('[PTT] send voice bytes=${bytes.length} ext=$resolvedExt');
+
+    // Soft cap before encryption (BLE ~51KB ciphertext after wire expansion).
+    if (bytes.length > AudioRecorderService.maxBytes) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
+        );
+        setState(() => _sendingOutbound = false);
+      }
+      return;
+    }
 
     final ts = DateTime.now().millisecondsSinceEpoch;
-    final audioB64 = base64Encode(opus);
+    final wirePlain = VoicePayload.encodeWire(bytes: bytes, ext: resolvedExt);
     final pkg = s.crypto.encryptForRecipient(
-      plaintext: audioB64,
+      plaintext: wirePlain,
       receiverPublicPem: receiverPub,
       senderId: s.myUserId,
       receiverId: widget.peerId,
@@ -262,8 +297,8 @@ class _ChatScreenState extends State<ChatScreen> {
       id: _uuid.v4(),
       senderId: s.myUserId,
       receiverId: widget.peerId,
-      // Opaque label only — never store audio plaintext or decryptable body.
-      content: null,
+      // Local-only playback cache (stripped on wire by ResilNetPacketCodec).
+      content: wirePlain,
       encryptedPayload: pkg.encryptedPayload,
       encryptedKey: pkg.encryptedKey,
       signature: pkg.signature,
@@ -271,15 +306,55 @@ class _ChatScreenState extends State<ChatScreen> {
       timestamp: ts,
       status: MessageStatus.pending,
       type: MessageType.direct,
-      payloadKind: 'audio',
+      payloadKind: PayloadKinds.audio,
     );
 
-    await s.persistChatMessage(msg);
-    await s.routeOutbound(msg);
-    if (mounted) setState(() {});
+    // Estimate sealed wire size; prefer Nostr when envelope is BLE-hostile.
+    final dtoLen = ResilNetPacketCodec.toDto(msg).payload.length;
+    const bleSafeCiphertext = 48000;
+    final tooBigForBle = dtoLen > bleSafeCiphertext;
+    final nostrUp = s.isNostrOnline || s.isCloudOnline;
+    if (tooBigForBle && !nostrUp) {
+      debugPrint('[PTT] voice too large for BLE dto=$dtoLen nostr=off');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chatVoiceNeedInternet)),
+        );
+        setState(() => _sendingOutbound = false);
+      }
+      return;
+    }
+
+    try {
+      await s.persistChatMessage(msg);
+      // Small notes: mesh+Nostr. Oversized: Nostr-only (same as announcements media).
+      await s.routeOutbound(msg, internetOnly: tooBigForBle);
+      debugPrint(
+        '[PTT] send voice routed bytes=${bytes.length} dto=$dtoLen '
+        'internetOnly=$tooBigForBle',
+      );
+      if (mounted && tooBigForBle) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chatVoiceSentInternet)),
+        );
+      }
+    } catch (e) {
+      debugPrint('[PTT] send voice failed: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
+        );
+      }
+      rethrow;
+    } finally {
+      if (mounted) setState(() => _sendingOutbound = false);
+    }
   }
 
+  bool get _composeLocked => _sendingOutbound;
+
   Future<void> _send() async {
+    if (_sendingOutbound) return;
     final s = context.read<AppState>();
     final l10n = context.l10n;
     final msgText = _text.text.trim();
@@ -302,17 +377,29 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       return;
     }
+    if (!mounted) return;
 
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsE2eeSubtitle)),
+        SnackBar(content: Text(l10n.settingsE2eeSubtitle)),
       );
       return;
     }
 
     final receiverId = widget.peerId;
+    if (_shouldSuppressDuplicate(
+      kind: 'text',
+      body: msgText,
+      receiverId: receiverId,
+    )) {
+      return;
+    }
+    setState(() => _sendingOutbound = true);
     final receiverPub = await _resolveReceiverPub(s);
-    if (receiverPub == null) return;
+    if (receiverPub == null) {
+      if (mounted) setState(() => _sendingOutbound = false);
+      return;
+    }
 
     final ts = DateTime.now().millisecondsSinceEpoch;
     final pkg = s.crypto.encryptForRecipient(
@@ -327,6 +414,8 @@ class _ChatScreenState extends State<ChatScreen> {
       id: _uuid.v4(),
       senderId: s.myUserId,
       receiverId: receiverId,
+      // Local-only plaintext preview (stripped before wire in ResilNetPacketCodec).
+      content: msgText,
       encryptedPayload: pkg.encryptedPayload,
       encryptedKey: pkg.encryptedKey,
       signature: pkg.signature,
@@ -336,15 +425,24 @@ class _ChatScreenState extends State<ChatScreen> {
       type: MessageType.direct,
     );
 
-    await s.persistChatMessage(msg);
-    await s.routeOutbound(msg);
+    // Optimistic local UX: lock compose immediately so accidental double-tap
+    // won't duplicate while routeOutbound is still in-flight.
     _text.clear();
-    if (_showEmojiPicker) setState(() => _showEmojiPicker = false);
-    if (!mounted) return;
-    setState(() {});
+    if (_showEmojiPicker) {
+      setState(() => _showEmojiPicker = false);
+    }
+    try {
+      await s.persistChatMessage(msg);
+      await s.routeOutbound(msg);
+      if (!mounted) return;
+      setState(() {});
+    } finally {
+      if (mounted) setState(() => _sendingOutbound = false);
+    }
   }
 
   Future<void> _sendImage() async {
+    if (_sendingOutbound) return;
     final s = context.read<AppState>();
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -360,15 +458,27 @@ class _ChatScreenState extends State<ChatScreen> {
     );
     if (file == null) return;
     final bytes = await file.readAsBytes();
+    if (_shouldSuppressDuplicate(
+      kind: 'image',
+      body: base64Encode(bytes),
+      receiverId: widget.peerId,
+    )) {
+      return;
+    }
+    setState(() => _sendingOutbound = true);
     if (bytes.length > 180 * 1024) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Image too large (max ~180KB)')),
       );
+      if (mounted) setState(() => _sendingOutbound = false);
       return;
     }
     final receiverPub = await _resolveReceiverPub(s);
-    if (receiverPub == null) return;
+    if (receiverPub == null) {
+      if (mounted) setState(() => _sendingOutbound = false);
+      return;
+    }
     final ts = DateTime.now().millisecondsSinceEpoch;
     final b64 = base64Encode(bytes);
     final pkg = s.crypto.encryptForRecipient(
@@ -391,9 +501,32 @@ class _ChatScreenState extends State<ChatScreen> {
       type: MessageType.direct,
       payloadKind: PayloadKinds.image,
     );
-    await s.persistChatMessage(msg);
-    await s.routeOutbound(msg);
-    if (mounted) setState(() {});
+    try {
+      await s.persistChatMessage(msg);
+      await s.routeOutbound(msg);
+      if (mounted) setState(() {});
+    } finally {
+      if (mounted) setState(() => _sendingOutbound = false);
+    }
+  }
+
+  bool _shouldSuppressDuplicate({
+    required String kind,
+    required String body,
+    required String receiverId,
+  }) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final digest = crypto.sha256.convert(utf8.encode('$kind|$receiverId|$body'));
+    final fp = digest.toString();
+    final recent = now - _lastSendAtMs <= _sendDupWindowMs;
+    final same = _lastSendFingerprint == fp;
+    if (same && recent) {
+      debugPrint('[Chat] suppress duplicate send kind=$kind peer=$receiverId');
+      return true;
+    }
+    _lastSendFingerprint = fp;
+    _lastSendAtMs = now;
+    return false;
   }
 
   String _statusLabel(AppLocalizations l10n, MessageStatus s) {
@@ -438,7 +571,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (m.receiverId != s.myUserId && m.senderId != s.myUserId) {
       return '…';
     }
-    if (m.payloadKind == 'audio') {
+    if (m.payloadKind == PayloadKinds.audio) {
       return m.senderId == s.myUserId
           ? l10n.chatVoiceLabelSent
           : l10n.chatVoiceLabel;
@@ -446,15 +579,29 @@ class _ChatScreenState extends State<ChatScreen> {
     if (m.payloadKind == PayloadKinds.image) {
       return l10n.chatImageLabel;
     }
+    if (m.payloadKind == PayloadKinds.notice) {
+      return l10n.chatNoticeHidden;
+    }
     if (PayloadKinds.isSystemLine(m.payloadKind)) {
       return l10n.screenshotTaken;
     }
+    // Sender-local plaintext preview (never sent on the wire).
+    final local = m.content?.trim();
+    if (local != null &&
+        local.isNotEmpty &&
+        m.senderId == s.myUserId) {
+      return local;
+    }
     if (m.receiverId == s.myUserId) {
       try {
-        return s.crypto.decryptFromSender(
+        final decrypted = s.crypto.decryptFromSender(
           encryptedPayload: m.encryptedPayload,
           encryptedKey: m.encryptedKey,
         );
+        if (parseNoticeWire(decrypted) != null) {
+          return l10n.chatNoticeHidden;
+        }
+        return decrypted;
       } catch (_) {
         return l10n.chatDecryptFailed;
       }
@@ -472,13 +619,36 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _playVoiceNote(AppState s, ChatMessage m) async {
     try {
-      final audioB64 = s.crypto.decryptFromSender(
-        encryptedPayload: m.encryptedPayload,
-        encryptedKey: m.encryptedKey,
-      );
-      final bytes = base64Decode(audioB64);
-      await _audio.playBytes(Uint8List.fromList(bytes));
+      ({Uint8List bytes, String ext})? decoded;
+
+      if (m.senderId == s.myUserId) {
+        final local = m.content?.trim();
+        if (local != null && local.isNotEmpty) {
+          decoded = VoicePayload.decode(local);
+          if (decoded != null) {
+            debugPrint('[PTT] play local ext=${decoded.ext} bytes=${decoded.bytes.length}');
+          }
+        }
+      }
+
+      if (decoded == null) {
+        final plain = s.crypto.decryptFromSender(
+          encryptedPayload: m.encryptedPayload,
+          encryptedKey: m.encryptedKey,
+        );
+        decoded = VoicePayload.decode(plain);
+        if (decoded != null) {
+          debugPrint('[PTT] play decrypt ext=${decoded.ext} bytes=${decoded.bytes.length}');
+        }
+      }
+
+      if (decoded == null || decoded.bytes.isEmpty) {
+        throw StateError('invalid voice payload');
+      }
+
+      await _audio.playBytes(decoded.bytes, ext: decoded.ext);
     } catch (e) {
+      debugPrint('[PTT] play-fail: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
@@ -562,7 +732,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       text,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    if (m.payloadKind == 'audio') ...[
+                    if (m.payloadKind == PayloadKinds.audio) ...[
                       const SizedBox(height: 8),
                       FilledButton.tonalIcon(
                         onPressed: () => _playVoiceNote(s, m),
@@ -577,14 +747,14 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (isMe) ...[
                           _statusTicks(m.status),
                           const SizedBox(width: 6),
-                        ],
-                        Text(
-                          _statusLabel(l10n, m.status),
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.65),
+                          Text(
+                            _statusLabel(l10n, m.status),
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.65),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 10),
+                          const SizedBox(width: 10),
+                        ],
                         Text(
                           'TTL ${m.ttl}',
                           style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -656,7 +826,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: FutureBuilder<String>(
                     future: s.db.resolveDisplayName(widget.peerId),
                     builder: (context, nameSnap) {
-                      final name = nameSnap.data ?? widget.peerId;
+                      final name =
+                          nameSnap.data ?? formatShortPeerId(widget.peerId);
                       return Text(
                         'Peer: $name',
                         maxLines: 1,
@@ -670,7 +841,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  'Me: ${myId.substring(0, 10)}…',
+                  'Me: ${formatShortPeerId(myId)}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Colors.white.withValues(alpha: 0.55),
                   ),
@@ -695,29 +866,24 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        tooltip: _recordingVoice
-                            ? l10n.voicePttRecording
-                            : l10n.voicePttHold,
-                        onPressed: () {
-                          if (_recordingVoice) {
-                            unawaited(_stopAndSendVoiceNote());
-                          } else {
-                            unawaited(_startVoiceNote());
-                          }
-                        },
-                        icon: Icon(
-                          _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
-                          color: _recordingVoice ? Colors.redAccent : null,
+                        tooltip: l10n.chatVoiceLabel,
+                        onPressed: _composeLocked
+                            ? null
+                            : () => unawaited(_openVoiceRecorder()),
+                        icon: const Icon(Icons.mic_none_outlined),
+                        style: IconButton.styleFrom(
+                          minimumSize: const Size(48, 48),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
                       IconButton(
                         tooltip: l10n.chatAttachImage,
-                        onPressed: _recordingVoice ? null : _sendImage,
+                        onPressed: _composeLocked ? null : _sendImage,
                         icon: const Icon(Icons.image_outlined),
                       ),
                       IconButton(
                         tooltip: l10n.chatEmojiTooltip,
-                        onPressed: _recordingVoice ? null : _toggleEmojiPicker,
+                        onPressed: _composeLocked ? null : _toggleEmojiPicker,
                         icon: Icon(
                           _showEmojiPicker
                               ? Icons.keyboard_outlined
@@ -729,7 +895,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: TextField(
                           controller: _text,
                           focusNode: _focusNode,
-                          enabled: !_recordingVoice,
+                          enabled: !_composeLocked,
                           minLines: 1,
                           maxLines: 4,
                           onTap: () {
@@ -744,11 +910,25 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       const SizedBox(width: 8),
                       IconButton.filled(
-                        onPressed: _recordingVoice ? null : _send,
+                        onPressed: _composeLocked ? null : _send,
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.white.withValues(alpha: 0.12),
+                          backgroundColor: _sendingOutbound
+                              ? Colors.white.withValues(alpha: 0.18)
+                              : const Color(0xFF10B981),
+                          foregroundColor: _sendingOutbound
+                              ? Colors.white70
+                              : Colors.white,
                         ),
-                        icon: const Icon(Icons.arrow_upward, size: 20),
+                        icon: _sendingOutbound
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(Icons.arrow_upward, size: 20),
                       ),
                     ],
                   ),

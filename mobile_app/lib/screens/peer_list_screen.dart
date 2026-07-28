@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../core/peer_id.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/peer.dart';
 import '../state/app_state.dart';
@@ -17,17 +18,23 @@ class PeerListScreen extends StatefulWidget {
 }
 
 class _PeerListScreenState extends State<PeerListScreen> {
-  static const _activeWindowMs = 15000;
+  static const _recentWindowMs = 120000; // 2 minutes
 
   Future<void> _refresh() async {
     if (mounted) setState(() {});
   }
 
-  String _connectionLabel(AppLocalizations l10n, Peer peer, Set<String> nearbyIds) {
+  String _connectionLabel(
+    AppLocalizations l10n,
+    Peer peer,
+    Set<String> nearbyIds,
+    Set<String> areaOnlineIds,
+  ) {
     if (peer.isBlocked) return l10n.peersBlocked;
     if (nearbyIds.contains(peer.id)) return l10n.peersNearbyBle;
+    if (areaOnlineIds.contains(peer.id)) return l10n.peersOnlineInArea;
     final age = DateTime.now().millisecondsSinceEpoch - peer.lastSeen;
-    if (age <= _activeWindowMs) return l10n.peersRecentlyOnline;
+    if (age <= _recentWindowMs) return l10n.peersRecentlyOnline;
     if (age < 5 * 60 * 1000) {
       return l10n.peersSeenMinutesAgo((age / 60000).ceil());
     }
@@ -36,7 +43,9 @@ class _PeerListScreenState extends State<PeerListScreen> {
 
   Color _connectionColor(AppLocalizations l10n, String label) {
     if (label == l10n.peersBlocked) return Colors.redAccent;
-    if (label == l10n.peersNearbyBle || label == l10n.peersRecentlyOnline) {
+    if (label == l10n.peersNearbyBle ||
+        label == l10n.peersRecentlyOnline ||
+        label == l10n.peersOnlineInArea) {
       return ResilNetTheme.emerald;
     }
     return Colors.white54;
@@ -50,7 +59,9 @@ class _PeerListScreenState extends State<PeerListScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          next ? l10n.peersBlockedSnack(peer.id) : l10n.peersUnblockedSnack,
+          next
+              ? l10n.peersBlockedSnack(formatShortPeerId(peer.id))
+              : l10n.peersUnblockedSnack,
         ),
       ),
     );
@@ -114,6 +125,8 @@ class _PeerListScreenState extends State<PeerListScreen> {
           final nearbyIds = s.isReady
               ? s.mesh.nearbyPeers.map((p) => p.id).toSet()
               : <String>{};
+          final areaOnlineIds =
+              s.areaPresenceOnline().map((e) => e.id).toSet();
 
           return ListView.separated(
             padding: const EdgeInsets.all(14),
@@ -121,14 +134,16 @@ class _PeerListScreenState extends State<PeerListScreen> {
             separatorBuilder: (_, _) => const SizedBox(height: 10),
             itemBuilder: (context, i) {
               final peer = peers[i];
-              final conn = _connectionLabel(l10n, peer, nearbyIds);
+              final conn =
+                  _connectionLabel(l10n, peer, nearbyIds, areaOnlineIds);
               return Card(
                 child: ListTile(
                   leading: Identicon(id: peer.id),
                   title: FutureBuilder<String>(
                     future: s.db.resolveDisplayName(peer.id),
                     builder: (context, nameSnap) {
-                      final name = nameSnap.data ?? peer.id;
+                      final name =
+                          nameSnap.data ?? formatShortPeerId(peer.id);
                       return Row(
                         children: [
                           Expanded(
@@ -163,7 +178,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
                         ),
                       ),
                       Text(
-                        peer.id,
+                        formatShortPeerId(peer.id),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(

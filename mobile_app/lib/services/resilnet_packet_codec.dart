@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
+import '../core/payload_kinds.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/resilnet_payload_type.dart';
 import '../models/ack_entry.dart';
@@ -20,10 +21,16 @@ class ResilNetPacketCodec {
   }) {
     final type = payloadType ??
         ResilNetPayloadType.fromMessageKind(msg.payloadKind);
+    // Strip local-only plaintext preview before anything hits the wire.
+    // Presence packets carry the geohash cell in `content` intentionally.
+    final wireMap = Map<String, Object?>.from(msg.toMap());
+    if (msg.payloadKind != PayloadKinds.presence) {
+      wireMap['content'] = null;
+    }
     final payload = piggybackAcks.isEmpty
-        ? Uint8List.fromList(utf8.encode(jsonEncode(msg.toMap())))
+        ? Uint8List.fromList(utf8.encode(jsonEncode(wireMap)))
         : ResilNetAckCodec.wrapChatEnvelope(
-            messageMap: msg.toMap(),
+            messageMap: wireMap,
             piggybackAcks: piggybackAcks,
           );
     return MessagePacketDto(

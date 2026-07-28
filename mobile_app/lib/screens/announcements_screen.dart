@@ -209,8 +209,9 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   Future<void> _toggleVoice(AppState s, AnnouncementBoard board) async {
     if (_posting) return;
     if (_recordingVoice) {
-      final opus = await _audio.stopRecording();
+      final recorded = await _audio.stopRecording();
       if (mounted) setState(() => _recordingVoice = false);
+      final opus = recorded?.bytes;
       if (opus == null || opus.isEmpty) return;
       if (!_hasInternet(s)) {
         if (!mounted) return;

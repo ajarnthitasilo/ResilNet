@@ -24,23 +24,7 @@ class _OnlinePeopleSheet extends StatelessWidget {
   const _OnlinePeopleSheet();
 
   List<AreaPresenceEntry> _entries(AppState s) {
-    if (s.feedChannel == FeedChannel.mesh) {
-      final peers = s.isReady ? s.mesh.nearbyPeers : const [];
-      return [
-        for (final p in peers)
-          AreaPresenceEntry(
-            id: p.id,
-            label: p.displayName?.trim().isNotEmpty == true
-                ? p.displayName!.trim()
-                : p.id,
-            source: PresenceSource.mesh,
-            geohash: p.geohash,
-            lastSeen: p.lastSeen,
-            peer: p,
-          ),
-      ];
-    }
-    return s.areaPresenceOnline();
+    return s.onlinePresenceForUi();
   }
 
   @override
@@ -48,9 +32,11 @@ class _OnlinePeopleSheet extends StatelessWidget {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
     final entries = _entries(s);
-    final channel = s.feedChannel == FeedChannel.mesh
-        ? '#mesh'
-        : s.geoChannelLabel;
+    final channel = switch (s.feedChannel) {
+      FeedChannel.mesh => '#mesh',
+      FeedChannel.directs => l10n.onlinePeopleDirectsChannel,
+      FeedChannel.geo => s.geoChannelLabel,
+    };
 
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.75,
@@ -88,9 +74,15 @@ class _OnlinePeopleSheet extends StatelessWidget {
               ),
             ],
           ),
-          if (s.feedChannel == FeedChannel.geo && s.transportMode.usesInternet) ...[
+          if (s.feedChannel != FeedChannel.mesh &&
+              s.transportMode.usesInternet) ...[
             Text(
-              l10n.geoDiscoveryStatus(s.geoChannelLabel, s.nostrRelayLabel),
+              l10n.geoDiscoveryStatus(
+                s.feedChannel == FeedChannel.directs
+                    ? l10n.onlinePeopleDirectsChannel
+                    : s.geoChannelLabel,
+                s.nostrRelayLabel,
+              ),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: Colors.white38,
                     fontFamily: 'monospace',

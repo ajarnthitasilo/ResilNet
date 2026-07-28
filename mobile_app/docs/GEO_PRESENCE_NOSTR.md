@@ -15,6 +15,10 @@
 | `client` | `resilnet` |
 | `expiration` | Unix timestamp (now + 180s) — NIP-40 |
 
+Receivers treat presence as online for **240s** after `lastSeen` (Flutter
+`kNostrPresenceOnlineWindow`) and republish about every **45s** so the badge
+does not drop to zero between publishes.
+
 ## Content (JSON)
 ```json
 { "v": 1, "geohash": "w5jt8", "nick": "anon·a1b2" }
@@ -26,6 +30,7 @@
 - Flutter calls `nostr_set_geo_presence_filter([geohash])` when Area + Internet/Auto.
 - Filter: kind `20050`, `#g` = selected cell, `since` = now − 180s.
 - Events stream via `nostr_subscribe_geo_presence` (not chat ingest).
+- App republishes ~every 45s while Area + Internet/Auto are active.
 
 ## Transport mode
 - **Mesh** — BLE presence only (existing sealed presence packets).

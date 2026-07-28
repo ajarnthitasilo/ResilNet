@@ -17,9 +17,13 @@ pub const KIND_NODE_HEALTH: u16 = 31_236;
 /// without QR. Publishing `pk` on public relays makes the Area identity linkable
 /// while present (acceptable product tradeoff; keep events ephemeral).
 pub const KIND_GEO_PRESENCE: u16 = 20_050;
+/// Public geohash-area notice board (plaintext JSON content; NIP-16 ephemeral range).
+pub const KIND_GEO_NOTICE: u16 = 20_051;
 
 /// How long presence events remain valid (seconds) for subscribe window / NIP-40.
 pub const GEO_PRESENCE_TTL_SECS: u64 = 180;
+/// Default backfill window when subscribing to geo notices (7 days).
+pub const GEO_NOTICE_BACKFILL_SECS: u64 = 7 * 24 * 60 * 60;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ResilNetEventKind {
@@ -27,6 +31,7 @@ pub enum ResilNetEventKind {
     Broadcast,
     NodeHealth,
     GeoPresence,
+    GeoNotice,
 }
 
 impl ResilNetEventKind {
@@ -36,6 +41,7 @@ impl ResilNetEventKind {
             Self::Broadcast => KIND_BROADCAST,
             Self::NodeHealth => KIND_NODE_HEALTH,
             Self::GeoPresence => KIND_GEO_PRESENCE,
+            Self::GeoNotice => KIND_GEO_NOTICE,
         }
     }
 
@@ -45,6 +51,7 @@ impl ResilNetEventKind {
             KIND_BROADCAST => Some(Self::Broadcast),
             KIND_NODE_HEALTH => Some(Self::NodeHealth),
             KIND_GEO_PRESENCE => Some(Self::GeoPresence),
+            KIND_GEO_NOTICE => Some(Self::GeoNotice),
             _ => None,
         }
     }
@@ -118,4 +125,13 @@ pub struct GeoPresenceEvent {
     pub rid: String,
     /// RSA public key material when present (may be empty).
     pub pk: String,
+}
+
+/// Parsed inbound geohash notice for Flutter.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GeoNoticeEvent {
+    pub event_id: String,
+    pub geohash: String,
+    pub content_json: String,
+    pub created_at: u64,
 }

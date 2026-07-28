@@ -137,4 +137,25 @@ class Geohash {
     if (h.isEmpty) return '#—';
     return h.startsWith('#') ? h : '#$h';
   }
+
+  static final _geohashInput = RegExp(r'^[0-9bcdefghjkmnpqrstuvwxyz]{2,12}$');
+
+  /// Parse user input (`w5`, `#w5jt8`, `W5JT8`) into normalized geohash.
+  /// Returns null when invalid.
+  static String? parseInput(String raw) {
+    var s = raw.trim().toLowerCase();
+    if (s.startsWith('#')) s = s.substring(1);
+    if (s.isEmpty || !_geohashInput.hasMatch(s)) return null;
+    return s;
+  }
+
+  /// Normalize to block precision (7 chars) for internal storage.
+  static String normalizeFull(String hash) {
+    final h = parseInput(hash);
+    if (h == null) return '';
+    if (h.length >= GeoPrecision.block.length) {
+      return h.substring(0, GeoPrecision.block.length);
+    }
+    return h;
+  }
 }

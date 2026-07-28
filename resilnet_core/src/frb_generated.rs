@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
                     default_rust_auto_opaque = RustAutoOpaqueMoi,
                 );
                 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-                pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 760302760;
+                pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1043576424;
             
 
 // Section: executor
@@ -153,6 +153,16 @@ let api_relay_urls = <Option<Vec<String>>>::sse_decode(&mut deserializer);deseri
                 transform_result_sse::<_, ()>((move || {
                      let output_ok = Result::<_,()>::Ok(crate::api::router_api::is_router_initialized())?;   Ok(output_ok)
                 })()) })
+            }fn wire__crate__api__nostr_api__nostr_fetch_geo_notices_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
+                FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "nostr_fetch_geo_notices", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_geohashes = <Vec<String>>::sse_decode(&mut deserializer);
+let api_since_secs_ago = <Option<u64>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, String>((move || async move {
+                         let output_ok = crate::api::nostr_api::nostr_fetch_geo_notices(api_geohashes, api_since_secs_ago).await?;   Ok(output_ok)
+                    })().await)
+                } })
             }fn wire__crate__api__nostr_api__nostr_publish_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
                 FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "nostr_publish", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
             let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
@@ -161,6 +171,17 @@ let api_relay_urls = <Option<Vec<String>>>::sse_decode(&mut deserializer);deseri
 let api_kind = <String>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
                     transform_result_sse::<_, String>((move || async move {
                          let output_ok = crate::api::nostr_api::nostr_publish(api_envelope, api_kind).await?;   Ok(output_ok)
+                    })().await)
+                } })
+            }fn wire__crate__api__nostr_api__nostr_publish_geo_notice_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
+                FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "nostr_publish_geo_notice", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_geohash = <String>::sse_decode(&mut deserializer);
+let api_content_json = <String>::sse_decode(&mut deserializer);
+let api_expires_at = <Option<u64>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, String>((move || async move {
+                         let output_ok = crate::api::nostr_api::nostr_publish_geo_notice(api_geohash, api_content_json, api_expires_at).await?;   Ok(output_ok)
                     })().await)
                 } })
             }fn wire__crate__api__nostr_api__nostr_publish_geo_presence_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
@@ -193,6 +214,16 @@ let api_pk = <String>::sse_decode(&mut deserializer);deserializer.end(); move |c
                          let output_ok = crate::api::nostr_api::nostr_reconnect().await?;   Ok(output_ok)
                     })().await)
                 } })
+            }fn wire__crate__api__nostr_api__nostr_set_geo_notice_filter_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
+                FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "nostr_set_geo_notice_filter", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_geohashes = <Vec<String>>::sse_decode(&mut deserializer);
+let api_since_secs_ago = <Option<u64>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, String>((move || async move {
+                         let output_ok = crate::api::nostr_api::nostr_set_geo_notice_filter(api_geohashes, api_since_secs_ago).await?;   Ok(output_ok)
+                    })().await)
+                } })
             }fn wire__crate__api__nostr_api__nostr_set_geo_presence_filter_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
                 FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "nostr_set_geo_presence_filter", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
             let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
@@ -200,6 +231,15 @@ let api_pk = <String>::sse_decode(&mut deserializer);deserializer.end(); move |c
             let api_geohashes = <Vec<String>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
                     transform_result_sse::<_, String>((move || async move {
                          let output_ok = crate::api::nostr_api::nostr_set_geo_presence_filter(api_geohashes).await?;   Ok(output_ok)
+                    })().await)
+                } })
+            }fn wire__crate__api__nostr_api__nostr_subscribe_geo_notices_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
+                FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "nostr_subscribe_geo_notices", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_sink = <StreamSink<crate::api::dto::GeoNoticeDto,flutter_rust_bridge::for_generated::SseCodec>>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, String>((move || async move {
+                         let output_ok = crate::api::nostr_api::nostr_subscribe_geo_notices(api_sink).await?;   Ok(output_ok)
                     })().await)
                 } })
             }fn wire__crate__api__nostr_api__nostr_subscribe_geo_presence_impl(port_: flutter_rust_bridge::for_generated::MessagePort,ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,rust_vec_len_: i32,data_len_: i32)  {
@@ -304,6 +344,12 @@ let api_lora_available = <bool>::sse_decode(&mut deserializer);deserializer.end(
         return flutter_rust_bridge::for_generated::anyhow::anyhow!("{}", inner);}
                 }
                 
+                impl SseDecode for StreamSink<crate::api::dto::GeoNoticeDto,flutter_rust_bridge::for_generated::SseCodec> {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);}
+                }
+                
                 impl SseDecode for StreamSink<crate::api::dto::GeoPresenceDto,flutter_rust_bridge::for_generated::SseCodec> {
                     // Codec=Sse (Serialization based), see doc to use other codecs
                     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {let mut inner = <String>::sse_decode(deserializer);
@@ -325,6 +371,15 @@ let api_lora_available = <bool>::sse_decode(&mut deserializer);deserializer.end(
                 impl SseDecode for bool {
                     // Codec=Sse (Serialization based), see doc to use other codecs
                     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {deserializer.cursor.read_u8().unwrap() != 0}
+                }
+                
+                impl SseDecode for crate::api::dto::GeoNoticeDto {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {let mut var_eventId = <String>::sse_decode(deserializer);
+let mut var_geohash = <String>::sse_decode(deserializer);
+let mut var_contentJson = <String>::sse_decode(deserializer);
+let mut var_createdAt = <u64>::sse_decode(deserializer);
+return crate::api::dto::GeoNoticeDto{event_id: var_eventId, geohash: var_geohash, content_json: var_contentJson, created_at: var_createdAt};}
                 }
                 
                 impl SseDecode for crate::api::dto::GeoPresenceDto {
@@ -349,6 +404,14 @@ return crate::api::dto::GeoPresenceDto{event_id: var_eventId, pubkey_hex: var_pu
                     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ { ans_.push(<String>::sse_decode(deserializer)); }
+        return ans_;}
+                }
+                
+                impl SseDecode for Vec<crate::api::dto::GeoNoticeDto> {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ { ans_.push(<crate::api::dto::GeoNoticeDto>::sse_decode(deserializer)); }
         return ans_;}
                 }
                 
@@ -427,6 +490,15 @@ return crate::api::dto::NostrPoolStatusDto{initialized: var_initialized, pubkey_
                     // Codec=Sse (Serialization based), see doc to use other codecs
                     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {if (<bool>::sse_decode(deserializer)) {
                 return Some(<crate::api::dto::PayloadTagDto>::sse_decode(deserializer));
+            } else {
+                return None;
+            }}
+                }
+                
+                impl SseDecode for Option<u64> {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {if (<bool>::sse_decode(deserializer)) {
+                return Some(<u64>::sse_decode(deserializer));
             } else {
                 return None;
             }}
@@ -547,20 +619,24 @@ return crate::api::dto::RouterConfigDto{dedup_capacity: var_dedupCapacity, dedup
 9 => wire__crate__api__nostr_api__init_nostr_impl(port, ptr, rust_vec_len, data_len),
 10 => wire__crate__api__router_api__init_resilnet_core_impl(port, ptr, rust_vec_len, data_len),
 11 => wire__crate__api__router_api__init_router_impl(port, ptr, rust_vec_len, data_len),
-13 => wire__crate__api__nostr_api__nostr_publish_impl(port, ptr, rust_vec_len, data_len),
-14 => wire__crate__api__nostr_api__nostr_publish_geo_presence_impl(port, ptr, rust_vec_len, data_len),
-15 => wire__crate__api__nostr_api__nostr_publish_packet_impl(port, ptr, rust_vec_len, data_len),
-16 => wire__crate__api__nostr_api__nostr_reconnect_impl(port, ptr, rust_vec_len, data_len),
-17 => wire__crate__api__nostr_api__nostr_set_geo_presence_filter_impl(port, ptr, rust_vec_len, data_len),
-18 => wire__crate__api__nostr_api__nostr_subscribe_geo_presence_impl(port, ptr, rust_vec_len, data_len),
-19 => wire__crate__api__router_api__offline_queue_len_impl(port, ptr, rust_vec_len, data_len),
-20 => wire__crate__api__dto__payload_tag_dto_as_u8_impl(port, ptr, rust_vec_len, data_len),
-21 => wire__crate__api__dto__payload_tag_dto_default_impl(port, ptr, rust_vec_len, data_len),
-22 => wire__crate__api__dto__payload_tag_dto_from_u8_impl(port, ptr, rust_vec_len, data_len),
-24 => wire__crate__api__router_api__route_packet_impl(port, ptr, rust_vec_len, data_len),
-25 => wire__crate__api__dto__router_config_dto_default_impl(port, ptr, rust_vec_len, data_len),
-26 => wire__crate__api__router_api__subscribe_incoming_messages_impl(port, ptr, rust_vec_len, data_len),
-27 => wire__crate__api__router_api__update_network_status_impl(port, ptr, rust_vec_len, data_len),
+13 => wire__crate__api__nostr_api__nostr_fetch_geo_notices_impl(port, ptr, rust_vec_len, data_len),
+14 => wire__crate__api__nostr_api__nostr_publish_impl(port, ptr, rust_vec_len, data_len),
+15 => wire__crate__api__nostr_api__nostr_publish_geo_notice_impl(port, ptr, rust_vec_len, data_len),
+16 => wire__crate__api__nostr_api__nostr_publish_geo_presence_impl(port, ptr, rust_vec_len, data_len),
+17 => wire__crate__api__nostr_api__nostr_publish_packet_impl(port, ptr, rust_vec_len, data_len),
+18 => wire__crate__api__nostr_api__nostr_reconnect_impl(port, ptr, rust_vec_len, data_len),
+19 => wire__crate__api__nostr_api__nostr_set_geo_notice_filter_impl(port, ptr, rust_vec_len, data_len),
+20 => wire__crate__api__nostr_api__nostr_set_geo_presence_filter_impl(port, ptr, rust_vec_len, data_len),
+21 => wire__crate__api__nostr_api__nostr_subscribe_geo_notices_impl(port, ptr, rust_vec_len, data_len),
+22 => wire__crate__api__nostr_api__nostr_subscribe_geo_presence_impl(port, ptr, rust_vec_len, data_len),
+23 => wire__crate__api__router_api__offline_queue_len_impl(port, ptr, rust_vec_len, data_len),
+24 => wire__crate__api__dto__payload_tag_dto_as_u8_impl(port, ptr, rust_vec_len, data_len),
+25 => wire__crate__api__dto__payload_tag_dto_default_impl(port, ptr, rust_vec_len, data_len),
+26 => wire__crate__api__dto__payload_tag_dto_from_u8_impl(port, ptr, rust_vec_len, data_len),
+28 => wire__crate__api__router_api__route_packet_impl(port, ptr, rust_vec_len, data_len),
+29 => wire__crate__api__dto__router_config_dto_default_impl(port, ptr, rust_vec_len, data_len),
+30 => wire__crate__api__router_api__subscribe_incoming_messages_impl(port, ptr, rust_vec_len, data_len),
+31 => wire__crate__api__router_api__update_network_status_impl(port, ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
                 }
@@ -576,7 +652,7 @@ return crate::api::dto::RouterConfigDto{dedup_capacity: var_dedupCapacity, dedup
                         1 => wire__crate__api__router_api__check_chunk_dedup_impl(ptr, rust_vec_len, data_len),
 2 => wire__crate__api__router_api__clear_chunk_stream_impl(ptr, rust_vec_len, data_len),
 12 => wire__crate__api__router_api__is_router_initialized_impl(ptr, rust_vec_len, data_len),
-23 => wire__crate__api__router_api__payload_tag_from_u8_impl(ptr, rust_vec_len, data_len),
+27 => wire__crate__api__router_api__payload_tag_from_u8_impl(ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
                 }
@@ -584,6 +660,23 @@ return crate::api::dto::RouterConfigDto{dedup_capacity: var_dedupCapacity, dedup
 
 // Section: rust2dart
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+            impl flutter_rust_bridge::IntoDart for crate::api::dto::GeoNoticeDto {
+                fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+                    [
+                    self.event_id.into_into_dart().into_dart(),
+self.geohash.into_into_dart().into_dart(),
+self.content_json.into_into_dart().into_dart(),
+self.created_at.into_into_dart().into_dart()
+                ].into_dart()
+                }
+            }
+            impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::dto::GeoNoticeDto {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::dto::GeoNoticeDto> for crate::api::dto::GeoNoticeDto {
+            fn into_into_dart(self) -> crate::api::dto::GeoNoticeDto {
+                self
+            }
+        }
 // Codec=Dco (DartCObject based), see doc to use other codecs
             impl flutter_rust_bridge::IntoDart for crate::api::dto::GeoPresenceDto {
                 fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
@@ -788,6 +881,11 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::dto::TransportTypeDto> for cr
                     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {<String>::sse_encode(format!("{:?}", self), serializer);}
                 }
                 
+                impl SseEncode for StreamSink<crate::api::dto::GeoNoticeDto,flutter_rust_bridge::for_generated::SseCodec> {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {unimplemented!("")}
+                }
+                
                 impl SseEncode for StreamSink<crate::api::dto::GeoPresenceDto,flutter_rust_bridge::for_generated::SseCodec> {
                     // Codec=Sse (Serialization based), see doc to use other codecs
                     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {unimplemented!("")}
@@ -806,6 +904,14 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::dto::TransportTypeDto> for cr
                 impl SseEncode for bool {
                     // Codec=Sse (Serialization based), see doc to use other codecs
                     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {serializer.cursor.write_u8(self as _).unwrap();}
+                }
+                
+                impl SseEncode for crate::api::dto::GeoNoticeDto {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {<String>::sse_encode(self.event_id, serializer);
+<String>::sse_encode(self.geohash, serializer);
+<String>::sse_encode(self.content_json, serializer);
+<u64>::sse_encode(self.created_at, serializer);}
                 }
                 
                 impl SseEncode for crate::api::dto::GeoPresenceDto {
@@ -828,6 +934,12 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::dto::TransportTypeDto> for cr
                     // Codec=Sse (Serialization based), see doc to use other codecs
                     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {<i32>::sse_encode(self.len() as _, serializer);
         for item in self { <String>::sse_encode(item, serializer); }}
+                }
+                
+                impl SseEncode for Vec<crate::api::dto::GeoNoticeDto> {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {<i32>::sse_encode(self.len() as _, serializer);
+        for item in self { <crate::api::dto::GeoNoticeDto>::sse_encode(item, serializer); }}
                 }
                 
                 impl SseEncode for Vec<u8> {
@@ -895,6 +1007,14 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::dto::TransportTypeDto> for cr
                     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {<bool>::sse_encode(self.is_some(), serializer);
                 if let Some(value) = self {
                     <crate::api::dto::PayloadTagDto>::sse_encode(value, serializer);
+                }}
+                }
+                
+                impl SseEncode for Option<u64> {
+                    // Codec=Sse (Serialization based), see doc to use other codecs
+                    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {<bool>::sse_encode(self.is_some(), serializer);
+                if let Some(value) = self {
+                    <u64>::sse_encode(value, serializer);
                 }}
                 }
                 

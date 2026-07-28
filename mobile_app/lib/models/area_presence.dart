@@ -1,4 +1,5 @@
 import '../core/geohash.dart';
+import '../core/peer_id.dart';
 import 'peer.dart';
 import 'transport_mode.dart';
 
@@ -78,7 +79,7 @@ class NostrPresenceSighting {
             ? nick
             : (peer?.displayName?.trim().isNotEmpty == true
                 ? peer!.displayName!.trim()
-                : listId),
+                : formatShortPeerId(listId)),
         source: PresenceSource.internet,
         geohash: geohash,
         lastSeen: lastSeen,
@@ -87,7 +88,8 @@ class NostrPresenceSighting {
 }
 
 /// TTL for considering a Nostr presence sighting still "online".
-const Duration kNostrPresenceOnlineWindow = Duration(seconds: 180);
+/// Slightly longer than publish interval so badges do not flicker to zero.
+const Duration kNostrPresenceOnlineWindow = Duration(seconds: 240);
 
 /// Merge BLE peers + Nostr sightings for the Area people list.
 List<AreaPresenceEntry> mergeAreaPresence({
@@ -113,7 +115,7 @@ List<AreaPresenceEntry> mergeAreaPresence({
         id: p.id,
         label: p.displayName?.trim().isNotEmpty == true
             ? p.displayName!.trim()
-            : p.id,
+            : formatShortPeerId(p.id),
         source: PresenceSource.mesh,
         geohash: p.geohash,
         lastSeen: p.lastSeen,

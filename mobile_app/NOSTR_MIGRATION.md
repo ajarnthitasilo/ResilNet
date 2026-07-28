@@ -23,6 +23,13 @@
 - `wss://nos.lol`
 - `wss://relay.nostr.band`
 - `wss://nostr.mom`
+- `wss://relay.primal.net`
+- `wss://offchain.pub`
+- `wss://nostr.bitcoiner.social`
+- `wss://eden.nostr.land`
+
+Init/reconnect waits up to ~12s for ≥1 connected relay (poll every 400ms).
+Flutter polls status every 8s and before publish.
 
 Override via `initNostr(relayUrls: [...])`.
 

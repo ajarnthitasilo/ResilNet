@@ -128,6 +128,42 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get retry;
 
+  /// No description provided for @bootRecoveryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start new identity (erase local data)'**
+  String get bootRecoveryAction;
+
+  /// No description provided for @bootRecoveryConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start new identity?'**
+  String get bootRecoveryConfirmTitle;
+
+  /// No description provided for @bootRecoveryConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently erase local chats, keys, and identity on this device.\nPeers must scan your QR again with your new identity.\nThis cannot be undone.'**
+  String get bootRecoveryConfirmBody;
+
+  /// No description provided for @bootRecoveryRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Resetting local identity…'**
+  String get bootRecoveryRunning;
+
+  /// No description provided for @bootRecoverySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Local identity reset complete'**
+  String get bootRecoverySuccess;
+
+  /// No description provided for @bootRecoveryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reset identity: {error}'**
+  String bootRecoveryFailed(String error);
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -386,10 +422,64 @@ abstract class AppLocalizations {
   /// **'Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr'**
   String get geoEmptyNoLocation;
 
+  /// No description provided for @geoEmptyNeedsPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission denied — allow ResilNet in Settings → Privacy → Location'**
+  String get geoEmptyNeedsPermission;
+
+  /// No description provided for @geoEmptyServicesDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Services are off — turn them on in Settings'**
+  String get geoEmptyServicesDisabled;
+
+  /// No description provided for @geoEmptyNoGpsFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not get a GPS fix (common on Wi‑Fi iPads) — set geohash manually below'**
+  String get geoEmptyNoGpsFix;
+
+  /// No description provided for @geoEmptyTeleportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the place icon → enter a geohash (e.g. w5) → Teleport'**
+  String get geoEmptyTeleportHint;
+
+  /// No description provided for @geoSetGeohashManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Set geohash'**
+  String get geoSetGeohashManually;
+
+  /// No description provided for @geoTeleportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPS? Enter geohash prefix (2–7 chars, e.g. w5) and tap Teleport'**
+  String get geoTeleportHint;
+
+  /// No description provided for @geoTeleportInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid geohash — use base32 letters/numbers only (e.g. w5 or w5jt8)'**
+  String get geoTeleportInvalid;
+
+  /// No description provided for @geoTeleportOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Area set to {channel}'**
+  String geoTeleportOk(String channel);
+
+  /// No description provided for @geoManualActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual area: {channel} (GPS refresh will override)'**
+  String geoManualActive(String channel);
+
   /// No description provided for @geoEmptyNoNostr.
   ///
   /// In en, this message translates to:
-  /// **'Nostr relays offline — check internet and reconnect'**
+  /// **'Nostr not ready — tap Reconnect (0/0 until init succeeds)'**
   String get geoEmptyNoNostr;
 
   /// No description provided for @geoEmptyMeshOnly.
@@ -416,11 +506,185 @@ abstract class AppLocalizations {
   /// **'Refresh location'**
   String get geoRefreshLocation;
 
+  /// No description provided for @settingsClearLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear location'**
+  String get settingsClearLocationTitle;
+
+  /// No description provided for @settingsClearLocationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove GPS / teleport geohash (Area becomes #—)'**
+  String get settingsClearLocationSubtitle;
+
+  /// No description provided for @settingsClearLocationConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear location?'**
+  String get settingsClearLocationConfirmTitle;
+
+  /// No description provided for @settingsClearLocationConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletes the stored geohash on this device. You can refresh GPS or teleport again afterward.'**
+  String get settingsClearLocationConfirmBody;
+
+  /// No description provided for @settingsClearLocationAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear location'**
+  String get settingsClearLocationAction;
+
+  /// No description provided for @settingsClearLocationSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Location cleared'**
+  String get settingsClearLocationSnack;
+
+  /// No description provided for @chatVoiceTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note too large — keep under ~8 seconds'**
+  String get chatVoiceTooLarge;
+
+  /// No description provided for @chatVoiceNeedInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note needs Internet (Nostr) — too large for BLE alone'**
+  String get chatVoiceNeedInternet;
+
+  /// No description provided for @chatVoiceSentInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note sent via Internet'**
+  String get chatVoiceSentInternet;
+
+  /// No description provided for @noticeAnonMention.
+  ///
+  /// In en, this message translates to:
+  /// **'mention'**
+  String get noticeAnonMention;
+
+  /// No description provided for @noticeAnonDm.
+  ///
+  /// In en, this message translates to:
+  /// **'direct message'**
+  String get noticeAnonDm;
+
+  /// No description provided for @noticeAnonHug.
+  ///
+  /// In en, this message translates to:
+  /// **'hug'**
+  String get noticeAnonHug;
+
+  /// No description provided for @noticeAnonSlap.
+  ///
+  /// In en, this message translates to:
+  /// **'slap'**
+  String get noticeAnonSlap;
+
+  /// No description provided for @noticeAnonBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'block'**
+  String get noticeAnonBlock;
+
+  /// No description provided for @noticeAnonNeedKey.
+  ///
+  /// In en, this message translates to:
+  /// **'No public key yet — exchange QR first for 1:1'**
+  String get noticeAnonNeedKey;
+
+  /// No description provided for @noticeAnonActionSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get noticeAnonActionSent;
+
+  /// No description provided for @noticeAnonBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked {anon}'**
+  String noticeAnonBlocked(String anon);
+
+  /// No description provided for @noticeAnonHugMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'* hugs {anon} *'**
+  String noticeAnonHugMessage(String anon);
+
+  /// No description provided for @noticeAnonSlapMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'* slaps {anon} *'**
+  String noticeAnonSlapMessage(String anon);
+
   /// No description provided for @geoReconnectNostr.
   ///
   /// In en, this message translates to:
   /// **'Reconnect Nostr'**
   String get geoReconnectNostr;
+
+  /// No description provided for @nostrSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr relays'**
+  String get nostrSectionTitle;
+
+  /// No description provided for @nostrSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet messaging and Area discovery use these relays. Tap reconnect if status stays offline.'**
+  String get nostrSectionSubtitle;
+
+  /// No description provided for @nostrStatusOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected {connected}/{total}'**
+  String nostrStatusOnline(int connected, int total);
+
+  /// No description provided for @nostrStatusOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline — relays listed but none connected'**
+  String get nostrStatusOffline;
+
+  /// No description provided for @nostrStatusNotInit.
+  ///
+  /// In en, this message translates to:
+  /// **'Not started (0/0) — tap Reconnect to initialize'**
+  String get nostrStatusNotInit;
+
+  /// No description provided for @nostrReconnectAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect Nostr'**
+  String get nostrReconnectAction;
+
+  /// No description provided for @nostrReconnectOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr connected ({connected}/{total})'**
+  String nostrReconnectOk(int connected, int total);
+
+  /// No description provided for @nostrReconnectFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Still offline — check Wi‑Fi/cellular or try again'**
+  String get nostrReconnectFailed;
+
+  /// No description provided for @nostrReconnectFailedDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed: {error}'**
+  String nostrReconnectFailedDetail(String error);
+
+  /// No description provided for @nostrReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to relays…'**
+  String get nostrReconnecting;
 
   /// No description provided for @geoDiscoveryStatus.
   ///
@@ -593,7 +857,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsSaveHistorySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'When off, messages are still E2EE-sealed and sent, but not stored in local chat history (ephemeral)'**
+  /// **'When off, messages stay E2EE on the wire and are kept only for this session (not in local chat history). Your own text still shows as plaintext on this device.'**
   String get settingsSaveHistorySubtitle;
 
   /// No description provided for @settingsPrivacy.
@@ -611,7 +875,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsE2eeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Seal messages with RSA-OAEP + AES-GCM before send (recommended on)'**
+  /// **'Always on — messages are sealed with RSA-OAEP + AES-GCM before send. Relays and nearby hops cannot read contents.'**
   String get settingsE2eeSubtitle;
 
   /// No description provided for @settingsScreenshotTitle.
@@ -776,6 +1040,12 @@ abstract class AppLocalizations {
   /// **'BLE: scanning for nodes'**
   String get meshBleScanning;
 
+  /// No description provided for @meshBleEsp32Scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'ESP32: looking for a nearby node'**
+  String get meshBleEsp32Scanning;
+
   /// No description provided for @meshBleSyncing.
   ///
   /// In en, this message translates to:
@@ -791,8 +1061,14 @@ abstract class AppLocalizations {
   /// No description provided for @meshBleIdle.
   ///
   /// In en, this message translates to:
-  /// **'BLE: standby'**
+  /// **'BLE mesh on — no nearby phones yet'**
   String get meshBleIdle;
+
+  /// No description provided for @meshBlePeersNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE mesh — {count} phone(s) nearby'**
+  String meshBlePeersNearby(int count);
 
   /// No description provided for @meshBleNeedsPermission.
   ///
@@ -1304,6 +1580,12 @@ abstract class AppLocalizations {
   /// **'Recently online'**
   String get peersRecentlyOnline;
 
+  /// No description provided for @peersOnlineInArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Online in area'**
+  String get peersOnlineInArea;
+
   /// No description provided for @peersSeenMinutesAgo.
   ///
   /// In en, this message translates to:
@@ -1394,6 +1676,36 @@ abstract class AppLocalizations {
   /// **'{count} online'**
   String onlinePeopleCount(int count);
 
+  /// No description provided for @onlinePeopleDirectsChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'1:1 · nearby + area'**
+  String get onlinePeopleDirectsChannel;
+
+  /// No description provided for @peerOnlineMeshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone nearby on mesh'**
+  String get peerOnlineMeshTitle;
+
+  /// No description provided for @peerOnlineMeshBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is nearby on mesh'**
+  String peerOnlineMeshBody(String name);
+
+  /// No description provided for @peerOnlineAreaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone online in area'**
+  String get peerOnlineAreaTitle;
+
+  /// No description provided for @peerOnlineAreaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is online via Nostr'**
+  String peerOnlineAreaBody(String name);
+
   /// No description provided for @locationSheetTitle.
   ///
   /// In en, this message translates to:
@@ -1442,23 +1754,113 @@ abstract class AppLocalizations {
   /// **'expires in'**
   String get messageExpiryTitle;
 
+  /// No description provided for @voiceRecordTapToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to record voice message'**
+  String get voiceRecordTapToStart;
+
+  /// No description provided for @voiceRecordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording too short — try again'**
+  String get voiceRecordTooShort;
+
+  /// No description provided for @voiceRecordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save recording — try again'**
+  String get voiceRecordFailed;
+
   /// No description provided for @voicePttHold.
   ///
   /// In en, this message translates to:
-  /// **'Tap mic to record'**
+  /// **'Hold to record'**
   String get voicePttHold;
 
   /// No description provided for @voicePttRelease.
   ///
   /// In en, this message translates to:
-  /// **'Tap again to send voice note'**
+  /// **'Release to preview'**
   String get voicePttRelease;
 
   /// No description provided for @voicePttRecording.
   ///
   /// In en, this message translates to:
-  /// **'Recording… tap to send'**
+  /// **'Recording…'**
   String get voicePttRecording;
+
+  /// No description provided for @voicePttDraftReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note ready'**
+  String get voicePttDraftReady;
+
+  /// No description provided for @voicePttDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get voicePttDiscard;
+
+  /// No description provided for @voicePttReRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Record again'**
+  String get voicePttReRecord;
+
+  /// No description provided for @voicePttSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send voice note'**
+  String get voicePttSend;
+
+  /// No description provided for @voicePttPlayPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Play preview'**
+  String get voicePttPlayPreview;
+
+  /// No description provided for @voicePttStopPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop preview'**
+  String get voicePttStopPreview;
+
+  /// No description provided for @noticesBackfilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading notices…'**
+  String get noticesBackfilling;
+
+  /// No description provided for @noticesNostrOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr online'**
+  String get noticesNostrOnline;
+
+  /// No description provided for @noticesNostrOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr offline — bulletin needs Internet'**
+  String get noticesNostrOffline;
+
+  /// No description provided for @noticesBackfillLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Loaded {count} notices'**
+  String noticesBackfillLoaded(int count);
+
+  /// No description provided for @noticePublishFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not publish notice to the area board. Check Nostr connection.'**
+  String get noticePublishFailed;
+
+  /// No description provided for @chatNoticeHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Area notice — open Notices'**
+  String get chatNoticeHidden;
 
   /// No description provided for @identityDisplayNameTitle.
   ///

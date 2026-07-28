@@ -5,6 +5,19 @@
   "preparingSystem": "Preparing system…",
   "bootFailedTitle": "Could not start",
   "retry": "Try again",
+  "bootRecoveryAction": "Start new identity (erase local data)",
+  "bootRecoveryConfirmTitle": "Start new identity?",
+  "bootRecoveryConfirmBody": "This will permanently erase local chats, keys, and identity on this device.\nPeers must scan your QR again with your new identity.\nThis cannot be undone.",
+  "bootRecoveryRunning": "Resetting local identity…",
+  "bootRecoverySuccess": "Local identity reset complete",
+  "bootRecoveryFailed": "Could not reset identity: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "cancel": "Cancel",
   "save": "Save",
   "close": "Close",
@@ -69,7 +82,26 @@
   "geoPeerDiscoverOnlySnack": "Legacy anonymous presence — wait for a bound peer or exchange QR",
   "geoInternetDiscoverHint": "Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)",
   "geoEmptyNoLocation": "Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr",
-  "geoEmptyNoNostr": "Nostr relays offline — check internet and reconnect",
+  "geoEmptyNeedsPermission": "Location permission denied — allow ResilNet in Settings → Privacy → Location",
+  "geoEmptyServicesDisabled": "Location Services are off — turn them on in Settings",
+  "geoEmptyNoGpsFix": "Could not get a GPS fix (common on Wi‑Fi iPads) — set geohash manually below",
+  "geoEmptyTeleportHint": "Tap the place icon → enter a geohash (e.g. w5) → Teleport",
+  "geoSetGeohashManually": "Set geohash",
+  "geoTeleportHint": "No GPS? Enter geohash prefix (2–7 chars, e.g. w5) and tap Teleport",
+  "geoTeleportInvalid": "Invalid geohash — use base32 letters/numbers only (e.g. w5 or w5jt8)",
+  "geoTeleportOk": "Area set to {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": { "type": "String" }
+    }
+  },
+  "geoManualActive": "Manual area: {channel} (GPS refresh will override)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": { "type": "String" }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr not ready — tap Reconnect (0/0 until init succeeds)",
   "geoEmptyMeshOnly": "Transport is Mesh-only — switch to Internet or Auto to discover peers over Nostr",
   "geoEmptyWaiting": "No one in {channel} yet — keep Area + Internet open on both devices and wait ~60s",
   "@geoEmptyWaiting": {
@@ -79,7 +111,68 @@
   },
   "geoChannelFallback": "#area",
   "geoRefreshLocation": "Refresh location",
+  "settingsClearLocationTitle": "Clear location",
+  "settingsClearLocationSubtitle": "Remove GPS / teleport geohash (Area becomes #—)",
+  "settingsClearLocationConfirmTitle": "Clear location?",
+  "settingsClearLocationConfirmBody": "Deletes the stored geohash on this device. You can refresh GPS or teleport again afterward.",
+  "settingsClearLocationAction": "Clear location",
+  "settingsClearLocationSnack": "Location cleared",
+  "chatVoiceTooLarge": "Voice note too large — keep under ~8 seconds",
+  "chatVoiceNeedInternet": "Voice note needs Internet (Nostr) — too large for BLE alone",
+  "chatVoiceSentInternet": "Voice note sent via Internet",
+  "noticeAnonMention": "mention",
+  "noticeAnonDm": "direct message",
+  "noticeAnonHug": "hug",
+  "noticeAnonSlap": "slap",
+  "noticeAnonBlock": "block",
+  "noticeAnonNeedKey": "No public key yet — exchange QR first for 1:1",
+  "noticeAnonActionSent": "Sent",
+  "noticeAnonBlocked": "Blocked {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": { "type": "String" }
+    }
+  },
+  "noticeAnonHugMessage": "* hugs {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": { "type": "String" }
+    }
+  },
+  "noticeAnonSlapMessage": "* slaps {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": { "type": "String" }
+    }
+  },
   "geoReconnectNostr": "Reconnect Nostr",
+  "nostrSectionTitle": "Nostr relays",
+  "nostrSectionSubtitle": "Internet messaging and Area discovery use these relays. Tap reconnect if status stays offline.",
+  "nostrStatusOnline": "Connected {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "nostrStatusOffline": "Offline — relays listed but none connected",
+  "nostrStatusNotInit": "Not started (0/0) — tap Reconnect to initialize",
+  "nostrReconnectAction": "Reconnect Nostr",
+  "nostrReconnectOk": "Nostr connected ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "nostrReconnectFailed": "Still offline — check Wi‑Fi/cellular or try again",
+  "nostrReconnectFailedDetail": "Failed: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "nostrReconnecting": "Connecting to relays…",
   "geoDiscoveryStatus": "{channel} · Nostr {relays}",
   "@geoDiscoveryStatus": {
     "placeholders": {
@@ -133,10 +226,10 @@
   "settingsData": "Data",
   "settingsDataHint": "Delete local messages to shrink the database — identity, keys, and peers are kept",
   "settingsSaveHistoryTitle": "Save message history",
-  "settingsSaveHistorySubtitle": "When off, messages are still E2EE-sealed and sent, but not stored in local chat history (ephemeral)",
+  "settingsSaveHistorySubtitle": "When off, messages stay E2EE on the wire and are kept only for this session (not in local chat history). Your own text still shows as plaintext on this device.",
   "settingsPrivacy": "Privacy",
   "settingsE2eeTitle": "End-to-end encryption",
-  "settingsE2eeSubtitle": "Seal messages with RSA-OAEP + AES-GCM before send (recommended on)",
+  "settingsE2eeSubtitle": "Always on — messages are sealed with RSA-OAEP + AES-GCM before send. Relays and nearby hops cannot read contents.",
   "settingsScreenshotTitle": "Screenshot alerts",
   "settingsScreenshotSubtitle": "Show a system line in chat when this device captures the screen",
   "settingsNostrExpiryTitle": "Nostr message keep time",
@@ -176,9 +269,16 @@
     }
   },
   "meshBleScanning": "BLE: scanning for nodes",
+  "meshBleEsp32Scanning": "ESP32: looking for a nearby node",
   "meshBleSyncing": "BLE: syncing with ESP32",
   "meshNostrPublishing": "Nostr: publishing",
-  "meshBleIdle": "BLE: standby",
+  "meshBleIdle": "BLE mesh on — no nearby phones yet",
+  "meshBlePeersNearby": "BLE mesh — {count} phone(s) nearby",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "meshBleNeedsPermission": "BLE: permission required",
   "meshBlePausedCamera": "BLE paused for camera — tap Start BLE",
   "meshBleStopped": "BLE is off — check Bluetooth is on, then tap Start BLE",
@@ -345,6 +445,7 @@
   "peersBlocked": "Blocked",
   "peersNearbyBle": "Nearby (BLE)",
   "peersRecentlyOnline": "Recently online",
+  "peersOnlineInArea": "Online in area",
   "peersSeenMinutesAgo": "Seen {minutes} min ago",
   "@peersSeenMinutesAgo": {
     "placeholders": {
@@ -377,6 +478,21 @@
       "count": { "type": "int" }
     }
   },
+  "onlinePeopleDirectsChannel": "1:1 · nearby + area",
+  "peerOnlineMeshTitle": "Someone nearby on mesh",
+  "peerOnlineMeshBody": "{name} is nearby on mesh",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "peerOnlineAreaTitle": "Someone online in area",
+  "peerOnlineAreaBody": "{name} is online via Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "locationSheetTitle": "#location channels",
   "locationSheetIntro": "Chat with people nearby using coarse geohash — not precise GPS. Presence on Internet uses anonymous Nostr keys.",
   "locationMeshSubtitle": "#bluetooth • ~10–50 m",
@@ -395,9 +511,29 @@
     }
   },
   "messageExpiryTitle": "expires in",
-  "voicePttHold": "Tap mic to record",
-  "voicePttRelease": "Tap again to send voice note",
-  "voicePttRecording": "Recording… tap to send",
+  "voiceRecordTapToStart": "Tap to record voice message",
+  "voiceRecordTooShort": "Recording too short — try again",
+  "voiceRecordFailed": "Could not save recording — try again",
+  "voicePttHold": "Hold to record",
+  "voicePttRelease": "Release to preview",
+  "voicePttRecording": "Recording…",
+  "voicePttDraftReady": "Voice note ready",
+  "voicePttDiscard": "Discard",
+  "voicePttReRecord": "Record again",
+  "voicePttSend": "Send voice note",
+  "voicePttPlayPreview": "Play preview",
+  "voicePttStopPreview": "Stop preview",
+  "noticesBackfilling": "Loading notices…",
+  "noticesNostrOnline": "Nostr online",
+  "noticesNostrOffline": "Nostr offline — bulletin needs Internet",
+  "noticesBackfillLoaded": "Loaded {count} notices",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noticePublishFailed": "Could not publish notice to the area board. Check Nostr connection.",
+  "chatNoticeHidden": "Area notice — open Notices",
   "identityDisplayNameTitle": "Display name",
   "identitySaveName": "Save name",
   "identityUserIdLabel": "User ID (Public Key Hash)",

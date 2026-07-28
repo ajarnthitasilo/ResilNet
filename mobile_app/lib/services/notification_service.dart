@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -7,10 +8,18 @@ class NotificationService {
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
 
+  /// Stable id so presence summary updates replace the previous banner.
+  static const presenceSummaryNotificationId = 71001;
+
   Future<void> init() async {
     if (_initialized) return;
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const ios = DarwinInitializationSettings();
+    // Request permission at init time on iOS; show alerts in foreground too.
+    const ios = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
     const settings = InitializationSettings(android: android, iOS: ios);
     await _plugin.initialize(settings: settings);
 
@@ -23,23 +32,45 @@ class NotificationService {
     const presenceChannel = AndroidNotificationChannel(
       'resilnet_presence',
       'Presence',
-      description: 'Favorites nearby / in area',
-      importance: Importance.defaultImportance,
+      description: 'People online on mesh / Nostr',
+      importance: Importance.high,
     );
-    final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     await androidPlugin?.createNotificationChannel(directChannel);
     await androidPlugin?.createNotificationChannel(presenceChannel);
 
     _initialized = true;
+    debugPrint('[Notify] initialized');
+    await logPermissionStatus(reason: 'init');
   }
 
-  Future<void> requestPermissions() async {
-    await Permission.notification.request();
+  Future<void> requestPermissions({String reason = 'unknown'}) async {
+    debugPrint('[Notify] permission request begin reason=$reason');
+    final status = await Permission.notification.request();
+    debugPrint('[Notify] permission request result=$status reason=$reason');
     final ios = _plugin
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>();
-    await ios?.requestPermissions(alert: true, badge: true, sound: true);
+          IOSFlutterLocalNotificationsPlugin
+        >();
+    final iosRes = await ios?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    debugPrint('[Notify] iOS permission result=$iosRes reason=$reason');
+    await logPermissionStatus(reason: 'post-request:$reason');
+  }
+
+  Future<PermissionStatus> currentPermissionStatus() {
+    return Permission.notification.status;
+  }
+
+  Future<void> logPermissionStatus({String reason = 'status-check'}) async {
+    final status = await currentPermissionStatus();
+    debugPrint('[Notify] permission status=$status reason=$reason');
   }
 
   /// Direct message — body is produced on-device after local decryption.
@@ -71,6 +102,15 @@ class NotificationService {
     required String title,
     required String body,
   }) async {
+    await showPresenceAlert(id: id, title: title, body: body);
+  }
+
+  /// Someone came online on mesh or Nostr (presence channel).
+  Future<void> showPresenceAlert({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
     await _show(
       id: id,
       title: title,
@@ -80,6 +120,24 @@ class NotificationService {
     );
   }
 
+  /// Sticky summary of online counts (updates in place in Notification Center).
+  Future<void> showPresenceSummary({
+    required String title,
+    required String body,
+  }) async {
+    await _show(
+      id: presenceSummaryNotificationId,
+      title: title,
+      body: body,
+      channelId: 'resilnet_presence',
+      channelName: 'Presence',
+    );
+  }
+
+  Future<void> clearPresenceSummary() async {
+    await _plugin.cancel(id: presenceSummaryNotificationId);
+  }
+
   Future<void> _show({
     required int id,
     required String title,
@@ -87,13 +145,29 @@ class NotificationService {
     required String channelId,
     required String channelName,
   }) async {
+    final status = await Permission.notification.status;
+    if (!status.isGranted && !status.isLimited && !status.isProvisional) {
+      debugPrint(
+        '[Notify] skip id=$id channel=$channelId reason=permission:$status',
+      );
+      return;
+    }
+    debugPrint('[Notify] enqueue id=$id channel=$channelId reason=show');
     final android = AndroidNotificationDetails(
       channelId,
       channelName,
       importance: Importance.high,
       priority: Priority.high,
+      ongoing: id == presenceSummaryNotificationId,
+      onlyAlertOnce: id == presenceSummaryNotificationId,
     );
-    const ios = DarwinNotificationDetails();
+    const ios = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      presentBanner: true,
+      presentList: true,
+    );
     final details = NotificationDetails(android: android, iOS: ios);
     await _plugin.show(
       id: id,
@@ -101,5 +175,6 @@ class NotificationService {
       body: body,
       notificationDetails: details,
     );
+    debugPrint('[Notify] shown id=$id channel=$channelId title=$title');
   }
 }

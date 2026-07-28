@@ -22,7 +22,12 @@ class AckHandlerService extends ChangeNotifier {
 
   /// ประมวลผล dedicated ACK packet (`PayloadType 0x05`)
   Future<void> handleBatchPacket(BatchAckPacket packet) async {
-    if (packet.receiverId != myUserId) return;
+    if (packet.receiverId != myUserId) {
+      debugPrint(
+        '[ACK] drop batch receiver mismatch packet=${packet.receiverId} me=$myUserId',
+      );
+      return;
+    }
     await _applyAckEntries(packet.batchAcks);
   }
 
@@ -61,20 +66,42 @@ class AckHandlerService extends ChangeNotifier {
     final read = <String, DateTime>{};
 
     for (final e in entries) {
-      if (_seen(e.dedupKey)) continue;
+      if (_seen(e.dedupKey)) {
+        debugPrint('[ACK] drop duplicate key=${e.dedupKey}');
+        continue;
+      }
 
       final msg = await _findOutboundMessage(e.msgId);
-      if (msg == null) continue;
+      if (msg == null) {
+        debugPrint(
+          '[ACK] drop msgId=${e.msgId} type=${e.type.wireName} reason=not-outbound-or-missing',
+        );
+        continue;
+      }
 
       final ts = DateTime.fromMillisecondsSinceEpoch(e.timestamp);
       switch (e.type) {
         case AckType.delivered:
           if (_canUpgrade(msg.status, MessageStatus.delivered)) {
             delivered.putIfAbsent(e.msgId, () => ts);
+            debugPrint(
+              '[ACK] apply delivered msgId=${e.msgId} ${msg.status.name}->delivered',
+            );
+          } else {
+            debugPrint(
+              '[ACK] drop delivered msgId=${e.msgId} reason=stale status=${msg.status.name}',
+            );
           }
         case AckType.read:
           if (_canUpgrade(msg.status, MessageStatus.read)) {
             read[e.msgId] = ts;
+            debugPrint(
+              '[ACK] apply read msgId=${e.msgId} ${msg.status.name}->read',
+            );
+          } else {
+            debugPrint(
+              '[ACK] drop read msgId=${e.msgId} reason=stale status=${msg.status.name}',
+            );
           }
       }
     }

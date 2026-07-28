@@ -336,3 +336,24 @@ impl From<crate::nostr::GeoPresenceEvent> for GeoPresenceDto {
         }
     }
 }
+
+/// Public geohash notice from Nostr (plaintext JSON content).
+#[frb]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GeoNoticeDto {
+    pub event_id: String,
+    pub geohash: String,
+    pub content_json: String,
+    pub created_at: u64,
+}
+
+impl From<crate::nostr::GeoNoticeEvent> for GeoNoticeDto {
+    fn from(e: crate::nostr::GeoNoticeEvent) -> Self {
+        Self {
+            event_id: e.event_id,
+            geohash: e.geohash,
+            content_json: e.content_json,
+            created_at: e.created_at,
+        }
+    }
+}

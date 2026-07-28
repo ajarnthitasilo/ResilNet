@@ -85,7 +85,15 @@ class AckQueueManager extends ChangeNotifier {
 
   /// คิว DELIVERED / READ ACK (dedup ภายใน buffer)
   Future<void> enqueue(AckEntry entry) async {
-    if (_dedupKeys.contains(entry.dedupKey)) return;
+    if (_dedupKeys.contains(entry.dedupKey)) {
+      debugPrint(
+        '[ACK] drop enqueue duplicate msgId=${entry.msgId} type=${entry.type.wireName}',
+      );
+      return;
+    }
+    debugPrint(
+      '[ACK] enqueue ${entry.type.wireName} msgId=${entry.msgId} target=${entry.targetSenderId}',
+    );
     _dedupKeys.add(entry.dedupKey);
     _buffer.add(entry);
     await _persistSingle(entry);
@@ -182,11 +190,20 @@ class AckQueueManager extends ChangeNotifier {
         receiverId: entry.key,
         batchAcks: entry.value,
       );
+      debugPrint(
+        '[ACK] flush sender=$myUserId receiver=${entry.key} count=${entry.value.length}',
+      );
       final ok = await sendAckBatch(packet);
       if (ok) {
         sentKeys.addAll(entry.value.map((e) => e.dedupKey));
+        debugPrint(
+          '[ACK] flush ok receiver=${entry.key} count=${entry.value.length}',
+        );
       } else {
         allOk = false;
+        debugPrint(
+          '[ACK] flush failed receiver=${entry.key} count=${entry.value.length}',
+        );
       }
     }
 

@@ -171,6 +171,68 @@ pub async fn nostr_subscribe_geo_presence(
     Ok(())
 }
 
+/// One-shot fetch of public geohash notices for historical backfill.
+#[frb]
+pub async fn nostr_fetch_geo_notices(
+    geohashes: Vec<String>,
+    since_secs_ago: Option<u64>,
+) -> Result<Vec<crate::api::dto::GeoNoticeDto>, String> {
+    let pool = get_nostr_pool()?;
+    let events = pool
+        .fetch_geo_notices(geohashes, since_secs_ago)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(events.into_iter().map(Into::into).collect())
+}
+
+/// Publish a public geohash notice (plaintext JSON content).
+#[frb]
+pub async fn nostr_publish_geo_notice(
+    geohash: String,
+    content_json: String,
+    expires_at: Option<u64>,
+) -> Result<String, String> {
+    let pool = get_nostr_pool()?;
+    pool.publish_geo_notice(&geohash, &content_json, expires_at)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Replace the active geohash notice subscription (`[]` unsubscribes).
+#[frb]
+pub async fn nostr_set_geo_notice_filter(
+    geohashes: Vec<String>,
+    since_secs_ago: Option<u64>,
+) -> Result<(), String> {
+    let pool = get_nostr_pool()?;
+    pool.set_geo_notice_subscription(geohashes, since_secs_ago)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Stream public geohash notice events.
+#[frb]
+pub async fn nostr_subscribe_geo_notices(
+    sink: crate::frb_generated::StreamSink<crate::api::dto::GeoNoticeDto>,
+) -> Result<(), String> {
+    let pool = get_nostr_pool()?;
+    let mut rx = pool.subscribe_geo_notice_events();
+    tokio::spawn(async move {
+        loop {
+            match rx.recv().await {
+                Ok(ev) => {
+                    if sink.add(ev.into()).is_err() {
+                        break;
+                    }
+                }
+                Err(tokio::sync::broadcast::error::RecvError::Lagged(_)) => {}
+                Err(tokio::sync::broadcast::error::RecvError::Closed) => break,
+            }
+        }
+    });
+    Ok(())
+}
+
 /// Convert a Nostr envelope into a MessagePacket and ingest through router dedup.
 /// Legacy broadcast envelopes are ignored (do not crash / do not enter chat).
 #[frb]

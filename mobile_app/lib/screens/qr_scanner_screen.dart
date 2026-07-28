@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../models/peer.dart';
+import '../core/peer_id.dart';
 import '../services/crypto_service.dart';
 import '../services/camera_permission.dart';
 import '../l10n/l10n_ext.dart';
@@ -152,6 +153,17 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
           lastSeen: now,
         ),
       );
+      // Default short alias when QR has no name — avoids full-hash titles.
+      if (name == null || name.isEmpty) {
+        final existing = await s.db.getContactAlias(expectedId);
+        if (existing == null || existing.isEmpty) {
+          await s.db.setContactAlias(
+            publicKeyHash: expectedId,
+            aliasName: formatShortPeerId(expectedId),
+          );
+        }
+      }
+      await s.onPeerImportedViaQr(expectedId);
 
       if (!mounted) return;
       await _safeClose(true);

@@ -70,6 +70,39 @@ Future<void> nostrSetGeoPresenceFilter({required List<String> geohashes}) =>
 Stream<GeoPresenceDto> nostrSubscribeGeoPresence() =>
     ResilNetCore.instance.api.crateApiNostrApiNostrSubscribeGeoPresence();
 
+/// One-shot fetch of public geohash notices for historical backfill.
+Future<List<GeoNoticeDto>> nostrFetchGeoNotices({
+  required List<String> geohashes,
+  BigInt? sinceSecsAgo,
+}) => ResilNetCore.instance.api.crateApiNostrApiNostrFetchGeoNotices(
+  geohashes: geohashes,
+  sinceSecsAgo: sinceSecsAgo,
+);
+
+/// Publish a public geohash notice (plaintext JSON content).
+Future<String> nostrPublishGeoNotice({
+  required String geohash,
+  required String contentJson,
+  BigInt? expiresAt,
+}) => ResilNetCore.instance.api.crateApiNostrApiNostrPublishGeoNotice(
+  geohash: geohash,
+  contentJson: contentJson,
+  expiresAt: expiresAt,
+);
+
+/// Replace the active geohash notice subscription (`[]` unsubscribes).
+Future<void> nostrSetGeoNoticeFilter({
+  required List<String> geohashes,
+  BigInt? sinceSecsAgo,
+}) => ResilNetCore.instance.api.crateApiNostrApiNostrSetGeoNoticeFilter(
+  geohashes: geohashes,
+  sinceSecsAgo: sinceSecsAgo,
+);
+
+/// Stream public geohash notice events.
+Stream<GeoNoticeDto> nostrSubscribeGeoNotices() =>
+    ResilNetCore.instance.api.crateApiNostrApiNostrSubscribeGeoNotices();
+
 /// Convert a Nostr envelope into a MessagePacket and ingest through router dedup.
 /// Legacy broadcast envelopes are ignored (do not crash / do not enter chat).
 Future<void> ingestNostrEnvelope({required ResilNetEnvelopeDto envelope}) =>

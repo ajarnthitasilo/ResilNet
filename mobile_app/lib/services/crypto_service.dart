@@ -11,34 +11,230 @@ import 'package:pointycastle/export.dart' as pc;
 
 import 'secure_storage.dart';
 
+/// Keychain temporarily unavailable — do **not** mint a new identity.
+class IdentityUnavailableException implements Exception {
+  IdentityUnavailableException(this.message, {this.userMessage});
+  final String message;
+
+  /// Short message safe to show on the boot error screen.
+  final String? userMessage;
+
+  @override
+  String toString() => userMessage ?? message;
+}
+
 class CryptoService {
   static const _kPrivatePem = 'resilnet_rsa_private_pem';
   static const _kPublicPem = 'resilnet_rsa_public_pem';
-  static const _keychainTimeout = Duration(seconds: 3);
+  static const _keychainTimeout = Duration(seconds: 5);
   static const _wipeTimeout = Duration(seconds: 12);
 
   final FlutterSecureStorage _storage;
+  final FlutterSecureStorage _legacyStorage;
 
   String? _publicPem;
   String? _privatePem;
+  bool _restoredFromKeychain = false;
+  Future<String?> Function()? _readExpectedUserId;
+  Future<void> Function(String userId)? _writeExpectedUserId;
+  Future<bool> Function()? _hasLocalUserData;
 
-  CryptoService({FlutterSecureStorage? storage})
-      : _storage = storage ?? resilnetSecureStorage;
+  CryptoService({
+    FlutterSecureStorage? storage,
+    FlutterSecureStorage? legacyStorage,
+  })  : _storage = storage ?? resilnetSecureStorage,
+        _legacyStorage = legacyStorage ?? resilnetLegacyGroupSecureStorage;
 
-  Future<void> init() async {
-    try {
-      _privatePem = await _storage
-          .read(key: _kPrivatePem)
-          .timeout(_keychainTimeout);
-      _publicPem =
-          await _storage.read(key: _kPublicPem).timeout(_keychainTimeout);
-    } catch (e) {
-      debugPrint('[Crypto] Keychain read timeout/fail: $e');
+  /// True when RSA keys were loaded from Keychain (not minted this session).
+  /// Used to skip onboarding after reinstall when prefs were cleared.
+  bool get restoredFromKeychain => _restoredFromKeychain;
+
+  /// Load identity from Keychain with retries + legacy migration.
+  ///
+  /// Only mints a new keypair when Keychain reads succeed and both keys are
+  /// absent (true first install). Timeouts / read failures throw
+  /// [IdentityUnavailableException] instead of silently replacing identity.
+  ///
+  /// When [readExpectedUserId] or [hasLocalUserData] indicate a returning user
+  /// but Keychain is empty, init refuses to mint and throws.
+  Future<void> init({
+    Future<String?> Function()? readExpectedUserId,
+    Future<void> Function(String userId)? writeExpectedUserId,
+    Future<bool> Function()? hasLocalUserData,
+  }) async {
+    _readExpectedUserId = readExpectedUserId;
+    _writeExpectedUserId = writeExpectedUserId;
+    _hasLocalUserData = hasLocalUserData;
+    Object? lastErr;
+
+    // 1) Canonical default-group Keychain (fixes -34018 boot failure).
+    for (var attempt = 1; attempt <= 4; attempt++) {
+      final result = await _tryReadIdentityPair(_storage);
+      if (result.readOk) {
+        final applied = await _applyReadResult(result, migrateFromLegacy: false);
+        if (applied) return;
+        lastErr = StateError('partial identity in keychain');
+        debugPrint('[Crypto] partial identity keys — retry $attempt/4');
+      } else {
+        lastErr = result.error;
+        debugPrint(
+          '[Crypto] keychain read failed attempt $attempt/4: ${result.error}',
+        );
+      }
+      if (attempt < 4) {
+        await Future<void>.delayed(Duration(milliseconds: 350 * attempt));
+      }
     }
 
-    if (_privatePem != null && _publicPem != null) return;
+    // 2) Best-effort recover from legacy shared-group Keychain, then migrate.
+    final legacy = await _tryReadIdentityPair(_legacyStorage);
+    if (legacy.readOk) {
+      final applied = await _applyReadResult(legacy, migrateFromLegacy: true);
+      if (applied) return;
+      lastErr ??= StateError('partial identity in legacy keychain');
+    } else if (legacy.error != null) {
+      debugPrint('[Crypto] legacy keychain read skipped: ${legacy.error}');
+      // -34018 on legacy is expected; do not treat as fatal if primary was empty.
+    }
 
-    await _generateAndPersist();
+    // If primary reads succeeded as empty earlier we would have minted already.
+    // Reaching here means primary never got a clean empty/success read.
+    final primaryProbe = await _tryReadIdentityPair(_storage);
+    if (primaryProbe.readOk) {
+      final applied =
+          await _applyReadResult(primaryProbe, migrateFromLegacy: false);
+      if (applied) return;
+    } else {
+      lastErr = primaryProbe.error ?? lastErr;
+    }
+
+    final entitlement = _looksLikeMissingEntitlement(lastErr);
+    throw IdentityUnavailableException(
+      'Keychain unavailable — identity not loaded '
+      '(will not mint a new key). Last error: $lastErr',
+      userMessage: entitlement
+          ? 'ไม่สามารถเข้าถึง Keychain ได้ (สิทธิ์ระบบ) — กดลองอีกครั้ง '
+              'หากยังไม่สำเร็จ ให้ติดตั้งเวอร์ชันล่าสุดใหม่'
+          : 'ไม่สามารถโหลดตัวตนจาก Keychain ได้ — กดลองอีกครั้ง',
+    );
+  }
+
+  /// Returns true when init can finish (restored or minted).
+  Future<bool> _applyReadResult(
+    ({String? priv, String? pub, bool readOk, Object? error}) result, {
+    required bool migrateFromLegacy,
+  }) async {
+    if (!result.readOk) return false;
+    final priv = result.priv?.trim();
+    final pub = result.pub?.trim();
+    if (priv != null &&
+        priv.isNotEmpty &&
+        pub != null &&
+        pub.isNotEmpty) {
+      _privatePem = priv;
+      _publicPem = pub;
+      _restoredFromKeychain = true;
+      if (migrateFromLegacy) {
+        await _migrateIdentityToCanonical(priv, pub);
+        debugPrint('[Crypto] identity migrated from legacy keychain group');
+      } else {
+        debugPrint('[Crypto] identity restored from keychain');
+      }
+      await _persistExpectedUserId();
+      await _verifyPersistedKeys();
+      return true;
+    }
+    if ((priv == null || priv.isEmpty) && (pub == null || pub.isEmpty)) {
+      if (migrateFromLegacy) return false;
+      await _refuseMintIfReturningUser();
+      _restoredFromKeychain = false;
+      await _generateAndPersist();
+      await _persistExpectedUserId();
+      debugPrint('[Crypto] first-install identity minted id=${myUserId}');
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> _refuseMintIfReturningUser() async {
+    final expected = await _readExpectedUserId?.call();
+    if (expected != null && expected.isNotEmpty) {
+      debugPrint(
+        '[Crypto] keychain empty but expected identity $expected — refuse mint',
+      );
+      throw IdentityUnavailableException(
+        'Keychain empty but expected identity $expected',
+        userMessage:
+            'ไม่พบกุญแจตัวตนใน Keychain แต่เครื่องนี้เคยใช้งานแล้ว — กดลองอีกครั้ง '
+            'หากยังไม่สำเร็จ ให้ติดตั้งเวอร์ชันล่าสุดใหม่',
+      );
+    }
+    final hasData = await _hasLocalUserData?.call() ?? false;
+    if (hasData) {
+      debugPrint('[Crypto] keychain empty but local data exists — refuse mint');
+      throw IdentityUnavailableException(
+        'Keychain empty but local user data exists',
+        userMessage:
+            'ไม่พบกุญแจตัวตนใน Keychain แต่มีข้อมูลแชท/เพื่อนในเครื่อง — กดลองอีกครั้ง',
+      );
+    }
+  }
+
+  Future<void> _persistExpectedUserId() async {
+    final writer = _writeExpectedUserId;
+    if (writer == null) return;
+    try {
+      await writer(myUserId);
+    } catch (e) {
+      debugPrint('[Crypto] identity fingerprint write failed: $e');
+    }
+  }
+
+  Future<void> _verifyPersistedKeys() async {
+    final storedPriv = await _readKey(_kPrivatePem);
+    final storedPub = await _readKey(_kPublicPem);
+    if (storedPriv != _privatePem || storedPub != _publicPem) {
+      debugPrint('[Crypto] identity read-back verify failed');
+      throw IdentityUnavailableException(
+        'Keychain read-back verify failed',
+        userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
+      );
+    }
+  }
+
+  Future<void> _migrateIdentityToCanonical(String priv, String pub) async {
+    await _storage
+        .write(key: _kPrivatePem, value: priv)
+        .timeout(_wipeTimeout);
+    await _storage.write(key: _kPublicPem, value: pub).timeout(_wipeTimeout);
+    final storedPriv = await _readKey(_kPrivatePem);
+    final storedPub = await _readKey(_kPublicPem);
+    if (storedPriv != priv || storedPub != pub) {
+      throw IdentityUnavailableException(
+        'Legacy identity migrate verify failed',
+        userMessage: 'ย้ายกุญแจตัวตนไม่สำเร็จ — กดลองอีกครั้ง',
+      );
+    }
+  }
+
+  bool _looksLikeMissingEntitlement(Object? err) {
+    final s = '$err';
+    return s.contains('-34018') ||
+        s.contains('entitlement') ||
+        s.contains('Unexpected security result');
+  }
+
+  Future<({String? priv, String? pub, bool readOk, Object? error})>
+      _tryReadIdentityPair(FlutterSecureStorage storage) async {
+    try {
+      final priv =
+          await storage.read(key: _kPrivatePem).timeout(_keychainTimeout);
+      final pub =
+          await storage.read(key: _kPublicPem).timeout(_keychainTimeout);
+      return (priv: priv, pub: pub, readOk: true, error: null);
+    } catch (e) {
+      return (priv: null, pub: null, readOk: false, error: e);
+    }
   }
 
   /// Panic wipe: drop RSA identity from secure storage and mint a new keypair.
@@ -47,9 +243,11 @@ class CryptoService {
     await _wipeStoredIdentityKeys();
     _privatePem = null;
     _publicPem = null;
+    _restoredFromKeychain = false;
     await _generateAndPersist(requirePersist: true);
 
     final newId = myUserId;
+    await _persistExpectedUserId();
     if (oldId != null && oldId == newId) {
       throw StateError('Identity wipe failed: public key hash unchanged');
     }
@@ -58,27 +256,20 @@ class CryptoService {
   }
 
   Future<void> _wipeStoredIdentityKeys() async {
-    for (var attempt = 0; attempt < 3; attempt++) {
-      try {
-        await _storage
-            .delete(key: _kPrivatePem)
-            .timeout(_wipeTimeout);
-        await _storage
-            .delete(key: _kPublicPem)
-            .timeout(_wipeTimeout);
-      } catch (e) {
-        debugPrint('[Crypto] wipe delete attempt ${attempt + 1}: $e');
+    for (final store in [_storage, _legacyStorage]) {
+      for (var attempt = 0; attempt < 3; attempt++) {
+        try {
+          await store.delete(key: _kPrivatePem).timeout(_wipeTimeout);
+          await store.delete(key: _kPublicPem).timeout(_wipeTimeout);
+        } catch (e) {
+          debugPrint('[Crypto] wipe delete attempt ${attempt + 1}: $e');
+        }
       }
-
-      final priv = await _readKey(_kPrivatePem);
-      final pub = await _readKey(_kPublicPem);
-      if (priv == null && pub == null) return;
-    }
-
-    try {
-      await _storage.deleteAll().timeout(_wipeTimeout);
-    } catch (e) {
-      debugPrint('[Crypto] wipe deleteAll failed: $e');
+      try {
+        await store.deleteAll().timeout(_wipeTimeout);
+      } catch (e) {
+        debugPrint('[Crypto] wipe deleteAll failed: $e');
+      }
     }
 
     final priv = await _readKey(_kPrivatePem);
@@ -97,7 +288,7 @@ class CryptoService {
     }
   }
 
-  Future<void> _generateAndPersist({bool requirePersist = false}) async {
+  Future<void> _generateAndPersist({bool requirePersist = true}) async {
     final pair = _generateRsaKeyPair();
     final privatePem = _encodePrivateKeyToPem(
       pair.privateKey as pc.RSAPrivateKey,
@@ -107,7 +298,6 @@ class CryptoService {
     _privatePem = privatePem;
     _publicPem = publicPem;
 
-    // Persist best-effort — อย่าบล็อก startup ถ้า Keychain ค้าง
     try {
       await _storage
           .write(key: _kPrivatePem, value: privatePem)
@@ -116,16 +306,24 @@ class CryptoService {
           .write(key: _kPublicPem, value: publicPem)
           .timeout(_wipeTimeout);
     } catch (e) {
-      debugPrint('[Crypto] Keychain write timeout — using in-memory keys: $e');
+      debugPrint('[Crypto] identity write-failed: $e');
       if (requirePersist) {
-        throw StateError('Identity persist failed: $e');
+        throw IdentityUnavailableException(
+          'Identity persist failed: $e',
+          userMessage: 'บันทึกกุญแจตัวตนไม่สำเร็จ — กดลองอีกครั้ง',
+        );
       }
     }
 
     if (requirePersist) {
+      final storedPriv = await _readKey(_kPrivatePem);
       final storedPub = await _readKey(_kPublicPem);
-      if (storedPub != publicPem) {
-        throw StateError('Identity persist verify failed');
+      if (storedPriv != privatePem || storedPub != publicPem) {
+        debugPrint('[Crypto] identity write verify failed');
+        throw IdentityUnavailableException(
+          'Identity persist verify failed',
+          userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
+        );
       }
     }
   }

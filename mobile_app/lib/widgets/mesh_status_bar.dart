@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,16 +13,19 @@ import '../state/app_state.dart';
 class MeshStatusBar extends StatelessWidget {
   const MeshStatusBar({super.key});
 
-  String _phaseLabel(AppLocalizations l10n, SyncPhase phase) {
+  String _phaseLabel(AppLocalizations l10n, SyncPhase phase, {int meshPeers = 0}) {
     switch (phase) {
       case SyncPhase.scanning:
-        return l10n.meshBleScanning;
+        // Legacy ESP32 path — prefer mesh peer wording when shown.
+        return l10n.meshBleEsp32Scanning;
       case SyncPhase.syncing:
         return l10n.meshBleSyncing;
       case SyncPhase.cloudSync:
         return l10n.meshNostrPublishing;
       case SyncPhase.idle:
-        return l10n.meshBleIdle;
+        return meshPeers > 0
+            ? l10n.meshBlePeersNearby(meshPeers)
+            : l10n.meshBleIdle;
     }
   }
 
@@ -46,6 +51,27 @@ class MeshStatusBar extends StatelessWidget {
     }
   }
 
+  Future<void> _onNostrTap(BuildContext context, AppState s) async {
+    final l10n = context.l10n;
+    final ok = await s.reconnectNostrAndSyncGeo();
+    if (!context.mounted) return;
+    final err = s.nostrLastError;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          ok
+              ? l10n.nostrReconnectOk(
+                  s.nostr.connectedRelays,
+                  s.nostr.totalRelays,
+                )
+              : (err != null && err.isNotEmpty)
+                  ? l10n.nostrReconnectFailedDetail(err)
+                  : l10n.nostrReconnectFailed,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
@@ -59,7 +85,8 @@ class MeshStatusBar extends StatelessWidget {
     final nostrOnline = s.nostr.isOnline;
     final activePeers = s.mesh.nearbyPeers.length;
     final chunkProgress = s.chunkTransferState;
-    final relays = '${s.nostr.connectedRelays}/${s.nostr.totalRelays}';
+    // 0/0 = not initialized; 0/N = init ok but no relay up yet.
+    final relays = s.nostrRelayLabel;
     final lora = s.resilnet.loraAvailable
         ? l10n.meshLoraReady
         : l10n.meshLoraNotReady;
@@ -92,7 +119,7 @@ class MeshStatusBar extends StatelessWidget {
               Expanded(
                 child: Text(
                   meshRunning
-                      ? _phaseLabel(l10n, phase)
+                      ? _phaseLabel(l10n, phase, meshPeers: activePeers)
                       : _radioLabel(l10n, radioState),
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
@@ -106,20 +133,43 @@ class MeshStatusBar extends StatelessWidget {
                   ),
                   child: Text(l10n.meshBleRestart),
                 ),
-              Icon(
-                nostrOnline ? Icons.hub_outlined : Icons.cloud_off,
-                size: 18,
-                color: nostrOnline ? ResilNetTheme.emerald : Colors.white38,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                nostrOnline
-                    ? l10n.meshNostrOnline(relays)
-                    : l10n.meshNostrOffline,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color:
-                          nostrOnline ? ResilNetTheme.emerald : Colors.white38,
-                    ),
+              InkWell(
+                onTap: s.nostrReconnecting
+                    ? null
+                    : () => unawaited(_onNostrTap(context, s)),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (s.nostrReconnecting)
+                        const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      else
+                        Icon(
+                          nostrOnline ? Icons.hub_outlined : Icons.cloud_off,
+                          size: 18,
+                          color: nostrOnline
+                              ? ResilNetTheme.emerald
+                              : Colors.orangeAccent,
+                        ),
+                      const SizedBox(width: 6),
+                      Text(
+                        l10n.meshNostrOnline(relays),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: nostrOnline
+                                  ? ResilNetTheme.emerald
+                                  : Colors.orangeAccent,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../l10n/l10n_ext.dart';
+import '../models/feed_channel.dart';
 import '../models/geo_discovery.dart';
+import '../models/geo_location_result.dart';
+import '../screens/location_channel_sheet.dart';
 import '../state/app_state.dart';
 
 /// Empty-state panel for Area / online-people discovery with actionable hints.
@@ -11,7 +14,19 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
 
   final String? channelLabel;
 
-  String _message(AppLocalizations l10n, GeoDiscoveryEmptyReason reason) {
+  String _message(
+    AppLocalizations l10n,
+    AppState s,
+    GeoDiscoveryEmptyReason reason,
+  ) {
+    if (reason == GeoDiscoveryEmptyReason.noLocation) {
+      return switch (s.geoLocationStatus) {
+        GeoLocationStatus.needsPermission => l10n.geoEmptyNeedsPermission,
+        GeoLocationStatus.servicesDisabled => l10n.geoEmptyServicesDisabled,
+        GeoLocationStatus.unavailable => l10n.geoEmptyNoGpsFix,
+        _ => l10n.geoEmptyNoLocation,
+      };
+    }
     return switch (reason) {
       GeoDiscoveryEmptyReason.noLocation => l10n.geoEmptyNoLocation,
       GeoDiscoveryEmptyReason.noNostr => l10n.geoEmptyNoNostr,
@@ -30,6 +45,8 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
     final reason = s.geoDiscoveryEmptyReason;
     final showActions = reason == GeoDiscoveryEmptyReason.noLocation ||
         reason == GeoDiscoveryEmptyReason.noNostr;
+    final noGeohash =
+        s.currentGeohash == null || s.currentGeohash!.isEmpty;
 
     return Center(
       child: Padding(
@@ -37,7 +54,8 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (s.feedChannel.name == 'geo' && s.transportMode.usesInternet) ...[
+            if (s.feedChannel != FeedChannel.mesh &&
+                s.transportMode.usesInternet) ...[
               Text(
                 l10n.geoDiscoveryStatus(
                   s.geoChannelLabel,
@@ -52,13 +70,36 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
               const SizedBox(height: 10),
             ],
             Text(
-              _message(l10n, reason),
+              _message(l10n, s, reason),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.white54,
                     height: 1.4,
                   ),
             ),
+            if (noGeohash && s.geoLocationStatus != GeoLocationStatus.manual) ...[
+              const SizedBox(height: 8),
+              Text(
+                l10n.geoEmptyTeleportHint,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.white38,
+                    ),
+              ),
+            ],
+            if (reason == GeoDiscoveryEmptyReason.noNostr &&
+                s.nostrLastError != null &&
+                s.nostrLastError!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                l10n.nostrReconnectFailedDetail(s.nostrLastError!),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.orangeAccent.withValues(alpha: 0.9),
+                      fontFamily: 'monospace',
+                    ),
+              ),
+            ],
             if (showActions) ...[
               const SizedBox(height: 16),
               Wrap(
@@ -66,7 +107,7 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  if (reason == GeoDiscoveryEmptyReason.noLocation)
+                  if (reason == GeoDiscoveryEmptyReason.noLocation) ...[
                     FilledButton.tonalIcon(
                       onPressed: s.geoRefreshing
                           ? null
@@ -80,11 +121,50 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
                           : const Icon(Icons.my_location_outlined, size: 18),
                       label: Text(l10n.geoRefreshLocation),
                     ),
+                    FilledButton.tonalIcon(
+                      onPressed: () => showLocationChannelSheet(context),
+                      icon: const Icon(Icons.edit_location_alt_outlined,
+                          size: 18),
+                      label: Text(l10n.geoSetGeohashManually),
+                    ),
+                  ],
                   if (reason == GeoDiscoveryEmptyReason.noNostr)
                     FilledButton.tonalIcon(
-                      onPressed: () => s.reconnectNostrAndSyncGeo(),
-                      icon: const Icon(Icons.cloud_sync_outlined, size: 18),
-                      label: Text(l10n.geoReconnectNostr),
+                      onPressed: s.nostrReconnecting
+                          ? null
+                          : () async {
+                              final ok = await s.reconnectNostrAndSyncGeo();
+                              if (!context.mounted) return;
+                              final err = s.nostrLastError;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    ok
+                                        ? l10n.nostrReconnectOk(
+                                            s.nostr.connectedRelays,
+                                            s.nostr.totalRelays,
+                                          )
+                                        : (err != null && err.isNotEmpty)
+                                            ? l10n.nostrReconnectFailedDetail(
+                                                err,
+                                              )
+                                            : l10n.nostrReconnectFailed,
+                                  ),
+                                ),
+                              );
+                            },
+                      icon: s.nostrReconnecting
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.cloud_sync_outlined, size: 18),
+                      label: Text(
+                        s.nostrReconnecting
+                            ? l10n.nostrReconnecting
+                            : l10n.geoReconnectNostr,
+                      ),
                     ),
                 ],
               ),

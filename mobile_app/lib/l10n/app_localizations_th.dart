@@ -24,6 +24,27 @@ class AppLocalizationsTh extends AppLocalizations {
   String get retry => 'ลองอีกครั้ง';
 
   @override
+  String get bootRecoveryAction => 'เริ่มตัวตนใหม่ (ลบข้อมูลในเครื่อง)';
+
+  @override
+  String get bootRecoveryConfirmTitle => 'เริ่มตัวตนใหม่?';
+
+  @override
+  String get bootRecoveryConfirmBody =>
+      'การกระทำนี้จะลบแชท กุญแจ และตัวตนในเครื่องนี้ถาวร\nเพื่อนต้องสแกน QR ของคุณใหม่\nย้อนกลับไม่ได้';
+
+  @override
+  String get bootRecoveryRunning => 'กำลังรีเซ็ตตัวตนในเครื่อง…';
+
+  @override
+  String get bootRecoverySuccess => 'รีเซ็ตตัวตนในเครื่องแล้ว';
+
+  @override
+  String bootRecoveryFailed(String error) {
+    return 'รีเซ็ตตัวตนไม่สำเร็จ: $error';
+  }
+
+  @override
   String get cancel => 'ยกเลิก';
 
   @override
@@ -169,8 +190,45 @@ class AppLocalizationsTh extends AppLocalizations {
       'ยังไม่ได้พิกัด — อนุญาต GPS แล้วกด refresh เพื่อประกาศ geohash บน Nostr';
 
   @override
+  String get geoEmptyNeedsPermission =>
+      'ไม่อนุญาตตำแหน่ง — เปิดใน Settings → Privacy → Location';
+
+  @override
+  String get geoEmptyServicesDisabled =>
+      'ปิด Location Services — เปิดใน Settings';
+
+  @override
+  String get geoEmptyNoGpsFix =>
+      'หาพิกัดไม่ได้ (iPad Wi‑Fi มักเจอ) — ใส่ geohash เองด้านล่าง';
+
+  @override
+  String get geoEmptyTeleportHint =>
+      'แตะไอคอนสถานที่ → ใส่ geohash (เช่น w5) → เทเลพอร์ต';
+
+  @override
+  String get geoSetGeohashManually => 'ใส่ geohash';
+
+  @override
+  String get geoTeleportHint =>
+      'ไม่มี GPS? ใส่ geohash 2–7 ตัว (เช่น w5) แล้วกดเทเลพอร์ต';
+
+  @override
+  String get geoTeleportInvalid =>
+      'geohash ไม่ถูกต้อง — ใช้ตัวอักษร base32 เท่านั้น (เช่น w5 หรือ w5jt8)';
+
+  @override
+  String geoTeleportOk(String channel) {
+    return 'ตั้ง Area เป็น $channel แล้ว';
+  }
+
+  @override
+  String geoManualActive(String channel) {
+    return 'Area แบบ manual: $channel (refresh GPS จะทับค่านี้)';
+  }
+
+  @override
   String get geoEmptyNoNostr =>
-      'Nostr relay ยังไม่ต่อ — ตรวจเน็ตแล้ว reconnect';
+      'Nostr ยังไม่พร้อม — กด Reconnect (จะเป็น 0/0 จนกว่า init สำเร็จ)';
 
   @override
   String get geoEmptyMeshOnly =>
@@ -188,7 +246,113 @@ class AppLocalizationsTh extends AppLocalizations {
   String get geoRefreshLocation => 'Refresh ตำแหน่ง';
 
   @override
+  String get settingsClearLocationTitle => 'ลบพิกัดตำแหน่ง';
+
+  @override
+  String get settingsClearLocationSubtitle =>
+      'ลบ GPS / geohash ที่เทเลพอร์ตไว้ (Area กลับเป็น #—)';
+
+  @override
+  String get settingsClearLocationConfirmTitle => 'ลบพิกัด?';
+
+  @override
+  String get settingsClearLocationConfirmBody =>
+      'ลบ geohash ที่เก็บในเครื่องนี้ คุณสามารถรีเฟรช GPS หรือเทเลพอร์ตใหม่ได้ภายหลัง';
+
+  @override
+  String get settingsClearLocationAction => 'ลบพิกัด';
+
+  @override
+  String get settingsClearLocationSnack => 'ลบพิกัดแล้ว';
+
+  @override
+  String get chatVoiceTooLarge =>
+      'ข้อความเสียงใหญ่เกินไป — อัดไม่เกิน ~8 วินาที';
+
+  @override
+  String get chatVoiceNeedInternet =>
+      'ข้อความเสียงต้องใช้ Internet (Nostr) — ใหญ่เกินสำหรับ BLE อย่างเดียว';
+
+  @override
+  String get chatVoiceSentInternet => 'ส่งข้อความเสียงผ่าน Internet แล้ว';
+
+  @override
+  String get noticeAnonMention => 'mention';
+
+  @override
+  String get noticeAnonDm => 'ข้อความตรง';
+
+  @override
+  String get noticeAnonHug => 'hug';
+
+  @override
+  String get noticeAnonSlap => 'slap';
+
+  @override
+  String get noticeAnonBlock => 'บล็อก';
+
+  @override
+  String get noticeAnonNeedKey => 'ยังไม่มีกุญแจสาธารณะ — แลก QR ก่อนส่ง 1:1';
+
+  @override
+  String get noticeAnonActionSent => 'ส่งแล้ว';
+
+  @override
+  String noticeAnonBlocked(String anon) {
+    return 'บล็อก $anon แล้ว';
+  }
+
+  @override
+  String noticeAnonHugMessage(String anon) {
+    return '* กอด $anon *';
+  }
+
+  @override
+  String noticeAnonSlapMessage(String anon) {
+    return '* ตบ $anon *';
+  }
+
+  @override
   String get geoReconnectNostr => 'Reconnect Nostr';
+
+  @override
+  String get nostrSectionTitle => 'Nostr relays';
+
+  @override
+  String get nostrSectionSubtitle =>
+      'ข้อความผ่านอินเทอร์เน็ตและการค้นหา Area ใช้ relay เหล่านี้ หากออฟไลน์ค้าง ให้กด reconnect';
+
+  @override
+  String nostrStatusOnline(int connected, int total) {
+    return 'เชื่อมต่อแล้ว $connected/$total';
+  }
+
+  @override
+  String get nostrStatusOffline => 'ออฟไลน์ — มีรายการ relay แต่ยังไม่ต่อ';
+
+  @override
+  String get nostrStatusNotInit =>
+      'ยังไม่เริ่ม (0/0) — กด Reconnect เพื่อเริ่มระบบ';
+
+  @override
+  String get nostrReconnectAction => 'Reconnect Nostr';
+
+  @override
+  String nostrReconnectOk(int connected, int total) {
+    return 'เชื่อม Nostr แล้ว ($connected/$total)';
+  }
+
+  @override
+  String get nostrReconnectFailed =>
+      'ยังออฟไลน์ — ตรวจ Wi‑Fi/เซลลูลาร์ หรือลองใหม่';
+
+  @override
+  String nostrReconnectFailedDetail(String error) {
+    return 'ล้มเหลว: $error';
+  }
+
+  @override
+  String get nostrReconnecting => 'กำลังเชื่อม relay…';
 
   @override
   String geoDiscoveryStatus(String channel, String relays) {
@@ -288,7 +452,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get settingsSaveHistorySubtitle =>
-      'เมื่อปิด ข้อความยังถูกเข้ารหัส E2EE และส่งตามปกติ แต่จะไม่เก็บในประวัติแชตบนเครื่อง (โหมดชั่วคราว)';
+      'เมื่อปิด ข้อความยังถูกเข้ารหัส E2EE ตอนส่ง และเก็บเฉพาะในเซสชันนี้ (ไม่ลงประวัติแชต) — ข้อความที่คุณพิมพ์ยังอ่านได้บนเครื่องนี้';
 
   @override
   String get settingsPrivacy => 'ความเป็นส่วนตัว';
@@ -298,7 +462,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get settingsE2eeSubtitle =>
-      'ผนึกข้อความด้วย RSA-OAEP + AES-GCM ก่อนส่ง (แนะนำให้เปิด)';
+      'เปิดตลอด — ผนึกข้อความด้วย RSA-OAEP + AES-GCM ก่อนส่ง โหนดกลางอ่านเนื้อหาไม่ได้';
 
   @override
   String get settingsScreenshotTitle => 'แจ้งเตือนการแคปหน้าจอ';
@@ -391,13 +555,21 @@ class AppLocalizationsTh extends AppLocalizations {
   String get meshBleScanning => 'BLE: กำลังค้นหา Node';
 
   @override
+  String get meshBleEsp32Scanning => 'ESP32: กำลังหาโหนดใกล้ ๆ';
+
+  @override
   String get meshBleSyncing => 'BLE: กำลังซิงก์กับ ESP32';
 
   @override
   String get meshNostrPublishing => 'Nostr: กำลังเผยแพร่';
 
   @override
-  String get meshBleIdle => 'BLE: สแตนด์บาย';
+  String get meshBleIdle => 'BLE mesh เปิด — ยังไม่พบมือถือใกล้ ๆ';
+
+  @override
+  String meshBlePeersNearby(int count) {
+    return 'BLE mesh — พบมือถือใกล้ ๆ $count เครื่อง';
+  }
 
   @override
   String get meshBleNeedsPermission => 'BLE: ต้องขอสิทธิ์ก่อน';
@@ -692,6 +864,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get peersRecentlyOnline => 'ออนไลน์ล่าสุด';
 
   @override
+  String get peersOnlineInArea => 'ออนไลน์ในพื้นที่';
+
+  @override
   String peersSeenMinutesAgo(int minutes) {
     return 'เห็นเมื่อ $minutes นาทีที่แล้ว';
   }
@@ -744,6 +919,25 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
+  String get onlinePeopleDirectsChannel => '1:1 · ใกล้ตัว + พื้นที่';
+
+  @override
+  String get peerOnlineMeshTitle => 'มีคนออนไลน์บน mesh';
+
+  @override
+  String peerOnlineMeshBody(String name) {
+    return '$name อยู่ใกล้บน mesh';
+  }
+
+  @override
+  String get peerOnlineAreaTitle => 'มีคนออนไลน์ในพื้นที่';
+
+  @override
+  String peerOnlineAreaBody(String name) {
+    return '$name ออนไลน์ผ่าน Nostr';
+  }
+
+  @override
   String get locationSheetTitle => '#ช่องตามตำแหน่ง';
 
   @override
@@ -773,13 +967,62 @@ class AppLocalizationsTh extends AppLocalizations {
   String get messageExpiryTitle => 'หมดอายุใน';
 
   @override
-  String get voicePttHold => 'แตะไมค์เพื่ออัดเสียง';
+  String get voiceRecordTapToStart => 'แตะเพื่อบันทึกข้อความเสียง';
 
   @override
-  String get voicePttRelease => 'แตะอีกครั้งเพื่อส่ง';
+  String get voiceRecordTooShort => 'อัดสั้นเกินไป — ลองใหม่';
 
   @override
-  String get voicePttRecording => 'กำลังอัด… แตะเพื่อส่ง';
+  String get voiceRecordFailed => 'บันทึกเสียงไม่สำเร็จ — ลองใหม่';
+
+  @override
+  String get voicePttHold => 'กดค้างเพื่ออัด';
+
+  @override
+  String get voicePttRelease => 'ปล่อยเพื่อดูตัวอย่าง';
+
+  @override
+  String get voicePttRecording => 'กำลังบันทึก…';
+
+  @override
+  String get voicePttDraftReady => 'พร้อมส่งข้อความเสียง';
+
+  @override
+  String get voicePttDiscard => 'ลบ';
+
+  @override
+  String get voicePttReRecord => 'อัดใหม่';
+
+  @override
+  String get voicePttSend => 'ส่งข้อความเสียง';
+
+  @override
+  String get voicePttPlayPreview => 'ฟังตัวอย่าง';
+
+  @override
+  String get voicePttStopPreview => 'หยุดฟัง';
+
+  @override
+  String get noticesBackfilling => 'กำลังโหลดประกาศ…';
+
+  @override
+  String get noticesNostrOnline => 'Nostr ออนไลน์';
+
+  @override
+  String get noticesNostrOffline =>
+      'Nostr ออฟไลน์ — กระดานประกาศต้องใช้อินเทอร์เน็ต';
+
+  @override
+  String noticesBackfillLoaded(int count) {
+    return 'ดึงประกาศแล้ว $count รายการ';
+  }
+
+  @override
+  String get noticePublishFailed =>
+      'โพสต์ประกาศไปกระดานพื้นที่ไม่สำเร็จ ตรวจการเชื่อมต่อ Nostr';
+
+  @override
+  String get chatNoticeHidden => 'ประกาศพื้นที่ — เปิดหน้าประกาศ';
 
   @override
   String get identityDisplayNameTitle => 'ชื่อที่แสดง';

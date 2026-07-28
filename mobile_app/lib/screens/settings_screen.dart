@@ -24,6 +24,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _clearing = false;
   bool _wiping = false;
 
+  Future<void> _confirmClearLocation(AppState s) async {
+    if (_clearing || _wiping) return;
+    final l10n = context.l10n;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(l10n.settingsClearLocationConfirmTitle),
+          content: Text(l10n.settingsClearLocationConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.settingsClearLocationAction),
+            ),
+          ],
+        );
+      },
+    );
+    if (ok != true || !mounted) return;
+    await s.clearStoredGeohash();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.settingsClearLocationSnack)),
+    );
+  }
+
   Future<void> _confirmClearMessages() async {
     if (_clearing || _wiping) return;
     final l10n = context.l10n;
@@ -121,16 +152,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 28),
             _section(l10n.settingsPrivacy),
-            SwitchListTile(
+            ListTile(
               contentPadding: EdgeInsets.zero,
-              secondary: Icon(
-                s.e2eeEnabled ? Icons.lock_outline : Icons.lock_open,
-                color: s.e2eeEnabled ? ResilNetTheme.emerald : Colors.orangeAccent,
+              leading: const Icon(
+                Icons.lock_outline,
+                color: ResilNetTheme.emerald,
               ),
               title: Text(l10n.settingsE2eeTitle),
               subtitle: Text(l10n.settingsE2eeSubtitle),
-              value: s.e2eeEnabled,
-              onChanged: s.setE2eeEnabled,
+              trailing: const Icon(
+                Icons.check_circle,
+                color: ResilNetTheme.emerald,
+                size: 22,
+              ),
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
@@ -209,6 +243,110 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             const SizedBox(height: 8),
+            Text(l10n.nostrSectionTitle),
+            const SizedBox(height: 4),
+            Text(
+              l10n.nostrSectionSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.55),
+                  ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              s.isNostrOnline
+                  ? l10n.nostrStatusOnline(
+                      s.nostr.connectedRelays,
+                      s.nostr.totalRelays,
+                    )
+                  : s.nostrInitialized
+                      ? l10n.nostrStatusOffline
+                      : l10n.nostrStatusNotInit,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: s.isNostrOnline
+                        ? ResilNetTheme.emerald
+                        : Colors.orangeAccent,
+                  ),
+            ),
+            if (s.nostrLastError != null && s.nostrLastError!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(
+                l10n.nostrReconnectFailedDetail(s.nostrLastError!),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.orangeAccent.withValues(alpha: 0.9),
+                      fontFamily: 'monospace',
+                    ),
+              ),
+            ],
+            if (s.nostrRelayRows.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              for (final row in s.nostrRelayRows)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.circle,
+                        size: 8,
+                        color: row.connected
+                            ? ResilNetTheme.emerald
+                            : Colors.white24,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          row.url.replaceFirst('wss://', ''),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(
+                                fontFamily: 'monospace',
+                                color: Colors.white54,
+                              ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: s.nostrReconnecting
+                  ? null
+                  : () async {
+                      final ok = await s.reconnectNostrAndSyncGeo();
+                      if (!context.mounted) return;
+                      final err = s.nostrLastError;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            ok
+                                ? l10n.nostrReconnectOk(
+                                    s.nostr.connectedRelays,
+                                    s.nostr.totalRelays,
+                                  )
+                                : (err != null && err.isNotEmpty)
+                                    ? l10n.nostrReconnectFailedDetail(err)
+                                    : l10n.nostrReconnectFailed,
+                          ),
+                        ),
+                      );
+                    },
+              icon: s.nostrReconnecting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.cloud_sync_outlined, size: 18),
+              label: Text(
+                s.nostrReconnecting
+                    ? l10n.nostrReconnecting
+                    : l10n.nostrReconnectAction,
+              ),
+            ),
+            const SizedBox(height: 16),
             Text(l10n.settingsNostrExpiryTitle),
             const SizedBox(height: 4),
             Text(
@@ -239,6 +377,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             _section(l10n.settingsDevices),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.location_off_outlined),
+              title: Text(l10n.settingsClearLocationTitle),
+              subtitle: Text(
+                s.geoChannelLabel == '#—'
+                    ? l10n.settingsClearLocationSubtitle
+                    : '${l10n.settingsClearLocationSubtitle}\n${s.geoChannelLabel}${s.geoIsManual ? ' (manual)' : ''}',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _confirmClearLocation(s),
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.campaign_outlined),

@@ -24,6 +24,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Try again';
 
   @override
+  String get bootRecoveryAction => 'Start new identity (erase local data)';
+
+  @override
+  String get bootRecoveryConfirmTitle => 'Start new identity?';
+
+  @override
+  String get bootRecoveryConfirmBody =>
+      'This will permanently erase local chats, keys, and identity on this device.\nPeers must scan your QR again with your new identity.\nThis cannot be undone.';
+
+  @override
+  String get bootRecoveryRunning => 'Resetting local identity…';
+
+  @override
+  String get bootRecoverySuccess => 'Local identity reset complete';
+
+  @override
+  String bootRecoveryFailed(String error) {
+    return 'Could not reset identity: $error';
+  }
+
+  @override
   String get cancel => 'Cancel';
 
   @override
@@ -171,8 +192,45 @@ class AppLocalizationsEn extends AppLocalizations {
       'Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr';
 
   @override
+  String get geoEmptyNeedsPermission =>
+      'Location permission denied — allow ResilNet in Settings → Privacy → Location';
+
+  @override
+  String get geoEmptyServicesDisabled =>
+      'Location Services are off — turn them on in Settings';
+
+  @override
+  String get geoEmptyNoGpsFix =>
+      'Could not get a GPS fix (common on Wi‑Fi iPads) — set geohash manually below';
+
+  @override
+  String get geoEmptyTeleportHint =>
+      'Tap the place icon → enter a geohash (e.g. w5) → Teleport';
+
+  @override
+  String get geoSetGeohashManually => 'Set geohash';
+
+  @override
+  String get geoTeleportHint =>
+      'No GPS? Enter geohash prefix (2–7 chars, e.g. w5) and tap Teleport';
+
+  @override
+  String get geoTeleportInvalid =>
+      'Invalid geohash — use base32 letters/numbers only (e.g. w5 or w5jt8)';
+
+  @override
+  String geoTeleportOk(String channel) {
+    return 'Area set to $channel';
+  }
+
+  @override
+  String geoManualActive(String channel) {
+    return 'Manual area: $channel (GPS refresh will override)';
+  }
+
+  @override
   String get geoEmptyNoNostr =>
-      'Nostr relays offline — check internet and reconnect';
+      'Nostr not ready — tap Reconnect (0/0 until init succeeds)';
 
   @override
   String get geoEmptyMeshOnly =>
@@ -190,7 +248,114 @@ class AppLocalizationsEn extends AppLocalizations {
   String get geoRefreshLocation => 'Refresh location';
 
   @override
+  String get settingsClearLocationTitle => 'Clear location';
+
+  @override
+  String get settingsClearLocationSubtitle =>
+      'Remove GPS / teleport geohash (Area becomes #—)';
+
+  @override
+  String get settingsClearLocationConfirmTitle => 'Clear location?';
+
+  @override
+  String get settingsClearLocationConfirmBody =>
+      'Deletes the stored geohash on this device. You can refresh GPS or teleport again afterward.';
+
+  @override
+  String get settingsClearLocationAction => 'Clear location';
+
+  @override
+  String get settingsClearLocationSnack => 'Location cleared';
+
+  @override
+  String get chatVoiceTooLarge =>
+      'Voice note too large — keep under ~8 seconds';
+
+  @override
+  String get chatVoiceNeedInternet =>
+      'Voice note needs Internet (Nostr) — too large for BLE alone';
+
+  @override
+  String get chatVoiceSentInternet => 'Voice note sent via Internet';
+
+  @override
+  String get noticeAnonMention => 'mention';
+
+  @override
+  String get noticeAnonDm => 'direct message';
+
+  @override
+  String get noticeAnonHug => 'hug';
+
+  @override
+  String get noticeAnonSlap => 'slap';
+
+  @override
+  String get noticeAnonBlock => 'block';
+
+  @override
+  String get noticeAnonNeedKey =>
+      'No public key yet — exchange QR first for 1:1';
+
+  @override
+  String get noticeAnonActionSent => 'Sent';
+
+  @override
+  String noticeAnonBlocked(String anon) {
+    return 'Blocked $anon';
+  }
+
+  @override
+  String noticeAnonHugMessage(String anon) {
+    return '* hugs $anon *';
+  }
+
+  @override
+  String noticeAnonSlapMessage(String anon) {
+    return '* slaps $anon *';
+  }
+
+  @override
   String get geoReconnectNostr => 'Reconnect Nostr';
+
+  @override
+  String get nostrSectionTitle => 'Nostr relays';
+
+  @override
+  String get nostrSectionSubtitle =>
+      'Internet messaging and Area discovery use these relays. Tap reconnect if status stays offline.';
+
+  @override
+  String nostrStatusOnline(int connected, int total) {
+    return 'Connected $connected/$total';
+  }
+
+  @override
+  String get nostrStatusOffline => 'Offline — relays listed but none connected';
+
+  @override
+  String get nostrStatusNotInit =>
+      'Not started (0/0) — tap Reconnect to initialize';
+
+  @override
+  String get nostrReconnectAction => 'Reconnect Nostr';
+
+  @override
+  String nostrReconnectOk(int connected, int total) {
+    return 'Nostr connected ($connected/$total)';
+  }
+
+  @override
+  String get nostrReconnectFailed =>
+      'Still offline — check Wi‑Fi/cellular or try again';
+
+  @override
+  String nostrReconnectFailedDetail(String error) {
+    return 'Failed: $error';
+  }
+
+  @override
+  String get nostrReconnecting => 'Connecting to relays…';
 
   @override
   String geoDiscoveryStatus(String channel, String relays) {
@@ -291,7 +456,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSaveHistorySubtitle =>
-      'When off, messages are still E2EE-sealed and sent, but not stored in local chat history (ephemeral)';
+      'When off, messages stay E2EE on the wire and are kept only for this session (not in local chat history). Your own text still shows as plaintext on this device.';
 
   @override
   String get settingsPrivacy => 'Privacy';
@@ -301,7 +466,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsE2eeSubtitle =>
-      'Seal messages with RSA-OAEP + AES-GCM before send (recommended on)';
+      'Always on — messages are sealed with RSA-OAEP + AES-GCM before send. Relays and nearby hops cannot read contents.';
 
   @override
   String get settingsScreenshotTitle => 'Screenshot alerts';
@@ -394,13 +559,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get meshBleScanning => 'BLE: scanning for nodes';
 
   @override
+  String get meshBleEsp32Scanning => 'ESP32: looking for a nearby node';
+
+  @override
   String get meshBleSyncing => 'BLE: syncing with ESP32';
 
   @override
   String get meshNostrPublishing => 'Nostr: publishing';
 
   @override
-  String get meshBleIdle => 'BLE: standby';
+  String get meshBleIdle => 'BLE mesh on — no nearby phones yet';
+
+  @override
+  String meshBlePeersNearby(int count) {
+    return 'BLE mesh — $count phone(s) nearby';
+  }
 
   @override
   String get meshBleNeedsPermission => 'BLE: permission required';
@@ -698,6 +871,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get peersRecentlyOnline => 'Recently online';
 
   @override
+  String get peersOnlineInArea => 'Online in area';
+
+  @override
   String peersSeenMinutesAgo(int minutes) {
     return 'Seen $minutes min ago';
   }
@@ -750,6 +926,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get onlinePeopleDirectsChannel => '1:1 · nearby + area';
+
+  @override
+  String get peerOnlineMeshTitle => 'Someone nearby on mesh';
+
+  @override
+  String peerOnlineMeshBody(String name) {
+    return '$name is nearby on mesh';
+  }
+
+  @override
+  String get peerOnlineAreaTitle => 'Someone online in area';
+
+  @override
+  String peerOnlineAreaBody(String name) {
+    return '$name is online via Nostr';
+  }
+
+  @override
   String get locationSheetTitle => '#location channels';
 
   @override
@@ -779,13 +974,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messageExpiryTitle => 'expires in';
 
   @override
-  String get voicePttHold => 'Tap mic to record';
+  String get voiceRecordTapToStart => 'Tap to record voice message';
 
   @override
-  String get voicePttRelease => 'Tap again to send voice note';
+  String get voiceRecordTooShort => 'Recording too short — try again';
 
   @override
-  String get voicePttRecording => 'Recording… tap to send';
+  String get voiceRecordFailed => 'Could not save recording — try again';
+
+  @override
+  String get voicePttHold => 'Hold to record';
+
+  @override
+  String get voicePttRelease => 'Release to preview';
+
+  @override
+  String get voicePttRecording => 'Recording…';
+
+  @override
+  String get voicePttDraftReady => 'Voice note ready';
+
+  @override
+  String get voicePttDiscard => 'Discard';
+
+  @override
+  String get voicePttReRecord => 'Record again';
+
+  @override
+  String get voicePttSend => 'Send voice note';
+
+  @override
+  String get voicePttPlayPreview => 'Play preview';
+
+  @override
+  String get voicePttStopPreview => 'Stop preview';
+
+  @override
+  String get noticesBackfilling => 'Loading notices…';
+
+  @override
+  String get noticesNostrOnline => 'Nostr online';
+
+  @override
+  String get noticesNostrOffline => 'Nostr offline — bulletin needs Internet';
+
+  @override
+  String noticesBackfillLoaded(int count) {
+    return 'Loaded $count notices';
+  }
+
+  @override
+  String get noticePublishFailed =>
+      'Could not publish notice to the area board. Check Nostr connection.';
+
+  @override
+  String get chatNoticeHidden => 'Area notice — open Notices';
 
   @override
   String get identityDisplayNameTitle => 'Display name';
