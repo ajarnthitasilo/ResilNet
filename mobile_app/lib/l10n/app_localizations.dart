@@ -752,6 +752,12 @@ abstract class AppLocalizations {
   /// **'Sent to {count} peer(s) in this area'**
   String geoPublicSent(int count);
 
+  /// No description provided for @geoPublicSentNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No messageable peers online — open Area/Mesh with peers that have keys, or wait for BLE/Nostr'**
+  String get geoPublicSentNone;
+
   /// No description provided for @areaPublicBadge.
   ///
   /// In en, this message translates to:

@@ -209,6 +209,7 @@
       }
     }
   },
+  "geoPublicSentNone": "No messageable peers online — open Area/Mesh with peers that have keys, or wait for BLE/Nostr",
   "areaPublicBadge": "Area public",
   "geoErrorPermission": "Could not read location — check location permission",
   "geoPrecisionRegion": "Region",

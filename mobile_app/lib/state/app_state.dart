@@ -2833,6 +2833,9 @@ class AppState extends ChangeNotifier {
   }
 
   /// Fan-out sealed media/text to BLE-nearby mesh peers (same crypto as Area).
+  ///
+  /// Also includes messageable Nostr/area peers that already have RSA keys so
+  /// public posts still deliver when BLE nearby is empty but Internet peers exist.
   Future<int> sendMeshPublicText(
     String text, {
     String kind = PayloadKinds.areaPublic,
@@ -2840,7 +2843,17 @@ class AppState extends ChangeNotifier {
     if (!_e2eeEnabled || !isReady) return 0;
     final body = text.trim();
     if (body.isEmpty) return 0;
-    return _sendSealedFanOut(peers: mesh.nearbyPeers, body: body, kind: kind);
+    final peers = <Peer>[];
+    final seen = <String>{};
+    for (final p in mesh.nearbyPeers) {
+      if (seen.add(p.id)) peers.add(p);
+    }
+    for (final e in areaPresenceOnline()) {
+      if (!e.canMessage) continue;
+      final p = e.peer!;
+      if (seen.add(p.id)) peers.add(p);
+    }
+    return _sendSealedFanOut(peers: peers, body: body, kind: kind);
   }
 
   Future<int> _sendSealedFanOut({
@@ -2871,10 +2884,17 @@ class AppState extends ChangeNotifier {
           receiverId: resolved.id,
           timestamp: ts,
         );
+        // Keep local plaintext for audio/image so the sender can play/view
+        // their own fan-out copies (wire still strips content).
+        final localContent =
+            (kind == PayloadKinds.audio || kind == PayloadKinds.image)
+                ? body
+                : null;
         final msg = ChatMessage(
           id: _uuid.v4(),
           senderId: myUserId,
           receiverId: resolved.id,
+          content: localContent,
           encryptedPayload: pkg.encryptedPayload,
           encryptedKey: pkg.encryptedKey,
           signature: pkg.signature,
@@ -2884,10 +2904,17 @@ class AppState extends ChangeNotifier {
           type: MessageType.direct,
           payloadKind: kind,
         );
+        // Voice/image sealed envelopes are usually too large for BLE MTU —
+        // prefer Nostr when available (same policy as 1:1 voice).
+        final dtoLen = ResilNetPacketCodec.toDto(msg).payload.length;
+        const bleSafe = 48000;
+        final preferInternet = internetOnly ||
+            ((kind == PayloadKinds.audio || kind == PayloadKinds.image) &&
+                dtoLen > bleSafe);
         if (kind != PayloadKinds.notice) {
           await persistChatMessage(msg);
         }
-        await routeOutbound(msg, internetOnly: internetOnly);
+        await routeOutbound(msg, internetOnly: preferInternet);
         sent++;
       } catch (e) {
         debugPrint('[ResilNet] sealed fan-out to ${peer.id} failed: $e');

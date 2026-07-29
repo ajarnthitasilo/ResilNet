@@ -18,6 +18,7 @@ import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
 import '../services/mic_permission.dart';
+import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
 import '../widgets/geo_discovery_empty.dart';
 import '../widgets/identicon.dart';
@@ -32,7 +33,6 @@ import 'notices_sheet.dart';
 import 'online_people_sheet.dart';
 import 'panic_wipe.dart';
 import 'settings_screen.dart';
-import 'voice_record_sheet.dart';
 
 /// Home feed — clean bitchat-style chrome with sheets for mode pickers.
 class ChatListScreen extends StatefulWidget {
@@ -45,8 +45,10 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   final _peerController = TextEditingController();
   final _compose = TextEditingController();
+  final _audio = AudioRecorderService();
   NoticeExpiry _expiry = NoticeExpiry.sevenDays;
   bool _sending = false;
+  bool _recordingVoice = false;
   int _titleTapCount = 0;
   DateTime? _titleTapAt;
 
@@ -54,6 +56,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void dispose() {
     _peerController.dispose();
     _compose.dispose();
+    _audio.dispose();
     super.dispose();
   }
 
@@ -236,39 +239,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
   }
 
-  Future<void> _openPublicVoice(AppState s) async {
-    if (_sending) return;
+  Future<void> _startPublicVoice(AppState s) async {
+    if (_recordingVoice || _sending) return;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
-
-    debugPrint('[PTT] mic-tap public channel=${s.feedChannel}');
+    debugPrint('[PTT] mic-start public channel=${s.feedChannel}');
     HapticFeedback.lightImpact();
     try {
-      final result = await showVoiceRecordSheet(context);
-      if (!mounted || result == null) return;
-
-      final wirePlain = VoicePayload.encodeWire(
-        bytes: result.bytes,
-        ext: result.ext,
-      );
-      setState(() => _sending = true);
-      try {
-        final n = s.feedChannel == FeedChannel.geo
-            ? await s.sendAreaPublicText(wirePlain, kind: PayloadKinds.audio)
-            : await s.sendMeshPublicText(wirePlain, kind: PayloadKinds.audio);
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
-        );
-      } finally {
-        if (mounted) setState(() => _sending = false);
-      }
+      await _audio.startRecording();
+      if (mounted) setState(() => _recordingVoice = true);
     } catch (e) {
-      debugPrint('[PTT] public voice failed: $e');
+      debugPrint('[PTT] public start failed: $e');
       if (!mounted) return;
       showMicPermissionError(
         context,
@@ -277,6 +262,52 @@ class _ChatListScreenState extends State<ChatListScreen> {
         failedMessage: context.l10n.chatVoiceFailed('$e'),
         openSettingsLabel: context.l10n.permissionMicOpenSettings,
       );
+    }
+  }
+
+  Future<void> _stopAndSendPublicVoice(AppState s) async {
+    if (!_recordingVoice) return;
+    final recorded = await _audio.stopRecording();
+    if (mounted) setState(() => _recordingVoice = false);
+    final bytes = recorded?.bytes;
+    if (bytes == null || bytes.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.voiceRecordFailed)),
+      );
+      return;
+    }
+    if (!s.e2eeEnabled) return;
+
+    if (bytes.length > AudioRecorderService.maxBytes) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
+      );
+      return;
+    }
+
+    final wirePlain = VoicePayload.encodeWire(
+      bytes: bytes,
+      ext: recorded?.ext ?? 'm4a',
+    );
+    setState(() => _sending = true);
+    try {
+      final n = s.feedChannel == FeedChannel.geo
+          ? await s.sendAreaPublicText(wirePlain, kind: PayloadKinds.audio)
+          : await s.sendMeshPublicText(wirePlain, kind: PayloadKinds.audio);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            n <= 0
+                ? context.l10n.geoPublicSentNone
+                : context.l10n.geoPublicSent(n),
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _sending = false);
     }
   }
 
@@ -520,18 +551,33 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   icon: const Icon(Icons.image_outlined),
                 ),
                 IconButton(
-                  tooltip: l10n.chatVoiceLabel,
-                  onPressed: _sending ? null : () => unawaited(_openPublicVoice(s)),
-                  icon: const Icon(Icons.mic_none_outlined),
+                  tooltip: _recordingVoice
+                      ? l10n.voicePttRecording
+                      : l10n.voicePttHold,
+                  onPressed: _sending
+                      ? null
+                      : () {
+                          if (_recordingVoice) {
+                            unawaited(_stopAndSendPublicVoice(s));
+                          } else {
+                            unawaited(_startPublicVoice(s));
+                          }
+                        },
+                  icon: Icon(
+                    _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
+                    color: _recordingVoice ? Colors.redAccent : null,
+                  ),
                 ),
                 Expanded(
                   child: TextField(
                     controller: _compose,
-                    enabled: !_sending,
+                    enabled: !_sending && !_recordingVoice,
                     minLines: 1,
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: l10n.homeComposePublicHint(channel),
+                      hintText: _recordingVoice
+                          ? l10n.voicePttRecording
+                          : l10n.homeComposePublicHint(channel),
                     ),
                     textInputAction: TextInputAction.send,
                     onSubmitted: (_) => unawaited(_sendPublic(s)),
@@ -539,7 +585,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
                 const SizedBox(width: 6),
                 IconButton.filled(
-                  onPressed: _sending ? null : () => unawaited(_sendPublic(s)),
+                  onPressed: (_sending || _recordingVoice)
+                      ? null
+                      : () => unawaited(_sendPublic(s)),
                   icon: _sending
                       ? const SizedBox(
                           width: 18,

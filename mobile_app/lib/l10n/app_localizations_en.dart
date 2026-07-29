@@ -400,6 +400,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get geoPublicSentNone =>
+      'No messageable peers online — open Area/Mesh with peers that have keys, or wait for BLE/Nostr';
+
+  @override
   String get areaPublicBadge => 'Area public';
 
   @override

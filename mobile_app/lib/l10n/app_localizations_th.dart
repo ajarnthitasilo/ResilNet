@@ -397,6 +397,10 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
+  String get geoPublicSentNone =>
+      'ยังไม่มีเพื่อนที่ส่งถึงได้ — เปิด Area/Mesh ให้มีคนที่ผูกคีย์แล้ว หรือรอ BLE/Nostr';
+
+  @override
   String get areaPublicBadge => 'สาธารณะในพื้นที่';
 
   @override

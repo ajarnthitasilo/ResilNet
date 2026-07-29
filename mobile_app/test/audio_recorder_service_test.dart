@@ -27,5 +27,15 @@ void main() {
     test('rejects tiny payloads', () {
       expect(isValidAudioBytes(Uint8List(10)), isFalse);
     });
+
+    test('accepts large non-magic payloads for draft preview', () {
+      expect(isValidAudioBytes(Uint8List(300)), isTrue);
+    });
+  });
+
+  group('size caps', () {
+    test('send cap allows short AAC notes', () {
+      expect(AudioRecorderService.maxBytes, greaterThanOrEqualTo(48 * 1024));
+    });
   });
 }

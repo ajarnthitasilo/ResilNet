@@ -138,6 +138,7 @@
   "geoPublicSend": "สาธารณะ",
   "geoPublicHelp": "ส่งแบบผนึกถึง {count} คนที่ออนไลน์ — แต่ละคนได้ซองส่วนตัว",
   "geoPublicSent": "ส่งแล้วถึง {count} คนในพื้นที่",
+  "geoPublicSentNone": "ยังไม่มีเพื่อนที่ส่งถึงได้ — เปิด Area/Mesh ให้มีคนที่ผูกคีย์แล้ว หรือรอ BLE/Nostr",
   "areaPublicBadge": "สาธารณะในพื้นที่",
   "geoErrorPermission": "ไม่สามารถอ่านพิกัดได้ — ตรวจสิทธิ์ตำแหน่ง",
   "geoPrecisionRegion": "ภูมิภาค",

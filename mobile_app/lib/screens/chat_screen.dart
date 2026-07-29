@@ -25,7 +25,6 @@ import '../services/resilnet_packet_codec.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
-import 'voice_record_sheet.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.peerId});
@@ -227,8 +226,10 @@ class _ChatScreenState extends State<ChatScreen> {
     return CryptoService.normalizePublicKey(receiverPub);
   }
 
-  Future<void> _openVoiceRecorder() async {
-    if (_sendingOutbound) return;
+  bool _recordingVoice = false;
+
+  Future<void> _startVoiceNote() async {
+    if (_recordingVoice || _sendingOutbound) return;
     final s = context.read<AppState>();
     if (!s.e2eeEnabled) {
       if (!mounted) return;
@@ -237,15 +238,13 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       return;
     }
-
-    debugPrint('[PTT] mic-tap peer=${widget.peerId}');
+    debugPrint('[PTT] mic-start peer=${widget.peerId}');
     HapticFeedback.lightImpact();
     try {
-      final result = await showVoiceRecordSheet(context);
-      if (!mounted || result == null) return;
-      await _sendVoiceBytes(result.bytes, ext: result.ext);
+      await _audio.startRecording();
+      if (mounted) setState(() => _recordingVoice = true);
     } catch (e) {
-      debugPrint('[PTT] voice session failed: $e');
+      debugPrint('[PTT] voice start failed: $e');
       if (!mounted) return;
       showMicPermissionError(
         context,
@@ -255,6 +254,21 @@ class _ChatScreenState extends State<ChatScreen> {
         openSettingsLabel: context.l10n.permissionMicOpenSettings,
       );
     }
+  }
+
+  Future<void> _stopAndSendVoiceNote() async {
+    if (!_recordingVoice) return;
+    final recorded = await _audio.stopRecording();
+    if (mounted) setState(() => _recordingVoice = false);
+    final bytes = recorded?.bytes;
+    if (bytes == null || bytes.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.voiceRecordFailed)),
+      );
+      return;
+    }
+    await _sendVoiceBytes(bytes, ext: recorded?.ext ?? 'm4a');
   }
 
   Future<void> _sendVoiceBytes(Uint8List bytes, {String ext = 'm4a'}) async {
@@ -351,7 +365,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  bool get _composeLocked => _sendingOutbound;
+  bool get _composeLocked => _sendingOutbound || _recordingVoice;
 
   Future<void> _send() async {
     if (_sendingOutbound) return;
@@ -866,11 +880,22 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        tooltip: l10n.chatVoiceLabel,
-                        onPressed: _composeLocked
+                        tooltip: _recordingVoice
+                            ? l10n.voicePttRecording
+                            : l10n.voicePttHold,
+                        onPressed: _sendingOutbound
                             ? null
-                            : () => unawaited(_openVoiceRecorder()),
-                        icon: const Icon(Icons.mic_none_outlined),
+                            : () {
+                                if (_recordingVoice) {
+                                  unawaited(_stopAndSendVoiceNote());
+                                } else {
+                                  unawaited(_startVoiceNote());
+                                }
+                              },
+                        icon: Icon(
+                          _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
+                          color: _recordingVoice ? Colors.redAccent : null,
+                        ),
                         style: IconButton.styleFrom(
                           minimumSize: const Size(48, 48),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
