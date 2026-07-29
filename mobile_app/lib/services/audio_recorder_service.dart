@@ -132,9 +132,8 @@ class AudioRecorderService {
         numChannels: 1,
       ),
     );
-    // iOS AAC is reliable; Opus often yields empty files on device.
-    if (Platform.isIOS) return [m4a, opus];
-    return [opus, m4a];
+    // AAC/m4a is the most reliable container on both iOS and Android.
+    return [m4a, opus];
   }
 
   Future<void> startRecording() async {
@@ -195,8 +194,29 @@ class AudioRecorderService {
         }
       }
       await Future<void>.delayed(
-        Duration(milliseconds: Platform.isIOS ? 100 : 60),
+        Duration(milliseconds: Platform.isIOS ? 100 : 80),
       );
+    }
+    // Some OEM encoders flush late or omit magic bytes we recognize — still
+    // accept non-empty files so preview actions appear after a valid recording.
+    if (await file.exists()) {
+      final len = await file.length();
+      if (len >= 64) {
+        final raw = await file.readAsBytes();
+        if (raw.isNotEmpty) {
+          if (raw.length > maxBytes) {
+            debugPrint('[PTT] recording too large (fallback): ${raw.length}');
+            return null;
+          }
+          final ext =
+              isValidAudioBytes(raw) ? detectAudioExt(raw) : fallbackExt;
+          debugPrint(
+            '[PTT] fallback read len=${raw.length} ext=$ext '
+            'valid=${isValidAudioBytes(raw)}',
+          );
+          return (bytes: Uint8List.fromList(raw), ext: ext);
+        }
+      }
     }
     return null;
   }
@@ -258,6 +278,23 @@ class AudioRecorderService {
     );
   }
 
+  /// Stop an active recording, or return bytes retained after auto-stop.
+  Future<VoiceRecordingStopResult?> finishRecording() async {
+    if (_recording) return stopRecording();
+    final path = _previewPath;
+    if (path == null || path.isEmpty) return null;
+    final ext = path.split('.').last.toLowerCase();
+    final fallbackExt =
+        ext == 'opus' || ext == 'm4a' || ext == 'caf' ? ext : 'm4a';
+    final read = await _readRecordingFile(path, fallbackExt);
+    if (read == null) return null;
+    return VoiceRecordingStopResult(
+      bytes: read.bytes,
+      ext: read.ext,
+      filePath: path,
+    );
+  }
+
   Future<void> cancelRecording() async {
     _maxTimer?.cancel();
     _maxTimer = null;
@@ -278,30 +315,54 @@ class AudioRecorderService {
     _activeExt = null;
   }
 
-  Future<void> playFile(String path, {String? ext}) async {
+  /// Fires when preview playback reaches the end (or is stopped).
+  StreamSubscription<void>? _onCompleteSub;
+
+  Future<void> playFile(
+    String path, {
+    String? ext,
+    VoidCallback? onComplete,
+  }) async {
     await _ensurePlaybackContext();
+    await _onCompleteSub?.cancel();
+    _onCompleteSub = null;
     await _player.stop();
     await _player.setReleaseMode(ReleaseMode.stop);
     await _player.setPlayerMode(PlayerMode.mediaPlayer);
+    if (onComplete != null) {
+      _onCompleteSub = _player.onPlayerComplete.listen((_) {
+        onComplete();
+      });
+    }
     final source = DeviceFileSource(path);
     debugPrint('[PTT] play file=$path ext=$ext');
     await _player.play(source);
   }
 
-  Future<void> playBytes(Uint8List bytes, {String? ext}) async {
+  Future<void> playBytes(
+    Uint8List bytes, {
+    String? ext,
+    VoidCallback? onComplete,
+  }) async {
     final resolvedExt = ext ?? detectAudioExt(bytes);
     final dir = await getTemporaryDirectory();
     final path =
         '${dir.path}/resilnet_play_${DateTime.now().millisecondsSinceEpoch}.$resolvedExt';
     final file = File(path);
     await file.writeAsBytes(bytes, flush: true);
-    await playFile(path, ext: resolvedExt);
+    await playFile(path, ext: resolvedExt, onComplete: onComplete);
   }
 
-  Future<void> stopPlayback() => _player.stop();
+  Future<void> stopPlayback() async {
+    await _onCompleteSub?.cancel();
+    _onCompleteSub = null;
+    await _player.stop();
+  }
 
   void dispose() {
     _maxTimer?.cancel();
+    unawaited(_onCompleteSub?.cancel());
+    _onCompleteSub = null;
     unawaited(_recorder.dispose());
     unawaited(_player.dispose());
     if (_activePath != null) {

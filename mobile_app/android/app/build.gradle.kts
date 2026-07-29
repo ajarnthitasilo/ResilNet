@@ -35,6 +35,13 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    // Extract .so files instead of mmap-from-APK — more reliable on some Android 12 OEMs.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 kotlin {

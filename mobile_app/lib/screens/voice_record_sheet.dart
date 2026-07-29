@@ -10,7 +10,7 @@ import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
 
 /// Compact voice panel height (not full screen).
-const double kVoiceRecordPanelHeight = 260;
+const double kVoiceRecordPanelHeight = 300;
 
 /// Formats elapsed milliseconds as `MM:SS.cs` (Voice Memos style).
 @visibleForTesting
@@ -113,6 +113,10 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
     _tickTimer = Timer.periodic(const Duration(milliseconds: 50), (_) {
       final start = _recorderStartedAtMs;
       if (start == null || _phase != _VoicePhase.recording) return;
+      if (!_audio.isRecording && _recorderReady) {
+        unawaited(_stopRecording());
+        return;
+      }
       if (mounted) {
         setState(() {
           _elapsedMs = DateTime.now().millisecondsSinceEpoch - start;
@@ -181,8 +185,8 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
     debugPrint('[PTT] stop heldMs=$heldMs ready=$_recorderReady');
 
     VoiceRecordingStopResult? result;
-    if (_audio.isRecording) {
-      result = await _audio.stopRecording();
+    if (_recorderReady) {
+      result = await _audio.finishRecording();
     } else {
       await _audio.cancelRecording();
     }
@@ -251,16 +255,21 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
     }
     try {
       debugPrint('[PTT] preview-play ext=$_draftExt path=$_draftPath');
+      void onComplete() {
+        if (mounted) setState(() => _playingPreview = false);
+      }
+
       final path = _draftPath;
       if (path != null && path.isNotEmpty && File(path).existsSync()) {
-        await _audio.playFile(path, ext: _draftExt);
+        await _audio.playFile(path, ext: _draftExt, onComplete: onComplete);
       } else {
-        await _audio.playBytes(draft, ext: _draftExt);
+        await _audio.playBytes(draft, ext: _draftExt, onComplete: onComplete);
       }
       if (mounted) setState(() => _playingPreview = true);
     } catch (e) {
       debugPrint('[PTT] preview-play failed: $e');
       if (!mounted) return;
+      setState(() => _playingPreview = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
       );
@@ -299,6 +308,7 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
     final draft = _draftBytes;
     if (draft == null || draft.isEmpty) return;
     debugPrint('[PTT] draft-send bytes=${draft.length}');
+    unawaited(_audio.stopPlayback());
     Navigator.of(context).pop(
       VoiceRecordResult(
         bytes: draft,
@@ -470,33 +480,13 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
                 ),
               ),
             ),
-            IconButton(
-              onPressed: _recorderReady ? () => unawaited(_stopRecording()) : null,
-              icon: Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white24, width: 2),
-                ),
-                alignment: Alignment.center,
-                child: Container(
-                  width: 14,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFF3B30),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-              ),
-            ),
             _closeButton(onPressed: () async {
               await _cancelActive();
               if (mounted) _close();
             }),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Text(
           l10n.voicePttRecording,
           style: TextStyle(
@@ -504,6 +494,42 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
             fontSize: 13,
           ),
         ),
+        const Spacer(),
+        Center(
+          child: GestureDetector(
+            onTap: _recorderReady ? () => unawaited(_stopRecording()) : null,
+            child: Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.22),
+                  width: 3,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF3B30),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.voicePttRelease,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.45),
+            fontSize: 13,
+          ),
+        ),
+        const Spacer(),
       ],
     );
   }
@@ -514,112 +540,195 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
       children: [
         Row(
           children: [
-            IconButton(
-              tooltip: _playingPreview
-                  ? l10n.voicePttStopPreview
-                  : l10n.voicePttPlayPreview,
-              onPressed: () => unawaited(_togglePreview()),
-              icon: Icon(
-                _playingPreview ? Icons.stop_circle : Icons.play_circle_fill,
-                color: const Color(0xFF10B981),
-                size: 40,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              _formatTimer(_draftDurationMs),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
-            ),
-            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 l10n.voicePttDraftReady,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.55),
-                  fontSize: 13,
+                  color: Colors.white.withValues(alpha: 0.65),
+                  fontSize: 15,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            Text(
+              _formatTimer(_draftDurationMs),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontFeatures: [FontFeature.tabularFigures()],
+              ),
+            ),
+            const SizedBox(width: 4),
             _closeButton(onPressed: _discard),
           ],
         ),
-        const Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _previewAction(
-              tooltip: l10n.voicePttDiscard,
-              icon: Icons.delete_outline_rounded,
-              color: Colors.white54,
-              onPressed: _discard,
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () => unawaited(_togglePreview()),
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _playingPreview
+                          ? const Color(0xFF10B981)
+                          : const Color(0xFF10B981).withValues(alpha: 0.18),
+                      border: Border.all(
+                        color: const Color(0xFF10B981),
+                        width: 2.5,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      _playingPreview
+                          ? Icons.stop_rounded
+                          : Icons.play_arrow_rounded,
+                      color: _playingPreview
+                          ? Colors.black
+                          : const Color(0xFF10B981),
+                      size: 40,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _playingPreview
+                      ? l10n.voicePttStopPreview
+                      : l10n.voicePttPlayPreview,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.55),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ),
-            _previewAction(
-              tooltip: l10n.voicePttReRecord,
-              icon: Icons.mic_none_rounded,
-              color: Colors.white70,
-              onPressed: () => unawaited(_reRecord()),
-            ),
-            _previewAction(
-              tooltip: l10n.voicePttSend,
-              icon: Icons.send_rounded,
-              color: const Color(0xFF10B981),
-              filled: true,
-              onPressed: _send,
-            ),
-          ],
+          ),
+        ),
+        VoicePreviewActions(
+          discardLabel: l10n.voicePttDiscard,
+          reRecordLabel: l10n.voicePttReRecord,
+          sendLabel: l10n.voicePttSend,
+          onDiscard: _discard,
+          onReRecord: () => unawaited(_reRecord()),
+          onSend: _send,
         ),
       ],
     );
   }
+}
 
-  Widget _previewAction({
-    required String tooltip,
+/// Bottom action bar after recording: discard, re-record, send.
+@visibleForTesting
+class VoicePreviewActions extends StatelessWidget {
+  const VoicePreviewActions({
+    super.key,
+    required this.discardLabel,
+    required this.reRecordLabel,
+    required this.sendLabel,
+    required this.onDiscard,
+    required this.onReRecord,
+    required this.onSend,
+  });
+
+  final String discardLabel;
+  final String reRecordLabel;
+  final String sendLabel;
+  final VoidCallback onDiscard;
+  final VoidCallback onReRecord;
+  final VoidCallback onSend;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _action(
+            label: discardLabel,
+            icon: Icons.delete_outline_rounded,
+            color: Colors.white54,
+            onPressed: onDiscard,
+          ),
+          _action(
+            label: reRecordLabel,
+            icon: Icons.mic_none_rounded,
+            color: Colors.white70,
+            onPressed: onReRecord,
+          ),
+          _action(
+            label: sendLabel,
+            icon: Icons.send_rounded,
+            color: const Color(0xFF10B981),
+            filled: true,
+            onPressed: onSend,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _action({
+    required String label,
     required IconData icon,
     required Color color,
     required VoidCallback onPressed,
     bool filled = false,
   }) {
     const size = 52.0;
-    if (filled) {
-      return Tooltip(
-        message: tooltip,
-        child: Material(
-          color: color,
-          shape: const CircleBorder(),
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: onPressed,
-            child: SizedBox(
-              width: size,
-              height: size,
-              child: Icon(icon, color: Colors.black, size: 24),
+    final iconWidget = filled
+        ? Material(
+            color: color,
+            shape: const CircleBorder(),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: onPressed,
+              child: SizedBox(
+                width: size,
+                height: size,
+                child: Icon(icon, color: Colors.black, size: 24),
+              ),
+            ),
+          )
+        : Material(
+            color: Colors.transparent,
+            shape: CircleBorder(
+              side: BorderSide(color: color.withValues(alpha: 0.45)),
+            ),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: onPressed,
+              child: SizedBox(
+                width: size,
+                height: size,
+                child: Icon(icon, color: color, size: 26),
+              ),
+            ),
+          );
+
+    return SizedBox(
+      width: 88,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          iconWidget,
+          const SizedBox(height: 6),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: color.withValues(alpha: filled ? 1 : 0.85),
+              fontSize: 12,
             ),
           ),
-        ),
-      );
-    }
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        shape: CircleBorder(
-          side: BorderSide(color: color.withValues(alpha: 0.45)),
-        ),
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onPressed,
-          child: SizedBox(
-            width: size,
-            height: size,
-            child: Icon(icon, color: color, size: 26),
-          ),
-        ),
+        ],
       ),
     );
   }
