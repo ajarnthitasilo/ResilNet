@@ -38,5 +38,11 @@ class PayloadKinds {
         k != boardPost;
   }
 
+  /// Private 1:1 DM content (excludes area fan-out / system lines).
+  static bool isPrivateDm(String? kind) {
+    final k = (kind ?? text).trim();
+    return isChatVisible(k) && k != areaPublic && k != system;
+  }
+
   static bool isSystemLine(String? kind) => (kind ?? '') == system;
 }

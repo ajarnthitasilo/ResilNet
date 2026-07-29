@@ -11,10 +11,26 @@ pluginManagement {
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
+        // Plugin markers resolve best from Google / Gradle Portal (already cached).
         mavenLocal()
         google()
-        mavenCentral()
         gradlePluginPortal()
+        mavenCentral()
+        // Asia mirrors as fallback when upstream stalls.
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/central") }
+        maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
+    }
+
+    // Plugins (e.g. flutter_plugin_android_lifecycle) may request newer AGP;
+    // pin to the project version so builds can use the already-cached jars.
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id.startsWith("com.android.")) {
+                useVersion("8.11.1")
+            }
+        }
     }
 }
 
@@ -22,6 +38,9 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
         mavenLocal()
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/central") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
         google()
         mavenCentral()
     }

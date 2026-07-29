@@ -1,5 +1,9 @@
 allprojects {
     repositories {
+        mavenLocal()
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/central") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
         google()
         mavenCentral()
     }
@@ -17,6 +21,34 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(":app")
+}
+
+// Flutter plugins may request AGP 8.13.x; force the cached project AGP to avoid network stalls.
+subprojects {
+    buildscript {
+        configurations.configureEach {
+            resolutionStrategy.eachDependency {
+                if (requested.group == "com.android.tools.build") {
+                    when (requested.name) {
+                        "gradle", "builder", "gradle-api", "builder-model",
+                        "gradle-settings-api", "aaptcompiler", "apkzlib", "apksig",
+                        -> useVersion("8.11.1")
+                    }
+                }
+            }
+        }
+    }
+    configurations.configureEach {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.android.tools.build") {
+                when (requested.name) {
+                    "gradle", "builder", "gradle-api", "builder-model",
+                    "gradle-settings-api", "aaptcompiler", "apkzlib", "apksig",
+                    -> useVersion("8.11.1")
+                }
+            }
+        }
+    }
 }
 
 // AGP 8+ requires namespace; older plugins only declare package in AndroidManifest.

@@ -915,6 +915,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onlinePeopleTooltip => 'People online';
 
   @override
+  String get unreadDirectsTooltipEmpty => 'Private messages';
+
+  @override
+  String unreadDirectsTooltip(int count) {
+    return '$count unread private messages';
+  }
+
+  @override
   String get onlinePeopleTitle => 'people';
 
   @override

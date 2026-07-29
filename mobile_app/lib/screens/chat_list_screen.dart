@@ -306,6 +306,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
     final onlineCount = s.isReady ? s.onlinePresenceCount : 0;
+    final unreadCount = s.isReady ? s.unreadDirectCount : 0;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -364,6 +365,25 @@ class _ChatListScreenState extends State<ChatListScreen> {
               ),
               icon: const Icon(Icons.campaign_outlined),
             ),
+          _compactIcon(
+            tooltip: unreadCount > 0
+                ? l10n.unreadDirectsTooltip(unreadCount)
+                : l10n.unreadDirectsTooltipEmpty,
+            onPressed: () {
+              if (s.feedChannel != FeedChannel.directs) {
+                unawaited(s.setFeedChannel(FeedChannel.directs));
+              }
+            },
+            icon: Badge(
+              isLabelVisible: unreadCount > 0,
+              label: Text('$unreadCount'),
+              child: Icon(
+                unreadCount > 0
+                    ? Icons.mark_email_unread_outlined
+                    : Icons.mail_outline,
+              ),
+            ),
+          ),
           _compactIcon(
             tooltip: '${l10n.onlinePeopleTooltip} ($onlineCount)',
             onPressed: () => _onPeoplePressed(s),

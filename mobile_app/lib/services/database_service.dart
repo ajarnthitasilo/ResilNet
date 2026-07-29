@@ -380,16 +380,43 @@ class DatabaseService {
     final rows = await _database.query(
       'messages',
       where:
-          'senderId = ? AND receiverId = ? AND status IN (?, ?)',
+          'senderId = ? AND receiverId = ? AND status IN (?, ?)'
+          " AND type = ?"
+          " AND IFNULL(payloadKind, 'text') NOT IN "
+          "('presence', 'notice', 'area_public', 'system', "
+          "'board_key_request', 'board_key_grant', 'board_post')",
       whereArgs: [
         peerId,
         myUserId,
         MessageStatus.delivered.name,
         MessageStatus.sent.name,
+        MessageType.direct.name,
       ],
       orderBy: 'timestamp ASC',
     );
     return rows.map(ChatMessage.fromMap).toList();
+  }
+
+  /// จำนวนข้อความ 1:1 ที่ยังไม่ได้อ่านทั้งหมด (ฝั่งผู้รับ)
+  Future<int> countUnreadIncomingDirectMessages(String myUserId) async {
+    final rows = await _database.rawQuery(
+      '''
+      SELECT COUNT(*) AS c FROM messages
+      WHERE receiverId = ?
+        AND type = ?
+        AND status IN (?, ?)
+        AND IFNULL(payloadKind, 'text') NOT IN
+          ('presence', 'notice', 'area_public', 'system',
+           'board_key_request', 'board_key_grant', 'board_post')
+      ''',
+      [
+        myUserId,
+        MessageType.direct.name,
+        MessageStatus.delivered.name,
+        MessageStatus.sent.name,
+      ],
+    );
+    return (rows.first['c'] as int?) ?? 0;
   }
 
   /// บันทึก pending ACK ลง SQLite (persist ก่อน background/terminate)

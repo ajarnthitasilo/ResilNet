@@ -908,6 +908,14 @@ class AppLocalizationsTh extends AppLocalizations {
   String get onlinePeopleTooltip => 'คนออนไลน์';
 
   @override
+  String get unreadDirectsTooltipEmpty => 'ข้อความส่วนตัว';
+
+  @override
+  String unreadDirectsTooltip(int count) {
+    return 'ข้อความส่วนตัวที่ยังไม่ได้อ่าน $count ข้อความ';
+  }
+
+  @override
   String get onlinePeopleTitle => 'คนออนไลน์';
 
   @override

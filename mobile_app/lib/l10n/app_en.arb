@@ -470,6 +470,13 @@
   "locationPickerTooltip": "Location channel",
   "transportPickerTooltip": "Mesh / Internet / Auto",
   "onlinePeopleTooltip": "People online",
+  "unreadDirectsTooltipEmpty": "Private messages",
+  "unreadDirectsTooltip": "{count} unread private messages",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "onlinePeopleTitle": "people",
   "onlinePeopleEmpty": "No one online here yet",
   "onlinePeopleCount": "{count} online",

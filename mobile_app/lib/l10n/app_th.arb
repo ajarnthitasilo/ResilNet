@@ -306,6 +306,13 @@
   "locationPickerTooltip": "ช่องตามตำแหน่ง",
   "transportPickerTooltip": "Mesh / Internet / Auto",
   "onlinePeopleTooltip": "คนออนไลน์",
+  "unreadDirectsTooltipEmpty": "ข้อความส่วนตัว",
+  "unreadDirectsTooltip": "ข้อความส่วนตัวที่ยังไม่ได้อ่าน {count} ข้อความ",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "onlinePeopleTitle": "คนออนไลน์",
   "onlinePeopleEmpty": "ยังไม่มีใครออนไลน์ที่นี่",
   "onlinePeopleCount": "ออนไลน์ {count} คน",

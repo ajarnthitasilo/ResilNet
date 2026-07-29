@@ -295,7 +295,42 @@ class AppState extends ChangeNotifier {
   int _chatDataEpoch = 0;
   int get chatDataEpoch => _chatDataEpoch;
 
-  void _bumpChatData() => _chatDataEpoch++;
+  /// Unread inbound 1:1 DM count (home envelope badge).
+  int _unreadDirectCount = 0;
+  int get unreadDirectCount => _unreadDirectCount;
+
+  void _bumpChatData() {
+    _chatDataEpoch++;
+    unawaited(refreshUnreadDirectCount());
+  }
+
+  /// Recount unread private DMs (SQLite + ephemeral session).
+  Future<void> refreshUnreadDirectCount() async {
+    if (!myUserIdReady) {
+      if (_unreadDirectCount != 0) {
+        _unreadDirectCount = 0;
+        notifyListeners();
+      }
+      return;
+    }
+    var n = 0;
+    if (_saveMessageHistory) {
+      n = await db.countUnreadIncomingDirectMessages(myUserId);
+    }
+    for (final m in _sessionMessages) {
+      if (m.receiverId != myUserId) continue;
+      if (m.type != MessageType.direct) continue;
+      if (!PayloadKinds.isPrivateDm(m.payloadKind)) continue;
+      if (m.status != MessageStatus.sent &&
+          m.status != MessageStatus.delivered) {
+        continue;
+      }
+      n++;
+    }
+    if (_unreadDirectCount == n) return;
+    _unreadDirectCount = n;
+    notifyListeners();
+  }
 
   static const _kOnboardingDone = 'resilnet_onboarding_done';
   static const _kOnboardingDoneSecure = 'resilnet_onboarding_done';
@@ -612,6 +647,7 @@ class AppState extends ChangeNotifier {
       _startRetentionTimer();
       unawaited(purgeExpiredMessages());
       unawaited(_startScreenshotWatch());
+      unawaited(refreshUnreadDirectCount());
       debugPrint(
         '[Init] services ready op=$initOp in ${DateTime.now().difference(startedAt).inMilliseconds}ms',
       );
@@ -3205,19 +3241,32 @@ class AppState extends ChangeNotifier {
   /// มาร์กข้อความที่ยังไม่อ่านในบทสนทนา แล้วคิว READ ACK
   Future<void> markConversationRead(String peerId) async {
     final unread = await db.getUnreadIncomingMessages(myUserId, peerId);
-    if (unread.isEmpty) return;
-    debugPrint(
-      '[ACK] markConversationRead peer=$peerId unread=${unread.length}',
-    );
     final now = DateTime.now();
-    for (final m in unread) {
-      await db.markMessagesRead([m.id], now);
-      await _ackQueue?.enqueueRead(
-        msgId: m.id,
-        targetSenderId: m.senderId,
-        at: now,
+    var changed = false;
+    if (unread.isNotEmpty) {
+      debugPrint(
+        '[ACK] markConversationRead peer=$peerId unread=${unread.length}',
       );
+      for (final m in unread) {
+        await db.markMessagesRead([m.id], now);
+        await _ackQueue?.enqueueRead(
+          msgId: m.id,
+          targetSenderId: m.senderId,
+          at: now,
+        );
+      }
+      changed = true;
     }
+    for (var i = 0; i < _sessionMessages.length; i++) {
+      final m = _sessionMessages[i];
+      if (m.senderId != peerId || m.receiverId != myUserId) continue;
+      if (m.type != MessageType.direct) continue;
+      if (!PayloadKinds.isPrivateDm(m.payloadKind)) continue;
+      if (m.status == MessageStatus.read) continue;
+      _sessionMessages[i] = m.copyWith(status: MessageStatus.read, readAt: now);
+      changed = true;
+    }
+    if (!changed) return;
     _bumpChatData();
     notifyListeners();
   }

@@ -1658,6 +1658,18 @@ abstract class AppLocalizations {
   /// **'People online'**
   String get onlinePeopleTooltip;
 
+  /// No description provided for @unreadDirectsTooltipEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Private messages'**
+  String get unreadDirectsTooltipEmpty;
+
+  /// No description provided for @unreadDirectsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unread private messages'**
+  String unreadDirectsTooltip(int count);
+
   /// No description provided for @onlinePeopleTitle.
   ///
   /// In en, this message translates to:
