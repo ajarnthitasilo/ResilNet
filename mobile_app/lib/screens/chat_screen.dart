@@ -20,11 +20,11 @@ import '../models/chat_message.dart';
 import '../models/feed_channel.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/crypto_service.dart';
-import '../services/mic_permission.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
+import 'voice_record_sheet.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.peerId});
@@ -226,10 +226,8 @@ class _ChatScreenState extends State<ChatScreen> {
     return CryptoService.normalizePublicKey(receiverPub);
   }
 
-  bool _recordingVoice = false;
-
-  Future<void> _startVoiceNote() async {
-    if (_recordingVoice || _sendingOutbound) return;
+  Future<void> _openVoiceNote() async {
+    if (_sendingOutbound) return;
     final s = context.read<AppState>();
     if (!s.e2eeEnabled) {
       if (!mounted) return;
@@ -238,37 +236,19 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       return;
     }
-    debugPrint('[PTT] mic-start peer=${widget.peerId}');
+    debugPrint('[PTT] mic-tap peer=${widget.peerId}');
     HapticFeedback.lightImpact();
     try {
-      await _audio.startRecording();
-      if (mounted) setState(() => _recordingVoice = true);
+      final result = await showVoiceRecordSheet(context);
+      if (!mounted || result == null) return;
+      await _sendVoiceBytes(result.bytes, ext: result.ext);
     } catch (e) {
-      debugPrint('[PTT] voice start failed: $e');
-      if (!mounted) return;
-      showMicPermissionError(
-        context,
-        error: e,
-        deniedMessage: context.l10n.permissionMicDenied,
-        failedMessage: context.l10n.chatVoiceFailed('$e'),
-        openSettingsLabel: context.l10n.permissionMicOpenSettings,
-      );
-    }
-  }
-
-  Future<void> _stopAndSendVoiceNote() async {
-    if (!_recordingVoice) return;
-    final recorded = await _audio.stopRecording();
-    if (mounted) setState(() => _recordingVoice = false);
-    final bytes = recorded?.bytes;
-    if (bytes == null || bytes.isEmpty) {
+      debugPrint('[PTT] voice sheet failed: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.voiceRecordFailed)),
+        SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
       );
-      return;
     }
-    await _sendVoiceBytes(bytes, ext: recorded?.ext ?? 'm4a');
   }
 
   Future<void> _sendVoiceBytes(Uint8List bytes, {String ext = 'm4a'}) async {
@@ -286,11 +266,15 @@ class _ChatScreenState extends State<ChatScreen> {
     final resolvedExt = ext.trim().isEmpty ? 'm4a' : ext.trim().toLowerCase();
     debugPrint('[PTT] send voice bytes=${bytes.length} ext=$resolvedExt');
 
-    // Soft cap before encryption (BLE ~51KB ciphertext after wire expansion).
+    // Only reject absurd raw sizes; iOS AAC overhead makes short clips look "big".
     if (bytes.length > AudioRecorderService.maxBytes) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
+          SnackBar(
+            content: Text(
+              '${context.l10n.chatVoiceTooLarge} (${(bytes.length / 1024).toStringAsFixed(1)}KB)',
+            ),
+          ),
         );
         setState(() => _sendingOutbound = false);
       }
@@ -323,13 +307,12 @@ class _ChatScreenState extends State<ChatScreen> {
       payloadKind: PayloadKinds.audio,
     );
 
-    // Estimate sealed wire size; prefer Nostr when envelope is BLE-hostile.
+    // Voice always goes Nostr-only (auto-chunked when sealed envelope is large).
     final dtoLen = ResilNetPacketCodec.toDto(msg).payload.length;
-    const bleSafeCiphertext = 48000;
-    final tooBigForBle = dtoLen > bleSafeCiphertext;
+    debugPrint('[PTT] sealed dto=$dtoLen (chunk if >${AudioRecorderService.maxSealedDtoBytes})');
     final nostrUp = s.isNostrOnline || s.isCloudOnline;
-    if (tooBigForBle && !nostrUp) {
-      debugPrint('[PTT] voice too large for BLE dto=$dtoLen nostr=off');
+    if (!nostrUp) {
+      debugPrint('[PTT] voice needs Nostr dto=$dtoLen nostr=off');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.chatVoiceNeedInternet)),
@@ -341,13 +324,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       await s.persistChatMessage(msg);
-      // Small notes: mesh+Nostr. Oversized: Nostr-only (same as announcements media).
-      await s.routeOutbound(msg, internetOnly: tooBigForBle);
+      final ok = await s.routeOutbound(msg, internetOnly: true);
       debugPrint(
-        '[PTT] send voice routed bytes=${bytes.length} dto=$dtoLen '
-        'internetOnly=$tooBigForBle',
+        '[PTT] send voice routed ok=$ok bytes=${bytes.length} dto=$dtoLen '
+        'internetOnly=true',
       );
-      if (mounted && tooBigForBle) {
+      if (!mounted) return;
+      if (!ok) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chatVoiceNeedInternet)),
+        );
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.chatVoiceSentInternet)),
         );
@@ -365,7 +352,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  bool get _composeLocked => _sendingOutbound || _recordingVoice;
+  bool get _composeLocked => _sendingOutbound;
 
   Future<void> _send() async {
     if (_sendingOutbound) return;
@@ -880,22 +867,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        tooltip: _recordingVoice
-                            ? l10n.voicePttRecording
-                            : l10n.voicePttHold,
+                        tooltip: l10n.voicePttHold,
                         onPressed: _sendingOutbound
                             ? null
-                            : () {
-                                if (_recordingVoice) {
-                                  unawaited(_stopAndSendVoiceNote());
-                                } else {
-                                  unawaited(_startVoiceNote());
-                                }
-                              },
-                        icon: Icon(
-                          _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
-                          color: _recordingVoice ? Colors.redAccent : null,
-                        ),
+                            : () => unawaited(_openVoiceNote()),
+                        icon: const Icon(Icons.mic_none_outlined),
                         style: IconButton.styleFrom(
                           minimumSize: const Size(48, 48),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,

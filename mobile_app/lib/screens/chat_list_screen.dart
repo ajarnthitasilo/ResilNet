@@ -33,6 +33,7 @@ import 'notices_sheet.dart';
 import 'online_people_sheet.dart';
 import 'panic_wipe.dart';
 import 'settings_screen.dart';
+import 'voice_record_sheet.dart';
 
 /// Home feed — clean bitchat-style chrome with sheets for mode pickers.
 class ChatListScreen extends StatefulWidget {
@@ -45,10 +46,8 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   final _peerController = TextEditingController();
   final _compose = TextEditingController();
-  final _audio = AudioRecorderService();
   NoticeExpiry _expiry = NoticeExpiry.sevenDays;
   bool _sending = false;
-  bool _recordingVoice = false;
   int _titleTapCount = 0;
   DateTime? _titleTapAt;
 
@@ -56,7 +55,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void dispose() {
     _peerController.dispose();
     _compose.dispose();
-    _audio.dispose();
     super.dispose();
   }
 
@@ -239,21 +237,49 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
   }
 
-  Future<void> _startPublicVoice(AppState s) async {
-    if (_recordingVoice || _sending) return;
+  Future<void> _openPublicVoice(AppState s) async {
+    if (_sending) return;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
-    debugPrint('[PTT] mic-start public channel=${s.feedChannel}');
+    debugPrint('[PTT] mic-tap public channel=${s.feedChannel}');
     HapticFeedback.lightImpact();
     try {
-      await _audio.startRecording();
-      if (mounted) setState(() => _recordingVoice = true);
+      final result = await showVoiceRecordSheet(context);
+      if (!mounted || result == null) return;
+      if (result.bytes.length > AudioRecorderService.maxBytes) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
+        );
+        return;
+      }
+      final wirePlain = VoicePayload.encodeWire(
+        bytes: result.bytes,
+        ext: result.ext,
+      );
+      setState(() => _sending = true);
+      try {
+        final n = s.feedChannel == FeedChannel.geo
+            ? await s.sendAreaPublicText(wirePlain, kind: PayloadKinds.audio)
+            : await s.sendMeshPublicText(wirePlain, kind: PayloadKinds.audio);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              n <= 0
+                  ? context.l10n.geoPublicSentNone
+                  : context.l10n.geoPublicSent(n),
+            ),
+          ),
+        );
+      } finally {
+        if (mounted) setState(() => _sending = false);
+      }
     } catch (e) {
-      debugPrint('[PTT] public start failed: $e');
+      debugPrint('[PTT] public voice failed: $e');
       if (!mounted) return;
       showMicPermissionError(
         context,
@@ -262,52 +288,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
         failedMessage: context.l10n.chatVoiceFailed('$e'),
         openSettingsLabel: context.l10n.permissionMicOpenSettings,
       );
-    }
-  }
-
-  Future<void> _stopAndSendPublicVoice(AppState s) async {
-    if (!_recordingVoice) return;
-    final recorded = await _audio.stopRecording();
-    if (mounted) setState(() => _recordingVoice = false);
-    final bytes = recorded?.bytes;
-    if (bytes == null || bytes.isEmpty) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.voiceRecordFailed)),
-      );
-      return;
-    }
-    if (!s.e2eeEnabled) return;
-
-    if (bytes.length > AudioRecorderService.maxBytes) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
-      );
-      return;
-    }
-
-    final wirePlain = VoicePayload.encodeWire(
-      bytes: bytes,
-      ext: recorded?.ext ?? 'm4a',
-    );
-    setState(() => _sending = true);
-    try {
-      final n = s.feedChannel == FeedChannel.geo
-          ? await s.sendAreaPublicText(wirePlain, kind: PayloadKinds.audio)
-          : await s.sendMeshPublicText(wirePlain, kind: PayloadKinds.audio);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            n <= 0
-                ? context.l10n.geoPublicSentNone
-                : context.l10n.geoPublicSent(n),
-          ),
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _sending = false);
     }
   }
 
@@ -551,33 +531,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   icon: const Icon(Icons.image_outlined),
                 ),
                 IconButton(
-                  tooltip: _recordingVoice
-                      ? l10n.voicePttRecording
-                      : l10n.voicePttHold,
-                  onPressed: _sending
-                      ? null
-                      : () {
-                          if (_recordingVoice) {
-                            unawaited(_stopAndSendPublicVoice(s));
-                          } else {
-                            unawaited(_startPublicVoice(s));
-                          }
-                        },
-                  icon: Icon(
-                    _recordingVoice ? Icons.mic : Icons.mic_none_outlined,
-                    color: _recordingVoice ? Colors.redAccent : null,
-                  ),
+                  tooltip: l10n.voicePttHold,
+                  onPressed:
+                      _sending ? null : () => unawaited(_openPublicVoice(s)),
+                  icon: const Icon(Icons.mic_none_outlined),
                 ),
                 Expanded(
                   child: TextField(
                     controller: _compose,
-                    enabled: !_sending && !_recordingVoice,
+                    enabled: !_sending,
                     minLines: 1,
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: _recordingVoice
-                          ? l10n.voicePttRecording
-                          : l10n.homeComposePublicHint(channel),
+                      hintText: l10n.homeComposePublicHint(channel),
                     ),
                     textInputAction: TextInputAction.send,
                     onSubmitted: (_) => unawaited(_sendPublic(s)),
@@ -585,9 +551,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
                 const SizedBox(width: 6),
                 IconButton.filled(
-                  onPressed: (_sending || _recordingVoice)
-                      ? null
-                      : () => unawaited(_sendPublic(s)),
+                  onPressed:
+                      _sending ? null : () => unawaited(_sendPublic(s)),
                   icon: _sending
                       ? const SizedBox(
                           width: 18,
@@ -705,17 +670,13 @@ class _DirectsBody extends StatelessWidget {
                       future: s.db.resolveDisplayName(peer.id),
                       builder: (context, nameSnap) => Text(
                         nameSnap.data ??
-                            peer.displayName ??
-                            formatShortPeerId(peer.id),
+                            peerListLabel(
+                              aliasOrNick: peer.displayName,
+                              id: peer.id,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    subtitle: Text(
-                      formatShortPeerId(peer.id),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontFamily: 'monospace'),
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 18),
@@ -794,7 +755,10 @@ class _MeshListBody extends StatelessWidget {
                     return ListTile(
                       leading: Identicon(id: peer.id),
                       title: Text(
-                        peer.displayName ?? formatShortPeerId(peer.id),
+                        peerListLabel(
+                          aliasOrNick: peer.displayName,
+                          id: peer.id,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -830,24 +794,38 @@ class _GeoListBody extends StatelessWidget {
               final e = presence[i];
               return ListTile(
                 leading: Identicon(id: e.id),
-                title: Text(e.label),
+                title: Text(
+                  e.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 subtitle: Text(
-                  !e.canMessage
+                  e.id.startsWith('radio:')
+                      ? l10n.bleRadioNearbySubtitle
+                      : !e.canMessage
                       ? l10n.geoPeerNostrSubtitle(s.geoChannelLabel)
                       : e.source.isInternet && !e.source.isMesh
                           ? l10n.geoPeerInternetSubtitle(s.geoChannelLabel)
                           : l10n.geoPeerSubtitle(s.geoChannelLabel),
                 ),
                 trailing: Icon(
-                  e.canMessage
+                  e.id.startsWith('radio:')
+                      ? Icons.bluetooth_searching
+                      : e.canMessage
                       ? Icons.lock_outline
                       : Icons.travel_explore_outlined,
                   size: 18,
                 ),
                 onTap: () {
-                  if (!e.canMessage) {
+                  if (e.id.startsWith('radio:') || !e.canMessage) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.geoPeerDiscoverOnlySnack)),
+                      SnackBar(
+                        content: Text(
+                          e.id.startsWith('radio:')
+                              ? l10n.bleRadioNearbySubtitle
+                              : l10n.geoPeerDiscoverOnlySnack,
+                        ),
+                      ),
                     );
                     return;
                   }

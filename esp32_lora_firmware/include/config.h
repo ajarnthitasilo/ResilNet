@@ -2,6 +2,9 @@
 
 #include <Arduino.h>
 
+// Keep in sync with mobile_app pubspec version when cutting a firmware release.
+#define RESILNET_FW_VERSION "1.9.44"
+
 // ─── โหมดโหนด (กำหนดจาก platformio.ini) ───────────────────────────────────
 // NODE_TYPE_LORA_GATEWAY      → Role A: BLE Server + LoRa Bridge
 // NODE_TYPE_STANDALONE_REPEATER → Role B: LoRa Relay เท่านั้น

@@ -138,6 +138,9 @@ class Geohash {
     return h.startsWith('#') ? h : '#$h';
   }
 
+  /// Default Area channel for first launch (Thailand region bootstrap).
+  static const bootstrapGeohash = 'w5';
+
   static final _geohashInput = RegExp(r'^[0-9bcdefghjkmnpqrstuvwxyz]{2,12}$');
 
   /// Parse user input (`w5`, `#w5jt8`, `W5JT8`) into normalized geohash.

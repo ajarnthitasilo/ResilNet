@@ -77,10 +77,14 @@ class AudioRecorderService {
   final AudioRecorder _recorder;
   final AudioPlayer _player;
 
-  static const maxDuration = Duration(seconds: 12);
+  static const maxDuration = Duration(seconds: 30);
   static const sampleRate = 16000;
-  /// Soft send cap (BLE/Nostr). Larger drafts are rejected at send time.
-  static const maxBytes = 48 * 1024;
+  /// Soft cap on raw container size (~30s AAC). Larger notes are still sent
+  /// via multi-part Nostr after sealing.
+  static const maxBytes = 256 * 1024;
+  /// Prefer single Nostr event below this sealed size; above → media parts.
+  /// Keep in sync with [MediaPartCodec.singleMaxBytes].
+  static const maxSealedDtoBytes = 36 * 1024;
 
   static bool _playbackContextReady = false;
 

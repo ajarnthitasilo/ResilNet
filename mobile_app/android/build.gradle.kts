@@ -82,6 +82,38 @@ subprojects {
     }
 }
 
+// Skip extract*Annotations (pulls lint-checks / intellij-core over flaky Google CDN).
+// Release APK does not need these for packaging.
+subprojects {
+    tasks.configureEach {
+        if (name.startsWith("extract") && name.endsWith("Annotations")) {
+            enabled = false
+        }
+    }
+}
+
+// sync*LibJars validates typedefs.txt at configuration time (not doFirst).
+subprojects {
+    pluginManager.withPlugin("com.android.library") {
+        afterEvaluate {
+            listOf("release", "debug").forEach { buildType ->
+                val capitalize = buildType.replaceFirstChar { it.uppercase() }
+                val typedefsFile =
+                    layout.buildDirectory
+                        .file(
+                            "intermediates/annotations_typedef_file/$buildType/extract${capitalize}Annotations/typedefs.txt",
+                        )
+                        .get()
+                        .asFile
+                if (!typedefsFile.exists()) {
+                    typedefsFile.parentFile.mkdirs()
+                    typedefsFile.writeText("")
+                }
+            }
+        }
+    }
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

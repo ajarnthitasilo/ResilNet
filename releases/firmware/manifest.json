@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "appVersion": "1.9.44",
+  "updatedAt": "2026-07-30",
+  "artifacts": {
+    "standaloneNode": {
+      "file": "resilnet_esp32_standalone.bin",
+      "sizeBytes": 694672,
+      "sha256": "4601eec4c9ee1591ae096cfdbe2a2eb58a48db79764289e91b6edaefdad0d040",
+      "platformioEnv": "standalone",
+      "title": "ESP32 Standalone Node (BLE Mule + OTA)"
+    },
+    "loraGateway": {
+      "file": "resilnet_esp32_lora_gateway.bin",
+      "sizeBytes": 1086128,
+      "sha256": "3650b6c6a772eacabe4a9dc2aeb282ab4c67f36feb270de83e95d21e9e848aa9",
+      "platformioEnv": "lora_gateway",
+      "title": "ESP32 LoRa Gateway (BLE ↔ LoRa + OTA)"
+    }
+  },
+  "ble": {
+    "phoneMeshServiceUuid": "9d2f3bb2-3a5a-4f6e-a0c2-9d62c2d4d2a1",
+    "esp32MuleServiceUuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "esp32LoraServiceUuid": "d4e5f6a7-b8c9-4012-def0-123456789abc",
+    "otaServiceUuid": "e5f6a7b8-c9d0-4123-e456-789abcdef012"
+  },
+  "android": {
+    "minSdk": 24,
+    "targetSdk": 36,
+    "notes": "Android 12 (API 31)+ uses BLUETOOTH_SCAN/CONNECT/ADVERTISE; minSdk 24 supports Android 7–16"
+  }
+}

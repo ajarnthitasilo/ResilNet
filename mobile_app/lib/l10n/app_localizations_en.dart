@@ -184,6 +184,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Legacy anonymous presence — wait for a bound peer or exchange QR';
 
   @override
+  String get bleRadioNearbySubtitle => 'BLE nearby — scan QR to start 1:1 E2EE';
+
+  @override
   String get geoInternetDiscoverHint =>
       'Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)';
 
@@ -268,8 +271,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsClearLocationSnack => 'Location cleared';
 
   @override
-  String get chatVoiceTooLarge =>
-      'Voice note too large — keep under ~8 seconds';
+  String get chatVoiceTooLarge => 'Voice note too large — max ~30 seconds';
 
   @override
   String get chatVoiceNeedInternet =>
@@ -372,7 +374,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transportModeSubtitle =>
-      'Mesh = BLE nearby · Internet = anonymous Nostr presence · Auto = both';
+      'Mesh = BLE nearby (radio) when no Nostr · Internet & Auto = Nostr people list';
 
   @override
   String get transportModeMesh => 'Mesh';

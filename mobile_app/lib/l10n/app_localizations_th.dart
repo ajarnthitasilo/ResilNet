@@ -182,6 +182,10 @@ class AppLocalizationsTh extends AppLocalizations {
       'presence นิรนามแบบเก่า — รอ peer ที่ผูกกุญแจ หรือสแกน QR';
 
   @override
+  String get bleRadioNearbySubtitle =>
+      'สัญญาณ BLE ใกล้ตัว — สแกน QR เพื่อแชท 1:1';
+
+  @override
   String get geoInternetDiscoverHint =>
       'การค้นพบ Area ผ่านเน็ตต้องต่อ Nostr (Settings → Transport → Internet/Auto)';
 
@@ -266,8 +270,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get settingsClearLocationSnack => 'ลบพิกัดแล้ว';
 
   @override
-  String get chatVoiceTooLarge =>
-      'ข้อความเสียงใหญ่เกินไป — อัดไม่เกิน ~8 วินาที';
+  String get chatVoiceTooLarge => 'ข้อความเสียงใหญ่เกินไป — สูงสุด ~30 วินาที';
 
   @override
   String get chatVoiceNeedInternet =>
@@ -369,7 +372,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get transportModeSubtitle =>
-      'Mesh = BLE ใกล้ตัว · Internet = presence นิรนามบน Nostr · Auto = ทั้งสอง';
+      'Mesh = BLE ใกล้ตัว (radio) เมื่อไม่มี Nostr · Internet & Auto = รายชื่อจาก Nostr';
 
   @override
   String get transportModeMesh => 'Mesh';

@@ -22,7 +22,8 @@ android {
         applicationId = "com.example.resilnet"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // minSdk 24 = Android 7+; Android 12+ BLE uses SCAN/CONNECT/ADVERTISE in manifest.
+        minSdk = maxOf(24, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

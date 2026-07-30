@@ -410,6 +410,12 @@ abstract class AppLocalizations {
   /// **'Legacy anonymous presence — wait for a bound peer or exchange QR'**
   String get geoPeerDiscoverOnlySnack;
 
+  /// No description provided for @bleRadioNearbySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE nearby — scan QR to start 1:1 E2EE'**
+  String get bleRadioNearbySubtitle;
+
   /// No description provided for @geoInternetDiscoverHint.
   ///
   /// In en, this message translates to:
@@ -545,7 +551,7 @@ abstract class AppLocalizations {
   /// No description provided for @chatVoiceTooLarge.
   ///
   /// In en, this message translates to:
-  /// **'Voice note too large — keep under ~8 seconds'**
+  /// **'Voice note too large — max ~30 seconds'**
   String get chatVoiceTooLarge;
 
   /// No description provided for @chatVoiceNeedInternet.
@@ -707,7 +713,7 @@ abstract class AppLocalizations {
   /// No description provided for @transportModeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Mesh = BLE nearby · Internet = anonymous Nostr presence · Auto = both'**
+  /// **'Mesh = BLE nearby (radio) when no Nostr · Internet & Auto = Nostr people list'**
   String get transportModeSubtitle;
 
   /// No description provided for @transportModeMesh.

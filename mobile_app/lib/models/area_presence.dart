@@ -29,7 +29,9 @@ class AreaPresenceEntry {
   /// Non-null when this entry can open a sealed 1:1 chat.
   final Peer? peer;
 
-  bool get canMessage => peer != null && peer!.publicKey.isNotEmpty;
+  bool get isBleRadioDiscovery => id.startsWith('radio:');
+
+  bool get canMessage => !isBleRadioDiscovery && peer != null && peer!.publicKey.isNotEmpty;
 }
 
 enum PresenceSource {
@@ -75,11 +77,10 @@ class NostrPresenceSighting {
 
   AreaPresenceEntry toEntry() => AreaPresenceEntry(
         id: listId,
-        label: nick.isNotEmpty
-            ? nick
-            : (peer?.displayName?.trim().isNotEmpty == true
-                ? peer!.displayName!.trim()
-                : formatShortPeerId(listId)),
+        label: peerListLabel(
+          aliasOrNick: nick.isNotEmpty ? nick : peer?.displayName,
+          id: listId,
+        ),
         source: PresenceSource.internet,
         geohash: geohash,
         lastSeen: lastSeen,
@@ -90,6 +91,25 @@ class NostrPresenceSighting {
 /// TTL for considering a Nostr presence sighting still "online".
 /// Slightly longer than publish interval so badges do not flicker to zero.
 const Duration kNostrPresenceOnlineWindow = Duration(seconds: 240);
+
+/// True when any Nostr presence in [sightings] is still online in [channel].
+bool hasActiveNostrPresenceInChannel({
+  required Iterable<NostrPresenceSighting> sightings,
+  required String? channel,
+  required int nowMs,
+}) {
+  final cutoff = nowMs - kNostrPresenceOnlineWindow.inMilliseconds;
+  for (final s in sightings) {
+    if (s.lastSeen < cutoff) continue;
+    if (channel != null &&
+        channel.isNotEmpty &&
+        !Geohash.matchesChannel(s.geohash, channel)) {
+      continue;
+    }
+    return true;
+  }
+  return false;
+}
 
 /// Merge BLE peers + Nostr sightings for the Area people list.
 List<AreaPresenceEntry> mergeAreaPresence({
@@ -103,6 +123,9 @@ List<AreaPresenceEntry> mergeAreaPresence({
 
   if (mode.usesMesh) {
     for (final p in meshPeers) {
+      // Discovery-only BLE stubs (no RSA key) are not listed — anonymous
+      // messageable peers only, one row per id.
+      if (p.publicKey.trim().isEmpty) continue;
       final geo = p.geohash?.trim();
       if (channel != null && channel.isNotEmpty) {
         if (geo != null &&
@@ -113,9 +136,7 @@ List<AreaPresenceEntry> mergeAreaPresence({
       }
       map[p.id] = AreaPresenceEntry(
         id: p.id,
-        label: p.displayName?.trim().isNotEmpty == true
-            ? p.displayName!.trim()
-            : formatShortPeerId(p.id),
+        label: peerListLabel(aliasOrNick: p.displayName, id: p.id),
         source: PresenceSource.mesh,
         geohash: p.geohash,
         lastSeen: p.lastSeen,
@@ -138,7 +159,10 @@ List<AreaPresenceEntry> mergeAreaPresence({
       if (existing != null) {
         map[id] = AreaPresenceEntry(
           id: existing.id,
-          label: s.nick.isNotEmpty ? s.nick : existing.label,
+          label: peerListLabel(
+            aliasOrNick: s.nick.isNotEmpty ? s.nick : existing.label,
+            id: existing.id,
+          ),
           source: PresenceSource.both,
           geohash: s.geohash.isNotEmpty ? s.geohash : existing.geohash,
           lastSeen:

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import '../core/resilnet_chunk_codec.dart';
@@ -9,6 +11,7 @@ import '../core/resilnet_nack_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/resilnet_payload_type.dart';
 import '../core/payload_kinds.dart';
+import '../models/area_presence.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
 import '../services/ack_handler_service.dart';
@@ -50,6 +53,13 @@ class BleMeshService extends ChangeNotifier {
   final DatabaseService _db;
   final String myUserId;
   final _ble = FlutterReactiveBle();
+  final _peripheral = FlutterBlePeripheral();
+  bool _advertising = false;
+  bool _advertiseInFlight = false;
+  Timer? _roleTimer;
+  bool _roleAdvertisePhase = true;
+  static const _iosScanWindow = Duration(seconds: 5);
+  static const _iosAdvertiseWindow = Duration(seconds: 2);
 
   StreamSubscription<DiscoveredDevice>? _scanSub;
   StreamSubscription<BleStatus>? _bleStatusSub;
@@ -59,6 +69,7 @@ class BleMeshService extends ChangeNotifier {
   Timer? _cleanupTimer;
 
   final Map<String, DiscoveredDevice> _nearby = {};
+  final Map<String, int> _nearbyLastSeenMs = {};
   int get nearbyPeerCount => _nearbyPeers.isNotEmpty ? _nearbyPeers.length : _nearby.length;
   List<Peer> _nearbyPeers = const [];
   List<Peer> get nearbyPeers => _nearbyPeers;
@@ -81,24 +92,28 @@ class BleMeshService extends ChangeNotifier {
     _bleStatusSub = _ble.statusStream.listen((status) {
       debugPrint('[BLE] adapter status=$status');
       if (!_running) return;
-      if (status == BleStatus.ready && _scanSub == null) {
-        _startScanning();
+      if (status == BleStatus.ready) {
+        _kickRadioRoles(force: true);
       }
     });
 
-    _startScanning();
+    _kickRadioRoles(force: true);
 
     _sendTimer = Timer.periodic(const Duration(seconds: 3), (_) {
       unawaited(_pumpSendQueue());
     });
 
     _cleanupTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      _pruneStaleNearby();
       unawaited(_recomputeNearbyPeers());
     });
   }
 
   Future<void> stop() async {
     _running = false;
+    _roleTimer?.cancel();
+    _roleTimer = null;
+    await _stopAdvertising();
     await _scanSub?.cancel();
     await _bleStatusSub?.cancel();
     await _connSub?.cancel();
@@ -112,13 +127,191 @@ class BleMeshService extends ChangeNotifier {
     _cleanupTimer?.cancel();
     _cleanupTimer = null;
     _nearby.clear();
+    _nearbyLastSeenMs.clear();
     _connectedDeviceId = null;
     _nearbyPeers = const [];
     notifyListeners();
   }
 
+  /// iOS cannot run central+peripheral reliably at once — duty-cycle roles.
+  /// Android can usually do both; still advertise UUID-only for scan filters.
+  void _kickRadioRoles({bool force = false}) {
+    _roleTimer?.cancel();
+    if (Platform.isIOS) {
+      // Desync phones: stagger start + asymmetric scan-heavy windows.
+      _roleAdvertisePhase = myUserId.hashCode.isEven;
+      final offsetMs = (myUserId.hashCode % 2500).abs() + 400;
+      Future<void>.delayed(Duration(milliseconds: offsetMs), () {
+        if (!_running) return;
+        unawaited(_applyRolePhase());
+        _scheduleIosRoleFlip();
+      });
+    } else {
+      _startScanning();
+      unawaited(_startAdvertising());
+    }
+    if (force) {
+      debugPrint(
+        '[BLE] roles kicked ios=${Platform.isIOS} advertiseFirst=$_roleAdvertisePhase '
+        'scan=${_iosScanWindow.inSeconds}s adv=${_iosAdvertiseWindow.inSeconds}s',
+      );
+    }
+  }
+
+  void _scheduleIosRoleFlip() {
+    _roleTimer?.cancel();
+    void tick() {
+      if (!_running) return;
+      unawaited(_applyRolePhase());
+      _roleAdvertisePhase = !_roleAdvertisePhase;
+      final next = _roleAdvertisePhase ? _iosAdvertiseWindow : _iosScanWindow;
+      _roleTimer = Timer(next, tick);
+    }
+    final first = _roleAdvertisePhase ? _iosAdvertiseWindow : _iosScanWindow;
+    _roleTimer = Timer(first, tick);
+  }
+
+  Future<void> _applyRolePhase() async {
+    if (!_running) return;
+    if (_roleAdvertisePhase) {
+      await _scanSub?.cancel();
+      _scanSub = null;
+      await _startAdvertising();
+    } else {
+      await _stopAdvertising();
+      _startScanning();
+    }
+  }
+
+  /// Company id 0xFFFF (internal/testing) + magic "RN" + peer-id prefix.
+  static const int _mfgCompanyId = 0xFFFF;
+  static const int _fingerprintPrefixLen = 8;
+
+  Uint8List _fingerprintPayload() {
+    final id = myUserId.trim();
+    final take = id.length < _fingerprintPrefixLen ? id : id.substring(0, _fingerprintPrefixLen);
+    return Uint8List.fromList(<int>[
+      0x52, // R
+      0x4E, // N
+      ...utf8.encode(take),
+    ]);
+  }
+
+  String? _parseFingerprintPeerPrefix(Uint8List manufacturerData) {
+    // reactive_ble: first 2 bytes = company id (LE).
+    if (manufacturerData.length < 4) return null;
+    final company = manufacturerData[0] | (manufacturerData[1] << 8);
+    if (company != _mfgCompanyId) return null;
+    if (manufacturerData[2] != 0x52 || manufacturerData[3] != 0x4E) return null;
+    try {
+      final prefix = utf8.decode(manufacturerData.sublist(4)).trim();
+      if (prefix.length < 4) return null;
+      return prefix;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  bool _looksLikeResilNetAdv(DiscoveredDevice d) {
+    if (d.serviceData.containsKey(serviceUuid)) return true;
+    if (d.serviceUuids.any(
+      (u) => u.toString().toLowerCase() == serviceUuid.toString().toLowerCase(),
+    )) {
+      return true;
+    }
+    if (_parseFingerprintPeerPrefix(d.manufacturerData) != null) return true;
+    final n = d.name.toLowerCase();
+    return n.contains('resil');
+  }
+
+  /// Advertise ResilNet service UUID / fingerprint so nearby phones can find us.
+  ///
+  /// iOS ADV packets are tiny: UUID-only and fingerprint-only alternate so both
+  /// fit over successive advertise windows. Android can carry both at once.
+  Future<void> _startAdvertising() async {
+    if (_advertiseInFlight) return;
+    _advertiseInFlight = true;
+    try {
+      final supported = await _peripheral.isSupported;
+      if (!supported) {
+        debugPrint('[BLE] peripheral advertise unsupported on this device');
+        return;
+      }
+      final fp = _fingerprintPayload();
+      final AdvertiseData data;
+      if (Platform.isIOS) {
+        // Alternate: UUID discovery vs fingerprint binding.
+        final useFingerprint = DateTime.now().second.isEven;
+        data = useFingerprint
+            ? AdvertiseData(
+                includeDeviceName: false,
+                manufacturerId: _mfgCompanyId,
+                manufacturerData: fp,
+              )
+            : AdvertiseData(
+                serviceUuid: serviceUuid.toString(),
+                serviceUuids: [serviceUuid.toString()],
+                localName: null,
+                includeDeviceName: false,
+              );
+      } else {
+        data = AdvertiseData(
+          serviceUuid: serviceUuid.toString(),
+          serviceUuids: [serviceUuid.toString()],
+          localName: 'ResilNet',
+          includeDeviceName: false,
+          manufacturerId: _mfgCompanyId,
+          manufacturerData: fp,
+        );
+      }
+      final state = await _peripheral.start(
+        advertiseData: data,
+        advertiseSettings: AdvertiseSettings(
+          advertiseMode: AdvertiseMode.advertiseModeLowLatency,
+          txPowerLevel: AdvertiseTxPower.advertiseTxPowerHigh,
+          connectable: true,
+          timeout: 0,
+        ),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+      final ok = await _peripheral.isAdvertising;
+      _advertising = ok;
+      debugPrint(
+        '[BLE] advertising start state=$state isAdvertising=$ok uuid=$serviceUuid',
+      );
+      if (!ok) {
+        try {
+          await _peripheral.stop();
+        } catch (_) {}
+      }
+    } catch (e) {
+      _advertising = false;
+      debugPrint('[BLE] advertising start failed: $e');
+    } finally {
+      _advertiseInFlight = false;
+    }
+  }
+
+  Future<void> _stopAdvertising() async {
+    try {
+      await _peripheral.stop();
+      if (_advertising) debugPrint('[BLE] advertising stopped');
+    } catch (e) {
+      debugPrint('[BLE] advertising stop failed: $e');
+    } finally {
+      _advertising = false;
+    }
+  }
+
   void _startScanning() {
+    // Unfiltered + client filter: UUID ads and manufacturer fingerprints both
+    // visible (iOS filtered scans miss manufacturer-only windows).
+    _startFallbackScan();
+  }
+
+  void _startFallbackScan() {
     _scanSub?.cancel();
+    debugPrint('[BLE] starting unfiltered ResilNet scan');
     _scanSub = _ble
         .scanForDevices(
           withServices: const [],
@@ -126,16 +319,25 @@ class BleMeshService extends ChangeNotifier {
           requireLocationServicesEnabled: false,
         )
         .listen((d) {
-          _nearby[d.id] = d;
-          if (d.name.isNotEmpty) {
-            debugPrint('[BLE] discovered device=${d.id} name=${d.name}');
-          } else {
-            debugPrint('[BLE] discovered device=${d.id}');
-          }
-          unawaited(_handleDiscoveredDevice(d));
+          if (_looksLikeResilNetAdv(d)) _onScanHit(d);
         }, onError: (e) {
           debugPrint('[BLE] scan error: $e');
         });
+  }
+
+  void _onScanHit(DiscoveredDevice d) {
+    _nearby[d.id] = d;
+    _nearbyLastSeenMs[d.id] = DateTime.now().millisecondsSinceEpoch;
+    final fp = _parseFingerprintPeerPrefix(d.manufacturerData);
+    final hasUuid = d.serviceUuids.any(
+      (u) => u.toString().toLowerCase() == serviceUuid.toString().toLowerCase(),
+    );
+    debugPrint(
+      '[BLE] discovered device=${d.id} rssi=${d.rssi} '
+      'uuid=$hasUuid fp=${fp != null}',
+    );
+    unawaited(_handleDiscoveredDevice(d));
+    unawaited(_recomputeNearbyPeers());
   }
 
   DateTime _lastIdentityAttempt = DateTime.fromMillisecondsSinceEpoch(0);
@@ -148,9 +350,38 @@ class BleMeshService extends ChangeNotifier {
     if (parsed != null) {
       await _db.upsertPeer(parsed.copyWith(deviceId: d.id, lastSeen: now));
       debugPrint('[BLE] discovered peer id=${parsed.id} via serviceData');
+      unawaited(_recomputeNearbyPeers());
       if (_connectedDeviceId == null) {
         unawaited(connect(d.id));
       }
+      return;
+    }
+
+    // Manufacturer fingerprint → bind radio id to an already-known keyed peer
+    // (QR / prior chat). No OS device name is stored.
+    final fp = _parseFingerprintPeerPrefix(d.manufacturerData);
+    if (fp != null) {
+      final known = await _db.findPeerByIdPrefix(fp);
+      if (known != null && known.publicKey.trim().isNotEmpty) {
+        await _db.upsertPeer(
+          known.copyWith(deviceId: d.id, lastSeen: now),
+        );
+        debugPrint(
+          '[BLE] bound device=${d.id} → peer=${known.id} via fingerprint',
+        );
+        unawaited(_recomputeNearbyPeers());
+        if (_connectedDeviceId == null) {
+          unawaited(connect(d.id));
+        }
+        return;
+      }
+    }
+
+    // Also try deviceId already linked.
+    final byDev = await _db.getPeerByDeviceId(d.id);
+    if (byDev != null && byDev.publicKey.trim().isNotEmpty) {
+      await _db.upsertPeer(byDev.copyWith(lastSeen: now));
+      unawaited(_recomputeNearbyPeers());
       return;
     }
 
@@ -167,10 +398,12 @@ class BleMeshService extends ChangeNotifier {
       final peer = await readPeerIdentity(d.id).timeout(const Duration(seconds: 3));
       await _db.upsertPeer(peer.copyWith(deviceId: d.id, lastSeen: now));
       debugPrint('[BLE] discovered peer id=${peer.id} via identity characteristic');
+      unawaited(_recomputeNearbyPeers());
       if (_connectedDeviceId == null) {
         unawaited(connect(d.id));
       }
     } catch (e) {
+      // Expected on iOS phone↔phone: plugin advertises but has no GATT server.
       debugPrint('[BLE] identity read failed device=${d.id}: $e');
     }
   }
@@ -223,43 +456,101 @@ class BleMeshService extends ChangeNotifier {
     );
   }
 
+  void _pruneStaleNearby() {
+    final cutoff = DateTime.now().millisecondsSinceEpoch - 60000;
+    final stale = _nearbyLastSeenMs.entries
+        .where((e) => e.value < cutoff)
+        .map((e) => e.key)
+        .toList();
+    for (final id in stale) {
+      _nearby.remove(id);
+      _nearbyLastSeenMs.remove(id);
+    }
+  }
+
   Future<void> _recomputeNearbyPeers() async {
-    // 45s window — BLE + presence/QR lastSeen bumps stay visible a bit longer.
-    _nearbyPeers = await _db.getActivePeers(activeWithinMs: 45000);
-    if (_nearbyPeers.isEmpty && _nearby.isNotEmpty) {
-      // Discovery-only fallback for iOS where identity characteristic read can
-      // intermittently fail in background/locked states.
-      final fallback = _nearby.values
-          .where(
-            (d) =>
-                d.name.toLowerCase().contains('resil') ||
-                d.serviceData.containsKey(_svcDataIdKey),
-          )
-          .map(
-            (d) => Peer(
-              id: 'ble:${d.id}',
-              publicKey: '',
-              displayName: d.name.isNotEmpty ? d.name : 'BLE peer',
-              geohash: null,
-              isVerifiedIssuer: false,
-              isBlocked: false,
-              lastSeen: DateTime.now().millisecondsSinceEpoch,
-            ),
-          )
-          .toList();
-      if (fallback.isNotEmpty) {
-        _nearbyPeers = fallback;
+    // Only messageable (keyed) peers — never list OS names / empty ble: stubs.
+    final keyed = await _db.getActivePeers(activeWithinMs: 45000);
+    final byId = <String, Peer>{};
+
+    bool prefer(Peer a, Peer b) {
+      final score = (Peer p) {
+        var s = 0;
+        if (p.publicKey.trim().isNotEmpty) s += 20;
+        if ((p.deviceId ?? '').trim().isNotEmpty) s += 5;
+        if (!p.id.startsWith('ble:')) s += 10;
+        return s;
+      };
+      final sa = score(a);
+      final sb = score(b);
+      if (sa != sb) return sa > sb;
+      return a.lastSeen >= b.lastSeen;
+    }
+
+    for (final p in keyed) {
+      if (p.publicKey.trim().isEmpty) continue;
+      if (p.id.startsWith('ble:')) continue;
+      final prev = byId[p.id];
+      if (prev == null || prefer(p, prev)) {
+        byId[p.id] = p;
       }
     }
+
+    // Live advertisers only bump lastSeen for already-keyed peers (by deviceId).
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final byDevice = <String, String>{}; // deviceId → peerId
+    for (final p in byId.values) {
+      final dev = (p.deviceId ?? '').trim();
+      if (dev.isNotEmpty) byDevice[dev] = p.id;
+    }
+    for (final d in _nearby.values) {
+      final peerId = byDevice[d.id];
+      if (peerId == null) continue;
+      final existing = byId[peerId];
+      if (existing == null) continue;
+      byId[peerId] = existing.copyWith(lastSeen: now);
+    }
+
+    final merged = byId.values.toList()
+      ..sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
+
+    _nearbyPeers = merged;
     notifyListeners();
     await resilnet?.refreshBlePeerCount(nearbyPeerCount);
-    final now = DateTime.now();
-    if (now.difference(_lastNearbyLog) >= const Duration(seconds: 15)) {
-      _lastNearbyLog = now;
+    final logNow = DateTime.now();
+    if (logNow.difference(_lastNearbyLog) >= const Duration(seconds: 15)) {
+      _lastNearbyLog = logNow;
+      final unbound = _nearby.length - byDevice.length;
       debugPrint(
-        '[BLE] heartbeat nearbyRaw=${_nearby.length} nearbyPeers=${_nearbyPeers.length} connected=${_connectedDeviceId != null}',
+        '[BLE] heartbeat nearbyRaw=${_nearby.length} nearbyPeers=${_nearbyPeers.length} '
+        'radioOnly=$unbound connected=${_connectedDeviceId != null} advertising=$_advertising',
       );
     }
+  }
+
+  /// Anonymous BLE advertisers seen on radio but not yet bound to RSA peer.
+  List<AreaPresenceEntry> discoveryPresenceEntries() {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final boundDevices = <String>{
+      for (final p in _nearbyPeers)
+        if ((p.deviceId ?? '').isNotEmpty) p.deviceId!,
+    };
+    final out = <AreaPresenceEntry>[];
+    for (final d in _nearby.values) {
+      if (boundDevices.contains(d.id)) continue;
+      final prefix = d.id.length >= 4 ? d.id.substring(0, 4) : d.id;
+      out.add(
+        AreaPresenceEntry(
+          id: 'radio:${d.id}',
+          label: 'radio·$prefix',
+          source: PresenceSource.mesh,
+          geohash: null,
+          lastSeen: now,
+        ),
+      );
+    }
+    out.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
+    return out;
   }
 
   /// Refresh nearby list after QR import or external lastSeen update.
@@ -502,14 +793,50 @@ class BleMeshService extends ChangeNotifier {
       return false;
     }
     final peer = await _db.getPeer(msg.senderId);
-    final pub = peer?.publicKey.trim() ?? '';
+    var pub = peer?.publicKey.trim() ?? '';
+    final wirePk = msg.senderPk?.trim() ?? '';
+
+    Future<String?> bootstrapFromWire() async {
+      if (msg.receiverId != myUserId || wirePk.isEmpty) return null;
+      if (!CryptoService.bindsIdentity(
+        rid: msg.senderId,
+        publicKeyMaterial: wirePk,
+      )) {
+        return null;
+      }
+      try {
+        final pem = CryptoService.normalizePublicKey(wirePk);
+        await _db.upsertPeer(
+          Peer(
+            id: msg.senderId,
+            publicKey: pem,
+            displayName: msg.senderName ?? peer?.displayName,
+            isVerifiedIssuer: peer?.isVerifiedIssuer ?? false,
+            isBlocked: peer?.isBlocked ?? false,
+            lastSeen: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+        debugPrint(
+          '[BleMesh] bootstrapped sender=${msg.senderId} from wire senderPk',
+        );
+        return pem;
+      } catch (e) {
+        debugPrint('[BleMesh] senderPk bootstrap failed: $e');
+        return null;
+      }
+    }
+
+    if (pub.isEmpty) {
+      pub = (await bootstrapFromWire()) ?? '';
+    }
     if (pub.isEmpty) {
       debugPrint(
         '[BleMesh] drop unknown sender=${msg.senderId} id=${msg.id}',
       );
       return false;
     }
-    final ok = c.verifyInboundEnvelope(
+
+    var ok = c.verifyInboundEnvelope(
       signature: msg.signature,
       senderPublicPem: pub,
       encryptedPayload: msg.encryptedPayload,
@@ -518,6 +845,21 @@ class BleMeshService extends ChangeNotifier {
       receiverId: msg.receiverId,
       timestamp: msg.timestamp,
     );
+    // Stale local peer key: refresh from wire senderPk and retry once.
+    if (!ok && wirePk.isNotEmpty) {
+      final refreshed = await bootstrapFromWire();
+      if (refreshed != null && refreshed != pub) {
+        ok = c.verifyInboundEnvelope(
+          signature: msg.signature,
+          senderPublicPem: refreshed,
+          encryptedPayload: msg.encryptedPayload,
+          encryptedKey: msg.encryptedKey,
+          senderId: msg.senderId,
+          receiverId: msg.receiverId,
+          timestamp: msg.timestamp,
+        );
+      }
+    }
     if (!ok) {
       debugPrint(
         '[BleMesh] drop bad/missing signature id=${msg.id} sender=${msg.senderId}',

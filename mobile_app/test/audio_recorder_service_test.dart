@@ -34,8 +34,9 @@ void main() {
   });
 
   group('size caps', () {
-    test('send cap allows short AAC notes', () {
-      expect(AudioRecorderService.maxBytes, greaterThanOrEqualTo(48 * 1024));
+    test('raw cap allows longer voice with multipart Nostr', () {
+      expect(AudioRecorderService.maxBytes, greaterThanOrEqualTo(200 * 1024));
+      expect(AudioRecorderService.maxDuration.inSeconds, greaterThanOrEqualTo(20));
     });
   });
 }

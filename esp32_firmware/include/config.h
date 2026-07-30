@@ -1,5 +1,8 @@
 #pragma once
 
+// Keep in sync with mobile_app pubspec version when cutting a firmware release.
+#define RESILNET_FW_VERSION "1.9.44"
+
 // UUID ต้องตรงกับ mobile_app/lib/core/resilnet_protocol.dart
 #define RESILNET_NODE_SERVICE_UUID     "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
 #define RESILNET_NODE_SYNC_CHAR_UUID   "b2c3d4e5-f6a7-8901-bcde-f12345678901"

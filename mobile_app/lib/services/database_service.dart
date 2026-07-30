@@ -291,9 +291,12 @@ class DatabaseService {
   }
 
   Future<void> saveMessage(ChatMessage msg) async {
+    final row = Map<String, Object?>.from(msg.toMap())
+      // Wire-only bootstrap field — not a SQLite column.
+      ..remove('senderPk');
     await _database.insert(
       'messages',
-      msg.toMap(),
+      row,
       conflictAlgorithm: ConflictAlgorithm.ignore,
     );
   }
@@ -594,6 +597,25 @@ class DatabaseService {
     return Peer.fromMap(rows.first);
   }
 
+  /// Match a BLE advertise fingerprint (short id prefix) to a known keyed peer.
+  Future<Peer?> findPeerByIdPrefix(String prefix) async {
+    final pfx = prefix.trim();
+    if (pfx.length < 4) return null;
+    final rows = await _database.query(
+      'peers',
+      where: 'isBlocked = 0 AND id LIKE ? AND publicKey != ?',
+      whereArgs: ['$pfx%', ''],
+      orderBy: 'lastSeen DESC',
+      limit: 8,
+    );
+    if (rows.isEmpty) return null;
+    // Prefer exact-length uniqueness: if multiple, require unique match.
+    final peers = rows.map(Peer.fromMap).toList();
+    if (peers.length == 1) return peers.first;
+    final exact = peers.where((p) => p.id.startsWith(pfx)).toList();
+    return exact.length == 1 ? exact.first : null;
+  }
+
   Future<List<Peer>> getActivePeers({required int activeWithinMs}) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     final rows = await _database.query(
@@ -764,11 +786,13 @@ class DatabaseService {
   /// ชื่อที่ควรแสดงใน UI: Alias → peers.displayName → short hash (ไม่ใช้ id เต็ม)
   Future<String> resolveDisplayName(String publicKeyHash) async {
     final alias = await getContactAlias(publicKeyHash);
-    if (alias != null && alias.trim().isNotEmpty) return alias.trim();
     final peer = await getPeer(publicKeyHash);
-    final n = peer?.displayName?.trim();
-    if (n != null && n.isNotEmpty) return n;
-    return formatShortPeerId(publicKeyHash);
+    return peerListLabel(
+      aliasOrNick: alias?.trim().isNotEmpty == true
+          ? alias!.trim()
+          : peer?.displayName,
+      id: publicKeyHash,
+    );
   }
 
   /// Batch resolve for peer lists (avoids N+1 FutureBuilders).

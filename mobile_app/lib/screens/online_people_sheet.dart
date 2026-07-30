@@ -110,6 +110,8 @@ class _OnlinePeopleSheet extends StatelessWidget {
                         leading: Identicon(id: e.id),
                         title: Text(
                           e.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: e.source.isInternet
                                 ? const Color(0xFFFF9F43)
@@ -117,7 +119,9 @@ class _OnlinePeopleSheet extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(
-                          !e.canMessage
+                          e.id.startsWith('radio:')
+                              ? l10n.bleRadioNearbySubtitle
+                              : !e.canMessage
                               ? l10n.geoPeerNostrSubtitle(channel)
                               : e.source.isInternet && !e.source.isMesh
                                   ? l10n.geoPeerInternetSubtitle(channel)
@@ -133,7 +137,11 @@ class _OnlinePeopleSheet extends StatelessWidget {
                           if (!e.canMessage) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(l10n.geoPeerDiscoverOnlySnack),
+                                content: Text(
+                                  e.isBleRadioDiscovery
+                                      ? l10n.bleRadioNearbySubtitle
+                                      : l10n.geoPeerDiscoverOnlySnack,
+                                ),
                               ),
                             );
                             return;

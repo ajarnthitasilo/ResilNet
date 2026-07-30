@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,6 +13,7 @@ import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/geohash.dart';
+import '../core/media_part_codec.dart';
 import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/peer_id.dart';
@@ -64,9 +66,11 @@ class AppState extends ChangeNotifier {
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
   Timer? _retentionTimer;
   Timer? _meshUiNotifyDebounce;
+  Timer? _radioUiNotifyDebounce;
   DateTime _lastPresenceAnnounce = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime _lastGeoRefreshAttempt = DateTime.fromMillisecondsSinceEpoch(0);
   final _uuid = const Uuid();
+  final _mediaParts = MediaPartAssembler();
   final String _sessionId = DateTime.now().microsecondsSinceEpoch.toString();
   int _opSeq = 0;
   bool _initStarted = false;
@@ -354,10 +358,10 @@ class AppState extends ChangeNotifier {
   static const _kManualGeohash = 'resilnet_manual_geohash';
   static const _kCachedGeohash = 'resilnet_cached_geohash';
 
-  FeedChannel _feedChannel = FeedChannel.directs;
+  FeedChannel _feedChannel = FeedChannel.geo;
   FeedChannel get feedChannel => _feedChannel;
 
-  GeoPrecision _geoPrecision = GeoPrecision.neighborhood;
+  GeoPrecision _geoPrecision = GeoPrecision.region;
   GeoPrecision get geoPrecision => _geoPrecision;
 
   TransportMode _transportMode = TransportMode.auto;
@@ -558,9 +562,9 @@ class AppState extends ChangeNotifier {
         );
       }
 
-      _onEsp32Changed = notifyListeners;
-      _onUdpChanged = notifyListeners;
-      _onNostrChanged = notifyListeners;
+      _onEsp32Changed = _scheduleRadioUiNotify;
+      _onUdpChanged = _scheduleRadioUiNotify;
+      _onNostrChanged = _scheduleRadioUiNotify;
       _onMeshChanged = () {
         _onMeshPeersChanged();
         _scheduleMeshUiNotify();
@@ -577,7 +581,7 @@ class AppState extends ChangeNotifier {
         if (resilnet.isInternetAvailable) {
           unawaited(_nostr?.flushOfflineQueue());
         }
-        notifyListeners();
+        _scheduleRadioUiNotify();
       };
       resilnet.addListener(_onResilnetUi!);
 
@@ -617,15 +621,16 @@ class AppState extends ChangeNotifier {
           : loc;
       _feedChannel = FeedChannel.values.firstWhere(
         (e) => e.name == prefs.getString(_kFeedChannel),
-        orElse: () => FeedChannel.directs,
+        orElse: () => FeedChannel.geo,
       );
       _geoPrecision = GeoPrecision.values.firstWhere(
         (e) => e.name == prefs.getString(_kGeoPrecision),
-        orElse: () => GeoPrecision.neighborhood,
+        orElse: () => GeoPrecision.region,
       );
       _transportMode = TransportMode.fromName(prefs.getString(_kTransportMode));
 
       _restoreStoredGeohash(prefs);
+      await _applyBootstrapGeohashIfNeeded(prefs);
       if (_currentGeohash != null &&
           _currentGeohash!.isNotEmpty &&
           _transportMode.usesInternet) {
@@ -1300,6 +1305,14 @@ class AppState extends ChangeNotifier {
   void _scheduleMeshUiNotify() {
     _meshUiNotifyDebounce?.cancel();
     _meshUiNotifyDebounce = Timer(const Duration(seconds: 1), () {
+      if (hasListeners) notifyListeners();
+    });
+  }
+
+  /// Coalesce high-frequency ESP32 / UDP / Nostr / connectivity UI ticks.
+  void _scheduleRadioUiNotify() {
+    if (_radioUiNotifyDebounce?.isActive ?? false) return;
+    _radioUiNotifyDebounce = Timer(const Duration(milliseconds: 350), () {
       if (hasListeners) notifyListeners();
     });
   }
@@ -2641,6 +2654,22 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  /// First launch: bootstrap `#w5` so Area/Nostr discovery works without GPS.
+  Future<void> _applyBootstrapGeohashIfNeeded(SharedPreferences prefs) async {
+    if (_currentGeohash != null && _currentGeohash!.isNotEmpty) return;
+    final hadManual = prefs.containsKey(_kManualGeohash);
+    final hadCached = prefs.containsKey(_kCachedGeohash);
+    if (hadManual || hadCached) return;
+
+    final normalized = Geohash.normalizeFull(Geohash.bootstrapGeohash);
+    if (normalized.isEmpty) return;
+
+    _currentGeohash = normalized;
+    _geoLocationStatus = GeoLocationStatus.manual;
+    await prefs.setString(_kManualGeohash, normalized);
+    debugPrint('[Geo] bootstrap geohash g=$normalized (first launch)');
+  }
+
   /// Active channel hash at current precision (without `#`).
   String? get selectedAreaHash {
     final h = _currentGeohash;
@@ -2703,20 +2732,20 @@ class AppState extends ChangeNotifier {
         final peers = _mesh?.nearbyPeers ?? const <Peer>[];
         list = [
           for (final p in peers)
-            if (p.id != me)
+            if (p.id != me && p.publicKey.trim().isNotEmpty)
               AreaPresenceEntry(
                 id: p.id,
-                label: p.displayName?.trim().isNotEmpty == true
-                    ? p.displayName!.trim()
-                    : formatShortPeerId(p.id),
+                label: peerListLabel(aliasOrNick: p.displayName, id: p.id),
                 source: PresenceSource.mesh,
                 geohash: p.geohash,
                 lastSeen: p.lastSeen,
                 peer: p,
               ),
         ];
+        list = _withBleRadioDiscovery(list);
       case FeedChannel.geo:
         list = areaPresenceOnline().where((e) => e.id != me).toList();
+        list = _withBleRadioDiscovery(list);
       case FeedChannel.directs:
         // 1:1: show BLE nearby + Nostr area presence when Internet/Auto.
         list = mergeAreaPresence(
@@ -2726,8 +2755,36 @@ class AppState extends ChangeNotifier {
           mode: _transportMode,
           nowMs: DateTime.now().millisecondsSinceEpoch,
         ).where((e) => e.id != me).toList();
+        list = _withBleRadioDiscovery(list);
     }
     return list;
+  }
+
+  /// Anonymous BLE advertisers — Mesh transport only, and only when Nostr is empty.
+  List<AreaPresenceEntry> _withBleRadioDiscovery(
+    List<AreaPresenceEntry> base,
+  ) {
+    // Auto / Internet: people list is Nostr-only (no duplicate radio· rows).
+    if (_transportMode != TransportMode.mesh) return base;
+
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    if (hasActiveNostrPresenceInChannel(
+      sightings: _nostrPresence.values,
+      channel: selectedAreaHash,
+      nowMs: nowMs,
+    )) {
+      return base;
+    }
+
+    final radio = _mesh?.discoveryPresenceEntries() ?? const <AreaPresenceEntry>[];
+    if (radio.isEmpty) return base;
+    final seen = base.map((e) => e.id).toSet();
+    final out = List<AreaPresenceEntry>.from(base);
+    for (final e in radio) {
+      if (seen.add(e.id)) out.add(e);
+    }
+    out.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
+    return out;
   }
 
   int get onlinePresenceCount => onlinePresenceForUi().length;
@@ -2904,18 +2961,29 @@ class AppState extends ChangeNotifier {
           type: MessageType.direct,
           payloadKind: kind,
         );
-        // Voice/image sealed envelopes are usually too large for BLE MTU —
-        // prefer Nostr when available (same policy as 1:1 voice).
-        final dtoLen = ResilNetPacketCodec.toDto(msg).payload.length;
-        const bleSafe = 48000;
-        final preferInternet = internetOnly ||
-            ((kind == PayloadKinds.audio || kind == PayloadKinds.image) &&
-                dtoLen > bleSafe);
+        // Voice/image always use Nostr (chunked when sealed envelope is large).
+        final isMedia =
+            kind == PayloadKinds.audio || kind == PayloadKinds.image;
+        final preferInternet = internetOnly || isMedia;
+        if (preferInternet && !isNostrOnline && !isCloudOnline) {
+          debugPrint(
+            '[ResilNet] skip sealed fan-out to ${resolved.id} — '
+            'media needs Nostr',
+          );
+          continue;
+        }
         if (kind != PayloadKinds.notice) {
           await persistChatMessage(msg);
         }
-        await routeOutbound(msg, internetOnly: preferInternet);
-        sent++;
+        final ok = await routeOutbound(msg, internetOnly: preferInternet);
+        if (ok) {
+          sent++;
+        } else {
+          debugPrint(
+            '[ResilNet] sealed fan-out pending/failed peer=${resolved.id} '
+            'internetOnly=$preferInternet',
+          );
+        }
       } catch (e) {
         debugPrint('[ResilNet] sealed fan-out to ${peer.id} failed: $e');
       }
@@ -3083,15 +3151,41 @@ class AppState extends ChangeNotifier {
   /// transports only see opaque bytes — plaintext must not be persisted in [msg.content].
   /// Exception: [PayloadKinds.presence] carries a truncated geohash cell for Area UX
   /// and is never written to chat history.
-  Future<RoutedPacketDto> routeOutbound(
+  ///
+  /// Returns true when at least one transport accepted the envelope (Nostr publish
+  /// OK, or BLE/UDP hand-off). False means still pending / failed.
+  Future<bool> routeOutbound(
     ChatMessage msg, {
     bool internetOnly = false,
   }) async {
-    final isPresence = msg.payloadKind == PayloadKinds.presence;
+    // Attach senderPk on the wire so first-contact recipients can verify us.
+    final outbound = (msg.senderPk?.trim().isNotEmpty == true)
+        ? msg
+        : msg.copyWith(
+            senderPk: CryptoService.compactPublicKey(crypto.publicKeyPem),
+          );
+    final isPresence = outbound.payloadKind == PayloadKinds.presence;
     final piggyback = isPresence
         ? const <AckEntry>[]
-        : (_ackQueue?.drainPiggybackFor(msg.receiverId) ?? const <AckEntry>[]);
-    final dto = ResilNetPacketCodec.toDto(msg, piggybackAcks: piggyback);
+        : (_ackQueue?.drainPiggybackFor(outbound.receiverId) ??
+            const <AckEntry>[]);
+    final dto = ResilNetPacketCodec.toDto(outbound, piggybackAcks: piggyback);
+    final isMedia = outbound.payloadKind == PayloadKinds.audio ||
+        outbound.payloadKind == PayloadKinds.image;
+
+    // Large sealed media: split across multiple Nostr events (relay-safe).
+    if (isMedia &&
+        (internetOnly || isNostrOnline || isCloudOnline) &&
+        dto.payload.length > MediaPartCodec.singleMaxBytes) {
+      debugPrint(
+        '[MediaPart] split id=${outbound.id} dto=${dto.payload.length} '
+        'parts~${(dto.payload.length / MediaPartCodec.maxSliceBytes).ceil()}',
+      );
+      final ok = await _publishSealedMediaParts(outbound, dto);
+      notifyListeners();
+      return ok;
+    }
+
     final routed = await resilnet.routeMessage(
       id: dto.id,
       sender: dto.sender,
@@ -3104,15 +3198,15 @@ class AppState extends ChangeNotifier {
 
     if (isPresence) {
       // Presence is fire-and-forget metadata — skip chat persistence.
-      unawaited(_mesh?.sendDirectNow(msg));
+      unawaited(_mesh?.sendDirectNow(outbound));
       if (resilnet.isGatewayWifiActive) {
-        unawaited(_udp?.sendDirectNow(msg));
+        unawaited(_udp?.sendDirectNow(outbound));
       }
-      return routed;
+      return true;
     }
 
     var transports = _applyBridgePolicyForMessage(
-      msg,
+      outbound,
       routed.transports.isNotEmpty
           ? routed.transports
           : <TransportTypeDto>[routed.transport],
@@ -3131,13 +3225,14 @@ class AppState extends ChangeNotifier {
     }
 
     var markedSent = false;
+    var handedToMesh = false;
     for (final transport in transports) {
       switch (transport) {
         case TransportTypeDto.nostr:
           final ok = await _publishOutboundViaNostr(routed.packet);
           if (ok) {
             await persistChatMessage(
-              msg.copyWith(
+              outbound.copyWith(
                 ttl: routed.packet.ttl,
                 status: MessageStatus.sent,
                 isSyncedWithCloud: true,
@@ -3146,16 +3241,18 @@ class AppState extends ChangeNotifier {
             markedSent = true;
           } else if (_saveMessageHistory) {
             // Offline retry needs a pending row; ephemeral mode skips disk.
-            await db.saveMessage(msg.copyWith(status: MessageStatus.pending));
+            await db.saveMessage(
+              outbound.copyWith(status: MessageStatus.pending),
+            );
           } else {
             await persistChatMessage(
-              msg.copyWith(status: MessageStatus.pending),
+              outbound.copyWith(status: MessageStatus.pending),
             );
           }
         case TransportTypeDto.bluetoothMesh:
         case TransportTypeDto.loRa:
           if (internetOnly) continue;
-          final outgoing = msg.copyWith(
+          final outgoing = outbound.copyWith(
             ttl: routed.packet.ttl,
             status: markedSent ? MessageStatus.sent : MessageStatus.pending,
           );
@@ -3164,6 +3261,7 @@ class AppState extends ChangeNotifier {
             if (resilnet.isGatewayWifiActive) {
               unawaited(_udp?.pumpSendQueue());
             }
+            handedToMesh = true;
           } else {
             await persistChatMessage(
               outgoing.copyWith(status: MessageStatus.sent),
@@ -3173,18 +3271,19 @@ class AppState extends ChangeNotifier {
             if (resilnet.isGatewayWifiActive) {
               unawaited(_udp?.sendDirectNow(outgoing));
             }
+            handedToMesh = true;
           }
         case TransportTypeDto.offlineQueue:
           if (_saveMessageHistory) {
             await db.saveMessage(
-              msg.copyWith(
+              outbound.copyWith(
                 ttl: routed.packet.ttl,
                 status: MessageStatus.pending,
               ),
             );
           } else {
             await persistChatMessage(
-              msg.copyWith(
+              outbound.copyWith(
                 ttl: routed.packet.ttl,
                 status: MessageStatus.pending,
               ),
@@ -3194,7 +3293,72 @@ class AppState extends ChangeNotifier {
     }
 
     notifyListeners();
-    return routed;
+    // Media must actually reach Nostr — BLE queue handoff is not delivery.
+    if (isMedia || internetOnly) {
+      return markedSent;
+    }
+    return markedSent || handedToMesh;
+  }
+
+  /// Publish a large sealed media envelope as multiple Nostr parts.
+  Future<bool> _publishSealedMediaParts(
+    ChatMessage outbound,
+    MessagePacketDto dto,
+  ) async {
+    late final List<Uint8List> slices;
+    try {
+      slices = MediaPartCodec.splitPayload(dto.payload);
+    } catch (e) {
+      debugPrint('[MediaPart] split refused id=${outbound.id}: $e');
+      return false;
+    }
+    if (slices.isEmpty) return false;
+    var published = 0;
+    for (var i = 0; i < slices.length; i++) {
+      final partPayload = MediaPartCodec.encodePart(
+        messageId: outbound.id,
+        index: i,
+        total: slices.length,
+        slice: slices[i],
+      );
+      final partDto = MessagePacketDto(
+        id: ResilNetChunkCodec.chunkPacketId(outbound.id, i),
+        sender: dto.sender,
+        receiver: dto.receiver,
+        payload: partPayload,
+        timestamp: dto.timestamp,
+        ttl: dto.ttl,
+        payloadTag: dto.payloadTag,
+      );
+      final ok = await _publishOutboundViaNostr(partDto);
+      if (ok) {
+        published++;
+      } else {
+        debugPrint(
+          '[MediaPart] publish failed mid=${outbound.id} part=${i + 1}/${slices.length}',
+        );
+        break;
+      }
+    }
+    final allOk = published == slices.length;
+    if (allOk) {
+      await persistChatMessage(
+        outbound.copyWith(
+          status: MessageStatus.sent,
+          isSyncedWithCloud: true,
+        ),
+      );
+      debugPrint(
+        '[MediaPart] published mid=${outbound.id} parts=$published',
+      );
+    } else if (_saveMessageHistory) {
+      await db.saveMessage(outbound.copyWith(status: MessageStatus.pending));
+    } else {
+      await persistChatMessage(
+        outbound.copyWith(status: MessageStatus.pending),
+      );
+    }
+    return allOk;
   }
 
   Future<bool> _publishOutboundViaNostr(MessagePacketDto packet) async {
@@ -3227,11 +3391,36 @@ class AppState extends ChangeNotifier {
         return;
       }
 
-      final meta = ResilNetPacketCodec.fromDtoWithMeta(dto);
+      // Multi-part sealed media (voice/image) — reassemble before ChatMessage parse.
+      var effective = dto;
+      if (MediaPartCodec.isMediaPartPayload(dto.payload)) {
+        final part = MediaPartCodec.parsePart(dto.payload);
+        if (part == null) {
+          debugPrint('[MediaPart] drop malformed part id=${dto.id}');
+          return;
+        }
+        final complete = _mediaParts.add(part);
+        debugPrint(
+          '[MediaPart] recv mid=${part.messageId} '
+          '${part.index + 1}/${part.total} complete=${complete != null}',
+        );
+        if (complete == null) return;
+        effective = MessagePacketDto(
+          id: part.messageId,
+          sender: dto.sender,
+          receiver: dto.receiver,
+          payload: complete,
+          timestamp: dto.timestamp,
+          ttl: dto.ttl,
+          payloadTag: dto.payloadTag,
+        );
+      }
+
+      final meta = ResilNetPacketCodec.fromDtoWithMeta(effective);
       if (meta.piggybackAcks.isNotEmpty) {
         await _ackHandler.handlePiggybacked(
           meta.piggybackAcks,
-          envelopeSenderId: dto.sender,
+          envelopeSenderId: effective.sender,
         );
       }
 
@@ -3498,6 +3687,7 @@ class AppState extends ChangeNotifier {
   @override
   void dispose() {
     _meshUiNotifyDebounce?.cancel();
+    _radioUiNotifyDebounce?.cancel();
     screenshots.removeListener(_onScreenshot);
     screenshots.dispose();
     _retentionTimer?.cancel();

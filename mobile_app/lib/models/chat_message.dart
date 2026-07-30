@@ -29,6 +29,7 @@ class ChatMessage {
     this.payloadKind = 'text',
     this.deliveredAt,
     this.readAt,
+    this.senderPk,
   });
 
   final String id;
@@ -52,6 +53,10 @@ class ChatMessage {
   final String payloadKind;
   final DateTime? deliveredAt;
   final DateTime? readAt;
+
+  /// Compact RSA public key of the sender (wire-only bootstrap; not stored in SQLite).
+  /// Lets recipients verify + upsert the peer without prior QR / presence.
+  final String? senderPk;
 
   bool get isBroadcast =>
       type == MessageType.broadcast ||
@@ -79,6 +84,7 @@ class ChatMessage {
     String? payloadKind,
     DateTime? deliveredAt,
     DateTime? readAt,
+    String? senderPk,
   }) {
     return ChatMessage(
       id: id ?? this.id,
@@ -102,6 +108,7 @@ class ChatMessage {
       payloadKind: payloadKind ?? this.payloadKind,
       deliveredAt: deliveredAt ?? this.deliveredAt,
       readAt: readAt ?? this.readAt,
+      senderPk: senderPk ?? this.senderPk,
     );
   }
 
@@ -129,6 +136,7 @@ class ChatMessage {
       'status': status.name,
       'deliveredAt': deliveredAt?.millisecondsSinceEpoch,
       'readAt': readAt?.millisecondsSinceEpoch,
+      if (senderPk != null && senderPk!.trim().isNotEmpty) 'senderPk': senderPk,
     };
   }
 
@@ -171,6 +179,7 @@ class ChatMessage {
       deliveredAt:
           deliveredMs != null ? DateTime.fromMillisecondsSinceEpoch(deliveredMs) : null,
       readAt: readMs != null ? DateTime.fromMillisecondsSinceEpoch(readMs) : null,
+      senderPk: map['senderPk'] as String?,
     );
   }
 }
