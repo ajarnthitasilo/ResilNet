@@ -35,9 +35,11 @@ class BleMeshService extends ChangeNotifier {
     this.ackHandler,
     bool Function()? shouldPersistHistory,
     void Function(ChatMessage message)? onEphemeralMessage,
+    Future<bool> Function(ChatMessage message)? onBulletinMessage,
   })  : _db = database,
         _shouldPersistHistory = shouldPersistHistory ?? (() => true),
-        _onEphemeralMessage = onEphemeralMessage;
+        _onEphemeralMessage = onEphemeralMessage,
+        _onBulletinMessage = onBulletinMessage;
 
   final CryptoService? crypto;
   final ResilNetService? resilnet;
@@ -45,6 +47,10 @@ class BleMeshService extends ChangeNotifier {
   final AckHandlerService? ackHandler;
   final bool Function() _shouldPersistHistory;
   final void Function(ChatMessage message)? _onEphemeralMessage;
+
+  /// Public bulletin ingest (verify + dedupe ทำใน AppState).
+  /// คืน true เมื่อ bulletin ผ่านการตรวจและถูกรับเข้า.
+  final Future<bool> Function(ChatMessage message)? _onBulletinMessage;
 
   static final serviceUuid = Uuid.parse('9d2f3bb2-3a5a-4f6e-a0c2-9d62c2d4d2a1');
   static final characteristicUuid = Uuid.parse('ef8a0f1a-7b27-46d8-9e2a-7d66c1f1d9b1');
@@ -729,6 +735,24 @@ class BleMeshService extends ChangeNotifier {
       final geo = (msg.content ?? '').trim().toLowerCase();
       if (geo.isNotEmpty) {
         await _db.updatePeerGeohash(msg.senderId, geo);
+      }
+      notifyListeners();
+      return true;
+    }
+
+    // Public mesh bulletin — plaintext + self-contained signature.
+    // Verified against the embedded senderPk (no prior peer key needed),
+    // ingested outside chat history, then relayed one hop while ttl remains.
+    if (msg.payloadKind == PayloadKinds.bulletin) {
+      final handler = _onBulletinMessage;
+      final accepted = handler != null && await handler(msg);
+      if (!accepted) return false;
+      if (msg.ttl > 0) {
+        unawaited(
+          sendDirectNow(
+            msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed),
+          ),
+        );
       }
       notifyListeners();
       return true;

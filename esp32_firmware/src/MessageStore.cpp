@@ -81,13 +81,15 @@ std::vector<StoredMessage> MessageStore::messagesNotIn(const std::set<String>& k
 void MessageStore::purgeExpired(long nowMs) {
   std::vector<StoredMessage> kept;
   for (const auto& m : _messages) {
-    // ลบข้อความที่เก่ากว่า 7 วัน
     if (m.receivedAtMs == 0) {
       // ข้อมูลเก่าที่ไม่มี receivedAtMs: เก็บไว้ก่อนเพื่อความปลอดภัย
       kept.push_back(m);
       continue;
     }
-    if (nowMs - m.receivedAtMs <= MESSAGE_TTL_MS) kept.push_back(m);
+    // Public bulletin เก็บ 3 วัน, ข้อความอื่น 7 วัน
+    const long long ttl =
+        (m.type == "bulletin") ? BULLETIN_TTL_MS : MESSAGE_TTL_MS;
+    if (nowMs - m.receivedAtMs <= ttl) kept.push_back(m);
   }
   if (kept.size() != _messages.size()) {
     _messages = std::move(kept);

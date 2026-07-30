@@ -1,7 +1,7 @@
 #pragma once
 
 // Keep in sync with mobile_app pubspec version when cutting a firmware release.
-#define RESILNET_FW_VERSION "1.9.44"
+#define RESILNET_FW_VERSION "1.9.46"
 
 // UUID ต้องตรงกับ mobile_app/lib/core/resilnet_protocol.dart
 #define RESILNET_NODE_SERVICE_UUID     "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
@@ -14,6 +14,10 @@
 #define RECEIVED_IDS_PATH  "/received_ids.dat"
 
 #define MESSAGE_TTL_MS (7LL * 24 * 60 * 60 * 1000)
+
+// Public bulletin (type "bulletin") — ประกาศสาธารณะยามวิกฤต เก็บสั้นกว่า
+// เพื่อไม่ให้ประกาศเก่าค้างบน node นานเกินความจำเป็น
+#define BULLETIN_TTL_MS (3LL * 24 * 60 * 60 * 1000)
 
 #if defined(NODE_TYPE_LORA_GATEWAY)
 #define NODE_ADV_NAME "RN-GW"

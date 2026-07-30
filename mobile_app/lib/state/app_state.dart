@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
+import '../core/bulletin_wire.dart';
 import '../core/geohash.dart';
 import '../core/media_part_codec.dart';
 import '../core/notice_wire.dart';
@@ -262,7 +263,12 @@ class AppState extends ChangeNotifier {
   NoticeExpiry get nostrExpiry => _nostrExpiry;
 
   static const _kNotices = 'resilnet_local_notices';
+  static const _kBulletinWires = 'resilnet_bulletin_wires';
   final List<LocalNotice> _notices = <LocalNotice>[];
+
+  /// Raw signed wire ของ public bulletin (คีย์ = bulletinId) — เก็บไว้เพื่อ
+  /// rebroadcast/catch-up และ push เข้า ESP32 โดยไม่ต้องเซ็นใหม่.
+  final Map<String, String> _bulletinWires = {};
   List<LocalNotice> get notices =>
       List.unmodifiable(_notices.where((n) => !n.isExpired));
 
@@ -544,8 +550,14 @@ class AppState extends ChangeNotifier {
         ackHandler: _ackHandler,
         shouldPersistHistory: () => _saveMessageHistory,
         onEphemeralMessage: _rememberSessionMessage,
+        onBulletinMessage: _onBulletinMessage,
       );
-      _esp32 = Esp32SyncService(database: db, crypto: crypto);
+      _esp32 = Esp32SyncService(
+        database: db,
+        crypto: crypto,
+        outgoingBulletins: _bulletinsForEsp32,
+        onBulletin: (raw) => ingestBulletinRaw(raw, via: 'esp32'),
+      );
       _udp = UdpTransportService(database: db, resilnet: resilnet);
       resilnet.attachUdpTransport(_udp!, crypto: crypto);
       _firmware = FirmwareService();
@@ -712,18 +724,34 @@ class AppState extends ChangeNotifier {
 
   void _loadNotices(SharedPreferences prefs) {
     _notices.clear();
+    _bulletinWires.clear();
     final raw = prefs.getString(_kNotices);
-    if (raw == null || raw.isEmpty) return;
-    try {
-      final list = jsonDecode(raw) as List<dynamic>;
-      for (final item in list) {
-        if (item is Map<String, dynamic>) {
-          _notices.add(LocalNotice.fromJson(Map<String, Object?>.from(item)));
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        final list = jsonDecode(raw) as List<dynamic>;
+        for (final item in list) {
+          if (item is Map<String, dynamic>) {
+            _notices.add(LocalNotice.fromJson(Map<String, Object?>.from(item)));
+          }
         }
+        _notices.removeWhere((n) => n.isExpired);
+      } catch (e) {
+        debugPrint('[ResilNet] load notices failed: $e');
       }
-      _notices.removeWhere((n) => n.isExpired);
-    } catch (e) {
-      debugPrint('[ResilNet] load notices failed: $e');
+    }
+    final rawWires = prefs.getString(_kBulletinWires);
+    if (rawWires != null && rawWires.isNotEmpty) {
+      try {
+        final map = jsonDecode(rawWires) as Map<String, dynamic>;
+        final activeIds = _notices.map((n) => n.id).toSet();
+        map.forEach((id, wire) {
+          if (wire is String && activeIds.contains(id)) {
+            _bulletinWires[id] = wire;
+          }
+        });
+      } catch (e) {
+        debugPrint('[ResilNet] load bulletin wires failed: $e');
+      }
     }
   }
 
@@ -734,6 +762,9 @@ class AppState extends ChangeNotifier {
       _kNotices,
       jsonEncode(active.map((n) => n.toJson()).toList()),
     );
+    final activeIds = active.map((n) => n.id).toSet();
+    _bulletinWires.removeWhere((id, _) => !activeIds.contains(id));
+    await prefs.setString(_kBulletinWires, jsonEncode(_bulletinWires));
   }
 
   Future<void> _loadAnnouncementBoards(SharedPreferences prefs) async {
@@ -1531,9 +1562,13 @@ class AppState extends ChangeNotifier {
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
-  /// Pin a public notice on #mesh or Area and fan-out sealed envelopes.
-  /// Late joiners receive catch-up when they appear online (see
-  /// [_catchUpNoticesForPeer]).
+  /// Pin a public notice on #mesh or Area.
+  ///
+  /// - `geo`: published to the Nostr area board (internet).
+  /// - `mesh`: **public bulletin** — plaintext + self-contained signature.
+  ///   ไม่ต้องมี key ของผู้รับ ทุกเครื่องในรัศมีอ่านได้ และ ESP32 mule
+  ///   เก็บส่งต่อ (store-and-forward) ให้เครื่องที่เข้ามาทีหลัง.
+  ///   Late joiners also receive P2P catch-up ([_catchUpNoticesForPeer]).
   Future<LocalNotice?> postNotice({
     required String scope,
     required String channelLabel,
@@ -1584,25 +1619,22 @@ class AppState extends ChangeNotifier {
         }
       }
     } else {
-      // #mesh: best-effort P2P fan-out (never persisted as 1:1 chat).
-      final wire = _encodeNoticeWire(notice);
-      final peers = _mesh?.nearbyPeers ?? const <Peer>[];
-      debugPrint('[Notice] mesh fanout peers=${peers.length}');
-      final delivered = _noticeDeliveredTo.putIfAbsent(
-        notice.id,
-        () => <String>{},
-      );
-      for (final p in peers) {
-        if (p.id == myUserId || p.publicKey.isEmpty) continue;
-        final n = await _sendSealedFanOut(
-          peers: [p],
-          body: wire,
-          kind: PayloadKinds.notice,
-        );
-        if (n > 0) delivered.add(p.id);
-      }
+      // #mesh: public bulletin — plaintext + self-contained signature.
+      // ไม่ต้องมี key ของ peer และ ESP32 mule เก็บส่งต่อให้เครื่องที่มาทีหลัง
+      final wire = buildSignedBulletin(
+        crypto: crypto,
+        bulletinId: notice.id,
+        text: notice.text,
+        createdAt: notice.createdAt,
+        expiresAt: notice.expiresAt,
+        urgent: notice.urgent,
+        senderName: displayName,
+      ).encode();
+      _bulletinWires[notice.id] = wire;
+      await _persistNotices();
+      final sent = await _broadcastBulletin(notice.id, wire);
       debugPrint(
-        '[ResilNet] notice posted id=${notice.id} meshDelivered=${delivered.length}',
+        '[Bulletin] posted id=${notice.id} broadcast=${sent ? 'ok' : 'queued'}',
       );
     }
 
@@ -1610,8 +1642,88 @@ class AppState extends ChangeNotifier {
     return notice;
   }
 
-  String _encodeNoticeWire(LocalNotice notice) {
-    return encodeNoticeWire(notice: notice, senderId: myUserId);
+  /// สร้าง envelope สำหรับ public bulletin (plaintext ใน content เจตนา)
+  ChatMessage _bulletinEnvelope(String bulletinId, String wire, {int ttl = 5}) {
+    return ChatMessage(
+      id: 'bl:$bulletinId',
+      senderId: myUserId,
+      receiverId: kBulletinBroadcastReceiver,
+      content: wire,
+      encryptedPayload: PayloadKinds.bulletin,
+      encryptedKey: PayloadKinds.bulletin,
+      ttl: ttl,
+      timestamp: DateTime.now().millisecondsSinceEpoch,
+      status: MessageStatus.pending,
+      type: MessageType.direct,
+      payloadKind: PayloadKinds.bulletin,
+    );
+  }
+
+  /// Broadcast bulletin ไปยังเครื่องที่เชื่อมต่อ BLE/UDP ตอนนี้ (best-effort)
+  Future<bool> _broadcastBulletin(String bulletinId, String wire) async {
+    try {
+      return await routeOutbound(_bulletinEnvelope(bulletinId, wire));
+    } catch (e) {
+      debugPrint('[Bulletin] broadcast failed id=$bulletinId: $e');
+      return false;
+    }
+  }
+
+  /// รับ public bulletin จาก wire (BLE peer หรือ ESP32) — ตรวจลายเซ็นจาก
+  /// senderPk ที่ฝังมา ไม่ต้องมี peer key ล่วงหน้า. คืน true เมื่อรับใหม่.
+  Future<bool> ingestBulletinRaw(String raw, {String via = 'mesh'}) async {
+    final wire = parseBulletinWire(raw);
+    if (wire == null) {
+      debugPrint('[Bulletin] drop malformed wire via=$via');
+      return false;
+    }
+    if (wire.senderId == myUserId) return false;
+    if (wire.isExpired) return false;
+    if (_notices.any((n) => n.id == wire.bulletinId)) return false;
+    if (await db.isPeerBlocked(wire.senderId)) {
+      debugPrint('[Bulletin] drop blocked sender=${wire.senderId}');
+      return false;
+    }
+    if (!verifyBulletinWire(wire, crypto)) {
+      debugPrint(
+        '[Bulletin] drop bad signature id=${wire.bulletinId} sender=${wire.senderId}',
+      );
+      return false;
+    }
+    _notices.insert(0, wire.toLocalNotice());
+    _bulletinWires[wire.bulletinId] = wire.encode();
+    await _persistNotices();
+    notifyListeners();
+    debugPrint(
+      '[Bulletin] ingested id=${wire.bulletinId} from=${wire.senderId} via=$via',
+    );
+    return true;
+  }
+
+  /// Callback จาก BLE mesh เมื่อพบ bulletin envelope
+  Future<bool> _onBulletinMessage(ChatMessage msg) {
+    return ingestBulletinRaw(msg.content ?? '', via: 'ble');
+  }
+
+  /// Bulletin ที่ยัง active สำหรับ push เข้า ESP32 store-and-forward
+  List<MuleMessage> _bulletinsForEsp32() {
+    final out = <MuleMessage>[];
+    for (final n in _notices) {
+      if (n.scope != 'mesh' || n.isExpired) continue;
+      final wire = _bulletinWires[n.id];
+      if (wire == null) continue;
+      out.add(
+        MuleMessage(
+          id: n.id,
+          sender: n.senderId ?? myUserId,
+          timestamp: n.createdAt,
+          payload: wire,
+          ttl: 5,
+          type: 'bulletin',
+        ),
+      );
+    }
+    return out;
   }
 
   Future<void> _ingestIncomingNotice(ChatMessage msg) async {
@@ -1702,25 +1814,23 @@ class AppState extends ChangeNotifier {
       if (notice.scope == 'geo') {
         // Geo notices use Nostr bulletin board — no P2P catch-up.
         continue;
-      } else if (notice.scope == 'mesh') {
-        final nearbyIds = (_mesh?.nearbyPeers ?? const <Peer>[])
-            .map((p) => p.id)
-            .toSet();
-        if (!nearbyIds.contains(peer.id)) continue;
       }
+      final nearbyIds = (_mesh?.nearbyPeers ?? const <Peer>[])
+          .map((p) => p.id)
+          .toSet();
+      if (!nearbyIds.contains(peer.id)) continue;
       try {
-        debugPrint(
-          '[Notice] catch-up notice=${notice.id} peer=${peer.id} scope=${notice.scope}',
-        );
-        await _sendSealedFanOut(
-          peers: [peer],
-          body: _encodeNoticeWire(notice),
-          kind: PayloadKinds.notice,
-        );
+        // #mesh bulletins are plaintext+signed — rebroadcast the original
+        // wire (own or relayed) so late joiners get it without key exchange.
+        final wire = _bulletinWires[notice.id];
+        if (wire == null) continue;
+        debugPrint('[Bulletin] catch-up id=${notice.id} peer=${peer.id}');
+        await _mesh?.sendDirectNow(_bulletinEnvelope(notice.id, wire, ttl: 2));
         delivered.add(peer.id);
-        debugPrint('[Notice] catch-up delivered id=${notice.id} peer=${peer.id}');
       } catch (e) {
-        debugPrint('[Notice] catch-up failed id=${notice.id} peer=${peer.id} err=$e');
+        debugPrint(
+          '[Bulletin] catch-up failed id=${notice.id} peer=${peer.id} err=$e',
+        );
       }
     }
   }
@@ -3106,6 +3216,7 @@ class AppState extends ChangeNotifier {
       ackHandler: _ackHandler,
       shouldPersistHistory: () => _saveMessageHistory,
       onEphemeralMessage: _rememberSessionMessage,
+      onBulletinMessage: _onBulletinMessage,
     );
     _onMeshChanged = () {
       _onMeshPeersChanged();
@@ -3165,7 +3276,8 @@ class AppState extends ChangeNotifier {
             senderPk: CryptoService.compactPublicKey(crypto.publicKeyPem),
           );
     final isPresence = outbound.payloadKind == PayloadKinds.presence;
-    final piggyback = isPresence
+    final isBulletin = outbound.payloadKind == PayloadKinds.bulletin;
+    final piggyback = isPresence || isBulletin
         ? const <AckEntry>[]
         : (_ackQueue?.drainPiggybackFor(outbound.receiverId) ??
             const <AckEntry>[]);
@@ -3196,8 +3308,8 @@ class AppState extends ChangeNotifier {
       payloadTag: dto.payloadTag,
     );
 
-    if (isPresence) {
-      // Presence is fire-and-forget metadata — skip chat persistence.
+    if (isPresence || isBulletin) {
+      // Presence/bulletin are fire-and-forget — skip chat persistence.
       unawaited(_mesh?.sendDirectNow(outbound));
       if (resilnet.isGatewayWifiActive) {
         unawaited(_udp?.sendDirectNow(outbound));
@@ -3427,6 +3539,13 @@ class AppState extends ChangeNotifier {
       final msg = meta.message;
       if (msg == null) return;
 
+      if (msg.payloadKind == PayloadKinds.bulletin) {
+        // Public bulletin — verify + ingest + relay inside mesh service.
+        await mesh.applyIncomingFromRouter(msg);
+        notifyListeners();
+        return;
+      }
+
       if (msg.payloadKind == PayloadKinds.notice) {
         final accepted = await mesh.applyIncomingFromRouter(msg);
         if (accepted) {
@@ -3484,6 +3603,9 @@ class AppState extends ChangeNotifier {
     }
     if (!changed) return;
     _bumpChatData();
+    // READ receipts should reach the sender promptly — don't wait for the
+    // deferred mesh timer / batch threshold.
+    unawaited(_ackQueue?.flush());
     notifyListeners();
   }
 

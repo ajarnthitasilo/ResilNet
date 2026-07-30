@@ -17,6 +17,10 @@ class PayloadKinds {
   /// Mesh/area public notice (fan-out sealed envelopes).
   static const notice = 'notice';
 
+  /// Public mesh bulletin — plaintext + self-contained signature.
+  /// Readable by everyone in radio range without prior key exchange.
+  static const bulletin = 'mesh_bulletin';
+
   /// Local system line (screenshot, etc.) — not relayed.
   static const system = 'system';
 
@@ -33,6 +37,7 @@ class PayloadKinds {
     final k = (kind ?? text).trim();
     return k != presence &&
         k != notice &&
+        k != bulletin &&
         k != boardKeyRequest &&
         k != boardKeyGrant &&
         k != boardPost;

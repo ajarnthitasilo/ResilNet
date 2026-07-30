@@ -23,8 +23,10 @@ class ResilNetPacketCodec {
         ResilNetPayloadType.fromMessageKind(msg.payloadKind);
     // Strip local-only plaintext preview before anything hits the wire.
     // Presence packets carry the geohash cell in `content` intentionally.
+    // Public bulletins carry signed plaintext JSON in `content` by design.
     final wireMap = Map<String, Object?>.from(msg.toMap());
-    if (msg.payloadKind != PayloadKinds.presence) {
+    if (msg.payloadKind != PayloadKinds.presence &&
+        msg.payloadKind != PayloadKinds.bulletin) {
       wireMap['content'] = null;
     }
     final payload = piggybackAcks.isEmpty

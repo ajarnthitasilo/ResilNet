@@ -929,8 +929,14 @@ abstract class AppLocalizations {
   /// No description provided for @noticesMeshIntro.
   ///
   /// In en, this message translates to:
-  /// **'Pin short announcements for people around you. They hop phone-to-phone offline and fade after a few days.'**
+  /// **'Public bulletin — visible to everyone in radio range, not encrypted. It hops phone-to-phone offline, and nearby ResilNet relay boxes keep a copy so people who arrive later still see it.'**
   String get noticesMeshIntro;
+
+  /// No description provided for @noticesMeshPublicBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'PUBLIC · not encrypted'**
+  String get noticesMeshPublicBadge;
 
   /// No description provided for @noticesGeoIntro.
   ///

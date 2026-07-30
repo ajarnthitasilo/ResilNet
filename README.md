@@ -2,8 +2,8 @@
 
 **ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), and long-range sync over public **Nostr** relays.
 
-**Current app version:** `1.9.45`  
-**Bundled ESP32 firmware baseline:** `1.9.44` (hybrid online/offline delivery)
+**Current app version:** `1.9.46`  
+**Bundled ESP32 firmware baseline:** `1.9.46` (hybrid online/offline delivery)
 
 ## Project layout
 
@@ -29,7 +29,8 @@ ResilNet/
   - **Mid:** ESP32 BLE data mule / LoRa gateway
   - **Far / Internet:** Nostr relays with local offline queue (store locally, flush when online)
 - **Rust-powered core:** Deduplication, hybrid fan-out routing, and queue handling via FFI.
-- **E2EE 1:1 messaging:** Sealed private chats; longer voice notes use chunked **MediaPart** payloads over Nostr.
+- **E2EE 1:1 messaging:** Sealed private chats with delivery + read receipts; longer voice notes use chunked **MediaPart** payloads over Nostr.
+- **Public mesh bulletin (#mesh):** Plaintext, self-signed announcements readable by anyone in radio range — no prior key exchange. ESP32 mule nodes store-and-forward bulletins (3-day TTL) so late joiners still receive them offline.
 - **Hybrid firmware delivery:** Online-first download, then verified local cache, then **bundled baseline** assets for offline flashing (SHA-256 + `minCompatibleVersion` checks). See `releases/firmware/README.md`.
 
 ---
@@ -56,7 +57,7 @@ pio run -e standalone -t upload
 Refresh release artifacts + hashes:
 
 ```bash
-./tool/sync_firmware_release.sh 1.9.44
+./tool/sync_firmware_release.sh 1.9.46
 ```
 
 Nodes advertise over BLE, queue on LittleFS, and sync with the phone. Later updates can use in-app BLE OTA when the board firmware supports it.

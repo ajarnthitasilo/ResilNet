@@ -496,7 +496,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noticesMeshIntro =>
-      'Pin short announcements for people around you. They hop phone-to-phone offline and fade after a few days.';
+      'Public bulletin — visible to everyone in radio range, not encrypted. It hops phone-to-phone offline, and nearby ResilNet relay boxes keep a copy so people who arrive later still see it.';
+
+  @override
+  String get noticesMeshPublicBadge => 'PUBLIC · not encrypted';
 
   @override
   String get noticesGeoIntro =>

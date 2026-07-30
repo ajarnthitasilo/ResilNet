@@ -164,8 +164,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _onAppState() {
     if (!mounted) return;
-    final epoch = context.read<AppState>().chatDataEpoch;
+    final s = context.read<AppState>();
+    final epoch = s.chatDataEpoch;
     if (epoch == _boundEpoch) return;
+    // Chat is on-screen — mark newly arrived messages read so the sender
+    // receives READ receipts while the conversation stays open.
+    unawaited(s.markConversationRead(widget.peerId));
     unawaited(_reloadMessages());
   }
 

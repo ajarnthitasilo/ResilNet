@@ -171,6 +171,39 @@ class _NoticesSheetState extends State<_NoticesSheet> {
           const SizedBox(height: 12),
           if (_scope == 'geo') _buildGeoSyncStatus(context, s, l10n),
           if (_scope == 'geo') const SizedBox(height: 8),
+          if (_scope == 'mesh') ...[
+            Row(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: Colors.amber.withValues(alpha: 0.45),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.campaign_outlined,
+                          size: 13, color: Colors.amber),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n.noticesMeshPublicBadge,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelSmall
+                            ?.copyWith(color: Colors.amber),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+          ],
           Text(
             _scope == 'mesh' ? l10n.noticesMeshIntro : l10n.noticesGeoIntro,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(

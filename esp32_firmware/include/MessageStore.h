@@ -13,7 +13,8 @@ struct StoredMessage {
   long timestamp = 0;
   // เวลาที่ ESP32 รับและบันทึกข้อความ (millis) สำหรับ TTL purge
   long receivedAtMs = 0;
-  String type = "broadcast";  // "direct" | "broadcast"
+  // "direct" | "bulletin" (public plaintext+signed) | "broadcast" (legacy)
+  String type = "broadcast";
   String payload;
   String signedPayload;
   String signature;

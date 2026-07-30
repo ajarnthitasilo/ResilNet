@@ -16,11 +16,22 @@ import 'database_service.dart';
 /// 2) เชื่อมต่ออัตโนมัติเมื่ออยู่ในรัศมี
 /// 3) Handshake ID → Push ข้อความใหม่ → Pull ข้อความที่ขาด → Disconnect
 class Esp32SyncService extends ChangeNotifier {
-  Esp32SyncService({required DatabaseService database, this.crypto})
-      : _db = database;
+  Esp32SyncService({
+    required DatabaseService database,
+    this.crypto,
+    this.outgoingBulletins,
+    this.onBulletin,
+  }) : _db = database;
 
   final DatabaseService _db;
   final CryptoService? crypto;
+
+  /// Public bulletins ที่ยัง active — push เข้า ESP32 store-and-forward
+  /// เพื่อให้เครื่องที่เข้ามาทีหลัง (late join) ได้รับตอน offline.
+  final List<MuleMessage> Function()? outgoingBulletins;
+
+  /// Ingest raw bulletin wire ที่ pull มาจาก ESP32 (verify ทำใน AppState).
+  final Future<bool> Function(String rawWire)? onBulletin;
   final _ble = FlutterReactiveBle();
 
   SyncPhase _phase = SyncPhase.idle;
@@ -138,9 +149,17 @@ class Esp32SyncService extends ChangeNotifier {
       deviceId: deviceId,
     );
 
-    // a) Handshake — ส่งรายการ Message ID ที่มือถือมี
+    // a) Handshake — ส่งรายการ Message ID ที่มือถือมี (รวม bulletin ids
+    // เพื่อไม่ให้ node ส่ง bulletin ที่มีอยู่แล้วกลับมา)
     final localIds = await _db.getAllMessageIds();
-    final hsReq = jsonEncode({'op': 'hs', 'ids': localIds});
+    final localBulletinIds =
+        (outgoingBulletins?.call() ?? const <MuleMessage>[])
+            .map((b) => b.id)
+            .toList();
+    final hsReq = jsonEncode({
+      'op': 'hs',
+      'ids': [...localIds, ...localBulletinIds],
+    });
     final hsResp = await _writeAndWait(syncChar, hsReq);
     final nodeIds = (hsResp['ids'] as List<dynamic>? ?? [])
         .cast<String>()
@@ -152,11 +171,14 @@ class Esp32SyncService extends ChangeNotifier {
       await _db.markMessagesDeliveredNow(acks);
     }
 
-    // b) Push — ส่งข้อความที่ยังไม่ได้ซิงก์กับ ESP32 (direct only)
+    // b) Push — ข้อความ direct ที่ยังไม่ได้ซิงก์ + public bulletins ที่ node ยังไม่มี
     final toPush = (await _db.getMessagesNotSyncedWithEsp32())
         .where((m) => !m.isBroadcast)
         .toList();
-    final pushMsgs = toPush.map(_toMule).toList();
+    final bulletins = (outgoingBulletins?.call() ?? const <MuleMessage>[])
+        .where((b) => !nodeIds.contains(b.id))
+        .toList();
+    final pushMsgs = [...toPush.map(_toMule), ...bulletins];
     if (pushMsgs.isNotEmpty) {
       final pushReq = jsonEncode({
         'op': 'push',
@@ -213,6 +235,18 @@ class Esp32SyncService extends ChangeNotifier {
     final msgs = resp['msgs'] as List<dynamic>? ?? [];
     for (final raw in msgs) {
       final mule = MuleMessage.fromJson(raw as Map<String, dynamic>);
+      if (mule.type == 'bulletin') {
+        // Public bulletin — plaintext + self-contained signature.
+        // Verification/dedupe happens in the AppState ingest callback.
+        final handler = onBulletin;
+        if (handler != null) {
+          final ok = await handler(mule.payload);
+          debugPrint(
+            '[Esp32Sync] bulletin id=${mule.id} ingest=${ok ? 'new' : 'skip'}',
+          );
+        }
+        continue;
+      }
       if (mule.isBroadcast) {
         debugPrint('[Esp32Sync] drop legacy broadcast id=${mule.id}');
         continue;

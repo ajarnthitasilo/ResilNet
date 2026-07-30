@@ -493,7 +493,10 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get noticesMeshIntro =>
-      'ปักประกาศสั้น ๆ ให้คนรอบตัว ส่งต่อจากมือถือสู่มือถือได้แม้ออฟไลน์ และหายไปเองหลังผ่านไปสองสามวัน';
+      'ประกาศสาธารณะ — ทุกคนในรัศมีวิทยุอ่านได้ ไม่เข้ารหัส ส่งต่อจากมือถือสู่มือถือได้แม้ออฟไลน์ และกล่องทวนสัญญาณ ResilNet ใกล้เคียงจะเก็บสำเนาไว้ให้คนที่เพิ่งเข้ามาทีหลังเห็นด้วย';
+
+  @override
+  String get noticesMeshPublicBadge => 'สาธารณะ · ไม่เข้ารหัส';
 
   @override
   String get noticesGeoIntro =>
