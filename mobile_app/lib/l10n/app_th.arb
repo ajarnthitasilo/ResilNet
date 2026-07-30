@@ -499,10 +499,32 @@
   "announceDeny": "ปฏิเสธ",
   "announceGranted": "อ่านโพสต์ล็อกบนกระดานนี้ได้แล้ว",
   "announceOwner": "คุณเป็นเจ้าของกระดานนี้",
-  "announceCopyInvite": "คัดลอกคำเชิญกระดาน",
+  "announceCopyInvite": "คัดลอกข้อความเชิญ",
+  "announceShowInviteQr": "แสดง QR คำเชิญ",
+  "announceScanInviteQr": "สแกน QR คำเชิญกระดาน",
   "announceFollow": "ติดตามกระดานจากคำเชิญ",
-  "announceFollowHint": "วาง JSON คำเชิญจากเจ้าของ",
+  "announceFollowHint": "วางข้อความเชิญหรือลิงก์ ResilNet จากเจ้าของกระดาน",
   "announceFollowOk": "ติดตามกระดานแล้ว",
-  "announceFollowFail": "คำเชิญไม่ถูกต้อง",
-  "announceInviteCopied": "คัดลอกคำเชิญแล้ว"
+  "announceFollowOkNamed": "ติดตามกระดาน “{title}” แล้ว",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "announceFollowFail": "คำเชิญไม่ถูกต้องหรือเสียหาย",
+  "announceInviteCopied": "คัดลอกข้อความเชิญแล้ว",
+  "announceInviteSharePreamble": "คำเชิญเข้ากระดานชุมชน “{title}”\nเปิด ResilNet → กระดานชุมชน → ติดตามจากคำเชิญ\nหรือสแกน QR / แตะลิงก์ด้านล่าง",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "announceConfirmFollowTitle": "ติดตามกระดานนี้?",
+  "announceConfirmFollowBody": "ติดตาม “{title}” จากคำเชิญนี้หรือไม่?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "announceConfirmFollow": "ติดตาม"
 }

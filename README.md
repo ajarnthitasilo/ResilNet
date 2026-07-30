@@ -2,7 +2,7 @@
 
 **ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), and long-range sync over public **Nostr** relays.
 
-**Current app version:** `1.9.46`  
+**Current app version:** `1.9.47`  
 **Bundled ESP32 firmware baseline:** `1.9.46` (hybrid online/offline delivery)
 
 ## Project layout
@@ -31,6 +31,7 @@ ResilNet/
 - **Rust-powered core:** Deduplication, hybrid fan-out routing, and queue handling via FFI.
 - **E2EE 1:1 messaging:** Sealed private chats with delivery + read receipts; longer voice notes use chunked **MediaPart** payloads over Nostr.
 - **Public mesh bulletin (#mesh):** Plaintext, self-signed announcements readable by anyone in radio range — no prior key exchange. ESP32 mule nodes store-and-forward bulletins (3-day TTL) so late joiners still receive them offline.
+- **Community board invites:** Owner shares a readable invite text, QR, or `resilnet://board/invite?...` deep link (compact public metadata only — never the board private key).
 - **Hybrid firmware delivery:** Online-first download, then verified local cache, then **bundled baseline** assets for offline flashing (SHA-256 + `minCompatibleVersion` checks). See `releases/firmware/README.md`.
 
 ---

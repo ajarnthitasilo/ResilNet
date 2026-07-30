@@ -2597,8 +2597,20 @@ abstract class AppLocalizations {
   /// No description provided for @announceCopyInvite.
   ///
   /// In en, this message translates to:
-  /// **'Copy board invite'**
+  /// **'Copy invite text'**
   String get announceCopyInvite;
+
+  /// No description provided for @announceShowInviteQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Show invite QR'**
+  String get announceShowInviteQr;
+
+  /// No description provided for @announceScanInviteQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan board invite QR'**
+  String get announceScanInviteQr;
 
   /// No description provided for @announceFollow.
   ///
@@ -2609,7 +2621,7 @@ abstract class AppLocalizations {
   /// No description provided for @announceFollowHint.
   ///
   /// In en, this message translates to:
-  /// **'Paste board invite JSON from the owner'**
+  /// **'Paste the invite text or ResilNet link from the owner'**
   String get announceFollowHint;
 
   /// No description provided for @announceFollowOk.
@@ -2618,17 +2630,47 @@ abstract class AppLocalizations {
   /// **'Following board'**
   String get announceFollowOk;
 
+  /// No description provided for @announceFollowOkNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Now following “{title}”'**
+  String announceFollowOkNamed(String title);
+
   /// No description provided for @announceFollowFail.
   ///
   /// In en, this message translates to:
-  /// **'Invalid invite'**
+  /// **'Invite is invalid or damaged'**
   String get announceFollowFail;
 
   /// No description provided for @announceInviteCopied.
   ///
   /// In en, this message translates to:
-  /// **'Invite copied'**
+  /// **'Invite text copied'**
   String get announceInviteCopied;
+
+  /// No description provided for @announceInviteSharePreamble.
+  ///
+  /// In en, this message translates to:
+  /// **'Board invite: “{title}”\nOpen ResilNet → Community boards → Follow from invite\nOr scan the QR / tap the link below.'**
+  String announceInviteSharePreamble(String title);
+
+  /// No description provided for @announceConfirmFollowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow this board?'**
+  String get announceConfirmFollowTitle;
+
+  /// No description provided for @announceConfirmFollowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow “{title}” from this invite?'**
+  String announceConfirmFollowBody(String title);
+
+  /// No description provided for @announceConfirmFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get announceConfirmFollow;
 }
 
 class _AppLocalizationsDelegate

@@ -1445,20 +1445,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get announceOwner => 'You own this board';
 
   @override
-  String get announceCopyInvite => 'Copy board invite';
+  String get announceCopyInvite => 'Copy invite text';
+
+  @override
+  String get announceShowInviteQr => 'Show invite QR';
+
+  @override
+  String get announceScanInviteQr => 'Scan board invite QR';
 
   @override
   String get announceFollow => 'Follow board from invite';
 
   @override
-  String get announceFollowHint => 'Paste board invite JSON from the owner';
+  String get announceFollowHint =>
+      'Paste the invite text or ResilNet link from the owner';
 
   @override
   String get announceFollowOk => 'Following board';
 
   @override
-  String get announceFollowFail => 'Invalid invite';
+  String announceFollowOkNamed(String title) {
+    return 'Now following “$title”';
+  }
 
   @override
-  String get announceInviteCopied => 'Invite copied';
+  String get announceFollowFail => 'Invite is invalid or damaged';
+
+  @override
+  String get announceInviteCopied => 'Invite text copied';
+
+  @override
+  String announceInviteSharePreamble(String title) {
+    return 'Board invite: “$title”\nOpen ResilNet → Community boards → Follow from invite\nOr scan the QR / tap the link below.';
+  }
+
+  @override
+  String get announceConfirmFollowTitle => 'Follow this board?';
+
+  @override
+  String announceConfirmFollowBody(String title) {
+    return 'Follow “$title” from this invite?';
+  }
+
+  @override
+  String get announceConfirmFollow => 'Follow';
 }

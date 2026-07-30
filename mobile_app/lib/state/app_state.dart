@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
+import '../core/board_invite_wire.dart';
 import '../core/bulletin_wire.dart';
 import '../core/geohash.dart';
 import '../core/media_part_codec.dart';
@@ -870,20 +871,66 @@ class AppState extends ChangeNotifier {
   }
 
   String boardInvitePayload(AnnouncementBoard board) {
-    return jsonEncode(board.toJson());
+    return encodeBoardInvite(board);
   }
 
-  Future<bool> followBoardFromInviteJson(String raw) async {
-    try {
-      final m = jsonDecode(raw.trim()) as Map<String, dynamic>;
-      final board = AnnouncementBoard.fromJson(Map<String, Object?>.from(m));
-      if (board.id.isEmpty || board.publicKeyPem.isEmpty) return false;
-      await followAnnouncementBoard(board);
-      return true;
-    } catch (e) {
-      debugPrint('[ResilNet] follow invite failed: $e');
-      return false;
+  String boardInviteDeepLink(AnnouncementBoard board) {
+    return encodeBoardInviteDeepLink(board);
+  }
+
+  /// ข้อความเชิญที่อ่านง่าย + deep link (สำหรับคัดลอก/แชร์)
+  String boardInviteShareText(
+    AnnouncementBoard board, {
+    required String Function(String title) preamble,
+  }) {
+    return encodeBoardInviteShareText(board: board, preamble: preamble);
+  }
+
+  /// รับคำเชิญทุกรูปแบบ: compact JSON, legacy PEM JSON, deep link, ข้อความแชร์
+  Future<AnnouncementBoard?> followBoardFromInviteAny(String raw) async {
+    final data = parseBoardInvite(raw);
+    if (data == null || data.id.isEmpty || data.publicKeyPem.isEmpty) {
+      return null;
     }
+    await followAnnouncementBoard(data.toBoard());
+    return boardById(data.id) ?? data.toBoard();
+  }
+
+  /// Backward-compatible alias
+  Future<bool> followBoardFromInviteJson(String raw) async {
+    final board = await followBoardFromInviteAny(raw);
+    return board != null;
+  }
+
+  /// คำเชิญจาก deep link ที่รอให้ผู้ใช้ยืนยัน (cold/warm start)
+  AnnouncementBoard? _pendingBoardInvite;
+  AnnouncementBoard? get pendingBoardInvite => _pendingBoardInvite;
+
+  void clearPendingBoardInvite() {
+    if (_pendingBoardInvite == null) return;
+    _pendingBoardInvite = null;
+    notifyListeners();
+  }
+
+  /// Ingest URI จาก app_links — ตั้ง pending ให้ UI ถามยืนยัน
+  bool ingestBoardInviteUri(Uri uri) {
+    final data = parseBoardInviteDeepLink(uri);
+    if (data == null) return false;
+    _pendingBoardInvite = data.toBoard();
+    notifyListeners();
+    debugPrint(
+      '[BoardInvite] pending from deep link title=${data.title} id=${data.id}',
+    );
+    return true;
+  }
+
+  Future<AnnouncementBoard?> acceptPendingBoardInvite() async {
+    final pending = _pendingBoardInvite;
+    if (pending == null) return null;
+    _pendingBoardInvite = null;
+    await followAnnouncementBoard(pending);
+    notifyListeners();
+    return boardById(pending.id) ?? pending;
   }
 
   Future<void> updateBoardSettings(

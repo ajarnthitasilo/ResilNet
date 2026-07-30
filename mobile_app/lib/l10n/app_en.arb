@@ -703,10 +703,32 @@
   "announceDeny": "Deny",
   "announceGranted": "You can read locked posts on this board",
   "announceOwner": "You own this board",
-  "announceCopyInvite": "Copy board invite",
+  "announceCopyInvite": "Copy invite text",
+  "announceShowInviteQr": "Show invite QR",
+  "announceScanInviteQr": "Scan board invite QR",
   "announceFollow": "Follow board from invite",
-  "announceFollowHint": "Paste board invite JSON from the owner",
+  "announceFollowHint": "Paste the invite text or ResilNet link from the owner",
   "announceFollowOk": "Following board",
-  "announceFollowFail": "Invalid invite",
-  "announceInviteCopied": "Invite copied"
+  "announceFollowOkNamed": "Now following “{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "announceFollowFail": "Invite is invalid or damaged",
+  "announceInviteCopied": "Invite text copied",
+  "announceInviteSharePreamble": "Board invite: “{title}”\nOpen ResilNet → Community boards → Follow from invite\nOr scan the QR / tap the link below.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "announceConfirmFollowTitle": "Follow this board?",
+  "announceConfirmFollowBody": "Follow “{title}” from this invite?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "announceConfirmFollow": "Follow"
 }

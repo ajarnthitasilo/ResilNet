@@ -11,6 +11,7 @@ import 'screens/onboarding_screen.dart';
 import 'screens/permission_screen.dart';
 import 'state/app_state.dart';
 import 'widgets/app_lifecycle_handler.dart';
+import 'widgets/board_invite_link_listener.dart';
 
 /// โหลดหลังเฟรม BootSplash — Rust / Nostr / BLE
 Future<void> launchFullApp() async {
@@ -40,51 +41,62 @@ Future<void> _bootstrap(AppState appState) async {
   }
 }
 
-class ResilNetApp extends StatelessWidget {
+class ResilNetApp extends StatefulWidget {
   const ResilNetApp({super.key, required this.appState});
 
   final AppState appState;
 
   @override
+  State<ResilNetApp> createState() => _ResilNetAppState();
+}
+
+class _ResilNetAppState extends State<ResilNetApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
-      value: appState,
+      value: widget.appState,
       child: AppLifecycleHandler(
-        child: Consumer<AppState>(
-          builder: (context, s, _) {
-            return MaterialApp(
-              onGenerateTitle: (context) => context.l10n.appTitle,
-              debugShowCheckedModeBanner: false,
-              theme: ResilNetTheme.dark(),
-              locale: s.localeOverride,
-              supportedLocales: AppLocalizations.supportedLocales,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              localeResolutionCallback: (deviceLocale, supported) {
-                if (s.localeOverride != null) return s.localeOverride;
-                if (deviceLocale == null) return supported.first;
-                for (final locale in supported) {
-                  if (locale.languageCode == deviceLocale.languageCode) {
-                    return locale;
+        child: BoardInviteLinkListener(
+          navigatorKey: _navigatorKey,
+          child: Consumer<AppState>(
+            builder: (context, s, _) {
+              return MaterialApp(
+                navigatorKey: _navigatorKey,
+                onGenerateTitle: (context) => context.l10n.appTitle,
+                debugShowCheckedModeBanner: false,
+                theme: ResilNetTheme.dark(),
+                locale: s.localeOverride,
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                localeResolutionCallback: (deviceLocale, supported) {
+                  if (s.localeOverride != null) return s.localeOverride;
+                  if (deviceLocale == null) return supported.first;
+                  for (final locale in supported) {
+                    if (locale.languageCode == deviceLocale.languageCode) {
+                      return locale;
+                    }
                   }
-                }
-                return supported.first;
-              },
-              home: !s.initDone
-                  ? const _BootScreen()
-                  : (s.initError != null && !s.isReady)
-                  ? _BootErrorScreen(message: s.initError!)
-                  : !s.permissionsGranted
-                  ? const PermissionScreen()
-                  : !s.onboardingCompleted
-                  ? const OnboardingScreen()
-                  : const ChatListScreen(),
-            );
-          },
+                  return supported.first;
+                },
+                home: !s.initDone
+                    ? const _BootScreen()
+                    : (s.initError != null && !s.isReady)
+                    ? _BootErrorScreen(message: s.initError!)
+                    : !s.permissionsGranted
+                    ? const PermissionScreen()
+                    : !s.onboardingCompleted
+                    ? const OnboardingScreen()
+                    : const ChatListScreen(),
+              );
+            },
+          ),
         ),
       ),
     );

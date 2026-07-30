@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../app/theme.dart';
 import '../l10n/l10n_ext.dart';
@@ -13,6 +15,7 @@ import '../models/announcement_board.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
 import '../state/app_state.dart';
+import 'qr_capture_screen.dart';
 
 Future<void> openAnnouncementsScreen(BuildContext context) {
   return Navigator.of(context).push(
@@ -44,17 +47,33 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
 
   bool _hasInternet(AppState s) => s.isCloudOnline;
 
-  Future<void> _followInvite(AppState s) async {
+  Future<void> _followInvite(AppState s, {String? prefill}) async {
     final l10n = context.l10n;
-    final ctrl = TextEditingController();
+    final ctrl = TextEditingController(text: prefill ?? '');
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.announceFollow),
-        content: TextField(
-          controller: ctrl,
-          maxLines: 6,
-          decoration: InputDecoration(hintText: l10n.announceFollowHint),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: ctrl,
+              maxLines: 6,
+              decoration: InputDecoration(hintText: l10n.announceFollowHint),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () async {
+                Navigator.pop(ctx, false);
+                if (!mounted) return;
+                await _scanInviteQr(s);
+              },
+              icon: const Icon(Icons.qr_code_scanner),
+              label: Text(l10n.announceScanInviteQr),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -69,12 +88,104 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       ),
     );
     if (ok != true || !mounted) return;
-    final done = await s.followBoardFromInviteJson(ctrl.text);
+    final board = await s.followBoardFromInviteAny(ctrl.text);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(done ? l10n.announceFollowOk : l10n.announceFollowFail),
+        content: Text(
+          board != null
+              ? l10n.announceFollowOkNamed(board.title)
+              : l10n.announceFollowFail,
+        ),
       ),
+    );
+    if (board != null) {
+      setState(() => _selectedBoardId = board.id);
+    }
+  }
+
+  Future<void> _scanInviteQr(AppState s) async {
+    final raw = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => QrCaptureScreen(title: context.l10n.announceScanInviteQr),
+      ),
+    );
+    if (!mounted || raw == null || raw.isEmpty) return;
+    final board = await s.followBoardFromInviteAny(raw);
+    if (!mounted) return;
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          board != null
+              ? l10n.announceFollowOkNamed(board.title)
+              : l10n.announceFollowFail,
+        ),
+      ),
+    );
+    if (board != null) {
+      setState(() => _selectedBoardId = board.id);
+    }
+  }
+
+  Future<void> _showInviteQr(AnnouncementBoard board, AppState s) async {
+    final l10n = context.l10n;
+    final payload = s.boardInvitePayload(board);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.announceShowInviteQr,
+                style: Theme.of(ctx).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                board.title,
+                style: Theme.of(ctx).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(12),
+                child: QrImageView(
+                  data: payload,
+                  version: QrVersions.auto,
+                  size: 220,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.announceInviteSharePreamble(board.title),
+                style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
+                      color: Colors.white70,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _copyInvite(AppState s, AnnouncementBoard board) async {
+    final l10n = context.l10n;
+    final text = s.boardInviteShareText(
+      board,
+      preamble: l10n.announceInviteSharePreamble,
+    );
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.announceInviteCopied)),
     );
   }
 
@@ -323,6 +434,11 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         title: Text(l10n.announceTitle),
         actions: [
           IconButton(
+            tooltip: l10n.announceScanInviteQr,
+            onPressed: () => _scanInviteQr(s),
+            icon: const Icon(Icons.qr_code_scanner),
+          ),
+          IconButton(
             tooltip: l10n.announceFollow,
             onPressed: () => _followInvite(s),
             icon: const Icon(Icons.link),
@@ -451,21 +567,14 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                             subtitle: Text(board.id, maxLines: 1),
                           ),
                           ListTile(
+                            leading: const Icon(Icons.qr_code_2),
+                            title: Text(l10n.announceShowInviteQr),
+                            onTap: () => _showInviteQr(board, s),
+                          ),
+                          ListTile(
                             leading: const Icon(Icons.copy),
                             title: Text(l10n.announceCopyInvite),
-                            onTap: () async {
-                              await Clipboard.setData(
-                                ClipboardData(
-                                  text: s.boardInvitePayload(board),
-                                ),
-                              );
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(l10n.announceInviteCopied),
-                                ),
-                              );
-                            },
+                            onTap: () => _copyInvite(s, board),
                           ),
                         ],
                       )

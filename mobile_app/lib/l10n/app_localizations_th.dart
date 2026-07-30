@@ -1438,20 +1438,48 @@ class AppLocalizationsTh extends AppLocalizations {
   String get announceOwner => 'คุณเป็นเจ้าของกระดานนี้';
 
   @override
-  String get announceCopyInvite => 'คัดลอกคำเชิญกระดาน';
+  String get announceCopyInvite => 'คัดลอกข้อความเชิญ';
+
+  @override
+  String get announceShowInviteQr => 'แสดง QR คำเชิญ';
+
+  @override
+  String get announceScanInviteQr => 'สแกน QR คำเชิญกระดาน';
 
   @override
   String get announceFollow => 'ติดตามกระดานจากคำเชิญ';
 
   @override
-  String get announceFollowHint => 'วาง JSON คำเชิญจากเจ้าของ';
+  String get announceFollowHint =>
+      'วางข้อความเชิญหรือลิงก์ ResilNet จากเจ้าของกระดาน';
 
   @override
   String get announceFollowOk => 'ติดตามกระดานแล้ว';
 
   @override
-  String get announceFollowFail => 'คำเชิญไม่ถูกต้อง';
+  String announceFollowOkNamed(String title) {
+    return 'ติดตามกระดาน “$title” แล้ว';
+  }
 
   @override
-  String get announceInviteCopied => 'คัดลอกคำเชิญแล้ว';
+  String get announceFollowFail => 'คำเชิญไม่ถูกต้องหรือเสียหาย';
+
+  @override
+  String get announceInviteCopied => 'คัดลอกข้อความเชิญแล้ว';
+
+  @override
+  String announceInviteSharePreamble(String title) {
+    return 'คำเชิญเข้ากระดานชุมชน “$title”\nเปิด ResilNet → กระดานชุมชน → ติดตามจากคำเชิญ\nหรือสแกน QR / แตะลิงก์ด้านล่าง';
+  }
+
+  @override
+  String get announceConfirmFollowTitle => 'ติดตามกระดานนี้?';
+
+  @override
+  String announceConfirmFollowBody(String title) {
+    return 'ติดตาม “$title” จากคำเชิญนี้หรือไม่?';
+  }
+
+  @override
+  String get announceConfirmFollow => 'ติดตาม';
 }
