@@ -1568,6 +1568,48 @@ abstract class AppLocalizations {
   /// **'Download ESP32 firmware'**
   String get firmwareDownloadTitle;
 
+  /// No description provided for @firmwareSourceOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest (online)'**
+  String get firmwareSourceOnline;
+
+  /// No description provided for @firmwareSourceCached.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved copy (offline)'**
+  String get firmwareSourceCached;
+
+  /// No description provided for @firmwareSourceBaseline.
+  ///
+  /// In en, this message translates to:
+  /// **'Bundled baseline (offline)'**
+  String get firmwareSourceBaseline;
+
+  /// No description provided for @firmwareSourceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No firmware available'**
+  String get firmwareSourceUnavailable;
+
+  /// No description provided for @firmwareBaselineIncompatible.
+  ///
+  /// In en, this message translates to:
+  /// **'Bundled firmware is too old — connect to the internet to download a newer version'**
+  String get firmwareBaselineIncompatible;
+
+  /// No description provided for @firmwareChecksumFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware failed integrity check — flashing blocked'**
+  String get firmwareChecksumFailed;
+
+  /// No description provided for @firmwareReadyFromSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware ready: {source}'**
+  String firmwareReadyFromSource(String source);
+
   /// No description provided for @peersRefreshTooltip.
   ///
   /// In en, this message translates to:

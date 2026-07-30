@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../services/esp32_ota_service.dart';
 import '../services/firmware_config.dart';
+import '../services/firmware_service.dart';
 import '../state/app_state.dart';
 import '../widgets/ota_progress_dialog.dart';
 
@@ -49,16 +52,24 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
     if (_flashing || _selectedDeviceId == null) return;
 
     final fw = context.read<AppState>().firmware;
-    if (!fw.hasLocalFirmware(_selectedKind)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('ยังไม่มีไฟล์ ${_selectedKind.title} — ดาวน์โหลดจากตั้งค่าก่อน'),
-        ),
-      );
-      return;
+    File? file = await fw.localFile(_selectedKind);
+    if (file == null) {
+      // Hybrid fallback: ไม่มีไฟล์ในเครื่อง → ลองออนไลน์/แตก baseline จากแอป
+      final resolved = await fw.ensureFirmware(_selectedKind);
+      if (!mounted) return;
+      if (!resolved.isUsable) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              resolved.error ??
+                  'ยังไม่มีไฟล์ ${_selectedKind.title} — ดาวน์โหลดจากตั้งค่าก่อน',
+            ),
+          ),
+        );
+        return;
+      }
+      file = resolved.file;
     }
-
-    final file = await fw.localFile(_selectedKind);
     if (file == null) return;
 
     setState(() => _flashing = true);
@@ -123,6 +134,16 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
     return '${(bps / 1024).toStringAsFixed(1)} KB/s';
   }
 
+  String _sourceLabel(FirmwareSource source) {
+    final l10n = context.l10n;
+    return switch (source) {
+      FirmwareSource.onlineLatest => l10n.firmwareSourceOnline,
+      FirmwareSource.offlineCached => l10n.firmwareSourceCached,
+      FirmwareSource.offlineBundledBaseline => l10n.firmwareSourceBaseline,
+      FirmwareSource.unavailable => l10n.firmwareSourceUnavailable,
+    };
+  }
+
   String _phaseLabel(OtaPhase p) {
     return switch (p) {
       OtaPhase.idle => 'พร้อม',
@@ -182,10 +203,13 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
             final has = fw.hasLocalFirmware(k);
             final size = fw.localSizeBytes(k);
             if (k != _selectedKind) return const SizedBox.shrink();
+            final source = fw.localSource(k);
+            final sourceLabel =
+                source != null ? ' · ${_sourceLabel(source)}' : '';
             return Text(
               has && size != null
-                  ? 'ไฟล์: ${k.localFileName} (${_formatBytes(size)})'
-                  : 'ยังไม่ได้ดาวน์โหลด — ไปที่ตั้งค่า',
+                  ? 'ไฟล์: ${k.localFileName} (${_formatBytes(size)})$sourceLabel'
+                  : 'ยังไม่มีไฟล์ — จะใช้ตัวสำรองในแอปให้อัตโนมัติเมื่อกดแฟลช',
               style: Theme.of(context).textTheme.bodySmall,
             );
           }),

@@ -291,6 +291,20 @@
   },
   "qrScanAlignHint": "จัด QR ให้อยู่ในกรอบตรงกลาง",
   "firmwareDownloadTitle": "ดาวน์โหลดเฟิร์มแวร์ ESP32",
+  "firmwareSourceOnline": "ล่าสุด (ออนไลน์)",
+  "firmwareSourceCached": "สำเนาในเครื่อง (ออฟไลน์)",
+  "firmwareSourceBaseline": "ตัวสำรองในแอป (ออฟไลน์)",
+  "firmwareSourceUnavailable": "ไม่มีเฟิร์มแวร์พร้อมใช้",
+  "firmwareBaselineIncompatible": "เฟิร์มแวร์ที่ฝังในแอปเก่าเกินไป — ต้องต่ออินเทอร์เน็ตเพื่อดาวน์โหลดเวอร์ชันใหม่",
+  "firmwareChecksumFailed": "ไฟล์เฟิร์มแวร์ไม่ผ่านการตรวจสอบ — ห้ามแฟลช",
+  "firmwareReadyFromSource": "เฟิร์มแวร์พร้อมใช้: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "peersRefreshTooltip": "รีเฟรช",
   "peersBlocked": "บล็อกแล้ว",
   "peersNearbyBle": "ใกล้เคียง (BLE)",

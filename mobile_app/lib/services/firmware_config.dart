@@ -25,6 +25,38 @@ class FirmwareConfig {
   static const standaloneFileName = 'resilnet_esp32_standalone.bin';
   static const loraGatewayFileName = 'resilnet_esp32_lora_gateway.bin';
 
+  /// Baseline firmware ที่ฝังมากับแอป (offline emergency fallback)
+  static const baselineManifestAsset = 'assets/firmware/manifest.json';
+  static const baselineStandaloneAsset =
+      'assets/firmware/resilnet_esp32_standalone.bin';
+  static const baselineLoraGatewayAsset =
+      'assets/firmware/resilnet_esp32_lora_gateway.bin';
+
+  /// เวอร์ชันเฟิร์มแวร์ขั้นต่ำที่ยอมให้แฟลช (override ได้ผ่าน dart-define)
+  static const minCompatibleVersion = String.fromEnvironment(
+    'RESILNET_FW_MIN_COMPAT',
+    defaultValue: '',
+  );
+
+  /// เทียบเวอร์ชันแบบ semver อย่างง่าย: คืนค่า `a >= b`
+  static bool isVersionAtLeast(String a, String b) {
+    List<int> parse(String v) => v
+        .split('+')
+        .first
+        .split('.')
+        .map((p) => int.tryParse(p.trim()) ?? 0)
+        .toList();
+    final va = parse(a);
+    final vb = parse(b);
+    final len = va.length > vb.length ? va.length : vb.length;
+    for (var i = 0; i < len; i++) {
+      final x = i < va.length ? va[i] : 0;
+      final y = i < vb.length ? vb[i] : 0;
+      if (x != y) return x > y;
+    }
+    return true;
+  }
+
   static String resolveDownloadUrl(FirmwareKind kind) {
     final direct = switch (kind) {
       FirmwareKind.standaloneNode => standaloneBinUrl,
@@ -64,5 +96,16 @@ extension FirmwareKindLabels on FirmwareKind {
   String get localFileName => switch (this) {
         FirmwareKind.standaloneNode => FirmwareConfig.standaloneFileName,
         FirmwareKind.loraGateway => FirmwareConfig.loraGatewayFileName,
+      };
+
+  String get baselineAssetPath => switch (this) {
+        FirmwareKind.standaloneNode => FirmwareConfig.baselineStandaloneAsset,
+        FirmwareKind.loraGateway => FirmwareConfig.baselineLoraGatewayAsset,
+      };
+
+  /// key ใน manifest.json → artifacts
+  String get manifestKey => switch (this) {
+        FirmwareKind.standaloneNode => 'standaloneNode',
+        FirmwareKind.loraGateway => 'loraGateway',
       };
 }

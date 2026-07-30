@@ -443,6 +443,20 @@
   },
   "qrScanAlignHint": "Align the QR code inside the frame",
   "firmwareDownloadTitle": "Download ESP32 firmware",
+  "firmwareSourceOnline": "Latest (online)",
+  "firmwareSourceCached": "Saved copy (offline)",
+  "firmwareSourceBaseline": "Bundled baseline (offline)",
+  "firmwareSourceUnavailable": "No firmware available",
+  "firmwareBaselineIncompatible": "Bundled firmware is too old — connect to the internet to download a newer version",
+  "firmwareChecksumFailed": "Firmware failed integrity check — flashing blocked",
+  "firmwareReadyFromSource": "Firmware ready: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "peersRefreshTooltip": "Refresh",
   "peersBlocked": "Blocked",
   "peersNearbyBle": "Nearby (BLE)",

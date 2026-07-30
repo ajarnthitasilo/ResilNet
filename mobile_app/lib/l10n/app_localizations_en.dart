@@ -865,6 +865,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firmwareDownloadTitle => 'Download ESP32 firmware';
 
   @override
+  String get firmwareSourceOnline => 'Latest (online)';
+
+  @override
+  String get firmwareSourceCached => 'Saved copy (offline)';
+
+  @override
+  String get firmwareSourceBaseline => 'Bundled baseline (offline)';
+
+  @override
+  String get firmwareSourceUnavailable => 'No firmware available';
+
+  @override
+  String get firmwareBaselineIncompatible =>
+      'Bundled firmware is too old — connect to the internet to download a newer version';
+
+  @override
+  String get firmwareChecksumFailed =>
+      'Firmware failed integrity check — flashing blocked';
+
+  @override
+  String firmwareReadyFromSource(String source) {
+    return 'Firmware ready: $source';
+  }
+
+  @override
   String get peersRefreshTooltip => 'Refresh';
 
   @override

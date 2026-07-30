@@ -859,6 +859,31 @@ class AppLocalizationsTh extends AppLocalizations {
   String get firmwareDownloadTitle => 'ดาวน์โหลดเฟิร์มแวร์ ESP32';
 
   @override
+  String get firmwareSourceOnline => 'ล่าสุด (ออนไลน์)';
+
+  @override
+  String get firmwareSourceCached => 'สำเนาในเครื่อง (ออฟไลน์)';
+
+  @override
+  String get firmwareSourceBaseline => 'ตัวสำรองในแอป (ออฟไลน์)';
+
+  @override
+  String get firmwareSourceUnavailable => 'ไม่มีเฟิร์มแวร์พร้อมใช้';
+
+  @override
+  String get firmwareBaselineIncompatible =>
+      'เฟิร์มแวร์ที่ฝังในแอปเก่าเกินไป — ต้องต่ออินเทอร์เน็ตเพื่อดาวน์โหลดเวอร์ชันใหม่';
+
+  @override
+  String get firmwareChecksumFailed =>
+      'ไฟล์เฟิร์มแวร์ไม่ผ่านการตรวจสอบ — ห้ามแฟลช';
+
+  @override
+  String firmwareReadyFromSource(String source) {
+    return 'เฟิร์มแวร์พร้อมใช้: $source';
+  }
+
+  @override
   String get peersRefreshTooltip => 'รีเฟรช';
 
   @override

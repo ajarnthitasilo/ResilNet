@@ -40,15 +40,29 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
     fw.addListener(listener);
 
     try {
-      final file = await fw.download(kind);
+      // Hybrid: online-first แล้ว fallback cache → baseline ที่ฝังในแอป
+      final resolved = await fw.ensureFirmware(kind);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'ดาวน์โหลด ${kind.title} แล้ว (${_formatBytes(file.lengthSync())})',
+      final l10n = context.l10n;
+      if (resolved.isUsable) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.firmwareReadyFromSource(_sourceLabel(resolved.source)),
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        final err = resolved.error ?? '';
+        final msg = err.contains('minCompatible')
+            ? l10n.firmwareBaselineIncompatible
+            : err.contains('checksum')
+                ? l10n.firmwareChecksumFailed
+                : '${l10n.firmwareSourceUnavailable}${err.isEmpty ? '' : ' — $err'}';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg)),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,6 +75,16 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
         await fw.refreshLocalInfo();
       }
     }
+  }
+
+  String _sourceLabel(FirmwareSource source) {
+    final l10n = context.l10n;
+    return switch (source) {
+      FirmwareSource.onlineLatest => l10n.firmwareSourceOnline,
+      FirmwareSource.offlineCached => l10n.firmwareSourceCached,
+      FirmwareSource.offlineBundledBaseline => l10n.firmwareSourceBaseline,
+      FirmwareSource.unavailable => l10n.firmwareSourceUnavailable,
+    };
   }
 
   Future<void> _showOtaInfo() async {
@@ -107,7 +131,9 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
       final when = modified != null
           ? ' · ${modified.toLocal().toString().substring(0, 16)}'
           : '';
-      subtitle = 'มีในเครื่อง ${_formatBytes(size)}$when';
+      final source = fw.localSource(kind);
+      final sourceLabel = source != null ? ' · ${_sourceLabel(source)}' : '';
+      subtitle = 'มีในเครื่อง ${_formatBytes(size)}$when$sourceLabel';
     } else {
       subtitle = kind.subtitle;
     }
