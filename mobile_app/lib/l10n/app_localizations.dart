@@ -995,7 +995,7 @@ abstract class AppLocalizations {
   /// No description provided for @chatImageTooLarge.
   ///
   /// In en, this message translates to:
-  /// **'Image too large (max ~180KB)'**
+  /// **'Image too large (max ~120KB)'**
   String get chatImageTooLarge;
 
   /// No description provided for @chatNostrExpiry.
@@ -1523,7 +1523,7 @@ abstract class AppLocalizations {
   /// No description provided for @chatImageTooLargeOnline.
   ///
   /// In en, this message translates to:
-  /// **'Image too large (max ~1.5MB after compression)'**
+  /// **'Image too large (max ~220KB after compression)'**
   String get chatImageTooLargeOnline;
 
   /// No description provided for @chatOpenLinkFailed.

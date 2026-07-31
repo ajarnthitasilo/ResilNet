@@ -530,7 +530,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatImageLabel => 'Image';
 
   @override
-  String get chatImageTooLarge => 'Image too large (max ~120KB)';
+  String get chatImageTooLarge => 'Image too large — try another photo';
 
   @override
   String get chatNostrExpiry => 'Nostr keep';
@@ -835,11 +835,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatImageNeedInternet =>
-      'Image is large — connect to the internet to send';
+      'Connect to the internet to send images';
 
   @override
   String get chatImageTooLargeOnline =>
-      'Image too large (max ~220KB after compression)';
+      'Could not compress image enough to send';
 
   @override
   String get chatOpenLinkFailed => 'Could not open link';

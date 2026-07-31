@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../app/theme.dart';
+import '../core/chat_image_codec.dart';
 import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/voice_payload.dart';
@@ -27,11 +28,6 @@ import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
 import 'voice_record_sheet.dart';
-
-/// Soft caps for chat images (raw bytes after picker compression).
-// Must stay within MediaPartCodec Nostr part budget after seal (~2.3× raw).
-const _kImageMaxOfflineBytes = 120 * 1024;
-const _kImageMaxOnlineBytes = 220 * 1024;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.peerId});
@@ -466,72 +462,73 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       return;
     }
+    // Images must publish via Nostr (multi-part). Do not fake success over BLE.
     final online = s.isNostrOnline || s.isCloudOnline;
+    if (!online) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.chatImageNeedInternet)),
+      );
+      return;
+    }
     final picker = ImagePicker();
-    // Compress aggressively — sealed envelope is ~2.3× raw and must fit
-    // MediaPartCodec.maxParts Nostr publishes or the send is refused.
     final file = await picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: online ? 1280 : 960,
-      imageQuality: online ? 55 : 45,
+      maxWidth: 1600,
+      imageQuality: 70,
     );
     if (file == null) return;
-    final bytes = await file.readAsBytes();
-    if (_shouldSuppressDuplicate(
-      kind: 'image',
-      body: base64Encode(bytes),
-      receiverId: widget.peerId,
-    )) {
-      return;
-    }
     setState(() => _sendingOutbound = true);
-    final maxBytes = online ? _kImageMaxOnlineBytes : _kImageMaxOfflineBytes;
-    if (bytes.length > maxBytes) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            online ? l10n.chatImageTooLargeOnline : l10n.chatImageTooLarge,
-          ),
-        ),
-      );
-      if (mounted) setState(() => _sendingOutbound = false);
-      return;
-    }
-    final receiverPub = await _resolveReceiverPub(s);
-    if (receiverPub == null) {
-      if (mounted) setState(() => _sendingOutbound = false);
-      return;
-    }
-    final ts = DateTime.now().millisecondsSinceEpoch;
-    final b64 = base64Encode(bytes);
-    final pkg = s.crypto.encryptForRecipient(
-      plaintext: b64,
-      receiverPublicPem: receiverPub,
-      senderId: s.myUserId,
-      receiverId: widget.peerId,
-      timestamp: ts,
-    );
-    final msg = ChatMessage(
-      id: _uuid.v4(),
-      senderId: s.myUserId,
-      receiverId: widget.peerId,
-      // Local-only preview cache (stripped on wire).
-      content: b64,
-      encryptedPayload: pkg.encryptedPayload,
-      encryptedKey: pkg.encryptedKey,
-      signature: pkg.signature,
-      ttl: 5,
-      timestamp: ts,
-      status: MessageStatus.pending,
-      type: MessageType.direct,
-      payloadKind: PayloadKinds.image,
-    );
     try {
+      final raw = await file.readAsBytes();
+      final budget = ChatImageCodec.budgetForConnectivity(online: true);
+      // Off the UI isolate timing: encode can take a beat on large photos.
+      final bytes = await Future(
+        () => ChatImageCodec.compressToBudget(raw, maxBytes: budget),
+      );
+      if (bytes == null || bytes.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.chatImageTooLargeOnline)),
+        );
+        return;
+      }
+      if (_shouldSuppressDuplicate(
+        kind: 'image',
+        body: base64Encode(bytes),
+        receiverId: widget.peerId,
+      )) {
+        return;
+      }
+      final receiverPub = await _resolveReceiverPub(s);
+      if (receiverPub == null) return;
+      final ts = DateTime.now().millisecondsSinceEpoch;
+      final b64 = base64Encode(bytes);
+      final pkg = s.crypto.encryptForRecipient(
+        plaintext: b64,
+        receiverPublicPem: receiverPub,
+        senderId: s.myUserId,
+        receiverId: widget.peerId,
+        timestamp: ts,
+      );
+      final msg = ChatMessage(
+        id: _uuid.v4(),
+        senderId: s.myUserId,
+        receiverId: widget.peerId,
+        // Local-only preview cache (stripped on wire).
+        content: b64,
+        encryptedPayload: pkg.encryptedPayload,
+        encryptedKey: pkg.encryptedKey,
+        signature: pkg.signature,
+        ttl: 5,
+        timestamp: ts,
+        status: MessageStatus.pending,
+        type: MessageType.direct,
+        payloadKind: PayloadKinds.image,
+      );
       await s.persistChatMessage(msg);
       final ok = await s.routeOutbound(
         msg,
-        internetOnly: online,
+        internetOnly: true,
       );
       if (!ok) {
         await s.markMessageFailed(msg.id);
@@ -545,6 +542,11 @@ class _ChatScreenState extends State<ChatScreen> {
     } finally {
       if (mounted) setState(() => _sendingOutbound = false);
     }
+  }
+
+  void _submitCompose() {
+    if (_composeLocked) return;
+    unawaited(_send());
   }
 
   bool _shouldSuppressDuplicate({
@@ -1172,19 +1174,37 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       Expanded(
-                        child: TextField(
-                          controller: _text,
-                          focusNode: _focusNode,
-                          enabled: !_composeLocked,
-                          minLines: 1,
-                          maxLines: 4,
-                          onTap: () {
-                            if (_showEmojiPicker) {
-                              setState(() => _showEmojiPicker = false);
+                        child: Focus(
+                          onKeyEvent: (node, event) {
+                            if (event is! KeyDownEvent) {
+                              return KeyEventResult.ignored;
                             }
+                            if (event.logicalKey != LogicalKeyboardKey.enter &&
+                                event.logicalKey != LogicalKeyboardKey.numpadEnter) {
+                              return KeyEventResult.ignored;
+                            }
+                            if (HardwareKeyboard.instance.isShiftPressed) {
+                              return KeyEventResult.ignored;
+                            }
+                            _submitCompose();
+                            return KeyEventResult.handled;
                           },
-                          decoration: InputDecoration(
-                            hintText: l10n.chatComposeHint,
+                          child: TextField(
+                            controller: _text,
+                            focusNode: _focusNode,
+                            enabled: !_composeLocked,
+                            minLines: 1,
+                            maxLines: 4,
+                            textInputAction: TextInputAction.send,
+                            onSubmitted: (_) => _submitCompose(),
+                            onTap: () {
+                              if (_showEmojiPicker) {
+                                setState(() => _showEmojiPicker = false);
+                              }
+                            },
+                            decoration: InputDecoration(
+                              hintText: l10n.chatComposeHint,
+                            ),
                           ),
                         ),
                       ),
