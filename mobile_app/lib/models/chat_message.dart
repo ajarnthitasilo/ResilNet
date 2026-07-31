@@ -1,4 +1,4 @@
-enum MessageStatus { pending, sent, relayed, delivered, read }
+enum MessageStatus { pending, sent, relayed, delivered, read, failed }
 
 enum MessageType { direct, broadcast }
 

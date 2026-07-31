@@ -331,6 +331,14 @@ class DatabaseService {
     );
   }
 
+  Future<void> deleteMessageById(String msgId) async {
+    await _database.delete(
+      'messages',
+      where: 'id = ?',
+      whereArgs: [msgId],
+    );
+  }
+
   /// อัปเดตสถานะ Delivered จากรายการ ACK (ESP32/Cloud/Hybrid ACK)
   Future<void> markMessagesDelivered(
     List<String> ids,

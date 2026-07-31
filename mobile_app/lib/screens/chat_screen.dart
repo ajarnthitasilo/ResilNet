@@ -3,10 +3,12 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../app/theme.dart';
@@ -25,6 +27,10 @@ import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'qr_scanner_screen.dart';
 import 'voice_record_sheet.dart';
+
+/// Soft caps for chat images (raw bytes after picker compression).
+const _kImageMaxOfflineBytes = 180 * 1024;
+const _kImageMaxOnlineBytes = 1500 * 1024;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.peerId});
@@ -438,7 +444,10 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     try {
       await s.persistChatMessage(msg);
-      await s.routeOutbound(msg);
+      final ok = await s.routeOutbound(msg);
+      if (!ok) {
+        await s.markMessageFailed(msg.id);
+      }
       if (!mounted) return;
       setState(() {});
     } finally {
@@ -449,17 +458,19 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _sendImage() async {
     if (_sendingOutbound) return;
     final s = context.read<AppState>();
+    final l10n = context.l10n;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsE2eeSubtitle)),
+        SnackBar(content: Text(l10n.settingsE2eeSubtitle)),
       );
       return;
     }
+    final online = s.isNostrOnline || s.isCloudOnline;
     final picker = ImagePicker();
     final file = await picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 1280,
-      imageQuality: 72,
+      maxWidth: online ? 1600 : 1024,
+      imageQuality: online ? 70 : 55,
     );
     if (file == null) return;
     final bytes = await file.readAsBytes();
@@ -471,10 +482,18 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
     setState(() => _sendingOutbound = true);
-    if (bytes.length > 180 * 1024) {
+    if (bytes.length > _kImageMaxOnlineBytes) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Image too large (max ~180KB)')),
+        SnackBar(content: Text(l10n.chatImageTooLargeOnline)),
+      );
+      if (mounted) setState(() => _sendingOutbound = false);
+      return;
+    }
+    if (bytes.length > _kImageMaxOfflineBytes && !online) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.chatImageNeedInternet)),
       );
       if (mounted) setState(() => _sendingOutbound = false);
       return;
@@ -497,6 +516,8 @@ class _ChatScreenState extends State<ChatScreen> {
       id: _uuid.v4(),
       senderId: s.myUserId,
       receiverId: widget.peerId,
+      // Local-only preview cache (stripped on wire).
+      content: b64,
       encryptedPayload: pkg.encryptedPayload,
       encryptedKey: pkg.encryptedKey,
       signature: pkg.signature,
@@ -508,7 +529,18 @@ class _ChatScreenState extends State<ChatScreen> {
     );
     try {
       await s.persistChatMessage(msg);
-      await s.routeOutbound(msg);
+      final ok = await s.routeOutbound(
+        msg,
+        internetOnly: online,
+      );
+      if (!ok) {
+        await s.markMessageFailed(msg.id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.chatSendFailed)),
+          );
+        }
+      }
       if (mounted) setState(() {});
     } finally {
       if (mounted) setState(() => _sendingOutbound = false);
@@ -541,12 +573,14 @@ class _ChatScreenState extends State<ChatScreen> {
       MessageStatus.relayed => l10n.statusRelayed,
       MessageStatus.delivered => l10n.statusDelivered,
       MessageStatus.read => l10n.statusRead,
+      MessageStatus.failed => l10n.statusFailed,
     };
   }
 
   Widget _statusTicks(MessageStatus s) {
     final gray = Colors.white.withValues(alpha: 0.55);
     const blue = Color(0xFF53BDEB);
+    final red = Colors.redAccent.withValues(alpha: 0.9);
 
     Widget singleTick(Color color) =>
         Icon(Icons.done, size: 14, color: color);
@@ -565,10 +599,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return switch (s) {
       MessageStatus.pending => Icon(Icons.schedule, size: 14, color: gray),
+      MessageStatus.failed => Icon(Icons.error_outline, size: 14, color: red),
       MessageStatus.sent || MessageStatus.relayed => singleTick(gray),
       MessageStatus.delivered => doubleTick(gray),
       MessageStatus.read => doubleTick(blue),
     };
+  }
+
+  String _formatSendTime(int timestampMs) {
+    if (timestampMs <= 0) return '';
+    final dt = DateTime.fromMillisecondsSinceEpoch(timestampMs).toLocal();
+    final hh = dt.hour.toString().padLeft(2, '0');
+    final mm = dt.minute.toString().padLeft(2, '0');
+    return '$hh:$mm';
   }
 
   String _tryDecrypt(AppState s, AppLocalizations l10n, ChatMessage m) {
@@ -582,7 +625,23 @@ class _ChatScreenState extends State<ChatScreen> {
           : l10n.chatVoiceLabel;
     }
     if (m.payloadKind == PayloadKinds.image) {
-      return l10n.chatImageLabel;
+      final local = m.content?.trim();
+      if (local != null &&
+          local.isNotEmpty &&
+          m.senderId == s.myUserId) {
+        return local;
+      }
+      if (m.receiverId == s.myUserId) {
+        try {
+          return s.crypto.decryptFromSender(
+            encryptedPayload: m.encryptedPayload,
+            encryptedKey: m.encryptedKey,
+          );
+        } catch (_) {
+          return '';
+        }
+      }
+      return '';
     }
     if (m.payloadKind == PayloadKinds.notice) {
       return l10n.chatNoticeHidden;
@@ -719,56 +778,84 @@ class _ChatScreenState extends State<ChatScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 340),
             child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (m.payloadKind == PayloadKinds.areaPublic) ...[
-                      Text(
-                        l10n.areaPublicBadge,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Colors.tealAccent.withValues(alpha: 0.9),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                    Text(
-                      text,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    if (m.payloadKind == PayloadKinds.audio) ...[
-                      const SizedBox(height: 8),
-                      FilledButton.tonalIcon(
-                        onPressed: () => _playVoiceNote(s, m),
-                        icon: const Icon(Icons.play_arrow),
-                        label: Text(l10n.chatPlayVoice),
-                      ),
-                    ],
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isMe) ...[
-                          _statusTicks(m.status),
-                          const SizedBox(width: 6),
-                          Text(
-                            _statusLabel(l10n, m.status),
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.65),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                        ],
+              child: InkWell(
+                onLongPress: () => unawaited(
+                  _showMessageActions(s, l10n, m, text, isMe: isMe),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (m.payloadKind == PayloadKinds.areaPublic) ...[
                         Text(
-                          'TTL ${m.ttl}',
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.45),
-                          ),
+                          l10n.areaPublicBadge,
+                          style:
+                              Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: Colors.tealAccent
+                                        .withValues(alpha: 0.9),
+                                  ),
+                        ),
+                        const SizedBox(height: 4),
+                      ],
+                      _buildMessageBody(s, l10n, m, text),
+                      if (m.payloadKind == PayloadKinds.audio) ...[
+                        const SizedBox(height: 8),
+                        FilledButton.tonalIcon(
+                          onPressed: () => _playVoiceNote(s, m),
+                          icon: const Icon(Icons.play_arrow),
+                          label: Text(l10n.chatPlayVoice),
                         ),
                       ],
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            _formatSendTime(m.timestamp),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color:
+                                      Colors.white.withValues(alpha: 0.45),
+                                ),
+                          ),
+                          if (isMe) ...[
+                            const SizedBox(width: 10),
+                            _statusTicks(m.status),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                m.status == MessageStatus.failed
+                                    ? l10n.chatSendFailed
+                                    : _statusLabel(l10n, m.status),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: m.status == MessageStatus.failed
+                                          ? Colors.redAccent
+                                              .withValues(alpha: 0.9)
+                                          : Colors.white
+                                              .withValues(alpha: 0.65),
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      if (isMe && m.status == MessageStatus.failed) ...[
+                        const SizedBox(height: 6),
+                        TextButton(
+                          onPressed: _composeLocked
+                              ? null
+                              : () => unawaited(_retryMessage(s, l10n, m)),
+                          child: Text(l10n.chatRetry),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -776,6 +863,188 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       },
     );
+  }
+
+  Widget _buildMessageBody(
+    AppState s,
+    AppLocalizations l10n,
+    ChatMessage m,
+    String text,
+  ) {
+    if (m.payloadKind == PayloadKinds.image) {
+      return _buildImageBody(l10n, text);
+    }
+    if (m.payloadKind == PayloadKinds.audio ||
+        m.payloadKind == PayloadKinds.notice ||
+        PayloadKinds.isSystemLine(m.payloadKind)) {
+      return Text(text, style: Theme.of(context).textTheme.bodyMedium);
+    }
+    return _linkifiedText(text, l10n);
+  }
+
+  Widget _buildImageBody(AppLocalizations l10n, String b64) {
+    if (b64.isEmpty || b64 == '…') {
+      return Text(l10n.chatImageLabel);
+    }
+    try {
+      final bytes = base64Decode(b64);
+      return GestureDetector(
+        onTap: () {
+          showDialog<void>(
+            context: context,
+            builder: (ctx) => Dialog(
+              insetPadding: const EdgeInsets.all(16),
+              child: InteractiveViewer(
+                child: Image.memory(bytes, fit: BoxFit.contain),
+              ),
+            ),
+          );
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.memory(
+            bytes,
+            fit: BoxFit.cover,
+            height: 180,
+            width: double.infinity,
+            errorBuilder: (_, error, stack) => Text(l10n.chatImageLabel),
+          ),
+        ),
+      );
+    } catch (_) {
+      return Text(l10n.chatImageLabel);
+    }
+  }
+
+  static final _urlRe = RegExp(
+    r'(https?:\/\/[^\s<>]+)|(www\.[^\s<>]+)',
+    caseSensitive: false,
+  );
+
+  Widget _linkifiedText(String text, AppLocalizations l10n) {
+    final style = Theme.of(context).textTheme.bodyMedium;
+    final linkStyle = style?.copyWith(
+      color: const Color(0xFF5AC8FA),
+      decoration: TextDecoration.underline,
+    );
+    final matches = _urlRe.allMatches(text).toList();
+    if (matches.isEmpty) {
+      return SelectableText(text, style: style);
+    }
+    final spans = <InlineSpan>[];
+    var cursor = 0;
+    for (final m in matches) {
+      if (m.start > cursor) {
+        spans.add(TextSpan(text: text.substring(cursor, m.start), style: style));
+      }
+      final raw = m.group(0)!;
+      spans.add(
+        TextSpan(
+          text: raw,
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => unawaited(_openLink(raw, l10n)),
+        ),
+      );
+      cursor = m.end;
+    }
+    if (cursor < text.length) {
+      spans.add(TextSpan(text: text.substring(cursor), style: style));
+    }
+    return SelectableText.rich(TextSpan(children: spans));
+  }
+
+  Future<void> _openLink(String raw, AppLocalizations l10n) async {
+    var href = raw.trim();
+    if (href.startsWith('www.')) href = 'https://$href';
+    final uri = Uri.tryParse(href);
+    if (uri == null) return;
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.chatOpenLinkFailed)),
+      );
+    }
+  }
+
+  Future<void> _showMessageActions(
+    AppState s,
+    AppLocalizations l10n,
+    ChatMessage m,
+    String text, {
+    required bool isMe,
+  }) async {
+    final canCopy = m.payloadKind != PayloadKinds.image &&
+        m.payloadKind != PayloadKinds.audio &&
+        text.isNotEmpty &&
+        text != '…';
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (canCopy)
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: Text(l10n.chatCopy),
+                  onTap: () async {
+                    await Clipboard.setData(ClipboardData(text: text));
+                    if (ctx.mounted) Navigator.pop(ctx);
+                  },
+                ),
+              if (isMe &&
+                  (m.status == MessageStatus.failed ||
+                      m.status == MessageStatus.pending))
+                ListTile(
+                  leading: const Icon(Icons.refresh),
+                  title: Text(l10n.chatRetry),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    unawaited(_retryMessage(s, l10n, m));
+                  },
+                ),
+              if (isMe)
+                ListTile(
+                  leading: const Icon(Icons.delete_outline),
+                  title: Text(l10n.chatDeleteLocal),
+                  onTap: () async {
+                    Navigator.pop(ctx);
+                    await s.deleteLocalMessage(m.id);
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.chatDeletedLocalSnack)),
+                    );
+                    await _reloadMessages(force: true);
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _retryMessage(
+    AppState s,
+    AppLocalizations l10n,
+    ChatMessage m,
+  ) async {
+    if (_sendingOutbound) return;
+    setState(() => _sendingOutbound = true);
+    try {
+      final ok = await s.retryOutbound(m);
+      if (!mounted) return;
+      if (!ok) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.chatSendFailed)),
+        );
+      }
+      await _reloadMessages(force: true);
+    } finally {
+      if (mounted) setState(() => _sendingOutbound = false);
+    }
   }
 
   @override

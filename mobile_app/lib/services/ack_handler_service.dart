@@ -152,6 +152,7 @@ class AckHandlerService extends ChangeNotifier {
 
   bool _canUpgrade(MessageStatus current, MessageStatus next) {
     const order = {
+      MessageStatus.failed: -1,
       MessageStatus.pending: 0,
       MessageStatus.sent: 1,
       MessageStatus.relayed: 2,

@@ -2291,6 +2291,46 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  /// Mark outbound as failed (UI shows Retry). Local only.
+  Future<void> markMessageFailed(String msgId) async {
+    if (_saveMessageHistory) {
+      await db.updateMessageStatus(msgId, MessageStatus.failed.name);
+    }
+    final i = _sessionMessages.indexWhere((m) => m.id == msgId);
+    if (i >= 0) {
+      _sessionMessages[i] =
+          _sessionMessages[i].copyWith(status: MessageStatus.failed);
+    }
+    _bumpChatData();
+    notifyListeners();
+  }
+
+  /// Delete a message from this device only (not a remote unsend).
+  Future<void> deleteLocalMessage(String msgId) async {
+    _sessionMessages.removeWhere((m) => m.id == msgId);
+    if (_saveMessageHistory) {
+      await db.deleteMessageById(msgId);
+    }
+    _bumpChatData();
+    notifyListeners();
+  }
+
+  /// Re-route an outbound message that failed or is stuck pending.
+  Future<bool> retryOutbound(ChatMessage msg) async {
+    final pending = msg.copyWith(status: MessageStatus.pending);
+    await persistChatMessage(pending);
+    final isMedia = msg.payloadKind == PayloadKinds.audio ||
+        msg.payloadKind == PayloadKinds.image;
+    final ok = await routeOutbound(
+      pending,
+      internetOnly: isMedia && (isNostrOnline || isCloudOnline),
+    );
+    if (!ok) {
+      await markMessageFailed(msg.id);
+    }
+    return ok;
+  }
+
   /// After QR import: refresh nearby list + force Area presence so both sides
   /// can discover each other without waiting for the periodic timer.
   Future<void> onPeerImportedViaQr(String peerId) async {

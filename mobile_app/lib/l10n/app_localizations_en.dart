@@ -804,7 +804,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusPending => 'Pending';
 
   @override
-  String get statusSent => 'Transmitted';
+  String get statusSent => 'Sent';
 
   @override
   String get statusRelayed => 'Relayed';
@@ -814,6 +814,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusRead => 'Read';
+
+  @override
+  String get statusFailed => 'Failed';
+
+  @override
+  String get chatCopy => 'Copy';
+
+  @override
+  String get chatDeleteLocal => 'Delete on this device';
+
+  @override
+  String get chatDeletedLocalSnack => 'Deleted on this device';
+
+  @override
+  String get chatRetry => 'Retry';
+
+  @override
+  String get chatSendFailed => 'Not delivered — tap Retry';
+
+  @override
+  String get chatImageNeedInternet =>
+      'Image is large — connect to the internet to send';
+
+  @override
+  String get chatImageTooLargeOnline =>
+      'Image too large (max ~1.5MB after compression)';
+
+  @override
+  String get chatOpenLinkFailed => 'Could not open link';
 
   @override
   String get identityTitle => 'Identity';

@@ -1457,7 +1457,7 @@ abstract class AppLocalizations {
   /// No description provided for @statusSent.
   ///
   /// In en, this message translates to:
-  /// **'Transmitted'**
+  /// **'Sent'**
   String get statusSent;
 
   /// No description provided for @statusRelayed.
@@ -1477,6 +1477,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Read'**
   String get statusRead;
+
+  /// No description provided for @statusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get statusFailed;
+
+  /// No description provided for @chatCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get chatCopy;
+
+  /// No description provided for @chatDeleteLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete on this device'**
+  String get chatDeleteLocal;
+
+  /// No description provided for @chatDeletedLocalSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted on this device'**
+  String get chatDeletedLocalSnack;
+
+  /// No description provided for @chatRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get chatRetry;
+
+  /// No description provided for @chatSendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not delivered — tap Retry'**
+  String get chatSendFailed;
+
+  /// No description provided for @chatImageNeedInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Image is large — connect to the internet to send'**
+  String get chatImageNeedInternet;
+
+  /// No description provided for @chatImageTooLargeOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Image too large (max ~1.5MB after compression)'**
+  String get chatImageTooLargeOnline;
+
+  /// No description provided for @chatOpenLinkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open link'**
+  String get chatOpenLinkFailed;
 
   /// No description provided for @identityTitle.
   ///

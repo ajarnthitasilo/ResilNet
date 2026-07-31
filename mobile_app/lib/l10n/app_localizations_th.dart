@@ -795,19 +795,46 @@ class AppLocalizationsTh extends AppLocalizations {
   String get chatEmojiTooltip => 'อิโมจิ';
 
   @override
-  String get statusPending => 'Pending';
+  String get statusPending => 'รอส่ง';
 
   @override
-  String get statusSent => 'Transmitted';
+  String get statusSent => 'ส่งแล้ว';
 
   @override
-  String get statusRelayed => 'Relayed';
+  String get statusRelayed => 'ส่งต่อแล้ว';
 
   @override
-  String get statusDelivered => 'Delivered';
+  String get statusDelivered => 'ส่งถึงแล้ว';
 
   @override
-  String get statusRead => 'Read';
+  String get statusRead => 'อ่านแล้ว';
+
+  @override
+  String get statusFailed => 'ส่งไม่สำเร็จ';
+
+  @override
+  String get chatCopy => 'คัดลอก';
+
+  @override
+  String get chatDeleteLocal => 'ลบในเครื่องนี้';
+
+  @override
+  String get chatDeletedLocalSnack => 'ลบในเครื่องนี้แล้ว';
+
+  @override
+  String get chatRetry => 'ส่งซ้ำ';
+
+  @override
+  String get chatSendFailed => 'ส่งไม่สำเร็จ — แตะส่งซ้ำ';
+
+  @override
+  String get chatImageNeedInternet => 'รูปใหญ่ — ต้องมีเน็ตถึงจะส่งได้';
+
+  @override
+  String get chatImageTooLargeOnline => 'รูปใหญ่เกินไป (สูงสุด ~1.5MB หลังบีบ)';
+
+  @override
+  String get chatOpenLinkFailed => 'เปิดลิงก์ไม่สำเร็จ';
 
   @override
   String get identityTitle => 'ตัวตน (Identity)';
