@@ -527,7 +527,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get chatImageLabel => 'รูปภาพ';
 
   @override
-  String get chatImageTooLarge => 'รูปใหญ่เกินไป (สูงสุด ~180KB)';
+  String get chatImageTooLarge => 'รูปใหญ่เกินไป (สูงสุด ~120KB)';
 
   @override
   String get chatNostrExpiry => 'เก็บบน Nostr';
@@ -831,7 +831,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get chatImageNeedInternet => 'รูปใหญ่ — ต้องมีเน็ตถึงจะส่งได้';
 
   @override
-  String get chatImageTooLargeOnline => 'รูปใหญ่เกินไป (สูงสุด ~1.5MB หลังบีบ)';
+  String get chatImageTooLargeOnline => 'รูปใหญ่เกินไป (สูงสุด ~220KB หลังบีบ)';
 
   @override
   String get chatOpenLinkFailed => 'เปิดลิงก์ไม่สำเร็จ';

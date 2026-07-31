@@ -29,8 +29,9 @@ import 'qr_scanner_screen.dart';
 import 'voice_record_sheet.dart';
 
 /// Soft caps for chat images (raw bytes after picker compression).
-const _kImageMaxOfflineBytes = 180 * 1024;
-const _kImageMaxOnlineBytes = 1500 * 1024;
+// Must stay within MediaPartCodec Nostr part budget after seal (~2.3× raw).
+const _kImageMaxOfflineBytes = 120 * 1024;
+const _kImageMaxOnlineBytes = 220 * 1024;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.peerId});
@@ -467,10 +468,12 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     final online = s.isNostrOnline || s.isCloudOnline;
     final picker = ImagePicker();
+    // Compress aggressively — sealed envelope is ~2.3× raw and must fit
+    // MediaPartCodec.maxParts Nostr publishes or the send is refused.
     final file = await picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: online ? 1600 : 1024,
-      imageQuality: online ? 70 : 55,
+      maxWidth: online ? 1280 : 960,
+      imageQuality: online ? 55 : 45,
     );
     if (file == null) return;
     final bytes = await file.readAsBytes();
@@ -482,18 +485,15 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
     setState(() => _sendingOutbound = true);
-    if (bytes.length > _kImageMaxOnlineBytes) {
+    final maxBytes = online ? _kImageMaxOnlineBytes : _kImageMaxOfflineBytes;
+    if (bytes.length > maxBytes) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.chatImageTooLargeOnline)),
-      );
-      if (mounted) setState(() => _sendingOutbound = false);
-      return;
-    }
-    if (bytes.length > _kImageMaxOfflineBytes && !online) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.chatImageNeedInternet)),
+        SnackBar(
+          content: Text(
+            online ? l10n.chatImageTooLargeOnline : l10n.chatImageTooLarge,
+          ),
+        ),
       );
       if (mounted) setState(() => _sendingOutbound = false);
       return;
@@ -626,9 +626,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     if (m.payloadKind == PayloadKinds.image) {
       final local = m.content?.trim();
-      if (local != null &&
-          local.isNotEmpty &&
-          m.senderId == s.myUserId) {
+      if (local != null && local.isNotEmpty) {
         return local;
       }
       if (m.receiverId == s.myUserId) {

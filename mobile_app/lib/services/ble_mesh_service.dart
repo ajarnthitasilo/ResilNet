@@ -12,6 +12,7 @@ import '../core/resilnet_ack_codec.dart';
 import '../core/resilnet_payload_type.dart';
 import '../core/payload_kinds.dart';
 import '../models/area_presence.dart';
+import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
 import '../services/ack_handler_service.dart';
@@ -771,44 +772,68 @@ class BleMeshService extends ChangeNotifier {
       return false;
     }
 
-    final persist = _shouldPersistHistory();
-    if (persist) {
-      await _db.saveMessage(msg);
+    // Cache decrypted media plaintext locally so the recipient UI can render
+    // without re-decrypting on every chat rebuild (wire still has content=null).
+    var inbound = msg;
+    if (msg.receiverId == myUserId &&
+        (msg.payloadKind == PayloadKinds.image ||
+            msg.payloadKind == PayloadKinds.audio)) {
+      final c = crypto;
+      if (c != null) {
+        try {
+          final plain = c.decryptFromSender(
+            encryptedPayload: msg.encryptedPayload,
+            encryptedKey: msg.encryptedKey,
+          );
+          if (plain.isNotEmpty) {
+            inbound = msg.copyWith(content: plain);
+          }
+        } catch (e) {
+          debugPrint(
+            '[BleMesh] media decrypt for local cache failed id=${msg.id}: $e',
+          );
+        }
+      }
     }
 
-    if (msg.receiverId == myUserId) {
+    final persist = _shouldPersistHistory();
+    if (persist) {
+      await _db.saveMessage(inbound);
+    }
+
+    if (inbound.receiverId == myUserId) {
       final now = DateTime.now();
       if (persist) {
-        await _db.markMessagesDelivered([msg.id], now);
+        await _db.markMessagesDelivered([inbound.id], now);
       } else {
         _onEphemeralMessage?.call(
-          msg.copyWith(status: MessageStatus.delivered, deliveredAt: now),
+          inbound.copyWith(status: MessageStatus.delivered, deliveredAt: now),
         );
       }
-      if (msg.type == MessageType.direct && msg.senderId != myUserId) {
+      if (inbound.type == MessageType.direct && inbound.senderId != myUserId) {
         await ackQueue?.enqueueDelivered(
-          msgId: msg.id,
-          targetSenderId: msg.senderId,
+          msgId: inbound.id,
+          targetSenderId: inbound.senderId,
           at: now,
         );
       }
     } else {
       if (!persist) {
-        _onEphemeralMessage?.call(msg);
+        _onEphemeralMessage?.call(inbound);
       }
-      if (msg.ttl > 0) {
+      if (inbound.ttl > 0) {
         final relayed =
-            msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed);
+            inbound.copyWith(ttl: inbound.ttl - 1, status: MessageStatus.relayed);
         if (persist) {
           await _db.saveMessage(relayed);
-          await _db.updateMessageStatus(msg.id, MessageStatus.relayed.name);
+          await _db.updateMessageStatus(inbound.id, MessageStatus.relayed.name);
         } else {
           // Store-and-forward without history: one-shot BLE retransmit if linked.
           unawaited(sendDirectNow(relayed));
         }
       } else {
         debugPrint(
-          '[BleMesh] drop no-relay ttl=0 id=${msg.id} sender=${msg.senderId} receiver=${msg.receiverId}',
+          '[BleMesh] drop no-relay ttl=0 id=${inbound.id} sender=${inbound.senderId} receiver=${inbound.receiverId}',
         );
       }
     }
@@ -909,6 +934,28 @@ class BleMeshService extends ChangeNotifier {
       await _sendBleChunkedMessage(msg);
     } catch (e) {
       debugPrint('[BleMesh] sendDirectNow failed id=${msg.id}: $e');
+    }
+  }
+
+  /// Send a dedicated batched ACK frame over the open BLE link.
+  Future<bool> sendAckBatch(BatchAckPacket packet) async {
+    final deviceId = _connectedDeviceId;
+    if (deviceId == null) {
+      debugPrint('[BleMesh] sendAckBatch skipped — no connection');
+      return false;
+    }
+    try {
+      final bytes = ResilNetAckCodec.encodeBatchPacket(packet);
+      final c = QualifiedCharacteristic(
+        serviceId: serviceUuid,
+        characteristicId: characteristicUuid,
+        deviceId: deviceId,
+      );
+      await _ble.writeCharacteristicWithResponse(c, value: bytes);
+      return true;
+    } catch (e) {
+      debugPrint('[BleMesh] sendAckBatch failed: $e');
+      return false;
     }
   }
 

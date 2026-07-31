@@ -3430,9 +3430,19 @@ class AppState extends ChangeNotifier {
     if (isMedia &&
         (internetOnly || isNostrOnline || isCloudOnline) &&
         dto.payload.length > MediaPartCodec.singleMaxBytes) {
+      final partsNeeded =
+          (dto.payload.length / MediaPartCodec.maxSliceBytes).ceil();
+      if (partsNeeded > MediaPartCodec.maxParts) {
+        debugPrint(
+          '[MediaPart] refuse id=${outbound.id} sealed=${dto.payload.length} '
+          'parts=$partsNeeded > ${MediaPartCodec.maxParts}',
+        );
+        notifyListeners();
+        return false;
+      }
       debugPrint(
         '[MediaPart] split id=${outbound.id} dto=${dto.payload.length} '
-        'parts~${(dto.payload.length / MediaPartCodec.maxSliceBytes).ceil()}',
+        'parts~$partsNeeded',
       );
       final ok = await _publishSealedMediaParts(outbound, dto);
       notifyListeners();
@@ -3783,10 +3793,41 @@ class AppState extends ChangeNotifier {
       ttl: dto.ttl,
       payloadTag: PayloadTagDto.ack,
     );
-    final ts = routed.transports.isNotEmpty
+    // routeMessage only selects transports — must actually publish/hand-off
+    // (same as routeOutbound). Returning "not offlineQueue" without sending
+    // made flush drop DELIVERED/READ ACKs while the sender stayed on "sent".
+    final transports = routed.transports.isNotEmpty
         ? routed.transports
-        : [routed.transport];
-    return !ts.every((t) => t == TransportTypeDto.offlineQueue);
+        : <TransportTypeDto>[routed.transport];
+    final toSend = routed.packet;
+    var ok = false;
+    for (final transport in transports) {
+      switch (transport) {
+        case TransportTypeDto.nostr:
+          if (await _publishOutboundViaNostr(toSend)) {
+            ok = true;
+          }
+        case TransportTypeDto.bluetoothMesh:
+        case TransportTypeDto.loRa:
+          if (await (_mesh?.sendAckBatch(packet) ?? false)) {
+            ok = true;
+          }
+        case TransportTypeDto.offlineQueue:
+          break;
+      }
+    }
+    if (resilnet.isGatewayWifiActive) {
+      if (await resilnet.sendViaGatewayUdp(toSend)) {
+        ok = true;
+      }
+    }
+    if (!ok) {
+      debugPrint(
+        '[ACK] send batch failed receiver=${packet.receiverId} '
+        'count=${packet.batchAcks.length} transports=$transports',
+      );
+    }
+    return ok;
   }
 
   Future<void> refreshPermissions({bool startRadiosIfGranted = true}) async {

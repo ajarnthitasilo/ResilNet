@@ -18,8 +18,14 @@ class MediaPartCodec {
   /// Above this sealed DTO size, use multi-part Nostr instead of one event.
   static const singleMaxBytes = 36 * 1024;
 
-  /// Hard cap on number of Nostr parts (~30s AAC after seal).
-  static const maxParts = 16;
+  /// Hard cap on number of Nostr parts.
+  ///
+  /// Sealed chat JSON is ~2.3× raw image bytes (base64 + AES + envelope).
+  /// 24 × 24KiB ≈ 576KiB sealed ≈ ~250KiB JPEG after compression.
+  static const maxParts = 24;
+
+  /// Approx max raw media bytes that fit in [maxParts] after seal overhead.
+  static const maxRawMediaBytes = 220 * 1024;
 
   static bool isMediaPartPayload(Uint8List payload) {
     try {

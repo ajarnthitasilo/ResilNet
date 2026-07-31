@@ -249,7 +249,7 @@
   "screenshotTaken": "* you took a screenshot *",
   "chatAttachImage": "Attach image",
   "chatImageLabel": "Image",
-  "chatImageTooLarge": "Image too large (max ~180KB)",
+  "chatImageTooLarge": "Image too large (max ~120KB)",
   "chatNostrExpiry": "Nostr keep",
   "geoPublicComposeHint": "Send to {channel} — public",
   "@geoPublicComposeHint": {
@@ -421,7 +421,7 @@
   "chatRetry": "Retry",
   "chatSendFailed": "Not delivered — tap Retry",
   "chatImageNeedInternet": "Image is large — connect to the internet to send",
-  "chatImageTooLargeOnline": "Image too large (max ~1.5MB after compression)",
+  "chatImageTooLargeOnline": "Image too large (max ~220KB after compression)",
   "chatOpenLinkFailed": "Could not open link",
   "identityTitle": "Identity",
   "identityScanTooltip": "Scan QR with camera",
