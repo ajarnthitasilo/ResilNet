@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "appVersion": "1.9.46",
+  "appVersion": "1.9.49",
   "minCompatibleVersion": "1.9.0",
-  "updatedAt": "2026-07-30",
+  "updatedAt": "2026-07-31",
   "artifacts": {
     "standaloneNode": {
       "file": "resilnet_esp32_standalone.bin",
       "sizeBytes": 694816,
-      "sha256": "1f697ee72f86dfe9d60563a09ab9bef6127b3f01d4982de7126f56bd73c92e0e",
+      "sha256": "e475ba48772c9fe05e72a15c774ab6a00307733de6153ebe9d7efc5c70acfac2",
       "platformioEnv": "standalone",
       "title": "ESP32 Standalone Node (BLE Mule + OTA)"
     },
     "loraGateway": {
       "file": "resilnet_esp32_lora_gateway.bin",
-      "sizeBytes": 1086128,
-      "sha256": "3650b6c6a772eacabe4a9dc2aeb282ab4c67f36feb270de83e95d21e9e848aa9",
+      "sizeBytes": 1088048,
+      "sha256": "925750a098f562c6a1356c7581c8468526090691c0b1d68a65fa46112bffff7d",
       "platformioEnv": "lora_gateway",
       "title": "ESP32 LoRa Gateway (BLE \u2194 LoRa + OTA)"
     }

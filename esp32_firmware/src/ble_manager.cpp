@@ -7,11 +7,14 @@
 
 #include "config.h"
 #include "lora_manager.h"
+#include "lora_store_forward.h"
 #include "ota_ble_service.h"
 #include "ota_config.h"
 #include "transport_router.h"
+#include "wifi_udp_bridge.h"
 
 static BleGatewayManager s_ble;
+static NimBLEServer* s_server = nullptr;
 static NimBLECharacteristic* s_txChar = nullptr;
 
 BleGatewayManager& bleGateway() { return s_ble; }
@@ -69,11 +72,17 @@ bool BleGatewayManager::begin() {
 
 void BleGatewayManager::setupServer() {
   auto* server = NimBLEDevice::createServer();
+  s_server = server;
   auto* service = server->createService(RESILNET_LORA_SERVICE_UUID);
 
   auto* info = service->createCharacteristic(
       RESILNET_LORA_INFO_CHAR_UUID, NIMBLE_PROPERTY::READ);
-  info->setValue("{\"role\":\"gateway\",\"proto\":1,\"ota\":1}");
+  // "mesh":1 = รองรับ LoRa multi-hop relay — client เก่ามองข้าม field ที่ไม่รู้จัก
+#if LORA_MESH_RELAY_ENABLE
+  info->setValue("{\"role\":\"gateway\",\"proto\":1,\"ota\":1,\"mesh\":1}");
+#else
+  info->setValue("{\"role\":\"gateway\",\"proto\":1,\"ota\":1,\"mesh\":0}");
+#endif
 
   auto* rx = service->createCharacteristic(
       RESILNET_LORA_RX_CHAR_UUID,
@@ -105,10 +114,33 @@ void BleGatewayManager::notifyPacketToPhone(const ResilNetRadioPacket& pkt) {
   Serial.printf("[BLE] notify phone len=%u\n", (unsigned)idx);
 }
 
+bool BleGatewayManager::phoneConnected() const {
+  return s_server && s_server->getConnectedCount() > 0;
+}
+
 void BleGatewayManager::taskBle(void* arg) {
   (void)arg;
   while (true) {
     vTaskDelay(pdMS_TO_TICKS(1000));
+
+#if LORA_SNF_ENABLE
+    // Replay คิว store-and-forward เมื่อมี client กลับมาเชื่อมต่อ
+    // (poll ทุก 1 วิ — หลัง connect phone มีเวลา subscribe notify ก่อน)
+    if (!s_ble.phoneConnected() && !wifiUdpBridge().hasStations()) continue;
+
+    ResilNetRadioPacket pkt;
+    size_t replayed = 0;
+    while (loraStoreForward().popOldest(pkt)) {
+      s_ble.notifyPacketToPhone(pkt);
+      wifiUdpBridge().broadcastPacket(pkt);
+      replayed++;
+      vTaskDelay(pdMS_TO_TICKS(LORA_SNF_REPLAY_GAP_MS));
+    }
+    if (replayed > 0) {
+      Serial.printf("[SnF] replayed %u packet(s) to client\n",
+                    (unsigned)replayed);
+    }
+#endif
   }
 }
 

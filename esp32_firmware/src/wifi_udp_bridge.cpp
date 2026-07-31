@@ -133,6 +133,10 @@ void WifiUdpBridge::onStationDisconnected() {
                 WiFi.softAPgetStationNum());
 }
 
+bool WifiUdpBridge::hasStations() const {
+  return _apActive && WiFi.softAPgetStationNum() > 0;
+}
+
 void WifiUdpBridge::onBleActivity() {
   _apStoppedAtMs = 0;
   ensureApRunning();

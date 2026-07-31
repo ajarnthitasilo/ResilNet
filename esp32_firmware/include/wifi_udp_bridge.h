@@ -18,6 +18,9 @@ class WifiUdpBridge {
 
   bool isApActive() const { return _apActive; }
 
+  /// มีสถานี Wi-Fi (มือถือ) เกาะ SoftAP อยู่หรือไม่
+  bool hasStations() const;
+
   /// เรียกเมื่อมีสถานี Wi-Fi เชื่อมต่อ / ตัดการเชื่อมต่อ
   void onStationConnected();
   void onStationDisconnected();

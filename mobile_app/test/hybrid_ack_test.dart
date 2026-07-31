@@ -234,5 +234,150 @@ void main() {
       final row = await db.getMessageRowById('dup-msg');
       expect(row?['status'], MessageStatus.delivered.name);
     });
+
+    test('Session outbound (history OFF) receives delivered+read via callbacks',
+        () async {
+      const sender = 'sender-me';
+      const receiver = 'receiver-them';
+      final ts = DateTime.utc(2026, 7, 12, 14, 0);
+
+      var session = _outboundMsg(
+        id: 'session-msg',
+        senderId: sender,
+        receiverId: receiver,
+      );
+      final applied = <(String, MessageStatus)>[];
+
+      final sessionHandler = AckHandlerService(
+        database: db,
+        myUserId: sender,
+        findOutboundExtra: (id) => id == session.id ? session : null,
+        applyOutboundStatus: (id, status, at) {
+          applied.add((id, status));
+          session = session.copyWith(
+            status: status,
+            deliveredAt: status == MessageStatus.delivered ||
+                    status == MessageStatus.read
+                ? at
+                : session.deliveredAt,
+            readAt: status == MessageStatus.read ? at : session.readAt,
+          );
+        },
+      );
+
+      await sessionHandler.handleBatchPacket(
+        BatchAckPacket(
+          senderId: receiver,
+          receiverId: sender,
+          batchAcks: [
+            AckEntry(
+              msgId: 'session-msg',
+              type: AckType.delivered,
+              timestamp: ts.millisecondsSinceEpoch,
+              targetSenderId: sender,
+            ),
+          ],
+        ),
+      );
+      expect(session.status, MessageStatus.delivered);
+      expect(applied, [('session-msg', MessageStatus.delivered)]);
+
+      await sessionHandler.handleBatchPacket(
+        BatchAckPacket(
+          senderId: receiver,
+          receiverId: sender,
+          batchAcks: [
+            AckEntry(
+              msgId: 'session-msg',
+              type: AckType.read,
+              timestamp: ts.millisecondsSinceEpoch + 1,
+              targetSenderId: sender,
+            ),
+          ],
+        ),
+      );
+      expect(session.status, MessageStatus.read);
+      expect(applied.last, ('session-msg', MessageStatus.read));
+    });
+
+    test('Missing outbound does not burn dedup — retry applies after remember',
+        () async {
+      const sender = 'sender-me';
+      const receiver = 'receiver-them';
+      final ts = DateTime.utc(2026, 7, 12, 15, 0);
+
+      ChatMessage? memory;
+      final applyLog = <MessageStatus>[];
+      final handler = AckHandlerService(
+        database: db,
+        myUserId: sender,
+        findOutboundExtra: (id) => id == 'resilient-msg' ? memory : null,
+        applyOutboundStatus: (id, status, at) {
+          applyLog.add(status);
+          memory = memory?.copyWith(status: status, readAt: at);
+        },
+      );
+
+      final packet = BatchAckPacket(
+        senderId: receiver,
+        receiverId: sender,
+        batchAcks: [
+          AckEntry(
+            msgId: 'resilient-msg',
+            type: AckType.read,
+            timestamp: ts.millisecondsSinceEpoch,
+            targetSenderId: sender,
+          ),
+        ],
+      );
+
+      await handler.handleBatchPacket(packet);
+      expect(applyLog, isEmpty);
+
+      memory = _outboundMsg(
+        id: 'resilient-msg',
+        senderId: sender,
+        receiverId: receiver,
+      );
+      await handler.handleBatchPacket(packet);
+      expect(applyLog, [MessageStatus.read]);
+      expect(memory?.status, MessageStatus.read);
+    });
+  });
+
+  group('AckQueueManager READ enqueue', () {
+    late DatabaseService db;
+
+    setUp(() async {
+      db = DatabaseService();
+      await db.initForTest();
+    });
+
+    test('enqueueRead + flush sends READ to original sender', () async {
+      final flushed = <BatchAckPacket>[];
+      final mgr = AckQueueManager(
+        database: db,
+        myUserId: 'user-me',
+        isHighSpeedTransport: () => true,
+        sendAckBatch: (packet) async {
+          flushed.add(packet);
+          return true;
+        },
+        wifiFlushDelay: const Duration(milliseconds: 40),
+      );
+
+      await mgr.enqueueRead(
+        msgId: 'incoming-1',
+        targetSenderId: 'peer-sender',
+      );
+      await mgr.flush();
+
+      expect(flushed, hasLength(1));
+      expect(flushed.first.receiverId, 'peer-sender');
+      expect(flushed.first.batchAcks.single.type, AckType.read);
+      expect(flushed.first.batchAcks.single.msgId, 'incoming-1');
+      expect(mgr.pendingCount, 0);
+      mgr.dispose();
+    });
   });
 }

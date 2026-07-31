@@ -1,7 +1,7 @@
 #pragma once
 
 // Keep in sync with mobile_app pubspec version when cutting a firmware release.
-#define RESILNET_FW_VERSION "1.9.46"
+#define RESILNET_FW_VERSION "1.9.49"
 
 // UUID ต้องตรงกับ mobile_app/lib/core/resilnet_protocol.dart
 #define RESILNET_NODE_SERVICE_UUID     "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
@@ -55,7 +55,57 @@
 #define TASK_LORA_TX_PRIO    2
 #define TASK_BLE_PRIO        1
 #define LORA_TX_QUEUE_LEN    8
-#define DEDUP_CACHE_SIZE     20
+
+// ขยาย cache กัน relay ซ้ำเมื่อมี chunked transfer หลายชิ้นค้างอยู่ในอากาศ
+// (64 × 16 ไบต์ = 1KB RAM)
+#ifndef DEDUP_CACHE_SIZE
+#define DEDUP_CACHE_SIZE     64
+#endif
+
+// ─── LoRa mesh relay (multi-hop) ────────────────────────────────────────────
+/// 1 = gateway relay แพ็กเก็ต LoRa ต่อ (multi-hop mesh)
+/// 0 = พฤติกรรมเดิมก่อน relay: bridge BLE/UDP ↔ LoRa อย่างเดียว
+#ifndef LORA_MESH_RELAY_ENABLE
+#define LORA_MESH_RELAY_ENABLE 1
+#endif
+
+/// Random jitter ก่อน relay — ลดการชนคลื่นเมื่อหลาย gateway ได้ยินแพ็กเก็ตเดียวกัน
+#define LORA_RELAY_JITTER_MIN_MS  50
+#define LORA_RELAY_JITTER_SPAN_MS 151  // สุ่มช่วง 50–200 ms
+
+// ─── Relay safety caps ──────────────────────────────────────────────────────
+// ย่านไทย AS923 (920–925 MHz ตามประกาศ กสทช.) — ใช้ airtime อย่างประหยัด:
+// จำกัดจำนวน relay ต่อหน้าต่างเวลา กัน broadcast storm ตอนโหลดหนัก
+// หมายเหตุ: จำกัดเฉพาะ *relay* — ทราฟฟิกที่ phone/UDP ของ node นี้ส่งเอง
+// ไม่ถูกจำกัด เพื่อไม่กระทบพฤติกรรมเดิม
+#define LORA_RELAY_WINDOW_MS      10000UL
+#define LORA_RELAY_MAX_PER_WINDOW 20
+
+/// เพดาน TTL ของแพ็กเก็ตที่ relay — กันแพ็กเก็ต TTL สูงผิดปกติ (บั๊ก/ปลอม)
+/// วนอยู่ใน mesh นานเกินนโยบาย (สอดคล้อง RESILNET_DEFAULT_TTL)
+#define LORA_RELAY_TTL_CAP (RESILNET_DEFAULT_TTL - 1)
+
+// ─── LoRa store-and-forward (คิว RAM บน gateway) ────────────────────────────
+/// 1 = เก็บแพ็กเก็ตที่รับจาก LoRa ขณะไม่มี phone/UDP client แล้ว replay
+///     เมื่อ client กลับมาเชื่อมต่อ (opaque — ไม่แตะ E2EE payload)
+/// 0 = พฤติกรรมเดิม: client ไม่อยู่ = แพ็กเก็ตหาย (best-effort notify)
+#ifndef LORA_SNF_ENABLE
+#define LORA_SNF_ENABLE 1
+#endif
+#define LORA_SNF_MAX_ENTRIES  32  // 32 × ~250B ≈ 8KB RAM
+#define LORA_SNF_ENTRY_TTL_MS (30UL * 60UL * 1000UL)  // เก็บสูงสุด 30 นาที
+#define LORA_SNF_REPLAY_GAP_MS 30  // เว้นช่วงระหว่าง replay กัน BLE ล้น
+
+// ─── Gateway heartbeat (opt-in) ─────────────────────────────────────────────
+/// 1 = ส่ง heartbeat "HB|<bat>" ทุก LORA_HEARTBEAT_INTERVAL_MS สำหรับดูสถานะ
+/// mesh ผ่าน Serial ของ node ข้างเคียง — ปิดเป็นค่าเริ่มต้นเพื่อไม่กิน airtime
+/// (heartbeat ไม่ถูก relay และแอปมองข้าม payload ที่ไม่รู้จักอยู่แล้ว)
+#ifndef LORA_HEARTBEAT_ENABLE
+#define LORA_HEARTBEAT_ENABLE 0
+#endif
+#define LORA_HEARTBEAT_INTERVAL_MS (5UL * 60UL * 1000UL)
+#define TASK_HEARTBEAT_STACK 3072
+#define TASK_HEARTBEAT_PRIO  1
 
 #define RESILNET_LORA_SERVICE_UUID "d4e5f6a7-b8c9-4012-def0-123456789abc"
 #define RESILNET_LORA_RX_CHAR_UUID "e5f6a7b8-c9d0-4123-ef01-23456789abcd"

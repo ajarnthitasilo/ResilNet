@@ -151,6 +151,7 @@ static void setupMuleBle() {
 #if defined(NODE_TYPE_LORA_GATEWAY)
 #include "ble_manager.h"
 #include "lora_manager.h"
+#include "lora_store_forward.h"
 #include "packet.h"
 #include "transport_router.h"
 #include "wifi_udp_bridge.h"
@@ -159,11 +160,32 @@ static void onLoraRxGateway(const ResilNetRadioPacket& pkt, void* /*user*/) {
   transportForwardFromLora(pkt);
 }
 
+#if LORA_HEARTBEAT_ENABLE
+static void taskGatewayHeartbeat(void* /*arg*/) {
+  Serial.println("[Gateway] TaskHeartbeat started");
+  while (true) {
+    vTaskDelay(pdMS_TO_TICKS(LORA_HEARTBEAT_INTERVAL_MS));
+
+    ResilNetRadioPacket hb{};
+    resilnet_build_heartbeat(hb, lora().readBatteryPercent());
+    // บันทึก id ตัวเองกันสับสนถ้ามี echo — node อื่นไม่ relay heartbeat อยู่แล้ว
+    lora().dedupCheckAndRegister(hb.packet_id);
+    Serial.println("[Gateway] sending heartbeat");
+    lora().enqueueTx(hb);
+  }
+}
+#endif
+
 static void setupGateway() {
   if (!lora().begin()) {
     Serial.println("[FATAL] LoRa init failed");
     while (true) delay(1000);
   }
+#if LORA_SNF_ENABLE
+  if (!loraStoreForward().begin()) {
+    Serial.println("[WARN] SnF init failed — store-and-forward disabled");
+  }
+#endif
   lora().setRxCallback(onLoraRxGateway, nullptr);
   lora().startTasks();
   if (!bleGateway().begin()) {
@@ -176,6 +198,18 @@ static void setupGateway() {
   } else {
     wifiUdpBridge().startTask();
   }
+
+#if LORA_HEARTBEAT_ENABLE
+  xTaskCreatePinnedToCore(taskGatewayHeartbeat, "TaskHeartbeat",
+                          TASK_HEARTBEAT_STACK, nullptr, TASK_HEARTBEAT_PRIO,
+                          nullptr, 0);
+#endif
+
+#if LORA_MESH_RELAY_ENABLE
+  Serial.println("[Gateway] LoRa mesh relay: ON");
+#else
+  Serial.println("[Gateway] LoRa mesh relay: OFF");
+#endif
 }
 #endif
 

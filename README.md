@@ -2,8 +2,9 @@
 
 **ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), and long-range sync over public **Nostr** relays.
 
-**Current app version:** `1.9.48`  
-**Bundled ESP32 firmware baseline:** `1.9.46` (hybrid online/offline delivery)
+**Current app version:** `1.9.49`  
+**ESP32 firmware (releases/):** `1.9.49` (LoRa mesh relay + store-and-forward)  
+**Bundled ESP32 firmware baseline:** `1.9.49`
 
 ## Project layout
 
@@ -30,6 +31,7 @@ ResilNet/
   - **Far / Internet:** Nostr relays with local offline queue (store locally, flush when online)
 - **Rust-powered core:** Deduplication, hybrid fan-out routing, and queue handling via FFI.
 - **E2EE 1:1 messaging:** Sealed private chats with delivery + read receipts; longer voice notes use chunked **MediaPart** payloads over Nostr.
+- **ResilNet LoRa mesh relay:** LoRa gateways multi-hop opaque `ResilNetRadioPacket` frames (TTL + dedupe + rate cap + optional store-and-forward when no phone is connected). **Not** Meshtastic-compatible — ResilNet protocol only. Disable with `-DLORA_MESH_RELAY_ENABLE=0`.
 - **Public mesh bulletin (#mesh):** Plaintext, self-signed announcements readable by anyone in radio range — no prior key exchange. ESP32 mule nodes store-and-forward bulletins (3-day TTL) so late joiners still receive them offline.
 - **Community board invites:** Owner shares a readable invite text, QR, or `resilnet://board/invite?...` deep link (compact public metadata only — never the board private key).
 - **Hybrid firmware delivery:** Online-first download, then verified local cache, then **bundled baseline** assets for offline flashing (SHA-256 + `minCompatibleVersion` checks). See `releases/firmware/README.md`.
@@ -43,7 +45,7 @@ Pre-built binaries live in `releases/firmware/` (also bundled in the app under `
 | Artifact | Role |
 |----------|------|
 | `resilnet_esp32_standalone.bin` | BLE data mule + store-and-forward + OTA |
-| `resilnet_esp32_lora_gateway.bin` | BLE ↔ LoRa bridge + OTA |
+| `resilnet_esp32_lora_gateway.bin` | BLE ↔ LoRa bridge + multi-hop mesh relay + OTA |
 
 ### Build & flash (PlatformIO)
 
@@ -58,10 +60,10 @@ pio run -e standalone -t upload
 Refresh release artifacts + hashes:
 
 ```bash
-./tool/sync_firmware_release.sh 1.9.46
+./tool/sync_firmware_release.sh 1.9.49
 ```
 
-Nodes advertise over BLE, queue on LittleFS, and sync with the phone. Later updates can use in-app BLE OTA when the board firmware supports it.
+LoRa gateway mesh notes (AS923 ~923.5 MHz): attach an antenna before TX. Relay uses TTL decrement, `packet_id` dedupe, and an airtime rate cap. Phone chat TTL defaults (message=5, ACK=3) are enough for multi-hop without app changes.
 
 ---
 

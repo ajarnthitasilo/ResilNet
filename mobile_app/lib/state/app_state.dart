@@ -513,7 +513,7 @@ class AppState extends ChangeNotifier {
       await resilnet.subscribeIncoming();
       await _attachRustIncomingHandler();
 
-      _ackHandler = AckHandlerService(database: db, myUserId: crypto.myUserId);
+      _ackHandler = _buildAckHandler();
       _onAckHandlerChanged = () {
         _bumpChatData();
         notifyListeners();
@@ -2208,6 +2208,41 @@ class AppState extends ChangeNotifier {
     _bumpChatData();
   }
 
+  ChatMessage? _findSessionOutbound(String msgId) {
+    for (final m in _sessionMessages) {
+      if (m.id == msgId && m.senderId == myUserId) return m;
+    }
+    return null;
+  }
+
+  void _applySessionOutboundStatus(
+    String msgId,
+    MessageStatus status,
+    DateTime at,
+  ) {
+    final i = _sessionMessages.indexWhere((m) => m.id == msgId);
+    if (i < 0) return;
+    final m = _sessionMessages[i];
+    if (m.senderId != myUserId) return;
+    _sessionMessages[i] = m.copyWith(
+      status: status,
+      deliveredAt: status == MessageStatus.delivered ||
+              status == MessageStatus.read
+          ? at
+          : m.deliveredAt,
+      readAt: status == MessageStatus.read ? at : m.readAt,
+    );
+  }
+
+  AckHandlerService _buildAckHandler() {
+    return AckHandlerService(
+      database: db,
+      myUserId: crypto.myUserId,
+      findOutboundExtra: _findSessionOutbound,
+      applyOutboundStatus: _applySessionOutboundStatus,
+    );
+  }
+
   /// Conversation view: SQLite history (if enabled) + sealed session-only envelopes.
   Future<List<ChatMessage>> messagesForConversation(String a, String b) async {
     final persisted = _saveMessageHistory
@@ -3236,7 +3271,7 @@ class AppState extends ChangeNotifier {
 
     await crypto.wipeAndRegenerate();
 
-    _ackHandler = AckHandlerService(database: db, myUserId: crypto.myUserId);
+    _ackHandler = _buildAckHandler();
     _onAckHandlerChanged = () {
       _bumpChatData();
       notifyListeners();
@@ -3625,6 +3660,7 @@ class AppState extends ChangeNotifier {
     final unread = await db.getUnreadIncomingMessages(myUserId, peerId);
     final now = DateTime.now();
     var changed = false;
+    final enqueuedIds = <String>{};
     if (unread.isNotEmpty) {
       debugPrint(
         '[ACK] markConversationRead peer=$peerId unread=${unread.length}',
@@ -3636,15 +3672,29 @@ class AppState extends ChangeNotifier {
           targetSenderId: m.senderId,
           at: now,
         );
+        enqueuedIds.add(m.id);
       }
       changed = true;
     }
+    // History OFF: incoming lives only in `_sessionMessages` — must enqueue
+    // READ here or the sender never gets a receipt.
     for (var i = 0; i < _sessionMessages.length; i++) {
       final m = _sessionMessages[i];
       if (m.senderId != peerId || m.receiverId != myUserId) continue;
       if (m.type != MessageType.direct) continue;
       if (!PayloadKinds.isPrivateDm(m.payloadKind)) continue;
       if (m.status == MessageStatus.read) continue;
+      if (!enqueuedIds.contains(m.id)) {
+        debugPrint(
+          '[ACK] markConversationRead session READ msgId=${m.id} peer=$peerId',
+        );
+        await _ackQueue?.enqueueRead(
+          msgId: m.id,
+          targetSenderId: m.senderId,
+          at: now,
+        );
+        enqueuedIds.add(m.id);
+      }
       _sessionMessages[i] = m.copyWith(status: MessageStatus.read, readAt: now);
       changed = true;
     }

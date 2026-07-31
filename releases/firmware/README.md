@@ -5,7 +5,7 @@ Pre-built `.bin` artifacts for BLE OTA from the mobile app (Settings → Firmwar
 | File | Role | Build env |
 |------|------|-----------|
 | `resilnet_esp32_standalone.bin` | BLE Data Mule + store-and-forward | `esp32_firmware` → `standalone` |
-| `resilnet_esp32_lora_gateway.bin` | BLE ↔ LoRa gateway + UDP bridge | `esp32_firmware` → `lora_gateway` |
+| `resilnet_esp32_lora_gateway.bin` | BLE ↔ LoRa gateway + UDP + multi-hop mesh relay | `esp32_firmware` → `lora_gateway` |
 
 `manifest.json` lists SHA-256, app version alignment, and `minCompatibleVersion`.
 
@@ -20,7 +20,7 @@ and resolves firmware in this order:
 
 Rules:
 
-- Baseline (currently **1.9.44**) is an *offline emergency fallback*, not the latest forever.
+- Baseline (currently **1.9.49**) is an *offline emergency fallback*, not the latest forever.
   Future firmware releases go online-only; the in-app baseline is NOT updated every release.
 - If the baseline version is below `minCompatibleVersion`, flashing is blocked and the user
   is told to go online for a newer build.

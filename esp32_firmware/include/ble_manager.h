@@ -15,6 +15,9 @@ class BleGatewayManager {
   /// แจ้งแพ็กเก็ตที่รับจาก LoRa ไปยังมือถือ (Notification)
   void notifyPacketToPhone(const ResilNetRadioPacket& pkt);
 
+  /// มีมือถือเชื่อมต่อ BLE อยู่หรือไม่
+  bool phoneConnected() const;
+
  private:
   static void taskBle(void* arg);
   void setupServer();

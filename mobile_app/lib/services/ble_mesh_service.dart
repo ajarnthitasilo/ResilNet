@@ -774,14 +774,16 @@ class BleMeshService extends ChangeNotifier {
     final persist = _shouldPersistHistory();
     if (persist) {
       await _db.saveMessage(msg);
-    } else {
-      _onEphemeralMessage?.call(msg);
     }
 
     if (msg.receiverId == myUserId) {
       final now = DateTime.now();
       if (persist) {
         await _db.markMessagesDelivered([msg.id], now);
+      } else {
+        _onEphemeralMessage?.call(
+          msg.copyWith(status: MessageStatus.delivered, deliveredAt: now),
+        );
       }
       if (msg.type == MessageType.direct && msg.senderId != myUserId) {
         await ackQueue?.enqueueDelivered(
@@ -790,20 +792,25 @@ class BleMeshService extends ChangeNotifier {
           at: now,
         );
       }
-    } else if (msg.ttl > 0) {
-      final relayed =
-          msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed);
-      if (persist) {
-        await _db.saveMessage(relayed);
-        await _db.updateMessageStatus(msg.id, MessageStatus.relayed.name);
-      } else {
-        // Store-and-forward without history: one-shot BLE retransmit if linked.
-        unawaited(sendDirectNow(relayed));
-      }
     } else {
-      debugPrint(
-        '[BleMesh] drop no-relay ttl=0 id=${msg.id} sender=${msg.senderId} receiver=${msg.receiverId}',
-      );
+      if (!persist) {
+        _onEphemeralMessage?.call(msg);
+      }
+      if (msg.ttl > 0) {
+        final relayed =
+            msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed);
+        if (persist) {
+          await _db.saveMessage(relayed);
+          await _db.updateMessageStatus(msg.id, MessageStatus.relayed.name);
+        } else {
+          // Store-and-forward without history: one-shot BLE retransmit if linked.
+          unawaited(sendDirectNow(relayed));
+        }
+      } else {
+        debugPrint(
+          '[BleMesh] drop no-relay ttl=0 id=${msg.id} sender=${msg.senderId} receiver=${msg.receiverId}',
+        );
+      }
     }
     notifyListeners();
     return true;

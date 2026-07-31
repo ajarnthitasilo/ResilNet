@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 
 import '../core/resilnet_ack_codec.dart';
@@ -12,10 +10,19 @@ class AckHandlerService extends ChangeNotifier {
   AckHandlerService({
     required this.database,
     required this.myUserId,
+    this.findOutboundExtra,
+    this.applyOutboundStatus,
   });
 
   final DatabaseService database;
   final String myUserId;
+
+  /// Lookup outbound ที่ไม่อยู่ใน DB (history OFF → `_sessionMessages`)
+  final ChatMessage? Function(String msgId)? findOutboundExtra;
+
+  /// อัปเดตสถานะ outbound นอก DB (session) หลัง apply สำเร็จ
+  final void Function(String msgId, MessageStatus status, DateTime at)?
+      applyOutboundStatus;
 
   final Set<String> _processedAckKeys = {};
   static const _maxDedupCache = 4096;
@@ -66,16 +73,18 @@ class AckHandlerService extends ChangeNotifier {
     final read = <String, DateTime>{};
 
     for (final e in entries) {
-      if (_seen(e.dedupKey)) {
-        debugPrint('[ACK] drop duplicate key=${e.dedupKey}');
-        continue;
-      }
-
+      // Resolve outbound first — do NOT burn dedup when missing (history-off
+      // race / late session remember); otherwise a legitimate retry is suppressed.
       final msg = await _findOutboundMessage(e.msgId);
       if (msg == null) {
         debugPrint(
           '[ACK] drop msgId=${e.msgId} type=${e.type.wireName} reason=not-outbound-or-missing',
         );
+        continue;
+      }
+
+      if (_seen(e.dedupKey)) {
+        debugPrint('[ACK] drop duplicate key=${e.dedupKey}');
         continue;
       }
 
@@ -109,11 +118,21 @@ class AckHandlerService extends ChangeNotifier {
     if (delivered.isNotEmpty) {
       for (final entry in delivered.entries) {
         await database.markMessagesDelivered([entry.key], entry.value);
+        applyOutboundStatus?.call(
+          entry.key,
+          MessageStatus.delivered,
+          entry.value,
+        );
       }
     }
     if (read.isNotEmpty) {
       for (final entry in read.entries) {
         await database.markMessagesRead([entry.key], entry.value);
+        applyOutboundStatus?.call(
+          entry.key,
+          MessageStatus.read,
+          entry.value,
+        );
       }
     }
 
@@ -144,9 +163,12 @@ class AckHandlerService extends ChangeNotifier {
 
   Future<ChatMessage?> _findOutboundMessage(String msgId) async {
     final rows = await database.getMessageRowById(msgId);
-    if (rows == null) return null;
-    final msg = ChatMessage.fromMap(rows);
-    if (msg.senderId != myUserId) return null;
-    return msg;
+    if (rows != null) {
+      final msg = ChatMessage.fromMap(rows);
+      if (msg.senderId == myUserId) return msg;
+    }
+    final extra = findOutboundExtra?.call(msgId);
+    if (extra != null && extra.senderId == myUserId) return extra;
+    return null;
   }
 }

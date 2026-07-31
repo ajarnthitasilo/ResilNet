@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
+#include <freertos/semphr.h>
 
 #include "dedup_cache.h"
 #include "packet.h"
@@ -27,6 +28,12 @@ class LoRaManager {
 
   DedupCache& dedup() { return _dedup; }
 
+  /// ตรวจ + บันทึก packet_id (thread-safe) — คืน true ถ้าเป็น id ใหม่
+  ///
+  /// ใช้ทั้งขา RX (กัน relay ซ้ำ) และขา TX จาก phone/UDP (กัน ping-pong:
+  /// ถ้าไม่บันทึกตอนส่งเอง gateway ข้างเคียง relay กลับมาแล้วเราจะ relay ซ้ำ)
+  bool dedupCheckAndRegister(const uint8_t packet_id[16]);
+
   /// อ่านแบตจำลอง (0–100%) — ต่อ ADC จริงได้ภายหลัง
   uint8_t readBatteryPercent() const;
 
@@ -37,6 +44,7 @@ class LoRaManager {
   void onPacketReceived(const ResilNetRadioPacket& pkt);
 
   DedupCache _dedup;
+  SemaphoreHandle_t _dedup_mutex = nullptr;
   LoRaRxCallback _rx_cb = nullptr;
   void* _rx_user = nullptr;
   QueueHandle_t _tx_queue = nullptr;

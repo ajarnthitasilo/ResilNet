@@ -34,6 +34,12 @@ bool LoRaManager::begin() {
     return false;
   }
 
+  _dedup_mutex = xSemaphoreCreateMutex();
+  if (!_dedup_mutex) {
+    Serial.println("[LoRa] dedup mutex create failed");
+    return false;
+  }
+
   _ready = true;
   Serial.println("[LoRa] Radio ready");
   return true;
@@ -69,9 +75,17 @@ bool LoRaManager::transmitNow(const ResilNetRadioPacket& pkt) {
   return true;
 }
 
+bool LoRaManager::dedupCheckAndRegister(const uint8_t packet_id[16]) {
+  if (!_dedup_mutex) return _dedup.accept(packet_id);
+  xSemaphoreTake(_dedup_mutex, portMAX_DELAY);
+  const bool fresh = _dedup.accept(packet_id);
+  xSemaphoreGive(_dedup_mutex);
+  return fresh;
+}
+
 void LoRaManager::onPacketReceived(const ResilNetRadioPacket& pkt) {
   // กรองซ้ำก่อนประมวลผลต่อ
-  if (!_dedup.accept(pkt.packet_id)) {
+  if (!dedupCheckAndRegister(pkt.packet_id)) {
     Serial.println("[LoRa] dedup drop");
     return;
   }
