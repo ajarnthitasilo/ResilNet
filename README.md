@@ -15,9 +15,23 @@ ResilNet/
 ├── esp32_firmware/        # ESP32 standalone BLE mule + LoRa gateway (PlatformIO)
 ├── esp32_lora_firmware/   # Legacy / alternate LoRa firmware tree
 ├── releases/firmware/     # Pre-built .bin artifacts + manifest (SHA-256)
+├── docs-site/             # User docs website (Docsify, TH + EN) — preview locally
 ├── tool/                  # Release helpers (e.g. sync_firmware_release.sh)
-└── docs/                  # Extra documentation
+└── docs/                  # Extra technical documentation
 ```
+
+**User documentation:**
+
+- **Live (GitHub Pages):** https://ajarnthitasilo.github.io/ResilNet/
+- **Firmware CDN base:** `https://ajarnthitasilo.github.io/ResilNet/firmware`
+- **Local preview:**
+
+```bash
+cd docs-site && python3 -m http.server 8080
+# open http://127.0.0.1:8080  (Thai default; English in the top nav)
+```
+
+Deploy: `.github/workflows/deploy-docs.yml`. First time enable **Settings → Pages → Source: GitHub Actions**.
 
 ---
 
@@ -57,10 +71,12 @@ pio run -e lora_gateway
 pio run -e standalone -t upload
 ```
 
-Refresh release artifacts + hashes:
+Refresh release artifacts + hashes (also mirrors into `docs-site/firmware/` for the docs CDN):
 
 ```bash
 ./tool/sync_firmware_release.sh 1.9.49
+# or docs hub only:
+./tool/sync_docs_firmware.sh
 ```
 
 LoRa gateway mesh notes (AS923 ~923.5 MHz): attach an antenna before TX. Relay uses TTL decrement, `packet_id` dedupe, and an airtime rate cap. Phone chat TTL defaults (message=5, ACK=3) are enough for multi-hop without app changes.
@@ -88,7 +104,7 @@ Optional online firmware CDN at build time:
 
 ```bash
 flutter build apk --release \
-  --dart-define=RESILNET_FIRMWARE_BASE_URL=https://example.com/firmware/
+  --dart-define=RESILNET_FIRMWARE_BASE_URL=https://ajarnthitasilo.github.io/ResilNet/firmware
 ```
 
 Without a URL, the app still flashes from the **bundled baseline** when offline.

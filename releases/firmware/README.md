@@ -45,12 +45,22 @@ incompatible with shipping hardware.
 
 ## Rebuild & refresh
 
+Docs CDN (GitHub Pages): `https://ajarnthitasilo.github.io/ResilNet/firmware`
+
 ```bash
 cd esp32_firmware
 pio run -e standalone
 pio run -e lora_gateway
 cd ..
-./tool/sync_firmware_release.sh 1.9.44
+./tool/sync_firmware_release.sh 1.9.49
+# also mirrors into docs-site/firmware/ (app CDN layout)
+# or run only: ./tool/sync_docs_firmware.sh
 ```
+
+Docs CDN paths (for `RESILNET_FIRMWARE_BASE_URL=…/firmware`):
+
+- `docs-site/firmware/esp32_standalone/latest.bin`
+- `docs-site/firmware/esp32_lora_gateway/latest.bin`
+- `docs-site/firmware/manifest.json`
 
 Phone **BLE mesh** (peer discovery) uses UUID `9d2f3bb2-…` — separate from ESP32 mule/gateway services (see `manifest.json` → `ble`).

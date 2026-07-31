@@ -1,0 +1,11 @@
+* [ResilNet คืออะไร](/th/)
+* คู่มือใช้งาน
+  * [ติดตั้งแอป](/th/guide/install)
+  * [แชต 1:1](/th/guide/chat)
+  * [#mesh / ประกาศสาธารณะ](/th/guide/mesh)
+  * [กระดานชุมชน](/th/guide/boards)
+  * [ESP32 Mule](/th/guide/esp32-mule)
+  * [ESP32 LoRa Gateway](/th/guide/esp32-lora)
+* [เฟิร์มแวร์](/th/firmware/)
+* [คำถามที่พบบ่อย](/th/faq/)
+* [สำหรับนักพัฒนา](/th/dev/)

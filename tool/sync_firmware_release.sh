@@ -47,3 +47,10 @@ print(f"Updated {path} appVersion={ver}")
 PY
 
 echo "Synced firmware release to $FW_DIR"
+
+# Mirror into docs-site CDN layout (app FirmwareConfig paths).
+if [[ -x "$ROOT/tool/sync_docs_firmware.sh" ]]; then
+  "$ROOT/tool/sync_docs_firmware.sh"
+elif [[ -f "$ROOT/tool/sync_docs_firmware.sh" ]]; then
+  bash "$ROOT/tool/sync_docs_firmware.sh"
+fi

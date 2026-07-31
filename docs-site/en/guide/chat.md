@@ -1,0 +1,31 @@
+# 1:1 chat (end-to-end sealed)
+
+Private messages between you and one peer are **sealed** before they leave the phone. ESP32 / LoRa nodes may forward opaque packets without decrypting them.
+
+## Start a conversation
+
+1. Add a peer (nearby discovery / QR / in-app flows)
+2. Open the chat — text, voice, or images as supported
+3. With internet, delivery often uses **Nostr**; offline, BLE mesh / ESP32 / local queue apply
+
+## Tick meanings
+
+| Status | Meaning |
+|--------|---------|
+| Clock / pending | Still local or waiting to send |
+| Single gray tick | Sent / relayed |
+| Double gray | **Delivered** — recipient device got it |
+| Double blue | **Read** — recipient opened that chat |
+
+> Receipts work with **Save message history ON and OFF** (session-only storage).
+
+## What 1:1 is not
+
+- Not a public #mesh bulletin — see [mesh](mesh.md)
+- Not a community board post — see [boards](boards.md)
+
+## If delivery fails
+
+- Check online path (Nostr) or offline path (BLE range / ESP32 / LoRa)
+- Enable history saving if you need messages after app restart
+- When debugging ticks, look for `[ACK]` logs: enqueue → flush → apply

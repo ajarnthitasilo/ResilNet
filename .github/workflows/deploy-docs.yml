@@ -1,0 +1,67 @@
+name: Deploy docs site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs-site/**'
+      - '.github/workflows/deploy-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify firmware hub layout
+        run: |
+          set -euo pipefail
+          test -f docs-site/index.html
+          test -f docs-site/firmware/manifest.json
+          test -f docs-site/firmware/esp32_standalone/latest.bin
+          test -f docs-site/firmware/esp32_lora_gateway/latest.bin
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('docs-site/firmware')
+          m = json.loads((root / 'manifest.json').read_text())
+          for key, rel in [
+              ('standaloneNode', 'esp32_standalone/latest.bin'),
+              ('loraGateway', 'esp32_lora_gateway/latest.bin'),
+          ]:
+              p = root / rel
+              h = hashlib.sha256(p.read_bytes()).hexdigest()
+              assert h == m['artifacts'][key]['sha256'], (rel, h)
+              assert p.stat().st_size == m['artifacts'][key]['sizeBytes']
+              print('OK', rel, m['appVersion'])
+          PY
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs-site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

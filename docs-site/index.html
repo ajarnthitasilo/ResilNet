@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ResilNet Docs</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="ResilNet user guide — offline mesh messaging, ESP32 firmware, LoRa gateway" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <style>
+    :root {
+      --theme-color: #0d5c4d;
+    }
+    .app-name-link img { max-height: 28px; vertical-align: middle; }
+    .sidebar > h1 { font-size: 1.35rem; letter-spacing: 0.02em; }
+    .cover-main { color: #0a2e28; }
+    section.cover .cover-main > p:last-child a:last-child {
+      background-color: var(--theme-color);
+      border-color: var(--theme-color);
+    }
+    .markdown-section code { font-size: 0.9em; }
+    .markdown-section table { display: table; width: 100%; }
+  </style>
+  <script>
+    // Project Pages live at https://<user>.github.io/<repo>/ — set <base> so
+    // firmware/ and markdown fetches resolve under /ResilNet/, not site root.
+    (function () {
+      var base = '/';
+      if (/\.github\.io$/i.test(location.hostname)) {
+        var parts = location.pathname.split('/').filter(Boolean);
+        if (parts.length >= 1) base = '/' + parts[0] + '/';
+      }
+      window.__RESILNET_DOCS_BASE__ = base;
+      document.write('<base href="' + base + '">');
+    })();
+  </script>
+</head>
+<body>
+  <div id="app">Loading…</div>
+  <script>
+    window.$docsify = {
+      name: 'ResilNet',
+      repo: 'https://github.com/ajarnthitasilo/ResilNet',
+      homepage: 'th/README.md',
+      loadSidebar: true,
+      loadNavbar: true,
+      subMaxLevel: 2,
+      auto2top: true,
+      relativePath: true,
+      fallbackLanguages: ['th', 'en'],
+      search: {
+        paths: 'auto',
+        placeholder: {
+          '/en/': 'Search',
+          '/': 'ค้นหา',
+        },
+        noData: {
+          '/en/': 'No results',
+          '/': 'ไม่พบ',
+        },
+      },
+      nameLink: {
+        '/en/': '#/en/',
+        '/th/': '#/th/',
+        '/': '#/th/',
+      },
+      alias: {
+        '/_sidebar.md': '/th/_sidebar.md',
+        '/_navbar.md': '/th/_navbar.md',
+        '/en/.*/_sidebar.md': '/en/_sidebar.md',
+        '/th/.*/_sidebar.md': '/th/_sidebar.md',
+        '/en/.*/_navbar.md': '/en/_navbar.md',
+        '/th/.*/_navbar.md': '/th/_navbar.md',
+      },
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+# สำหรับนักพัฒนา
+
+เอกสารนี้สั้น — รายละเอียดเต็มอยู่ใน GitHub repo
+
+## Repo
+
+[https://github.com/ajarnthitasilo/ResilNet](https://github.com/ajarnthitasilo/ResilNet)
+
+## โครงสร้างหลัก
+
+```text
+mobile_app/         Flutter + FFI
+resilnet_core/      Rust
+esp32_firmware/     PlatformIO (standalone + lora_gateway)
+releases/firmware/  .bin + manifest.json
+docs-site/          เว็บคู่มือนี้ (Docsify)
+tool/               sync_firmware_release.sh
+```
+
+## Build เฟิร์มแวร์
+
+```bash
+cd esp32_firmware
+pio run -e standalone
+pio run -e lora_gateway
+cd ..
+./tool/sync_firmware_release.sh 1.9.49
+# mirror docs CDN only:
+./tool/sync_docs_firmware.sh
+```
+
+## Build แอปพร้อม CDN เฟิร์มแวร์
+
+```bash
+cd mobile_app
+flutter build apk --release \
+  --dart-define=RESILNET_FIRMWARE_BASE_URL=https://ajarnthitasilo.github.io/ResilNet/firmware
+```
+
+**เว็บเอกสาร:** https://ajarnthitasilo.github.io/ResilNet/
+
+## เอกสารเทคนิคอื่นใน repo
+
+- `docs/esp32_ble_ota.md` — โปรโตคอล OTA
+- `releases/firmware/README.md` — นโยบาย hybrid baseline
+- `mobile_app/docs/GEO_PRESENCE_NOSTR.md` — geo presence
+
+## ดูเว็บนี้บนเครื่อง
+
+```bash
+cd docs-site
+python3 -m http.server 8080
+```
+
+เปิด `http://127.0.0.1:8080`
