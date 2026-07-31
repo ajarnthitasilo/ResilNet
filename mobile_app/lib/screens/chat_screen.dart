@@ -895,7 +895,11 @@ class _ChatScreenState extends State<ChatScreen> {
             builder: (ctx) => Dialog(
               insetPadding: const EdgeInsets.all(16),
               child: InteractiveViewer(
-                child: Image.memory(bytes, fit: BoxFit.contain),
+                child: Image.memory(
+                  bytes,
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true,
+                ),
               ),
             ),
           );
@@ -907,6 +911,10 @@ class _ChatScreenState extends State<ChatScreen> {
             fit: BoxFit.cover,
             height: 180,
             width: double.infinity,
+            // Chat thread rebuilds on every AppState tick (BLE/Nostr
+            // heartbeats). Without gapless playback Image.memory re-decodes and
+            // flashes ("blinks") each rebuild — hold the last decoded frame.
+            gaplessPlayback: true,
             errorBuilder: (_, error, stack) => Text(l10n.chatImageLabel),
           ),
         ),

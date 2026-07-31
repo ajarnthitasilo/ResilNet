@@ -2291,6 +2291,25 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  /// Upgrade a just-handed-off outbound message to `sent`.
+  ///
+  /// SQLite [DatabaseService.saveMessage] is insert-or-IGNORE, so re-persisting
+  /// the same id with status=sent silently no-ops and the row stays `pending`.
+  /// Use a targeted UPDATE for history mode; the ephemeral session store
+  /// replaces by id, so a plain remember is enough there.
+  Future<void> _persistOutboundSent(ChatMessage sent) async {
+    if (_saveMessageHistory) {
+      await db.markMessageSent(
+        sent.id,
+        syncedWithCloud: sent.isSyncedWithCloud,
+        ttl: sent.ttl,
+      );
+      _bumpChatData();
+    } else {
+      _rememberSessionMessage(sent);
+    }
+  }
+
   /// Mark outbound as failed (UI shows Retry). Local only.
   Future<void> markMessageFailed(String msgId) async {
     if (_saveMessageHistory) {
@@ -3465,7 +3484,7 @@ class AppState extends ChangeNotifier {
         case TransportTypeDto.nostr:
           final ok = await _publishOutboundViaNostr(routed.packet);
           if (ok) {
-            await persistChatMessage(
+            await _persistOutboundSent(
               outbound.copyWith(
                 ttl: routed.packet.ttl,
                 status: MessageStatus.sent,
@@ -3576,7 +3595,7 @@ class AppState extends ChangeNotifier {
     }
     final allOk = published == slices.length;
     if (allOk) {
-      await persistChatMessage(
+      await _persistOutboundSent(
         outbound.copyWith(
           status: MessageStatus.sent,
           isSyncedWithCloud: true,

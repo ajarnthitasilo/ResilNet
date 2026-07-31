@@ -397,6 +397,9 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
               child: Image.memory(
                 Uint8List.fromList(bytes),
                 fit: BoxFit.cover,
+                // Board list rebuilds on every AppState tick; hold the last
+                // decoded frame so the image doesn't flash/"blink" each rebuild.
+                gaplessPlayback: true,
                 errorBuilder: (_, _, _) => Text(l10n.announceImageLabel),
               ),
             ),

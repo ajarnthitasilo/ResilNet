@@ -331,6 +331,30 @@ class DatabaseService {
     );
   }
 
+  /// อัปเกรดสถานะข้อความขาออกจาก `pending`/`failed` → `sent` หลัง hand-off สำเร็จ
+  ///
+  /// [saveMessage] เป็น insert-or-IGNORE ดังนั้นการ persist สำเนาใหม่ที่
+  /// status=sent ทับ row เดิม (บันทึกเป็น pending ก่อนส่ง) จะโดน ignore ทำให้
+  /// สถานะค้างที่ pending — ใช้ UPDATE แบบเจาะจงแทน และจำกัดเฉพาะ row ที่ยัง
+  /// pending/failed เพื่อไม่ downgrade relayed/delivered/read.
+  Future<void> markMessageSent(
+    String id, {
+    required bool syncedWithCloud,
+    int? ttl,
+  }) async {
+    final values = <String, Object?>{
+      'status': MessageStatus.sent.name,
+      'isSyncedWithCloud': syncedWithCloud ? 1 : 0,
+    };
+    if (ttl != null) values['ttl'] = ttl;
+    await _database.update(
+      'messages',
+      values,
+      where: 'id = ? AND status IN (?, ?)',
+      whereArgs: [id, MessageStatus.pending.name, MessageStatus.failed.name],
+    );
+  }
+
   Future<void> deleteMessageById(String msgId) async {
     await _database.delete(
       'messages',
