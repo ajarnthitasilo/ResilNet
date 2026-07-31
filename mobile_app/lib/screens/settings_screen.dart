@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
 import '../core/app_version.dart';
+import '../core/docs_links.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/notice_expiry.dart';
 import '../models/transport_mode.dart';
@@ -119,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
       body: Container(
-        decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        decoration: ResilNetTheme.pageDecoration(context),
         child: ListView(
           padding: const EdgeInsets.all(18),
           children: [
@@ -127,7 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(
               l10n.languageSubtitle,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: ResilNetTheme.mutedOnSurface(context),
                   ),
             ),
             const SizedBox(height: 12),
@@ -168,6 +171,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.notifications_outlined),
+              title: Text(l10n.enableMessageNotifications),
+              subtitle: Text(l10n.settingsNotificationsSubtitle),
+              value: s.notificationsEnabled,
+              onChanged: (v) => unawaited(s.setNotificationsEnabled(v)),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
               secondary: const Icon(Icons.screenshot_monitor_outlined),
               title: Text(l10n.settingsScreenshotTitle),
               subtitle: Text(l10n.settingsScreenshotSubtitle),
@@ -193,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(
               l10n.transportModeSubtitle,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: ResilNetTheme.mutedOnSurface(context),
                   ),
             ),
             const SizedBox(height: 10),
@@ -228,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text(
                       l10n.meshBleStatusDetail(bt, loc, ble),
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.55),
+                            color: ResilNetTheme.mutedOnSurface(context),
                             fontFamily: 'monospace',
                           ),
                     ),
@@ -248,7 +259,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(
               l10n.nostrSectionSubtitle,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: ResilNetTheme.mutedOnSurface(context),
                   ),
             ),
             const SizedBox(height: 8),
@@ -352,7 +363,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(
               l10n.settingsNostrExpirySubtitle,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: ResilNetTheme.mutedOnSurface(context),
                   ),
             ),
             const SizedBox(height: 10),
@@ -426,7 +437,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(
               l10n.settingsDataHint,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: ResilNetTheme.mutedOnSurface(context),
                   ),
             ),
             const SizedBox(height: 8),
@@ -465,7 +476,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(
               l10n.dangerZoneSubtitle,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: ResilNetTheme.mutedOnSurface(context),
                   ),
             ),
             const SizedBox(height: 8),
@@ -493,6 +504,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 16),
             ListTile(
               contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.menu_book_outlined),
+              title: Text(l10n.docsGuideTitle),
+              subtitle: Text(l10n.docsGuideSubtitle),
+              trailing: const Icon(Icons.open_in_new, size: 20),
+              onTap: () => DocsLinks.openUserGuideOrSnack(context),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.info_outline),
               title: Text(l10n.infoOpen),
               trailing: const Icon(Icons.chevron_right),
@@ -503,7 +522,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Text(
                 l10n.settingsVersion(kAppVersion),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.4),
+                      color: ResilNetTheme.mutedOnSurface(context, alpha: 0.4),
                     ),
               ),
             ),

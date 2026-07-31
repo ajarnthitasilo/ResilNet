@@ -28,5 +28,33 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<!-- Deep links: resilnet://board/invite?... and resilnet://peer/invite?... -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.ajarnnarin.resilnet.invite</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>resilnet</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>ResilNet uses Bluetooth to find nearby peers and ESP32 mesh gateways. If Bluetooth is unavailable, internet (Nostr) messaging still works.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>ResilNet may advertise so nearby devices can discover this Mac on the mesh.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ResilNet uses the camera to scan identity and board-invite QR codes.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ResilNet uses the microphone for sealed voice notes.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ResilNet uses location for Area geohash presence over Nostr (optional on Mac).</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ResilNet saves invite QR images to your photo library when you choose Save.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>ResilNet saves invite QR images to your photo library when you choose Save.</string>
 </dict>
 </plist>

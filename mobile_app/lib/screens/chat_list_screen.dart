@@ -153,6 +153,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         context,
         l10n: l10n,
         feedback: slash.feedback,
+        offerDocsGuide: slash.offerDocsGuide,
       );
       return;
     }
@@ -175,6 +176,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
               ? NoticeExpiry.sevenDays
               : _expiry,
         );
+        if (!mounted) return;
+        final warn = s.lastNoticePublishWarning;
+        if (warn == 'no_mesh') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.noticeMeshPublishNoLink)),
+          );
+        }
       } else if (s.feedChannel == FeedChannel.geo) {
         await s.setNostrExpiry(_expiry);
         final n = await s.sendAreaPublicText(text);
@@ -445,8 +453,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         ],
       ),
       body: Container(
-        decoration:
-            const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        decoration: ResilNetTheme.pageDecoration(context),
         child: Column(
           children: [
             const MeshStatusBar(),

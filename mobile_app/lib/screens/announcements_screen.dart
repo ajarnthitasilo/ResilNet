@@ -2,18 +2,22 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../app/theme.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/announcement_board.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
+import '../services/photos_permission.dart';
 import '../state/app_state.dart';
 import 'qr_capture_screen.dart';
 
@@ -131,6 +135,10 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   Future<void> _showInviteQr(AnnouncementBoard board, AppState s) async {
     final l10n = context.l10n;
     final payload = s.boardInvitePayload(board);
+    final shareText = s.boardInviteShareText(
+      board,
+      preamble: l10n.announceInviteSharePreamble,
+    );
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -169,10 +177,103 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                     ),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => unawaited(_saveInviteQr(payload)),
+                      icon: const Icon(Icons.download_outlined),
+                      label: Text(l10n.announceInviteSaveQr),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () => unawaited(_shareInvite(shareText)),
+                      icon: const Icon(Icons.share_outlined),
+                      label: Text(l10n.announceInviteShare),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
       },
+    );
+  }
+
+  Future<void> _saveInviteQr(String qrData) async {
+    final l10n = context.l10n;
+    try {
+      await ensurePhotosPermission();
+      final hasAccess = await Gal.hasAccess(toAlbum: true);
+      if (!hasAccess) {
+        final granted = await Gal.requestAccess(toAlbum: true);
+        if (!granted) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.identityGalleryDenied)),
+          );
+          return;
+        }
+      }
+      final painter = QrPainter(
+        data: qrData,
+        version: QrVersions.auto,
+        errorCorrectionLevel: QrErrorCorrectLevel.M,
+        gapless: true,
+        eyeStyle: const QrEyeStyle(
+          eyeShape: QrEyeShape.square,
+          color: Color(0xFF000000),
+        ),
+        dataModuleStyle: const QrDataModuleStyle(
+          dataModuleShape: QrDataModuleShape.square,
+          color: Color(0xFF000000),
+        ),
+      );
+      final byteData = await painter.toImageData(
+        1024,
+        format: ui.ImageByteFormat.png,
+      );
+      if (byteData == null) throw StateError('QR encode failed');
+      await Gal.putImageBytes(
+        Uint8List.fromList(byteData.buffer.asUint8List()),
+        name: 'resilnet_board_invite_${DateTime.now().millisecondsSinceEpoch}',
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.identityQrSaved)),
+      );
+    } catch (e) {
+      debugPrint('[Announce] save invite QR failed: $e');
+      if (!mounted) return;
+      if (e is StateError &&
+          (e.message == photosPermanentlyDeniedCode ||
+              e.message == 'PHOTOS_DENIED')) {
+        showPhotosPermissionError(
+          context,
+          error: e,
+          deniedMessage: l10n.permissionPhotosDenied,
+          failedMessage: l10n.permissionPhotosFailed,
+          openSettingsLabel: l10n.permissionPhotosOpenSettings,
+        );
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.identityQrSaveFailed('$e'))),
+      );
+    }
+  }
+
+  Future<void> _shareInvite(String text) async {
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box == null
+        ? const Rect.fromLTWH(0, 0, 100, 100)
+        : box.localToGlobal(Offset.zero) & box.size;
+    await SharePlus.instance.share(
+      ShareParams(text: text, sharePositionOrigin: origin),
     );
   }
 
@@ -454,7 +555,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        decoration: ResilNetTheme.pageDecoration(context),
         child: boards.isEmpty
             ? Center(
                 child: Padding(

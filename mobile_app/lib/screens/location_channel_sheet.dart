@@ -87,8 +87,8 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
 
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.82,
-      decoration: const BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradient,
+      decoration: BoxDecoration(
+        gradient: ResilNetTheme.scaffoldGradientFor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: EdgeInsets.fromLTRB(16, 14, 16, 12 + bottom),

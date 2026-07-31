@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
@@ -14,11 +13,14 @@ import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/board_invite_wire.dart';
 import '../core/bulletin_wire.dart';
+import '../core/direct_message_notify.dart';
 import '../core/geohash.dart';
+import '../core/identity_invite_wire.dart';
 import '../core/media_part_codec.dart';
 import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/peer_id.dart';
+import '../core/platform_caps.dart';
 import '../models/area_presence.dart';
 import '../models/ble_radio_state.dart';
 import '../models/ack_entry.dart';
@@ -31,6 +33,7 @@ import '../models/local_notice.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
+import '../models/push_signal.dart';
 import '../models/transport_mode.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
@@ -217,6 +220,18 @@ class AppState extends ChangeNotifier {
   static const _kNotificationsEnabled = 'resilnet_notifications_enabled';
   bool _notificationsEnabled = true;
   bool get notificationsEnabled => _notificationsEnabled;
+
+  /// Peer id of the open 1:1 [ChatScreen], if any (suppresses DM banners).
+  String? _activeChatPeerId;
+  String? get activeChatPeerId => _activeChatPeerId;
+
+  void setActiveChatPeerId(String? peerId) {
+    final next = peerId?.trim();
+    _activeChatPeerId = (next == null || next.isEmpty) ? null : next;
+  }
+
+  final Set<String> _directNotifyDedup = {};
+  static const _maxDirectNotifyDedup = 512;
 
   /// When false (ephemeral mode), sealed payloads are not written to SQLite.
   static const _kSaveMessageHistory = 'resilnet_save_message_history';
@@ -922,6 +937,86 @@ class AppState extends ChangeNotifier {
       '[BoardInvite] pending from deep link title=${data.title} id=${data.id}',
     );
     return true;
+  }
+
+  // --- Peer / identity invite (QR / deep link / paste) ---
+
+  String identityInvitePayload({String? displayName}) {
+    return encodeIdentityInvite(
+      id: myUserId,
+      publicKeyPem: crypto.publicKeyPem,
+      name: displayName ?? this.displayName,
+    );
+  }
+
+  String identityInviteDeepLink({String? displayName}) {
+    return encodeIdentityInviteDeepLink(
+      id: myUserId,
+      publicKeyPem: crypto.publicKeyPem,
+      name: displayName ?? this.displayName,
+    );
+  }
+
+  String identityInviteShareText({
+    String? displayName,
+    required String Function(String label) preamble,
+  }) {
+    return encodeIdentityInviteShareText(
+      id: myUserId,
+      publicKeyPem: crypto.publicKeyPem,
+      name: displayName ?? this.displayName,
+      preamble: preamble,
+    );
+  }
+
+  IdentityInviteData? _pendingPeerInvite;
+  IdentityInviteData? get pendingPeerInvite => _pendingPeerInvite;
+
+  void clearPendingPeerInvite() {
+    if (_pendingPeerInvite == null) return;
+    _pendingPeerInvite = null;
+    notifyListeners();
+  }
+
+  bool ingestPeerInviteUri(Uri uri) {
+    final data = parseIdentityInviteDeepLink(uri);
+    if (data == null) return false;
+    _pendingPeerInvite = data;
+    notifyListeners();
+    debugPrint('[PeerInvite] pending from deep link id=${data.id}');
+    return true;
+  }
+
+  Future<Peer?> acceptPendingPeerInvite() async {
+    final pending = _pendingPeerInvite;
+    if (pending == null) return null;
+    _pendingPeerInvite = null;
+    final peer = await importPeerFromIdentityAny(pending.encodeCompact());
+    notifyListeners();
+    return peer;
+  }
+
+  /// Import peer from identity JSON, deep link, or share text. Returns peer on success.
+  Future<Peer?> importPeerFromIdentityAny(String raw) async {
+    final data = parseIdentityInvite(raw);
+    if (data == null || data.id.isEmpty || data.publicKeyPem.isEmpty) {
+      return null;
+    }
+    if (data.id == myUserId) return null;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final peer = data.toPeer(lastSeen: now);
+    await db.upsertPeer(peer);
+    if (data.name == null || data.name!.isEmpty) {
+      final existing = await db.getContactAlias(data.id);
+      if (existing == null || existing.isEmpty) {
+        await db.setContactAlias(
+          publicKeyHash: data.id,
+          aliasName: formatShortPeerId(data.id),
+        );
+      }
+    }
+    await onPeerImportedViaQr(data.id);
+    return peer;
   }
 
   Future<AnnouncementBoard?> acceptPendingBoardInvite() async {
@@ -1709,7 +1804,24 @@ class AppState extends ChangeNotifier {
   /// Broadcast bulletin ไปยังเครื่องที่เชื่อมต่อ BLE/UDP ตอนนี้ (best-effort)
   Future<bool> _broadcastBulletin(String bulletinId, String wire) async {
     try {
-      return await routeOutbound(_bulletinEnvelope(bulletinId, wire));
+      final envelope = _bulletinEnvelope(bulletinId, wire);
+      final bleConnected = _mesh?.connectedDeviceId != null;
+      final udpActive = resilnet.isGatewayWifiActive;
+      if (!bleConnected && !udpActive) {
+        _lastNoticePublishWarning = 'no_mesh';
+        debugPrint(
+          '[Bulletin] no BLE/UDP path — stored locally for ESP32 catch-up '
+          'id=$bulletinId',
+        );
+      }
+      // Await hand-off so logs show failures; still best-effort delivery.
+      var ok = false;
+      try {
+        ok = await routeOutbound(envelope);
+      } catch (e) {
+        debugPrint('[Bulletin] routeOutbound failed id=$bulletinId: $e');
+      }
+      return ok || bleConnected || udpActive;
     } catch (e) {
       debugPrint('[Bulletin] broadcast failed id=$bulletinId: $e');
       return false;
@@ -1945,9 +2057,10 @@ class AppState extends ChangeNotifier {
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
       _backgroundedAt = DateTime.now();
-      if (Platform.isIOS) {
+      if (PlatformCaps.isApple) {
         debugPrint(
-          '[BLE] iOS background mode active; discovery may be reduced by system policy',
+          '[BLE] Apple background/inactive; discovery may be reduced by system policy '
+          '(desktop=${PlatformCaps.isDesktop})',
         );
       }
       debugPrint('[ACK] persist queue reason=lifecycle-$state');
@@ -2026,6 +2139,7 @@ class AppState extends ChangeNotifier {
       }
 
       unawaited(purgeExpiredMessages());
+      unawaited(refreshUnreadDirectCount());
       if (_transportMode.usesInternet || _feedChannel == FeedChannel.geo) {
         if (_currentGeohash == null || _currentGeohash!.isEmpty) {
           unawaited(refreshGeohash());
@@ -2138,9 +2252,40 @@ class AppState extends ChangeNotifier {
       _lastPresenceSummaryMesh = -1;
       _lastPresenceSummaryNostr = -1;
     } else {
+      await notifications.requestPermissions(reason: 'settings-toggle');
       _schedulePresenceSummaryNotification();
     }
     notifyListeners();
+  }
+
+  /// Local banner for inbound 1:1 DMs (privacy-safe body; no plaintext).
+  Future<void> _maybeNotifyDirectMessage(ChatMessage msg) async {
+    if (!DirectMessageNotify.shouldNotify(
+      notificationsEnabled: _notificationsEnabled,
+      isReady: isReady,
+      lifecycle: _lifecycleState,
+      activeChatPeerId: _activeChatPeerId,
+      myUserId: myUserId,
+      msg: msg,
+      alreadyNotifiedIds: _directNotifyDedup,
+    )) {
+      return;
+    }
+    _directNotifyDedup.add(msg.id);
+    if (_directNotifyDedup.length > _maxDirectNotifyDedup) {
+      _directNotifyDedup.remove(_directNotifyDedup.first);
+    }
+    try {
+      final title = await db.resolveDisplayName(msg.senderId);
+      final lang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+      await notifications.showDirectMessage(
+        id: DirectMessageNotify.notificationId(msg.id),
+        title: title,
+        body: PushNotificationCopy.bodyForLocale(lang),
+      );
+    } catch (e) {
+      debugPrint('[Notify] direct DM failed id=${msg.id}: $e');
+    }
   }
 
   Future<void> setSaveMessageHistory(bool enabled) async {
@@ -3461,9 +3606,18 @@ class AppState extends ChangeNotifier {
 
     if (isPresence || isBulletin) {
       // Presence/bulletin are fire-and-forget — skip chat persistence.
-      unawaited(_mesh?.sendDirectNow(outbound));
+      // Await BLE/UDP so failures surface in logs (still no chat ACKs).
+      try {
+        await _mesh?.sendDirectNow(outbound);
+      } catch (e) {
+        debugPrint('[ResilNet] bulletin/presence BLE send failed: $e');
+      }
       if (resilnet.isGatewayWifiActive) {
-        unawaited(_udp?.sendDirectNow(outbound));
+        try {
+          await _udp?.sendDirectNow(outbound);
+        } catch (e) {
+          debugPrint('[ResilNet] bulletin/presence UDP send failed: $e');
+        }
       }
       return true;
     }
@@ -3711,6 +3865,11 @@ class AppState extends ChangeNotifier {
       if (msg.payloadKind != PayloadKinds.presence) {
         _bumpChatData();
       }
+      if (msg.receiverId == myUserId &&
+          msg.senderId != myUserId &&
+          PayloadKinds.isPrivateDm(msg.payloadKind)) {
+        unawaited(_maybeNotifyDirectMessage(msg));
+      }
       if (msg.payloadKind == PayloadKinds.boardKeyRequest ||
           msg.payloadKind == PayloadKinds.boardKeyGrant) {
         unawaited(_handleBoardKeyControlMessage(msg));
@@ -3923,16 +4082,25 @@ class AppState extends ChangeNotifier {
       '[Radio] start begin op=$op reason=$reason permissions=$_permissionsGranted paused=$_radioPaused',
     );
     try {
-      try {
-        await mesh.start();
-        debugPrint('[BLE] mesh.start ok');
-      } catch (e) {
-        debugPrint('[ResilNet] mesh.start failed: $e');
-      }
-      try {
-        await esp32.startBackgroundScan();
-      } catch (e) {
-        debugPrint('[ResilNet] esp32.start failed: $e');
+      if (!PlatformCaps.meshBleAttempted) {
+        debugPrint(
+          '[Radio] skip BLE/ESP32 on this platform — Nostr/UDP still available',
+        );
+      } else {
+        try {
+          await mesh.start();
+          debugPrint('[BLE] mesh.start ok');
+        } catch (e) {
+          // Soft-fail: desktop or denied BT must not block Nostr/chat.
+          debugPrint(
+            '[ResilNet] mesh.start failed (continuing without mesh): $e',
+          );
+        }
+        try {
+          await esp32.startBackgroundScan();
+        } catch (e) {
+          debugPrint('[ResilNet] esp32.start failed (continuing): $e');
+        }
       }
       try {
         await _udp?.start();
@@ -3991,9 +4159,13 @@ class AppState extends ChangeNotifier {
   }
 
   Future<List<Permission>> _meshPermissions() async {
-    // iOS: only Permission.bluetooth (CoreBluetooth) is handled by permission_handler.
-    if (Platform.isIOS) {
+    // iOS/macOS: CoreBluetooth via Permission.bluetooth (+ location for scan policy).
+    if (PlatformCaps.isApple) {
       return <Permission>[Permission.bluetooth, Permission.locationWhenInUse];
+    }
+    if (!PlatformCaps.meshBleAttempted) {
+      // Windows/Linux: no mesh BLE stack yet — treat as granted so app/Nostr runs.
+      return const <Permission>[];
     }
     return <Permission>[
       Permission.bluetoothScan,

@@ -66,7 +66,9 @@ class _ResilNetAppState extends State<ResilNetApp> {
                 navigatorKey: _navigatorKey,
                 onGenerateTitle: (context) => context.l10n.appTitle,
                 debugShowCheckedModeBanner: false,
-                theme: ResilNetTheme.dark(),
+                theme: ResilNetTheme.light(),
+                darkTheme: ResilNetTheme.dark(),
+                themeMode: ThemeMode.system,
                 locale: s.localeOverride,
                 supportedLocales: AppLocalizations.supportedLocales,
                 localizationsDelegates: const [
@@ -110,7 +112,7 @@ class _BootScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      backgroundColor: const Color(0xFF0B1224),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -118,7 +120,7 @@ class _BootScreen extends StatelessWidget {
             Text(
               l10n.appTitle,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: const Color(0xFF10B981),
+                color: ResilNetTheme.emerald,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -194,7 +196,7 @@ class _BootErrorScreenState extends State<_BootErrorScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      backgroundColor: const Color(0xFF0B1224),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),

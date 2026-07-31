@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-import '../models/peer.dart';
-import '../core/peer_id.dart';
-import '../services/crypto_service.dart';
 import '../services/camera_permission.dart';
 import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
@@ -127,43 +123,12 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     } catch (_) {}
 
     try {
-      final obj = jsonDecode(data) as Map<String, dynamic>;
-      final id = (obj['id'] as String?)?.trim() ?? '';
-      final rawKey = ((obj['pk'] ?? obj['pubKey']) as String?)?.trim() ?? '';
-      final name = (obj['name'] as String?)?.trim();
-      if (id.isEmpty || rawKey.isEmpty) {
-        throw const FormatException('Invalid QR data');
-      }
-
-      final pub = CryptoService.normalizePublicKey(rawKey);
-      final expectedId = CryptoService.publicKeyHash(pub);
-      if (id != expectedId) {
-        throw const FormatException('QR id does not match public key hash');
-      }
       if (!mounted) return;
       final s = context.read<AppState>();
-      final now = DateTime.now().millisecondsSinceEpoch;
-      await s.db.upsertPeer(
-        Peer(
-          id: expectedId,
-          publicKey: pub,
-          displayName: name,
-          isVerifiedIssuer: false,
-          isBlocked: false,
-          lastSeen: now,
-        ),
-      );
-      // Default short alias when QR has no name — avoids full-hash titles.
-      if (name == null || name.isEmpty) {
-        final existing = await s.db.getContactAlias(expectedId);
-        if (existing == null || existing.isEmpty) {
-          await s.db.setContactAlias(
-            publicKeyHash: expectedId,
-            aliasName: formatShortPeerId(expectedId),
-          );
-        }
+      final peer = await s.importPeerFromIdentityAny(data);
+      if (peer == null) {
+        throw const FormatException('Invalid QR data');
       }
-      await s.onPeerImportedViaQr(expectedId);
 
       if (!mounted) return;
       await _safeClose(true);

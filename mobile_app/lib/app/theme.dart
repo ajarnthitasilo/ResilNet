@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Dark, minimal ResilNet look — bitchat-inspired clarity, ResilNet emerald identity.
+/// ResilNet look — emerald identity; follows system light/dark via [ThemeMode.system].
 class ResilNetTheme {
   static const deepNavy = Color(0xFF0B1224);
   static const deepNavy2 = Color(0xFF0A0F1C);
@@ -12,11 +12,35 @@ class ResilNetTheme {
   static const gradientTop = Color(0xFF0B1A33);
   static const gradientBottom = Color(0xFF1A1030);
 
+  static const lightCanvas = Color(0xFFF4F7FB);
+  static const lightSurface = Color(0xFFFFFFFF);
+  static const lightGradientTop = Color(0xFFEEF5F2);
+  static const lightGradientBottom = Color(0xFFE8EEF8);
+
   static const scaffoldGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [gradientTop, gradientBottom],
   );
+
+  static const scaffoldGradientLight = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [lightGradientTop, lightGradientBottom],
+  );
+
+  static bool isDark(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
+
+  static LinearGradient scaffoldGradientFor(BuildContext context) =>
+      isDark(context) ? scaffoldGradient : scaffoldGradientLight;
+
+  static BoxDecoration pageDecoration(BuildContext context) => BoxDecoration(
+        gradient: scaffoldGradientFor(context),
+      );
+
+  static Color mutedOnSurface(BuildContext context, {double alpha = 0.55}) =>
+      Theme.of(context).colorScheme.onSurface.withValues(alpha: alpha);
 
   static ThemeData dark() {
     final scheme = ColorScheme.fromSeed(
@@ -74,7 +98,8 @@ class ResilNetTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceSoft,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
           borderSide: BorderSide.none,
@@ -88,6 +113,85 @@ class ResilNetTheme {
           borderSide: BorderSide(color: emerald.withValues(alpha: 0.5)),
         ),
         hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.35)),
+      ),
+      listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      ),
+    );
+  }
+
+  static ThemeData light() {
+    final scheme = ColorScheme.fromSeed(
+      seedColor: emerald,
+      brightness: Brightness.light,
+      surface: lightSurface,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: scheme.copyWith(
+        primary: const Color(0xFF0D9488),
+        secondary: const Color(0xFF059669),
+        surface: lightSurface,
+        onSurface: const Color(0xFF0F172A),
+      ),
+      scaffoldBackgroundColor: lightCanvas,
+      dividerColor: Colors.black.withValues(alpha: 0.08),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        foregroundColor: Color(0xFF0F172A),
+        centerTitle: false,
+      ),
+      cardTheme: CardThemeData(
+        color: lightSurface.withValues(alpha: 0.92),
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: const Color(0xFFE2E8F0),
+        selectedColor: emerald.withValues(alpha: 0.18),
+        labelStyle: const TextStyle(color: Color(0xFF334155), fontSize: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        side: BorderSide.none,
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return emerald.withValues(alpha: 0.16);
+            }
+            return Colors.transparent;
+          }),
+          foregroundColor: WidgetStateProperty.all(const Color(0xFF0F172A)),
+          side: WidgetStateProperty.all(BorderSide.none),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white.withValues(alpha: 0.9),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(22),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(22),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(22),
+          borderSide: BorderSide(color: emerald.withValues(alpha: 0.55)),
+        ),
+        hintStyle: TextStyle(color: Colors.black.withValues(alpha: 0.35)),
       ),
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),

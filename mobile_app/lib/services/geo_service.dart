@@ -50,7 +50,7 @@ class GeoService {
       return const GeoLocationResult(status: GeoLocationStatus.needsPermission);
     }
 
-    final preferCoarseFirst = Platform.isIOS;
+    final preferCoarseFirst = Platform.isIOS || Platform.isMacOS;
     final accuracies = preferCoarseFirst
         ? const [
             LocationAccuracy.medium,

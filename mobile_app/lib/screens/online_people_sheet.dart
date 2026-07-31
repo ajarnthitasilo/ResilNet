@@ -40,8 +40,8 @@ class _OnlinePeopleSheet extends StatelessWidget {
 
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.75,
-      decoration: const BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradient,
+      decoration: BoxDecoration(
+        gradient: ResilNetTheme.scaffoldGradientFor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),

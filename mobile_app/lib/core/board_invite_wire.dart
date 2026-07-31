@@ -176,7 +176,13 @@ BoardInviteData? _parseInviteJson(String raw) {
     }
 
     final type = (map['type'] as String?)?.trim();
-    // Accept typed board_invite and legacy full board JSON (no type / has publicKeyPem)
+    // Typed board invite, or legacy board JSON (has title/ownerId / full PEM).
+    // Reject bare identity QR JSON ({id, pk, name}) so peer invites stay distinct.
+    final isBoard = type == 'board_invite' ||
+        map.containsKey('ownerId') ||
+        map.containsKey('title') ||
+        map.containsKey('publicKeyPem');
+    if (!isBoard) return null;
     if (type != null &&
         type.isNotEmpty &&
         type != 'board_invite' &&

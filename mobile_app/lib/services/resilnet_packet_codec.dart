@@ -79,9 +79,7 @@ class ResilNetPacketCodec {
     }
 
     final msg = ChatMessage.fromMap(unwrapped.body);
-    final kind = ResilNetPayloadType.fromDto(dto.payloadTag).messageKind;
-    final withKind =
-        msg.payloadKind == kind ? msg : msg.copyWith(payloadKind: kind);
+    final withKind = _resolvePayloadKind(msg, dto.payloadTag);
 
     final piggyback = unwrapped.piggybackAcks
         .map(
@@ -102,9 +100,29 @@ class ResilNetPacketCodec {
     final parsed = fromDtoWithMeta(dto);
     if (parsed.message != null) return parsed.message!;
     final map = jsonDecode(utf8.decode(dto.payload)) as Map<String, Object?>;
-    final msg = ChatMessage.fromMap(map);
-    final kind = ResilNetPayloadType.fromDto(dto.payloadTag).messageKind;
-    if (msg.payloadKind == kind) return msg;
-    return msg.copyWith(payloadKind: kind);
+    return _resolvePayloadKind(ChatMessage.fromMap(map), dto.payloadTag);
+  }
+
+  /// Wire tags only distinguish text/image/audio/firmware/ack.
+  /// Application kinds (`mesh_bulletin`, `notice`, `presence`, …) all ride the
+  /// text tag — never clobber the JSON `payloadKind` with `"text"`.
+  static ChatMessage _resolvePayloadKind(
+    ChatMessage msg,
+    PayloadTagDto tag,
+  ) {
+    final wire = ResilNetPayloadType.fromDto(tag);
+    switch (wire) {
+      case ResilNetPayloadType.image:
+      case ResilNetPayloadType.audio:
+      case ResilNetPayloadType.firmware:
+      case ResilNetPayloadType.ack:
+        final kind = wire.messageKind;
+        return msg.payloadKind == kind
+            ? msg
+            : msg.copyWith(payloadKind: kind);
+      case ResilNetPayloadType.text:
+        // Trust the envelope's application-level payloadKind.
+        return msg;
+    }
   }
 }

@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 const photosPermanentlyDeniedCode = 'PHOTOS_PERMANENTLY_DENIED';
 
 Future<bool> photosPermissionGranted() async {
-  if (Platform.isIOS) {
+  if (Platform.isIOS || Platform.isMacOS) {
     final addOnly = await Permission.photosAddOnly.status;
     if (addOnly.isGranted) return true;
     return (await Permission.photos.status).isGranted;
@@ -20,7 +20,7 @@ Future<bool> photosPermissionGranted() async {
 }
 
 Future<void> ensurePhotosPermission() async {
-  if (Platform.isIOS) {
+  if (Platform.isIOS || Platform.isMacOS) {
     var status = await Permission.photosAddOnly.status;
     if (!status.isGranted) {
       status = await Permission.photosAddOnly.request();

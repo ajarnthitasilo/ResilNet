@@ -23,8 +23,8 @@ class _FeedChannelSheet extends StatelessWidget {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
     return Container(
-      decoration: const BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradient,
+      decoration: BoxDecoration(
+        gradient: ResilNetTheme.scaffoldGradientFor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
@@ -83,8 +83,8 @@ class _TransportModeSheet extends StatelessWidget {
       (TransportMode.auto, l10n.transportModeAuto, Icons.sync_alt),
     ];
     return Container(
-      decoration: const BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradient,
+      decoration: BoxDecoration(
+        gradient: ResilNetTheme.scaffoldGradientFor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),

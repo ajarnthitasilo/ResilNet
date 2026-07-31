@@ -7,6 +7,10 @@ class PushSignalType {
 class PushNotificationCopy {
   static const title = 'ResilNet';
   static const genericBody = 'คุณมีข้อความใหม่';
+  static const genericBodyEn = 'You have a new message';
+
+  static String bodyForLocale(String? languageCode) =>
+      languageCode == 'en' ? genericBodyEn : genericBody;
 }
 
 /// Parsed FCM/APNs data payload (metadata only).

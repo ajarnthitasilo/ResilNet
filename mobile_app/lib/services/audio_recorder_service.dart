@@ -200,7 +200,7 @@ class AudioRecorderService {
     // iOS / some OEMs flush the container a moment after stop.
     final file = File(filePath);
     Uint8List? bytes;
-    for (var i = 0; i < (Platform.isIOS ? 20 : 8); i++) {
+    for (var i = 0; i < ((Platform.isIOS || Platform.isMacOS) ? 20 : 8); i++) {
       if (await file.exists()) {
         final len = await file.length();
         if (len >= 64) {
@@ -212,7 +212,7 @@ class AudioRecorderService {
         }
       }
       await Future<void>.delayed(
-        Duration(milliseconds: Platform.isIOS ? 100 : 50),
+        Duration(milliseconds: (Platform.isIOS || Platform.isMacOS) ? 100 : 50),
       );
     }
 
@@ -270,6 +270,13 @@ class AudioRecorderService {
   }
 
   Future<void> stopPlayback() => _player.stop();
+
+  /// Emits when playback finishes or is stopped.
+  Stream<void> get onPlaybackComplete => _player.onPlayerComplete;
+
+  Stream<PlayerState> get onPlayerStateChanged => _player.onPlayerStateChanged;
+
+  bool get isPlaying => _player.state == PlayerState.playing;
 
   void dispose() {
     _maxTimer?.cancel();

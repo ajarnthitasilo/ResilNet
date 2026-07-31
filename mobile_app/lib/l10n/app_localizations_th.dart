@@ -84,6 +84,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get enableMessageNotifications => 'เปิดแจ้งเตือนข้อความ';
 
   @override
+  String get settingsNotificationsSubtitle =>
+      'ข้อความ 1:1 และคนออนไลน์ (แจ้งเตือนในเครื่อง)';
+
+  @override
   String get networkMembersTooltip => 'สมาชิกเครือข่าย';
 
   @override
@@ -763,6 +767,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get chatPlayVoice => 'เล่นข้อความเสียง';
 
   @override
+  String get chatPauseVoice => 'หยุดชั่วคราว';
+
+  @override
   String get chatVoiceLabelSent => '🎤 ข้อความเสียง (ผนึกแล้ว)';
 
   @override
@@ -1092,6 +1099,10 @@ class AppLocalizationsTh extends AppLocalizations {
       'โพสต์ประกาศไปกระดานพื้นที่ไม่สำเร็จ ตรวจการเชื่อมต่อ Nostr';
 
   @override
+  String get noticeMeshPublishNoLink =>
+      'บันทึกในเครื่องแล้ว เชื่อมต่อวิทยุ mesh ใกล้เคียง (หรือ Wi‑Fi gateway) เพื่อให้เครื่องอื่นรับได้';
+
+  @override
   String get chatNoticeHidden => 'ประกาศพื้นที่ — เปิดหน้าประกาศ';
 
   @override
@@ -1133,6 +1144,18 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get infoOpen => 'เกี่ยวกับ / ข้อมูล';
+
+  @override
+  String get docsGuideTitle => 'คู่มือการใช้งาน';
+
+  @override
+  String get docsGuideSubtitle => 'เปิดในเบราว์เซอร์';
+
+  @override
+  String get docsOpenAction => 'เปิดคู่มือ';
+
+  @override
+  String get docsOpenFailed => 'เปิดคู่มือไม่สำเร็จ';
 
   @override
   String get infoTabInfo => 'ข้อมูล';
@@ -1322,6 +1345,18 @@ class AppLocalizationsTh extends AppLocalizations {
       'ยังไม่มีเพียร์ — เปิด BLE แล้วอยู่ใกล้เครื่องอื่น';
 
   @override
+  String get topologyYou => 'คุณ';
+
+  @override
+  String topologyStats(int peers, int links) {
+    return '$peers เพียร์ · $links ลิงก์';
+  }
+
+  @override
+  String get topologyGraphHint =>
+      'ประมาณจาก discovery ใกล้เคียง — เครื่องของคุณถูกไฮไลต์ แตะเพียร์เพื่อเปิดแชท';
+
+  @override
   String get topologyOpen => 'โทโพโลยี mesh';
 
   @override
@@ -1329,7 +1364,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get slashHelpBody =>
-      '/help — รายการนี้\n/who — คนออนไลน์ในช่องปัจจุบัน\n/drop <ข้อความ> — ปักโน้ตแบบ sealed ในช่องนี้ (E2EE fan-out)';
+      '/help — รายการนี้\n/who — คนออนไลน์ในช่องปัจจุบัน\n/drop <ข้อความ> — ปักโน้ตแบบ sealed ในช่องนี้ (E2EE fan-out)\n\nคู่มือเต็ม: กดเปิดคู่มือด้านล่าง หรือ Settings → คู่มือการใช้งาน';
 
   @override
   String get slashWhoEmpty => 'ยังไม่มีใครออนไลน์ในช่องนี้';
@@ -1493,6 +1528,58 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get announceInviteCopied => 'คัดลอกข้อความเชิญแล้ว';
+
+  @override
+  String get announceInviteSaveQr => 'บันทึก QR';
+
+  @override
+  String get announceInviteShare => 'แชร์คำเชิญ';
+
+  @override
+  String get announceFollowFromCompose => 'พบคำเชิญกระดานในกล่องข้อความ';
+
+  @override
+  String get peerConfirmAddTitle => 'เพิ่มสมาชิกเครือข่าย?';
+
+  @override
+  String peerConfirmAddBody(String name) {
+    return 'เพิ่ม “$name” พร้อมกุญแจสาธารณะ เพื่อส่งข้อความส่วนตัวได้?';
+  }
+
+  @override
+  String get peerConfirmAdd => 'เพิ่มสมาชิก';
+
+  @override
+  String peerAddedOk(String name) {
+    return 'เพิ่ม $name ในสมาชิกเครือข่ายแล้ว';
+  }
+
+  @override
+  String get peerAddFromCompose => 'พบตัวตน / กุญแจสาธารณะในกล่องข้อความ';
+
+  @override
+  String get peerHashCopied => 'คัดลอก Public key hash แล้ว';
+
+  @override
+  String get peerHashOpenChat => 'เปิดแชต';
+
+  @override
+  String get peerHashAddHint =>
+      'คัดลอก hash แล้ว ให้เพื่อนแชร์ลิงก์ตัวตนหรือ QR เพื่อเพิ่มกุญแจเต็มสำหรับ E2EE';
+
+  @override
+  String get peerQrNoCode => 'ไม่พบ QR ของ ResilNet ในรูปนี้';
+
+  @override
+  String identityInviteSharePreamble(String name) {
+    return 'ตัวตน ResilNet: “$name”\nเปิดลิงก์หรือวางในแชต → เพิ่มสมาชิก\nหรือสแกน QR ตัวตน';
+  }
+
+  @override
+  String get identityShareInvite => 'แชร์ลิงก์ตัวตน';
+
+  @override
+  String get identityInviteCopied => 'คัดลอกลิงก์ตัวตนแล้ว';
 
   @override
   String announceInviteSharePreamble(String title) {

@@ -85,6 +85,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableMessageNotifications => 'Enable message notifications';
 
   @override
+  String get settingsNotificationsSubtitle =>
+      '1:1 messages and people online (local alerts)';
+
+  @override
   String get networkMembersTooltip => 'Network members';
 
   @override
@@ -769,6 +773,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatPlayVoice => 'Play voice note';
 
   @override
+  String get chatPauseVoice => 'Pause';
+
+  @override
   String get chatVoiceLabelSent => '🎤 Voice note (sealed)';
 
   @override
@@ -834,8 +841,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatSendFailed => 'Not delivered — tap Retry';
 
   @override
-  String get chatImageNeedInternet =>
-      'Connect to the internet to send images';
+  String get chatImageNeedInternet => 'Connect to the internet to send images';
 
   @override
   String get chatImageTooLargeOnline =>
@@ -1099,6 +1105,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not publish notice to the area board. Check Nostr connection.';
 
   @override
+  String get noticeMeshPublishNoLink =>
+      'Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.';
+
+  @override
   String get chatNoticeHidden => 'Area notice — open Notices';
 
   @override
@@ -1140,6 +1150,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get infoOpen => 'About / Info';
+
+  @override
+  String get docsGuideTitle => 'User guide';
+
+  @override
+  String get docsGuideSubtitle => 'Opens in browser';
+
+  @override
+  String get docsOpenAction => 'Open guide';
+
+  @override
+  String get docsOpenFailed => 'Could not open the user guide';
 
   @override
   String get infoTabInfo => 'Info';
@@ -1331,6 +1353,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topologyEmpty => 'No peers learned yet — stay nearby with BLE on';
 
   @override
+  String get topologyYou => 'you';
+
+  @override
+  String topologyStats(int peers, int links) {
+    return '$peers peers · $links links';
+  }
+
+  @override
+  String get topologyGraphHint =>
+      'Estimated from nearby mesh discovery — your device is highlighted. Tap a peer to open chat.';
+
+  @override
   String get topologyOpen => 'Mesh topology';
 
   @override
@@ -1338,7 +1372,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get slashHelpBody =>
-      '/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)';
+      '/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)\n\nFull guide: use Open guide below, or Settings → User guide.';
 
   @override
   String get slashWhoEmpty => 'No one online in this channel right now';
@@ -1502,6 +1536,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get announceInviteCopied => 'Invite text copied';
+
+  @override
+  String get announceInviteSaveQr => 'Save QR';
+
+  @override
+  String get announceInviteShare => 'Share invite';
+
+  @override
+  String get announceFollowFromCompose =>
+      'Board invite detected in the message box';
+
+  @override
+  String get peerConfirmAddTitle => 'Add network member?';
+
+  @override
+  String peerConfirmAddBody(String name) {
+    return 'Add “$name” with their public key so you can message them privately?';
+  }
+
+  @override
+  String get peerConfirmAdd => 'Add member';
+
+  @override
+  String peerAddedOk(String name) {
+    return 'Added $name to network members';
+  }
+
+  @override
+  String get peerAddFromCompose =>
+      'Identity / public key detected in the message box';
+
+  @override
+  String get peerHashCopied => 'Public key hash copied';
+
+  @override
+  String get peerHashOpenChat => 'Open chat';
+
+  @override
+  String get peerHashAddHint =>
+      'Hash copied. Ask them to share their identity link or QR so you can add the full public key for E2EE.';
+
+  @override
+  String get peerQrNoCode => 'No ResilNet QR found in this image';
+
+  @override
+  String identityInviteSharePreamble(String name) {
+    return 'ResilNet identity: “$name”\nOpen the link or paste it in chat → Add member\nOr scan the identity QR.';
+  }
+
+  @override
+  String get identityShareInvite => 'Share identity link';
+
+  @override
+  String get identityInviteCopied => 'Identity link copied';
 
   @override
   String announceInviteSharePreamble(String title) {

@@ -31,6 +31,7 @@
   "languageEnglish": "English",
   "notificationsTooltip": "การตั้งค่าแจ้งเตือน",
   "enableMessageNotifications": "เปิดแจ้งเตือนข้อความ",
+  "settingsNotificationsSubtitle": "ข้อความ 1:1 และคนออนไลน์ (แจ้งเตือนในเครื่อง)",
   "networkMembersTooltip": "สมาชิกเครือข่าย",
   "identityQrTooltip": "ตัวตน/QR",
   "feedDirects": "แชท",
@@ -250,6 +251,7 @@
   "chatVoiceFailed": "ไม่สามารถอัดเสียงได้: {error}",
   "chatPlayVoiceFailed": "เล่นเสียงไม่สำเร็จ: {error}",
   "chatPlayVoice": "เล่นข้อความเสียง",
+  "chatPauseVoice": "หยุดชั่วคราว",
   "chatVoiceLabelSent": "🎤 ข้อความเสียง (ผนึกแล้ว)",
   "chatVoiceLabel": "🎤 ข้อความเสียง",
   "chatDecryptFailed": "[ถอดรหัสไม่สำเร็จ]",
@@ -387,6 +389,7 @@
     }
   },
   "noticePublishFailed": "โพสต์ประกาศไปกระดานพื้นที่ไม่สำเร็จ ตรวจการเชื่อมต่อ Nostr",
+  "noticeMeshPublishNoLink": "บันทึกในเครื่องแล้ว เชื่อมต่อวิทยุ mesh ใกล้เคียง (หรือ Wi‑Fi gateway) เพื่อให้เครื่องอื่นรับได้",
   "chatNoticeHidden": "ประกาศพื้นที่ — เปิดหน้าประกาศ",
   "identityDisplayNameTitle": "ชื่อที่แสดง",
   "identitySaveName": "บันทึกชื่อ",
@@ -400,6 +403,10 @@
   "identityQrHelp": "ให้เพื่อนสแกนเพื่อบันทึก public key และ (ถ้าจำเป็น) ตั้งเป็น Verified Issuer",
   "identityChatTip": "ทิป: สามารถสแกน QR ในหน้าแชตเพื่อเติม Public Key ให้พร้อมส่ง E2EE",
   "infoOpen": "เกี่ยวกับ / ข้อมูล",
+  "docsGuideTitle": "คู่มือการใช้งาน",
+  "docsGuideSubtitle": "เปิดในเบราว์เซอร์",
+  "docsOpenAction": "เปิดคู่มือ",
+  "docsOpenFailed": "เปิดคู่มือไม่สำเร็จ",
   "infoTabInfo": "ข้อมูล",
   "infoTabSettingsHint": "เปิดตั้งค่าจากเมนู ⋮ สำหรับภาษา, E2EE และข้อมูล",
   "infoHowToTitle": "วิธีใช้งาน",
@@ -462,9 +469,18 @@
   "topologyNearby": "ใกล้ตัว (BLE)",
   "topologyKnown": "เพียร์ที่รู้จัก",
   "topologyEmpty": "ยังไม่มีเพียร์ — เปิด BLE แล้วอยู่ใกล้เครื่องอื่น",
+  "topologyYou": "คุณ",
+  "topologyStats": "{peers} เพียร์ · {links} ลิงก์",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {"type": "int"},
+      "links": {"type": "int"}
+    }
+  },
+  "topologyGraphHint": "ประมาณจาก discovery ใกล้เคียง — เครื่องของคุณถูกไฮไลต์ แตะเพียร์เพื่อเปิดแชท",
   "topologyOpen": "โทโพโลยี mesh",
   "slashHelpTitle": "คำสั่ง",
-  "slashHelpBody": "/help — รายการนี้\n/who — คนออนไลน์ในช่องปัจจุบัน\n/drop <ข้อความ> — ปักโน้ตแบบ sealed ในช่องนี้ (E2EE fan-out)",
+  "slashHelpBody": "/help — รายการนี้\n/who — คนออนไลน์ในช่องปัจจุบัน\n/drop <ข้อความ> — ปักโน้ตแบบ sealed ในช่องนี้ (E2EE fan-out)\n\nคู่มือเต็ม: กดเปิดคู่มือด้านล่าง หรือ Settings → คู่มือการใช้งาน",
   "slashWhoEmpty": "ยังไม่มีใครออนไลน์ในช่องนี้",
   "slashWhoTitle": "ออนไลน์ ({count})",
   "slashDropNeedText": "ใช้แบบ: /drop ข้อความของคุณ",
@@ -522,6 +538,36 @@
   },
   "announceFollowFail": "คำเชิญไม่ถูกต้องหรือเสียหาย",
   "announceInviteCopied": "คัดลอกข้อความเชิญแล้ว",
+  "announceInviteSaveQr": "บันทึก QR",
+  "announceInviteShare": "แชร์คำเชิญ",
+  "announceFollowFromCompose": "พบคำเชิญกระดานในกล่องข้อความ",
+  "peerConfirmAddTitle": "เพิ่มสมาชิกเครือข่าย?",
+  "peerConfirmAddBody": "เพิ่ม “{name}” พร้อมกุญแจสาธารณะ เพื่อส่งข้อความส่วนตัวได้?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "peerConfirmAdd": "เพิ่มสมาชิก",
+  "peerAddedOk": "เพิ่ม {name} ในสมาชิกเครือข่ายแล้ว",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "peerAddFromCompose": "พบตัวตน / กุญแจสาธารณะในกล่องข้อความ",
+  "peerHashCopied": "คัดลอก Public key hash แล้ว",
+  "peerHashOpenChat": "เปิดแชต",
+  "peerHashAddHint": "คัดลอก hash แล้ว ให้เพื่อนแชร์ลิงก์ตัวตนหรือ QR เพื่อเพิ่มกุญแจเต็มสำหรับ E2EE",
+  "peerQrNoCode": "ไม่พบ QR ของ ResilNet ในรูปนี้",
+  "identityInviteSharePreamble": "ตัวตน ResilNet: “{name}”\nเปิดลิงก์หรือวางในแชต → เพิ่มสมาชิก\nหรือสแกน QR ตัวตน",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "identityShareInvite": "แชร์ลิงก์ตัวตน",
+  "identityInviteCopied": "คัดลอกลิงก์ตัวตนแล้ว",
   "announceInviteSharePreamble": "คำเชิญเข้ากระดานชุมชน “{title}”\nเปิด ResilNet → กระดานชุมชน → ติดตามจากคำเชิญ\nหรือสแกน QR / แตะลิงก์ด้านล่าง",
   "@announceInviteSharePreamble": {
     "placeholders": {

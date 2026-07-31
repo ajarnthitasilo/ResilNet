@@ -12,9 +12,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../app/theme.dart';
+import '../core/board_invite_wire.dart';
 import '../core/chat_image_codec.dart';
+import '../core/identity_invite_wire.dart';
 import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
+import '../core/qr_image_decode.dart';
 import '../core/voice_payload.dart';
 import '../core/peer_id.dart';
 import '../core/slash_commands.dart';
@@ -26,8 +29,11 @@ import '../services/crypto_service.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
+import 'announcements_screen.dart';
 import 'qr_scanner_screen.dart';
 import 'voice_record_sheet.dart';
+
+enum _ComposeInviteKind { none, board, identity, hash }
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.peerId});
@@ -43,10 +49,13 @@ class _ChatScreenState extends State<ChatScreen> {
   final _focusNode = FocusNode();
   final _uuid = const Uuid();
   final _audio = AudioRecorderService();
+  StreamSubscription<void>? _playbackSub;
+  String? _playingVoiceId;
   bool _showEmojiPicker = false;
   bool _sendingOutbound = false;
   String? _lastSendFingerprint;
   int _lastSendAtMs = 0;
+  _ComposeInviteKind _composeInvite = _ComposeInviteKind.none;
 
   List<ChatMessage> _messages = const [];
   final Map<String, String> _plainById = {};
@@ -146,19 +155,42 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    _text.addListener(_onComposeChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final s = context.read<AppState>();
       _appState = s;
+      s.setActiveChatPeerId(widget.peerId);
       s.addListener(_onAppState);
       unawaited(s.markConversationRead(widget.peerId));
       unawaited(_reloadMessages(force: true));
     });
   }
 
+  void _onComposeChanged() {
+    final raw = _text.text;
+    _ComposeInviteKind kind = _ComposeInviteKind.none;
+    if (parseBoardInvite(raw) != null) {
+      kind = _ComposeInviteKind.board;
+    } else if (parseIdentityInvite(raw) != null) {
+      kind = _ComposeInviteKind.identity;
+    } else if (looksLikePublicKeyHash(raw.trim())) {
+      kind = _ComposeInviteKind.hash;
+    }
+    if (kind != _composeInvite && mounted) {
+      setState(() => _composeInvite = kind);
+    }
+  }
+
   @override
   void dispose() {
+    final s = _appState;
+    if (s != null && s.activeChatPeerId == widget.peerId) {
+      s.setActiveChatPeerId(null);
+    }
     _appState?.removeListener(_onAppState);
+    _playbackSub?.cancel();
+    _text.removeListener(_onComposeChanged);
     _text.dispose();
     _focusNode.dispose();
     _audio.dispose();
@@ -382,6 +414,7 @@ class _ChatScreenState extends State<ChatScreen> {
         context,
         l10n: l10n,
         feedback: slash.feedback,
+        offerDocsGuide: slash.offerDocsGuide,
       );
       return;
     }
@@ -683,6 +716,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _playVoiceNote(AppState s, ChatMessage m) async {
     try {
+      // Tap again while playing → pause/stop.
+      if (_playingVoiceId == m.id && _audio.isPlaying) {
+        await _audio.stopPlayback();
+        _playbackSub?.cancel();
+        if (mounted) setState(() => _playingVoiceId = null);
+        return;
+      }
+
       ({Uint8List bytes, String ext})? decoded;
 
       if (m.senderId == s.myUserId) {
@@ -710,10 +751,19 @@ class _ChatScreenState extends State<ChatScreen> {
         throw StateError('invalid voice payload');
       }
 
+      await _audio.stopPlayback();
+      _playbackSub?.cancel();
+      if (mounted) setState(() => _playingVoiceId = m.id);
       await _audio.playBytes(decoded.bytes, ext: decoded.ext);
+      _playbackSub = _audio.onPlaybackComplete.listen((_) {
+        if (!mounted) return;
+        setState(() => _playingVoiceId = null);
+      });
     } catch (e) {
       debugPrint('[PTT] play-fail: $e');
+      _playbackSub?.cancel();
       if (!mounted) return;
+      setState(() => _playingVoiceId = null);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
       );
@@ -802,9 +852,17 @@ class _ChatScreenState extends State<ChatScreen> {
                       if (m.payloadKind == PayloadKinds.audio) ...[
                         const SizedBox(height: 8),
                         FilledButton.tonalIcon(
-                          onPressed: () => _playVoiceNote(s, m),
-                          icon: const Icon(Icons.play_arrow),
-                          label: Text(l10n.chatPlayVoice),
+                          onPressed: () => unawaited(_playVoiceNote(s, m)),
+                          icon: Icon(
+                            _playingVoiceId == m.id
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                          ),
+                          label: Text(
+                            _playingVoiceId == m.id
+                                ? l10n.chatPauseVoice
+                                : l10n.chatPlayVoice,
+                          ),
                         ),
                       ],
                       const SizedBox(height: 8),
@@ -879,7 +937,75 @@ class _ChatScreenState extends State<ChatScreen> {
         PayloadKinds.isSystemLine(m.payloadKind)) {
       return Text(text, style: Theme.of(context).textTheme.bodyMedium);
     }
+    final board = parseBoardInvite(text);
+    if (board != null) {
+      return _tappableInviteCard(
+        icon: Icons.campaign_outlined,
+        title: board.title,
+        subtitle: l10n.announceConfirmFollowTitle,
+        onTap: () => unawaited(
+          _confirmFollowBoardInvite(text, board.title, l10n),
+        ),
+      );
+    }
+    final identity = parseIdentityInvite(text);
+    if (identity != null) {
+      final label = (identity.name != null && identity.name!.isNotEmpty)
+          ? identity.name!
+          : formatShortPeerId(identity.id);
+      return _tappableInviteCard(
+        icon: Icons.person_add_alt_1_outlined,
+        title: label,
+        subtitle: l10n.peerConfirmAddTitle,
+        onTap: () => unawaited(_confirmAddPeerInvite(text, identity, l10n)),
+      );
+    }
     return _linkifiedText(text, l10n);
+  }
+
+  Widget _tappableInviteCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: const Color(0xFF1A3A2A),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Icon(icon, color: const Color(0xFF5AC8FA)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleSmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.white70,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: Colors.white54),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildImageBody(AppLocalizations l10n, String b64) {
@@ -887,23 +1013,9 @@ class _ChatScreenState extends State<ChatScreen> {
       return Text(l10n.chatImageLabel);
     }
     try {
-      final bytes = base64Decode(b64);
+      final bytes = Uint8List.fromList(base64Decode(b64));
       return GestureDetector(
-        onTap: () {
-          showDialog<void>(
-            context: context,
-            builder: (ctx) => Dialog(
-              insetPadding: const EdgeInsets.all(16),
-              child: InteractiveViewer(
-                child: Image.memory(
-                  bytes,
-                  fit: BoxFit.contain,
-                  gaplessPlayback: true,
-                ),
-              ),
-            ),
-          );
-        },
+        onTap: () => unawaited(_onChatImageTap(bytes, l10n)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.memory(
@@ -924,8 +1036,46 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  Future<void> _onChatImageTap(Uint8List bytes, AppLocalizations l10n) async {
+    final qr = await decodeQrFromImageBytes(bytes);
+    if (!mounted) return;
+    if (qr != null && qr.isNotEmpty) {
+      final board = parseBoardInvite(qr);
+      if (board != null) {
+        await _confirmFollowBoardInvite(qr, board.title, l10n);
+        return;
+      }
+      final identity = parseIdentityInvite(qr);
+      if (identity != null) {
+        await _confirmAddPeerInvite(qr, identity, l10n);
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.peerQrNoCode)),
+      );
+      return;
+    }
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        child: InteractiveViewer(
+          child: Image.memory(
+            bytes,
+            fit: BoxFit.contain,
+            gaplessPlayback: true,
+          ),
+        ),
+      ),
+    );
+  }
+
   static final _urlRe = RegExp(
-    r'(https?:\/\/[^\s<>]+)|(www\.[^\s<>]+)',
+    r'(resilnet:\/\/(?:board|peer)\/invite\?[^\s<>]+)|'
+    r'(https?:\/\/[^\s<>]+)|'
+    r'(www\.[^\s<>]+)|'
+    r'(?<![A-Za-z0-9_+/-])[A-Za-z0-9_-]{43}(?![A-Za-z0-9_+/=-])',
     caseSensitive: false,
   );
 
@@ -965,6 +1115,24 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _openLink(String raw, AppLocalizations l10n) async {
     var href = raw.trim();
     if (href.startsWith('www.')) href = 'https://$href';
+
+    final board = parseBoardInvite(href);
+    if (board != null) {
+      await _confirmFollowBoardInvite(href, board.title, l10n);
+      return;
+    }
+
+    final identity = parseIdentityInvite(href);
+    if (identity != null) {
+      await _confirmAddPeerInvite(href, identity, l10n);
+      return;
+    }
+
+    if (looksLikePublicKeyHash(href)) {
+      await _onPublicKeyHashTap(href, l10n);
+      return;
+    }
+
     final uri = Uri.tryParse(href);
     if (uri == null) return;
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -973,6 +1141,128 @@ class _ChatScreenState extends State<ChatScreen> {
         SnackBar(content: Text(l10n.chatOpenLinkFailed)),
       );
     }
+  }
+
+  Future<void> _confirmFollowBoardInvite(
+    String raw,
+    String title,
+    AppLocalizations l10n,
+  ) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.announceConfirmFollowTitle),
+        content: Text(l10n.announceConfirmFollowBody(title)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.announceConfirmFollow),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final s = context.read<AppState>();
+    final board = await s.followBoardFromInviteAny(raw);
+    if (!mounted) return;
+    if (board == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.announceFollowFail)),
+      );
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.announceFollowOkNamed(board.title))),
+    );
+    await openAnnouncementsScreen(context);
+  }
+
+  Future<void> _confirmAddPeerInvite(
+    String raw,
+    IdentityInviteData identity,
+    AppLocalizations l10n,
+  ) async {
+    final label = (identity.name != null && identity.name!.isNotEmpty)
+        ? identity.name!
+        : formatShortPeerId(identity.id);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.peerConfirmAddTitle),
+        content: Text(l10n.peerConfirmAddBody(label)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.peerConfirmAdd),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final s = context.read<AppState>();
+    final peer = await s.importPeerFromIdentityAny(raw);
+    if (!mounted) return;
+    if (peer == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.qrInvalid)),
+      );
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.peerAddedOk(label))),
+    );
+    // If this chat was opened for this peer (hash-only), stay; else offer open.
+    if (peer.id != widget.peerId) {
+      await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ChatScreen(peerId: peer.id)),
+      );
+    } else {
+      setState(() {});
+    }
+  }
+
+  Future<void> _onPublicKeyHashTap(String hash, AppLocalizations l10n) async {
+    await Clipboard.setData(ClipboardData(text: hash));
+    if (!mounted) return;
+    final s = context.read<AppState>();
+    final peer = await s.db.getPeer(hash);
+    final hasKey = peer != null && peer.publicKey.trim().isNotEmpty;
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.peerHashCopied),
+        content: Text(
+          hasKey ? l10n.peerConfirmAddBody(formatShortPeerId(hash)) : l10n.peerHashAddHint,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              if (hash == widget.peerId) return;
+              unawaited(
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => ChatScreen(peerId: hash)),
+                ),
+              );
+            },
+            child: Text(l10n.peerHashOpenChat),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showMessageActions(
@@ -1134,7 +1424,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(gradient: ResilNetTheme.scaffoldGradient),
+        decoration: ResilNetTheme.pageDecoration(context),
         child: Column(
         children: [
           Expanded(child: _buildThread(context, s, l10n, myId)),
@@ -1143,6 +1433,61 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (_composeInvite != _ComposeInviteKind.none)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+                    child: Material(
+                      color: const Color(0xFF1A3A2A),
+                      borderRadius: BorderRadius.circular(12),
+                      child: ListTile(
+                        dense: true,
+                        leading: Icon(
+                          _composeInvite == _ComposeInviteKind.board
+                              ? Icons.campaign_outlined
+                              : Icons.person_add_alt_1_outlined,
+                        ),
+                        title: Text(
+                          _composeInvite == _ComposeInviteKind.board
+                              ? l10n.announceFollowFromCompose
+                              : l10n.peerAddFromCompose,
+                        ),
+                        trailing: FilledButton(
+                          onPressed: () async {
+                            final raw = _text.text;
+                            switch (_composeInvite) {
+                              case _ComposeInviteKind.board:
+                                final invite = parseBoardInvite(raw);
+                                if (invite == null) return;
+                                await _confirmFollowBoardInvite(
+                                  raw,
+                                  invite.title,
+                                  l10n,
+                                );
+                              case _ComposeInviteKind.identity:
+                                final identity = parseIdentityInvite(raw);
+                                if (identity == null) return;
+                                await _confirmAddPeerInvite(
+                                  raw,
+                                  identity,
+                                  l10n,
+                                );
+                              case _ComposeInviteKind.hash:
+                                await _onPublicKeyHashTap(raw.trim(), l10n);
+                              case _ComposeInviteKind.none:
+                                break;
+                            }
+                          },
+                          child: Text(
+                            _composeInvite == _ComposeInviteKind.board
+                                ? l10n.announceConfirmFollow
+                                : _composeInvite == _ComposeInviteKind.hash
+                                    ? l10n.peerHashOpenChat
+                                    : l10n.peerConfirmAdd,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
                   child: Row(

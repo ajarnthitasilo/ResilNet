@@ -242,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Enable message notifications'**
   String get enableMessageNotifications;
 
+  /// No description provided for @settingsNotificationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'1:1 messages and people online (local alerts)'**
+  String get settingsNotificationsSubtitle;
+
   /// No description provided for @networkMembersTooltip.
   ///
   /// In en, this message translates to:
@@ -995,7 +1001,7 @@ abstract class AppLocalizations {
   /// No description provided for @chatImageTooLarge.
   ///
   /// In en, this message translates to:
-  /// **'Image too large (max ~120KB)'**
+  /// **'Image too large — try another photo'**
   String get chatImageTooLarge;
 
   /// No description provided for @chatNostrExpiry.
@@ -1394,6 +1400,12 @@ abstract class AppLocalizations {
   /// **'Play voice note'**
   String get chatPlayVoice;
 
+  /// No description provided for @chatPauseVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get chatPauseVoice;
+
   /// No description provided for @chatVoiceLabelSent.
   ///
   /// In en, this message translates to:
@@ -1517,13 +1529,13 @@ abstract class AppLocalizations {
   /// No description provided for @chatImageNeedInternet.
   ///
   /// In en, this message translates to:
-  /// **'Image is large — connect to the internet to send'**
+  /// **'Connect to the internet to send images'**
   String get chatImageNeedInternet;
 
   /// No description provided for @chatImageTooLargeOnline.
   ///
   /// In en, this message translates to:
-  /// **'Image too large (max ~220KB after compression)'**
+  /// **'Could not compress image enough to send'**
   String get chatImageTooLargeOnline;
 
   /// No description provided for @chatOpenLinkFailed.
@@ -1982,6 +1994,12 @@ abstract class AppLocalizations {
   /// **'Could not publish notice to the area board. Check Nostr connection.'**
   String get noticePublishFailed;
 
+  /// No description provided for @noticeMeshPublishNoLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.'**
+  String get noticeMeshPublishNoLink;
+
   /// No description provided for @chatNoticeHidden.
   ///
   /// In en, this message translates to:
@@ -2059,6 +2077,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About / Info'**
   String get infoOpen;
+
+  /// No description provided for @docsGuideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'User guide'**
+  String get docsGuideTitle;
+
+  /// No description provided for @docsGuideSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens in browser'**
+  String get docsGuideSubtitle;
+
+  /// No description provided for @docsOpenAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open guide'**
+  String get docsOpenAction;
+
+  /// No description provided for @docsOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the user guide'**
+  String get docsOpenFailed;
 
   /// No description provided for @infoTabInfo.
   ///
@@ -2390,6 +2432,24 @@ abstract class AppLocalizations {
   /// **'No peers learned yet — stay nearby with BLE on'**
   String get topologyEmpty;
 
+  /// No description provided for @topologyYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get topologyYou;
+
+  /// No description provided for @topologyStats.
+  ///
+  /// In en, this message translates to:
+  /// **'{peers} peers · {links} links'**
+  String topologyStats(int peers, int links);
+
+  /// No description provided for @topologyGraphHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated from nearby mesh discovery — your device is highlighted. Tap a peer to open chat.'**
+  String get topologyGraphHint;
+
   /// No description provided for @topologyOpen.
   ///
   /// In en, this message translates to:
@@ -2405,7 +2465,7 @@ abstract class AppLocalizations {
   /// No description provided for @slashHelpBody.
   ///
   /// In en, this message translates to:
-  /// **'/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)'**
+  /// **'/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)\n\nFull guide: use Open guide below, or Settings → User guide.'**
   String get slashHelpBody;
 
   /// No description provided for @slashWhoEmpty.
@@ -2701,6 +2761,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invite text copied'**
   String get announceInviteCopied;
+
+  /// No description provided for @announceInviteSaveQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Save QR'**
+  String get announceInviteSaveQr;
+
+  /// No description provided for @announceInviteShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share invite'**
+  String get announceInviteShare;
+
+  /// No description provided for @announceFollowFromCompose.
+  ///
+  /// In en, this message translates to:
+  /// **'Board invite detected in the message box'**
+  String get announceFollowFromCompose;
+
+  /// No description provided for @peerConfirmAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add network member?'**
+  String get peerConfirmAddTitle;
+
+  /// No description provided for @peerConfirmAddBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add “{name}” with their public key so you can message them privately?'**
+  String peerConfirmAddBody(String name);
+
+  /// No description provided for @peerConfirmAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add member'**
+  String get peerConfirmAdd;
+
+  /// No description provided for @peerAddedOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {name} to network members'**
+  String peerAddedOk(String name);
+
+  /// No description provided for @peerAddFromCompose.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity / public key detected in the message box'**
+  String get peerAddFromCompose;
+
+  /// No description provided for @peerHashCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key hash copied'**
+  String get peerHashCopied;
+
+  /// No description provided for @peerHashOpenChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Open chat'**
+  String get peerHashOpenChat;
+
+  /// No description provided for @peerHashAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hash copied. Ask them to share their identity link or QR so you can add the full public key for E2EE.'**
+  String get peerHashAddHint;
+
+  /// No description provided for @peerQrNoCode.
+  ///
+  /// In en, this message translates to:
+  /// **'No ResilNet QR found in this image'**
+  String get peerQrNoCode;
+
+  /// No description provided for @identityInviteSharePreamble.
+  ///
+  /// In en, this message translates to:
+  /// **'ResilNet identity: “{name}”\nOpen the link or paste it in chat → Add member\nOr scan the identity QR.'**
+  String identityInviteSharePreamble(String name);
+
+  /// No description provided for @identityShareInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Share identity link'**
+  String get identityShareInvite;
+
+  /// No description provided for @identityInviteCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity link copied'**
+  String get identityInviteCopied;
 
   /// No description provided for @announceInviteSharePreamble.
   ///

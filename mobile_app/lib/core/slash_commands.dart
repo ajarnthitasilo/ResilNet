@@ -4,13 +4,21 @@ import '../l10n/app_localizations.dart';
 import '../models/feed_channel.dart';
 import '../models/notice_expiry.dart';
 import '../state/app_state.dart';
+import 'docs_links.dart';
 
 /// Result of intercepting a leading `/` compose command.
 class SlashHandleResult {
-  const SlashHandleResult({required this.handled, this.feedback});
+  const SlashHandleResult({
+    required this.handled,
+    this.feedback,
+    this.offerDocsGuide = false,
+  });
 
   final bool handled;
   final String? feedback;
+
+  /// When true, [showFeedback] adds an action to open the user guide.
+  final bool offerDocsGuide;
 }
 
 /// Parses `/help`, `/who`, `/drop …` for home + 1:1 compose.
@@ -35,7 +43,11 @@ class SlashCommands {
 
     switch (cmd) {
       case '/help':
-        return SlashHandleResult(handled: true, feedback: l10n.slashHelpBody);
+        return SlashHandleResult(
+          handled: true,
+          feedback: l10n.slashHelpBody,
+          offerDocsGuide: true,
+        );
       case '/who':
         return SlashHandleResult(
           handled: true,
@@ -105,6 +117,7 @@ class SlashCommands {
     BuildContext context, {
     required AppLocalizations l10n,
     required String? feedback,
+    bool offerDocsGuide = false,
   }) {
     if (feedback == null || feedback.isEmpty) return;
     showDialog<void>(
@@ -113,6 +126,14 @@ class SlashCommands {
         title: Text(l10n.slashHelpTitle),
         content: SingleChildScrollView(child: Text(feedback)),
         actions: [
+          if (offerDocsGuide)
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                DocsLinks.openUserGuideOrSnack(context);
+              },
+              child: Text(l10n.docsOpenAction),
+            ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
             child: Text(l10n.close),

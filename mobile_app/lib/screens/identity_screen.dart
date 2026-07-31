@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:gal/gal.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../app/theme.dart';
 import '../services/camera_permission.dart';
@@ -55,6 +56,21 @@ class _IdentityScreenState extends State<IdentityScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(context.l10n.identityCopiedHash)),
+    );
+  }
+
+  Future<void> _shareIdentityLink() async {
+    final s = context.read<AppState>();
+    final l10n = context.l10n;
+    final text = s.identityInviteShareText(
+      preamble: l10n.identityInviteSharePreamble,
+    );
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box == null
+        ? const Rect.fromLTWH(0, 0, 100, 100)
+        : box.localToGlobal(Offset.zero) & box.size;
+    await SharePlus.instance.share(
+      ShareParams(text: text, sharePositionOrigin: origin),
     );
   }
 
@@ -322,6 +338,15 @@ class _IdentityScreenState extends State<IdentityScreen> {
                               ? context.l10n.identitySaving
                               : context.l10n.identitySaveQr,
                         ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _shareIdentityLink,
+                        icon: const Icon(Icons.share_outlined),
+                        label: Text(context.l10n.identityShareInvite),
                       ),
                     ),
                     const SizedBox(height: 10),

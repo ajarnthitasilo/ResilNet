@@ -87,8 +87,11 @@ class _NoticesSheetState extends State<_NoticesSheet> {
       _text.clear();
       final warn = s.lastNoticePublishWarning;
       if (warn != null && mounted) {
+        final msg = warn == 'no_mesh'
+            ? context.l10n.noticeMeshPublishNoLink
+            : context.l10n.noticePublishFailed;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.noticePublishFailed)),
+          SnackBar(content: Text(msg)),
         );
       }
       setState(() {});
@@ -107,8 +110,8 @@ class _NoticesSheetState extends State<_NoticesSheet> {
 
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.88,
-      decoration: const BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradient,
+      decoration: BoxDecoration(
+        gradient: ResilNetTheme.scaffoldGradientFor(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: EdgeInsets.fromLTRB(16, 14, 16, 12 + bottom),

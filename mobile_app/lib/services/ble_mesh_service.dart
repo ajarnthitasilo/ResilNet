@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
+import '../core/payload_kinds.dart';
+import '../core/platform_caps.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/resilnet_payload_type.dart';
-import '../core/payload_kinds.dart';
 import '../models/area_presence.dart';
 import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
@@ -101,6 +101,12 @@ class BleMeshService extends ChangeNotifier {
       if (!_running) return;
       if (status == BleStatus.ready) {
         _kickRadioRoles(force: true);
+      } else if (status == BleStatus.unsupported ||
+          status == BleStatus.unauthorized) {
+        debugPrint(
+          '[BLE] adapter not usable ($status) — mesh/ESP32 path idle; '
+          'Nostr/chat continue',
+        );
       }
     });
 
@@ -140,12 +146,12 @@ class BleMeshService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// iOS cannot run central+peripheral reliably at once — duty-cycle roles.
+  /// iOS/macOS cannot run central+peripheral reliably at once — duty-cycle roles.
   /// Android can usually do both; still advertise UUID-only for scan filters.
   void _kickRadioRoles({bool force = false}) {
     _roleTimer?.cancel();
-    if (Platform.isIOS) {
-      // Desync phones: stagger start + asymmetric scan-heavy windows.
+    if (PlatformCaps.usesIosStyleBle) {
+      // Desync peers: stagger start + asymmetric scan-heavy windows.
       _roleAdvertisePhase = myUserId.hashCode.isEven;
       final offsetMs = (myUserId.hashCode % 2500).abs() + 400;
       Future<void>.delayed(Duration(milliseconds: offsetMs), () {
@@ -159,7 +165,8 @@ class BleMeshService extends ChangeNotifier {
     }
     if (force) {
       debugPrint(
-        '[BLE] roles kicked ios=${Platform.isIOS} advertiseFirst=$_roleAdvertisePhase '
+        '[BLE] roles kicked iosStyle=${PlatformCaps.usesIosStyleBle} '
+        'advertiseFirst=$_roleAdvertisePhase '
         'scan=${_iosScanWindow.inSeconds}s adv=${_iosAdvertiseWindow.inSeconds}s',
       );
     }
@@ -246,7 +253,7 @@ class BleMeshService extends ChangeNotifier {
       }
       final fp = _fingerprintPayload();
       final AdvertiseData data;
-      if (Platform.isIOS) {
+      if (PlatformCaps.usesIosStyleBle) {
         // Alternate: UUID discovery vs fingerprint binding.
         final useFingerprint = DateTime.now().second.isEven;
         data = useFingerprint

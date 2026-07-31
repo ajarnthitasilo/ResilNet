@@ -2,7 +2,7 @@
 
 **ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), and long-range sync over public **Nostr** relays.
 
-**Current app version:** `1.9.53`  
+**Current app version:** `1.9.54`  
 **ESP32 firmware (releases/):** `1.9.49` (LoRa mesh relay + store-and-forward)  
 **Bundled ESP32 firmware baseline:** `1.9.49`
 

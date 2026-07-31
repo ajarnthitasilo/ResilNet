@@ -31,6 +31,7 @@
   "languageEnglish": "English",
   "notificationsTooltip": "Notification settings",
   "enableMessageNotifications": "Enable message notifications",
+  "settingsNotificationsSubtitle": "1:1 messages and people online (local alerts)",
   "networkMembersTooltip": "Network members",
   "identityQrTooltip": "Identity / QR",
   "feedDirects": "Chat",
@@ -388,6 +389,7 @@
     }
   },
   "chatPlayVoice": "Play voice note",
+  "chatPauseVoice": "Pause",
   "chatVoiceLabelSent": "🎤 Voice note (sealed)",
   "chatVoiceLabel": "🎤 Voice note",
   "chatDecryptFailed": "[decryption failed]",
@@ -566,6 +568,7 @@
     }
   },
   "noticePublishFailed": "Could not publish notice to the area board. Check Nostr connection.",
+  "noticeMeshPublishNoLink": "Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.",
   "chatNoticeHidden": "Area notice — open Notices",
   "identityDisplayNameTitle": "Display name",
   "identitySaveName": "Save name",
@@ -584,6 +587,10 @@
   "identityQrHelp": "Have a friend scan this to save your public key and (if needed) set you as a Verified Issuer",
   "identityChatTip": "Tip: you can also scan a QR in chat to add a public key for E2EE",
   "infoOpen": "About / Info",
+  "docsGuideTitle": "User guide",
+  "docsGuideSubtitle": "Opens in browser",
+  "docsOpenAction": "Open guide",
+  "docsOpenFailed": "Could not open the user guide",
   "infoTabInfo": "Info",
   "infoTabSettingsHint": "Open Settings from the menu for language, E2EE, and data tools",
   "infoHowToTitle": "How to use",
@@ -656,9 +663,18 @@
   "topologyNearby": "Nearby (BLE)",
   "topologyKnown": "Known peers",
   "topologyEmpty": "No peers learned yet — stay nearby with BLE on",
+  "topologyYou": "you",
+  "topologyStats": "{peers} peers · {links} links",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {"type": "int"},
+      "links": {"type": "int"}
+    }
+  },
+  "topologyGraphHint": "Estimated from nearby mesh discovery — your device is highlighted. Tap a peer to open chat.",
   "topologyOpen": "Mesh topology",
   "slashHelpTitle": "Commands",
-  "slashHelpBody": "/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)",
+  "slashHelpBody": "/help — this list\n/who — people online in current channel\n/drop <text> — pin a sealed notice here (E2EE fan-out)\n\nFull guide: use Open guide below, or Settings → User guide.",
   "slashWhoEmpty": "No one online in this channel right now",
   "slashWhoTitle": "Online ({count})",
   "@slashWhoTitle": {
@@ -726,6 +742,36 @@
   },
   "announceFollowFail": "Invite is invalid or damaged",
   "announceInviteCopied": "Invite text copied",
+  "announceInviteSaveQr": "Save QR",
+  "announceInviteShare": "Share invite",
+  "announceFollowFromCompose": "Board invite detected in the message box",
+  "peerConfirmAddTitle": "Add network member?",
+  "peerConfirmAddBody": "Add “{name}” with their public key so you can message them privately?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "peerConfirmAdd": "Add member",
+  "peerAddedOk": "Added {name} to network members",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "peerAddFromCompose": "Identity / public key detected in the message box",
+  "peerHashCopied": "Public key hash copied",
+  "peerHashOpenChat": "Open chat",
+  "peerHashAddHint": "Hash copied. Ask them to share their identity link or QR so you can add the full public key for E2EE.",
+  "peerQrNoCode": "No ResilNet QR found in this image",
+  "identityInviteSharePreamble": "ResilNet identity: “{name}”\nOpen the link or paste it in chat → Add member\nOr scan the identity QR.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "identityShareInvite": "Share identity link",
+  "identityInviteCopied": "Identity link copied",
   "announceInviteSharePreamble": "Board invite: “{title}”\nOpen ResilNet → Community boards → Follow from invite\nOr scan the QR / tap the link below.",
   "@announceInviteSharePreamble": {
     "placeholders": {

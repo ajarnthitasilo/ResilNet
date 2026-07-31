@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app/theme.dart';
+import '../core/docs_links.dart';
 import '../l10n/l10n_ext.dart';
 
 /// Bitchat-style About / Info sheet (how-to, features, privacy, symbols).
@@ -28,8 +29,8 @@ class _InfoSheet extends StatelessWidget {
       maxChildSize: 0.95,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            gradient: ResilNetTheme.scaffoldGradient,
+          decoration: BoxDecoration(
+        gradient: ResilNetTheme.scaffoldGradientFor(context),
             borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
           ),
           child: Column(
@@ -74,7 +75,16 @@ class _InfoSheet extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.5),
                           ),
                     ),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 14),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.menu_book_outlined),
+                      title: Text(l10n.docsGuideTitle),
+                      subtitle: Text(l10n.docsGuideSubtitle),
+                      trailing: const Icon(Icons.open_in_new, size: 20),
+                      onTap: () => DocsLinks.openUserGuideOrSnack(context),
+                    ),
+                    const SizedBox(height: 10),
                     _sectionTitle(context, l10n.infoHowToTitle),
                     const SizedBox(height: 8),
                     Text(
