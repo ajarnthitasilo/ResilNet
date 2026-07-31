@@ -18,8 +18,5 @@
 	<true/>
 	<key>com.apple.security.files.user-selected.read-write</key>
 	<true/>
-	<!-- Required by flutter_secure_storage on macOS (identity Keychain). -->
-	<key>keychain-access-groups</key>
-	<array/>
 </dict>
 </plist>
