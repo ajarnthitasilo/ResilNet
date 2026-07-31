@@ -1,2 +1,7 @@
 #include "../../Flutter/Flutter-Release.xcconfig"
 #include "Warnings.xcconfig"
+
+// Apple Silicon host: skip x86_64 so cargokit does not need rust-std-x86_64-apple-darwin.
+ARCHS = arm64
+ONLY_ACTIVE_ARCH = YES
+EXCLUDED_ARCHS[sdk=macosx*] = x86_64
