@@ -19,6 +19,7 @@ import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/qr_image_decode.dart';
 import '../core/voice_payload.dart';
+import '../widgets/invite_actions_sheet.dart';
 import '../core/peer_id.dart';
 import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
@@ -716,8 +717,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _playVoiceNote(AppState s, ChatMessage m) async {
     try {
-      // Tap again while playing → pause/stop.
-      if (_playingVoiceId == m.id && _audio.isPlaying) {
+      // Tap again while this note is active → pause/stop.
+      // Do not require isPlaying: player state can lag and made the icon blink.
+      if (_playingVoiceId == m.id) {
         await _audio.stopPlayback();
         _playbackSub?.cancel();
         if (mounted) setState(() => _playingVoiceId = null);
@@ -939,12 +941,25 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     final board = parseBoardInvite(text);
     if (board != null) {
+      final short = encodeBoardInviteHttpsLink(board.toBoard());
+      final full = encodeBoardInviteDeepLink(board.toBoard());
       return _tappableInviteCard(
         icon: Icons.campaign_outlined,
         title: board.title,
         subtitle: l10n.announceConfirmFollowTitle,
         onTap: () => unawaited(
           _confirmFollowBoardInvite(text, board.title, l10n),
+        ),
+        onLongPress: () => unawaited(
+          showInviteActionsSheet(
+            context: context,
+            title: board.title,
+            subtitle: l10n.inviteLongPressHint,
+            shortLink: short,
+            fullLink: full,
+            acceptLabel: l10n.announceConfirmFollow,
+            onAccept: () => _confirmFollowBoardInvite(text, board.title, l10n),
+          ),
         ),
       );
     }
@@ -953,11 +968,32 @@ class _ChatScreenState extends State<ChatScreen> {
       final label = (identity.name != null && identity.name!.isNotEmpty)
           ? identity.name!
           : formatShortPeerId(identity.id);
+      final short = encodeIdentityInviteHttpsLink(
+        id: identity.id,
+        publicKeyPem: identity.publicKeyPem,
+        name: identity.name,
+      );
+      final full = encodeIdentityInviteDeepLink(
+        id: identity.id,
+        publicKeyPem: identity.publicKeyPem,
+        name: identity.name,
+      );
       return _tappableInviteCard(
         icon: Icons.person_add_alt_1_outlined,
         title: label,
         subtitle: l10n.peerConfirmAddTitle,
         onTap: () => unawaited(_confirmAddPeerInvite(text, identity, l10n)),
+        onLongPress: () => unawaited(
+          showInviteActionsSheet(
+            context: context,
+            title: label,
+            subtitle: l10n.inviteLongPressHint,
+            shortLink: short,
+            fullLink: full,
+            acceptLabel: l10n.peerConfirmAdd,
+            onAccept: () => _confirmAddPeerInvite(text, identity, l10n),
+          ),
+        ),
       );
     }
     return _linkifiedText(text, l10n);
@@ -968,12 +1004,14 @@ class _ChatScreenState extends State<ChatScreen> {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    VoidCallback? onLongPress,
   }) {
     return Material(
       color: const Color(0xFF1A3A2A),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -1016,6 +1054,7 @@ class _ChatScreenState extends State<ChatScreen> {
       final bytes = Uint8List.fromList(base64Decode(b64));
       return GestureDetector(
         onTap: () => unawaited(_onChatImageTap(bytes, l10n)),
+        onLongPress: () => unawaited(_onChatImageLongPress(bytes, l10n)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.memory(
@@ -1071,8 +1110,54 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Future<void> _onChatImageLongPress(
+    Uint8List bytes,
+    AppLocalizations l10n,
+  ) async {
+    final qr = await decodeQrFromImageBytes(bytes);
+    if (!mounted || qr == null || qr.isEmpty) return;
+    final board = parseBoardInvite(qr);
+    if (board != null) {
+      final short = encodeBoardInviteHttpsLink(board.toBoard());
+      final full = encodeBoardInviteDeepLink(board.toBoard());
+      await showInviteActionsSheet(
+        context: context,
+        title: board.title,
+        subtitle: l10n.inviteLongPressHint,
+        shortLink: short,
+        fullLink: full,
+        acceptLabel: l10n.announceConfirmFollow,
+        onAccept: () => _confirmFollowBoardInvite(qr, board.title, l10n),
+      );
+      return;
+    }
+    final identity = parseIdentityInvite(qr);
+    if (identity == null) return;
+    final label = (identity.name != null && identity.name!.isNotEmpty)
+        ? identity.name!
+        : formatShortPeerId(identity.id);
+    await showInviteActionsSheet(
+      context: context,
+      title: label,
+      subtitle: l10n.inviteLongPressHint,
+      shortLink: encodeIdentityInviteHttpsLink(
+        id: identity.id,
+        publicKeyPem: identity.publicKeyPem,
+        name: identity.name,
+      ),
+      fullLink: encodeIdentityInviteDeepLink(
+        id: identity.id,
+        publicKeyPem: identity.publicKeyPem,
+        name: identity.name,
+      ),
+      acceptLabel: l10n.peerConfirmAdd,
+      onAccept: () => _confirmAddPeerInvite(qr, identity, l10n),
+    );
+  }
+
   static final _urlRe = RegExp(
-    r'(resilnet:\/\/(?:board|peer)\/invite\?[^\s<>]+)|'
+    r'(https?:\/\/ajarnthitasilo\.github\.io\/ResilNet\/go\/?\?[^\s<>]+)|'
+    r'(resilnet:\/\/(?:board\/invite|peer\/invite|b|p)\?[^\s<>]+)|'
     r'(https?:\/\/[^\s<>]+)|'
     r'(www\.[^\s<>]+)|'
     r'(?<![A-Za-z0-9_+/-])[A-Za-z0-9_-]{43}(?![A-Za-z0-9_+/=-])',

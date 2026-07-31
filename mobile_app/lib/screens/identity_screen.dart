@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -13,6 +13,7 @@ import '../services/camera_permission.dart';
 import '../services/photos_permission.dart';
 import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
+import '../widgets/invite_actions_sheet.dart';
 import 'qr_scanner_screen.dart';
 
 class IdentityScreen extends StatefulWidget {
@@ -184,7 +185,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
     // ใช้ Selector เฉพาะ field ที่เกี่ยวกับ QR — ไม่ rebuild ทุกครั้งที่ mesh อัปเดต
     final userId = context.select<AppState, String>((s) => s.myUserId);
     final displayName = context.select<AppState, String>((s) => s.displayName);
-    final crypto = context.read<AppState>().crypto;
+    final appState = context.read<AppState>();
     _syncNameField(displayName);
 
     if (_cachedUserId != userId ||
@@ -192,9 +193,11 @@ class _IdentityScreenState extends State<IdentityScreen> {
         _cachedQrData == null) {
       _cachedUserId = userId;
       _cachedName = displayName;
-      _cachedQrData = jsonEncode(crypto.identityJson(displayName: displayName));
+      _cachedQrData = appState.identityInvitePayload(displayName: displayName);
     }
     final qrData = _cachedQrData!;
+    final shortLink = qrData;
+    final fullLink = appState.identityInviteDeepLink(displayName: displayName);
 
     return Scaffold(
       appBar: AppBar(
@@ -278,7 +281,31 @@ class _IdentityScreenState extends State<IdentityScreen> {
                     ),
                     const SizedBox(height: 12),
                     Center(
-                      child: Container(
+                      child: GestureDetector(
+                        onLongPress: () => unawaited(
+                          showInviteActionsSheet(
+                            context: context,
+                            title: displayName.isNotEmpty
+                                ? displayName
+                                : context.l10n.identityMyQrTitle,
+                            subtitle: context.l10n.inviteLongPressHint,
+                            shortLink: shortLink,
+                            fullLink: fullLink,
+                            acceptLabel: context.l10n.inviteCopyShortLink,
+                            onAccept: () async {
+                              await Clipboard.setData(
+                                ClipboardData(text: shortLink),
+                              );
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(context.l10n.inviteLinkCopied),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -315,6 +342,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
                             );
                           },
                         ),
+                      ),
                       ),
                     ),
                     const SizedBox(height: 14),

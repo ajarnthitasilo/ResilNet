@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:resilnet/core/board_invite_wire.dart';
+import 'package:resilnet/core/invite_link_codec.dart';
 import 'package:resilnet/models/announcement_board.dart';
 import 'package:resilnet/services/crypto_service.dart';
 
@@ -49,7 +50,7 @@ void main() {
     expect(parsed.publicKeyPem.contains('BEGIN'), isTrue);
   });
 
-  test('deep link round-trip', () {
+  test('deep link round-trip (classic + alias)', () {
     final link = encodeBoardInviteDeepLink(board);
     expect(link.startsWith('resilnet://board/invite?d='), isTrue);
     final parsed = parseBoardInvite(link);
@@ -59,18 +60,41 @@ void main() {
 
     final uri = Uri.parse(link);
     expect(parseBoardInviteDeepLink(uri)?.id, board.id);
+
+    final alias = encodeBoardInviteAliasDeepLink(board);
+    expect(alias.startsWith('resilnet://b?d='), isTrue);
+    expect(parseBoardInvite(alias)?.id, board.id);
   });
 
-  test('share text with preamble extracts deep link', () {
+  test('HTTPS go-link round-trip', () {
+    final https = encodeBoardInviteHttpsLink(board);
+    expect(https.startsWith(InviteLinkCodec.httpsGoBase), isTrue);
+    expect(https.contains('t=b'), isTrue);
+    final parsed = parseBoardInvite(https);
+    expect(parsed, isNotNull);
+    expect(parsed!.id, board.id);
+    expect(parsed.title, board.title);
+    expect(parseBoardInviteDeepLink(Uri.parse(https))?.id, board.id);
+  });
+
+  test('share text with preamble extracts HTTPS go-link', () {
     final text = encodeBoardInviteShareText(
       board: board,
       preamble: (t) => 'คำเชิญเข้ากระดานชุมชน “$t”\nเปิดแอปแล้วติดตาม',
     );
     expect(text.contains('คำเชิญ'), isTrue);
-    expect(text.contains('resilnet://'), isTrue);
+    expect(text.contains('ajarnthitasilo.github.io/ResilNet/go'), isTrue);
     final parsed = parseBoardInvite(text);
     expect(parsed, isNotNull);
     expect(parsed!.title, board.title);
+  });
+
+  test('legacy uncompressed deep link still parses', () {
+    final plain = base64Url
+        .encode(utf8.encode(encodeBoardInvite(board)))
+        .replaceAll('=', '');
+    final legacy = 'resilnet://board/invite?d=$plain';
+    expect(parseBoardInvite(legacy)?.id, board.id);
   });
 
   test('reject invite without id or key', () {

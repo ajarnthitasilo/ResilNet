@@ -238,6 +238,44 @@ void main() {
       expect(restored?.payloadKind, 'audio');
     });
 
+    test('mesh_bulletin keeps content + payloadKind over BLE chunk wire', () {
+      const wire =
+          '{"type":"mesh_bulletin","bulletinId":"b-001","text":"hello","urgent":true}';
+      final msg = ChatMessage(
+        id: 'bl:b-001',
+        senderId: 'alice',
+        receiverId: '*',
+        content: wire,
+        encryptedPayload: 'mesh_bulletin',
+        encryptedKey: 'mesh_bulletin',
+        ttl: 5,
+        timestamp: 1700000000000,
+        status: MessageStatus.pending,
+        type: MessageType.direct,
+        payloadKind: 'mesh_bulletin',
+        senderPk: 'compact-pk',
+      );
+
+      final bundled = ResilNetChunkCodec.ciphertextFromMessage(
+        msg,
+        payloadType: ResilNetPayloadType.fromMessageKind(msg.payloadKind),
+      );
+      // Wire tag is still text (0x01); application kind stays in JSON.
+      expect(bundled[0], 0x01);
+
+      final chunks = ResilNetChunkCodec.encodeChunks(bundled);
+      final reassembler = ChunkReassembler();
+      Uint8List? assembled;
+      for (final chunk in chunks) {
+        assembled = reassembler.ingest(chunk).complete ?? assembled;
+      }
+      expect(assembled, isNotNull);
+      final restored = ResilNetChunkCodec.chatMessageFromCiphertext(assembled!);
+      expect(restored?.payloadKind, 'mesh_bulletin');
+      expect(restored?.content, wire);
+      expect(restored?.senderPk, 'compact-pk');
+    });
+
     test('multi-chunk binary stream with firmware payload tag', () {
       final data = Uint8List.fromList([
         ResilNetPayloadType.firmware.wireTag,

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart' as crypto;
 
 import '../models/chat_message.dart';
+import 'payload_kinds.dart';
 import 'resilnet_payload_type.dart';
 import 'resilnet_radio_codec.dart';
 
@@ -77,23 +78,23 @@ class ResilNetChunkCodec {
         '${hex.substring(20, 32)}';
   }
 
-  /// สร้าง ciphertext bundle จากข้อความที่เข้ารหัสแล้ว (Encrypt-then-Chunk ขั้นที่ 1)
+  /// สร้าง ciphertext bundle จากข้อความที่เข้ารหัสแล้ว (Encrypt-then-Chunk ขั้นที่ 1).
+  ///
+  /// Mirrors [ResilNetPacketCodec.toDto]: strip local plaintext previews, but
+  /// **keep** `content` for presence / public `mesh_bulletin`. Always preserve
+  /// the application [ChatMessage.payloadKind] (never replace with the wire
+  /// tag name `"text"` — that broke bulletin delivery over BLE/UDP).
   static Uint8List ciphertextFromMessage(
     ChatMessage msg, {
     ResilNetPayloadType payloadType = ResilNetPayloadType.text,
   }) {
-    final json = jsonEncode({
-      'id': msg.id,
-      'senderId': msg.senderId,
-      'receiverId': msg.receiverId,
-      'timestamp': msg.timestamp,
-      'ttl': msg.ttl,
-      'type': msg.type.name,
-      'payloadKind': payloadType.messageKind,
-      'encryptedPayload': msg.encryptedPayload,
-      'encryptedKey': msg.encryptedKey,
-      if (msg.signature != null) 'signature': msg.signature,
-    });
+    final wireMap = Map<String, Object?>.from(msg.toMap());
+    if (msg.payloadKind != PayloadKinds.presence &&
+        msg.payloadKind != PayloadKinds.bulletin) {
+      wireMap['content'] = null;
+    }
+    wireMap['payloadKind'] = msg.payloadKind;
+    final json = jsonEncode(wireMap);
     return wrapWithPayloadTag(
       Uint8List.fromList(utf8.encode(json)),
       payloadType,

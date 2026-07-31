@@ -19,6 +19,7 @@ import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
 import '../services/photos_permission.dart';
 import '../state/app_state.dart';
+import '../widgets/invite_actions_sheet.dart';
 import 'qr_capture_screen.dart';
 
 Future<void> openAnnouncementsScreen(BuildContext context) {
@@ -159,14 +160,37 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(12),
-                child: QrImageView(
-                  data: payload,
-                  version: QrVersions.auto,
-                  size: 220,
-                  backgroundColor: Colors.white,
+              GestureDetector(
+                onLongPress: () {
+                  final short = payload;
+                  final full = s.boardInviteDeepLink(board);
+                  unawaited(
+                    showInviteActionsSheet(
+                      context: ctx,
+                      title: board.title,
+                      subtitle: l10n.inviteLongPressHint,
+                      shortLink: short,
+                      fullLink: full,
+                      acceptLabel: l10n.inviteCopyShortLink,
+                      onAccept: () async {
+                        await Clipboard.setData(ClipboardData(text: short));
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(this.context).showSnackBar(
+                          SnackBar(content: Text(l10n.inviteLinkCopied)),
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(12),
+                  child: QrImageView(
+                    data: payload,
+                    version: QrVersions.auto,
+                    size: 220,
+                    backgroundColor: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -174,6 +198,14 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                 l10n.announceInviteSharePreamble(board.title),
                 style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
                       color: Colors.white70,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.inviteLongPressHint,
+                style: Theme.of(ctx).textTheme.labelSmall?.copyWith(
+                      color: Colors.white54,
                     ),
                 textAlign: TextAlign.center,
               ),

@@ -1164,6 +1164,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get docsOpenFailed => 'Could not open the user guide';
 
   @override
+  String get inviteCopyShortLink => 'Copy short link';
+
+  @override
+  String get inviteShareLink => 'Share link';
+
+  @override
+  String get inviteShowFullLink => 'Full link';
+
+  @override
+  String get inviteCopyFullLink => 'Copy full link';
+
+  @override
+  String get inviteLinkCopied => 'Link copied';
+
+  @override
+  String get inviteLongPressHint => 'Long-press for link actions';
+
+  @override
   String get infoTabInfo => 'Info';
 
   @override

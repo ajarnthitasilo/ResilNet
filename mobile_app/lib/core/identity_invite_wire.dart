@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import '../models/peer.dart';
 import '../services/crypto_service.dart';
+import 'invite_link_codec.dart';
 
-/// Deep link: `resilnet://peer/invite?d=<base64url(identity-json)>`
+/// Deep link: `resilnet://peer/invite?d=<payload>` (alias `resilnet://p?d=`)
 const kPeerInviteScheme = 'resilnet';
 const kPeerInviteHost = 'peer';
 const kPeerInvitePath = '/invite';
+const kPeerInviteAliasHost = 'p';
 
 /// Identity / peer invite — compact QR JSON with public key (no private key).
 class IdentityInviteData {
@@ -51,18 +53,52 @@ String encodeIdentityInvite({
       name: name,
     ).encodeCompact();
 
+String _identityInviteD({
+  required String id,
+  required String publicKeyPem,
+  String? name,
+}) =>
+    InviteLinkCodec.packPayload(
+      encodeIdentityInvite(id: id, publicKeyPem: publicKeyPem, name: name),
+    );
+
 String encodeIdentityInviteDeepLink({
   required String id,
   required String publicKeyPem,
   String? name,
 }) {
-  final compact = encodeIdentityInvite(
+  final d = _identityInviteD(
     id: id,
     publicKeyPem: publicKeyPem,
     name: name,
   );
-  final b64 = base64Url.encode(utf8.encode(compact)).replaceAll('=', '');
-  return '$kPeerInviteScheme://$kPeerInviteHost$kPeerInvitePath?d=$b64';
+  return '$kPeerInviteScheme://$kPeerInviteHost$kPeerInvitePath?d=$d';
+}
+
+String encodeIdentityInviteAliasDeepLink({
+  required String id,
+  required String publicKeyPem,
+  String? name,
+}) {
+  final d = _identityInviteD(
+    id: id,
+    publicKeyPem: publicKeyPem,
+    name: name,
+  );
+  return '$kPeerInviteScheme://$kPeerInviteAliasHost?d=$d';
+}
+
+String encodeIdentityInviteHttpsLink({
+  required String id,
+  required String publicKeyPem,
+  String? name,
+}) {
+  final d = _identityInviteD(
+    id: id,
+    publicKeyPem: publicKeyPem,
+    name: name,
+  );
+  return InviteLinkCodec.httpsGoLink(type: InviteLinkCodec.typePeer, d: d);
 }
 
 String encodeIdentityInviteShareText({
@@ -72,7 +108,7 @@ String encodeIdentityInviteShareText({
   required String Function(String label) preamble,
 }) {
   final label = (name != null && name.trim().isNotEmpty) ? name.trim() : id;
-  final link = encodeIdentityInviteDeepLink(
+  final link = encodeIdentityInviteHttpsLink(
     id: id,
     publicKeyPem: publicKeyPem,
     name: name,
@@ -90,33 +126,63 @@ IdentityInviteData? parseIdentityInvite(String raw) {
 
   final payload = _extractIdentityPayload(t);
   if (payload == null) return null;
+  if (payload != t) {
+    final nested = parseIdentityInvite(payload);
+    if (nested != null) return nested;
+  }
   return _parseIdentityJson(payload);
 }
 
 IdentityInviteData? parseIdentityInviteDeepLink(Uri uri) {
+  if (InviteLinkCodec.isHttpsGoUri(uri)) {
+    if (InviteLinkCodec.httpsGoType(uri) != InviteLinkCodec.typePeer) {
+      return null;
+    }
+    return _parseFromD(InviteLinkCodec.httpsGoPayload(uri) ?? '');
+  }
+
   if (uri.scheme != kPeerInviteScheme) return null;
-  if (uri.host != kPeerInviteHost) return null;
+  final host = uri.host.toLowerCase();
+  if (host == kPeerInviteAliasHost) {
+    return _parseFromD(uri.queryParameters['d']?.trim() ?? '');
+  }
+  if (host != kPeerInviteHost) return null;
   final path = uri.path.isEmpty ? '' : uri.path;
-  if (path != kPeerInvitePath && path != 'invite') return null;
-  final d = uri.queryParameters['d']?.trim() ?? '';
-  if (d.isEmpty) return null;
-  try {
-    final pad = '=' * ((4 - d.length % 4) % 4);
-    final jsonStr = utf8.decode(base64Url.decode('$d$pad'));
-    return _parseIdentityJson(jsonStr);
-  } catch (_) {
+  if (path != kPeerInvitePath && path != 'invite' && path != '/') {
     return null;
   }
+  return _parseFromD(uri.queryParameters['d']?.trim() ?? '');
+}
+
+IdentityInviteData? _parseFromD(String d) {
+  if (d.isEmpty) return null;
+  final jsonStr = InviteLinkCodec.unpackPayload(d);
+  if (jsonStr == null) return null;
+  return _parseIdentityJson(jsonStr);
 }
 
 IdentityInviteData? parseIdentityInviteDeepLinkString(String raw) {
   final t = raw.trim();
-  if (!t.contains('$kPeerInviteScheme://')) return null;
-  final match = RegExp(
-    r'resilnet://peer/invite\?[^\s]+',
+
+  final httpsMatch = RegExp(
+    r'https?://ajarnthitasilo\.github\.io/ResilNet/go/?\?[^\s]+',
     caseSensitive: false,
   ).firstMatch(t);
-  final url = match?.group(0) ?? t;
+  if (httpsMatch != null) {
+    try {
+      final parsed =
+          parseIdentityInviteDeepLink(Uri.parse(httpsMatch.group(0)!));
+      if (parsed != null) return parsed;
+    } catch (_) {}
+  }
+
+  if (!t.toLowerCase().contains('$kPeerInviteScheme://')) return null;
+  final match = RegExp(
+    r'resilnet://(?:peer/invite|p)\?[^\s]+',
+    caseSensitive: false,
+  ).firstMatch(t);
+  final url = match?.group(0);
+  if (url == null) return null;
   try {
     return parseIdentityInviteDeepLink(Uri.parse(url));
   } catch (_) {
@@ -127,13 +193,18 @@ IdentityInviteData? parseIdentityInviteDeepLinkString(String raw) {
 /// True when [raw] looks like a standalone public-key hash (SHA-256 base64url).
 bool looksLikePublicKeyHash(String raw) {
   final t = raw.trim();
-  // SHA-256 digest → 43 base64url chars (no padding).
   return RegExp(r'^[A-Za-z0-9_-]{43}$').hasMatch(t);
 }
 
 String? _extractIdentityPayload(String text) {
+  final httpsMatch = RegExp(
+    r'https?://ajarnthitasilo\.github\.io/ResilNet/go/?\?[^\s]+',
+    caseSensitive: false,
+  ).firstMatch(text);
+  if (httpsMatch != null) return httpsMatch.group(0);
+
   final linkMatch = RegExp(
-    r'resilnet://peer/invite\?[^\s]+',
+    r'resilnet://(?:peer/invite|p)\?[^\s]+',
     caseSensitive: false,
   ).firstMatch(text);
   if (linkMatch != null) return linkMatch.group(0);
@@ -148,8 +219,7 @@ String? _extractIdentityPayload(String text) {
 
 IdentityInviteData? _parseIdentityJson(String raw) {
   try {
-    // Deep-link URL mistakenly passed here.
-    if (raw.startsWith('resilnet://')) {
+    if (raw.startsWith('resilnet://') || raw.startsWith('http')) {
       return parseIdentityInviteDeepLinkString(raw);
     }
     final obj = jsonDecode(raw);
@@ -157,7 +227,6 @@ IdentityInviteData? _parseIdentityJson(String raw) {
     final map = Map<String, Object?>.from(obj);
 
     final type = (map['type'] as String?)?.trim();
-    // Board invites must not be treated as identity.
     if (type == 'board_invite' ||
         map.containsKey('ownerId') ||
         map.containsKey('title')) {

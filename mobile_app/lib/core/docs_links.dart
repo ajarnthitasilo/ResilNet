@@ -9,6 +9,9 @@ class DocsLinks {
 
   static const baseUrl = 'https://ajarnthitasilo.github.io/ResilNet/';
 
+  /// Invite landing (static): `…/go/?t=b|p&d=…`
+  static const inviteGoBase = '${baseUrl}go/';
+
   /// Docsify hash routes: `#/th/` and `#/en/`.
   static String urlForLocale(Locale? locale) {
     final code = locale?.languageCode.toLowerCase();

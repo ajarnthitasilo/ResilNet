@@ -886,14 +886,19 @@ class AppState extends ChangeNotifier {
   }
 
   String boardInvitePayload(AnnouncementBoard board) {
-    return encodeBoardInvite(board);
+    // QR / paste: prefer HTTPS go-link (short wrapper on docs site).
+    return encodeBoardInviteHttpsLink(board);
   }
 
   String boardInviteDeepLink(AnnouncementBoard board) {
     return encodeBoardInviteDeepLink(board);
   }
 
-  /// ข้อความเชิญที่อ่านง่าย + deep link (สำหรับคัดลอก/แชร์)
+  String boardInviteHttpsLink(AnnouncementBoard board) {
+    return encodeBoardInviteHttpsLink(board);
+  }
+
+  /// ข้อความเชิญที่อ่านง่าย + HTTPS short link (สำหรับคัดลอก/แชร์)
   String boardInviteShareText(
     AnnouncementBoard board, {
     required String Function(String title) preamble,
@@ -942,6 +947,16 @@ class AppState extends ChangeNotifier {
   // --- Peer / identity invite (QR / deep link / paste) ---
 
   String identityInvitePayload({String? displayName}) {
+    // QR: HTTPS go-link (preferred share/scan surface).
+    return encodeIdentityInviteHttpsLink(
+      id: myUserId,
+      publicKeyPem: crypto.publicKeyPem,
+      name: displayName ?? this.displayName,
+    );
+  }
+
+  /// Compact JSON (legacy QR / paste). Prefer [identityInvitePayload] for new QR.
+  String identityInviteJsonPayload({String? displayName}) {
     return encodeIdentityInvite(
       id: myUserId,
       publicKeyPem: crypto.publicKeyPem,
@@ -951,6 +966,14 @@ class AppState extends ChangeNotifier {
 
   String identityInviteDeepLink({String? displayName}) {
     return encodeIdentityInviteDeepLink(
+      id: myUserId,
+      publicKeyPem: crypto.publicKeyPem,
+      name: displayName ?? this.displayName,
+    );
+  }
+
+  String identityInviteHttpsLink({String? displayName}) {
+    return encodeIdentityInviteHttpsLink(
       id: myUserId,
       publicKeyPem: crypto.publicKeyPem,
       name: displayName ?? this.displayName,

@@ -2102,6 +2102,42 @@ abstract class AppLocalizations {
   /// **'Could not open the user guide'**
   String get docsOpenFailed;
 
+  /// No description provided for @inviteCopyShortLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy short link'**
+  String get inviteCopyShortLink;
+
+  /// No description provided for @inviteShareLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Share link'**
+  String get inviteShareLink;
+
+  /// No description provided for @inviteShowFullLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Full link'**
+  String get inviteShowFullLink;
+
+  /// No description provided for @inviteCopyFullLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy full link'**
+  String get inviteCopyFullLink;
+
+  /// No description provided for @inviteLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get inviteLinkCopied;
+
+  /// No description provided for @inviteLongPressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press for link actions'**
+  String get inviteLongPressHint;
+
   /// No description provided for @infoTabInfo.
   ///
   /// In en, this message translates to:

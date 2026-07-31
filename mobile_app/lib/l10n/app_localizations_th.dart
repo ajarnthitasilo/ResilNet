@@ -1158,6 +1158,24 @@ class AppLocalizationsTh extends AppLocalizations {
   String get docsOpenFailed => 'เปิดคู่มือไม่สำเร็จ';
 
   @override
+  String get inviteCopyShortLink => 'คัดลอกลิงก์สั้น';
+
+  @override
+  String get inviteShareLink => 'แชร์ลิงก์';
+
+  @override
+  String get inviteShowFullLink => 'ลิงก์เต็ม';
+
+  @override
+  String get inviteCopyFullLink => 'คัดลอกลิงก์เต็ม';
+
+  @override
+  String get inviteLinkCopied => 'คัดลอกลิงก์แล้ว';
+
+  @override
+  String get inviteLongPressHint => 'กดค้างเพื่อจัดการลิงก์';
+
+  @override
   String get infoTabInfo => 'ข้อมูล';
 
   @override

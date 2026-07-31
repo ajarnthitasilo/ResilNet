@@ -60,12 +60,26 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="resilnet" android:host="board" />
             </intent-filter>
+            <!-- Short alias: resilnet://b?d=... -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="resilnet" android:host="b" />
+            </intent-filter>
             <!-- ResilNet peer / identity invite: resilnet://peer/invite?... -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="resilnet" android:host="peer" />
+            </intent-filter>
+            <!-- Short alias: resilnet://p?d=... -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="resilnet" android:host="p" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

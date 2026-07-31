@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import '../models/announcement_board.dart';
 import '../services/crypto_service.dart';
+import 'invite_link_codec.dart';
 
 /// Scheme สำหรับ deep link เชิญเข้ากระดานชุมชน
 const kBoardInviteScheme = 'resilnet';
 const kBoardInviteHost = 'board';
 const kBoardInvitePath = '/invite';
+/// Short alias: `resilnet://b?d=…`
+const kBoardInviteAliasHost = 'b';
 
 /// Compact board invite — ไม่มี private key, ใช้ `pk` แทน PEM เต็ม
 class BoardInviteData {
@@ -73,19 +76,33 @@ class BoardInviteData {
 String encodeBoardInvite(AnnouncementBoard board) =>
     BoardInviteData.fromBoard(board).encodeCompact();
 
-/// Deep link: `resilnet://board/invite?d=<base64url(compact-json)>`
+String _boardInviteD(AnnouncementBoard board) =>
+    InviteLinkCodec.packPayload(encodeBoardInvite(board));
+
+/// Deep link: `resilnet://board/invite?d=<payload>` (also alias `resilnet://b?d=`)
 String encodeBoardInviteDeepLink(AnnouncementBoard board) {
-  final compact = encodeBoardInvite(board);
-  final b64 = base64Url.encode(utf8.encode(compact)).replaceAll('=', '');
-  return '$kBoardInviteScheme://$kBoardInviteHost$kBoardInvitePath?d=$b64';
+  final d = _boardInviteD(board);
+  return '$kBoardInviteScheme://$kBoardInviteHost$kBoardInvitePath?d=$d';
 }
 
-/// ข้อความแชร์ที่อ่านง่าย (preamble + deep link)
+/// Short custom-scheme alias.
+String encodeBoardInviteAliasDeepLink(AnnouncementBoard board) {
+  final d = _boardInviteD(board);
+  return '$kBoardInviteScheme://$kBoardInviteAliasHost?d=$d';
+}
+
+/// HTTPS go-link (preferred for share / QR).
+String encodeBoardInviteHttpsLink(AnnouncementBoard board) {
+  final d = _boardInviteD(board);
+  return InviteLinkCodec.httpsGoLink(type: InviteLinkCodec.typeBoard, d: d);
+}
+
+/// ข้อความแชร์ที่อ่านง่าย (preamble + HTTPS short link)
 String encodeBoardInviteShareText({
   required AnnouncementBoard board,
   required String Function(String title) preamble,
 }) {
-  final link = encodeBoardInviteDeepLink(board);
+  final link = encodeBoardInviteHttpsLink(board);
   return '${preamble(board.title)}\n\n$link';
 }
 
@@ -93,11 +110,9 @@ BoardInviteData? parseBoardInvite(String raw) {
   final trimmed = raw.trim();
   if (trimmed.isEmpty) return null;
 
-  // Deep link first
   final fromLink = parseBoardInviteDeepLinkString(trimmed);
   if (fromLink != null) return fromLink;
 
-  // Extract deep link or JSON from a multi-line share message
   final extracted = _extractInvitePayload(trimmed);
   if (extracted != null && extracted != trimmed) {
     final nested = parseBoardInvite(extracted);
@@ -108,30 +123,57 @@ BoardInviteData? parseBoardInvite(String raw) {
 }
 
 BoardInviteData? parseBoardInviteDeepLink(Uri uri) {
+  // HTTPS go landing: …/go/?t=b&d=…
+  if (InviteLinkCodec.isHttpsGoUri(uri)) {
+    if (InviteLinkCodec.httpsGoType(uri) != InviteLinkCodec.typeBoard) {
+      return null;
+    }
+    final d = InviteLinkCodec.httpsGoPayload(uri) ?? '';
+    return _parseFromD(d);
+  }
+
   if (uri.scheme != kBoardInviteScheme) return null;
-  if (uri.host != kBoardInviteHost) return null;
+
+  final host = uri.host.toLowerCase();
+  if (host == kBoardInviteAliasHost) {
+    return _parseFromD(uri.queryParameters['d']?.trim() ?? '');
+  }
+  if (host != kBoardInviteHost) return null;
   final path = uri.path.isEmpty ? '/' : uri.path;
-  if (path != kBoardInvitePath && path != 'invite') return null;
-  final d = uri.queryParameters['d']?.trim() ?? '';
-  if (d.isEmpty) return null;
-  try {
-    final padded = d.padRight(d.length + (4 - d.length % 4) % 4, '=');
-    final jsonStr = utf8.decode(base64Url.decode(padded));
-    return _parseInviteJson(jsonStr);
-  } catch (_) {
+  if (path != kBoardInvitePath && path != 'invite' && path != '/') {
     return null;
   }
+  return _parseFromD(uri.queryParameters['d']?.trim() ?? '');
+}
+
+BoardInviteData? _parseFromD(String d) {
+  if (d.isEmpty) return null;
+  final jsonStr = InviteLinkCodec.unpackPayload(d);
+  if (jsonStr == null) return null;
+  return _parseInviteJson(jsonStr);
 }
 
 BoardInviteData? parseBoardInviteDeepLinkString(String raw) {
   final t = raw.trim();
-  if (!t.contains('$kBoardInviteScheme://')) return null;
-  // Find the first resilnet:// URL in the string
-  final match = RegExp(
-    r'resilnet://board/invite\?[^\s]+',
+
+  final httpsMatch = RegExp(
+    r'https?://ajarnthitasilo\.github\.io/ResilNet/go/?\?[^\s]+',
     caseSensitive: false,
   ).firstMatch(t);
-  final url = match?.group(0) ?? t;
+  if (httpsMatch != null) {
+    try {
+      final parsed = parseBoardInviteDeepLink(Uri.parse(httpsMatch.group(0)!));
+      if (parsed != null) return parsed;
+    } catch (_) {}
+  }
+
+  if (!t.toLowerCase().contains('$kBoardInviteScheme://')) return null;
+  final match = RegExp(
+    r'resilnet://(?:board/invite|b)\?[^\s]+',
+    caseSensitive: false,
+  ).firstMatch(t);
+  final url = match?.group(0);
+  if (url == null) return null;
   try {
     return parseBoardInviteDeepLink(Uri.parse(url));
   } catch (_) {
@@ -140,13 +182,18 @@ BoardInviteData? parseBoardInviteDeepLinkString(String raw) {
 }
 
 String? _extractInvitePayload(String text) {
+  final httpsMatch = RegExp(
+    r'https?://ajarnthitasilo\.github\.io/ResilNet/go/?\?[^\s]+',
+    caseSensitive: false,
+  ).firstMatch(text);
+  if (httpsMatch != null) return httpsMatch.group(0);
+
   final linkMatch = RegExp(
-    r'resilnet://board/invite\?[^\s]+',
+    r'resilnet://(?:board/invite|b)\?[^\s]+',
     caseSensitive: false,
   ).firstMatch(text);
   if (linkMatch != null) return linkMatch.group(0);
 
-  // First JSON object in the text
   final start = text.indexOf('{');
   final end = text.lastIndexOf('}');
   if (start >= 0 && end > start) {
@@ -157,6 +204,9 @@ String? _extractInvitePayload(String text) {
 
 BoardInviteData? _parseInviteJson(String raw) {
   try {
+    if (raw.startsWith('resilnet://') || raw.startsWith('http')) {
+      return parseBoardInviteDeepLinkString(raw);
+    }
     final obj = jsonDecode(raw);
     if (obj is! Map) return null;
     final map = Map<String, Object?>.from(obj);
@@ -164,7 +214,6 @@ BoardInviteData? _parseInviteJson(String raw) {
     final id = (map['id'] as String?)?.trim() ?? '';
     if (id.isEmpty) return null;
 
-    // Compact `pk` or legacy `publicKeyPem`
     final pkRaw = ((map['pk'] ?? map['publicKeyPem']) as String?)?.trim() ?? '';
     if (pkRaw.isEmpty) return null;
 
@@ -176,8 +225,6 @@ BoardInviteData? _parseInviteJson(String raw) {
     }
 
     final type = (map['type'] as String?)?.trim();
-    // Typed board invite, or legacy board JSON (has title/ownerId / full PEM).
-    // Reject bare identity QR JSON ({id, pk, name}) so peer invites stay distinct.
     final isBoard = type == 'board_invite' ||
         map.containsKey('ownerId') ||
         map.containsKey('title') ||

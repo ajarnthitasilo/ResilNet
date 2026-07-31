@@ -35,6 +35,36 @@ void main() {
     );
   });
 
+  test('identity invite HTTPS go-link + alias', () {
+    final https = encodeIdentityInviteHttpsLink(
+      id: alice.myUserId,
+      publicKeyPem: alice.publicKeyPem,
+      name: 'Alice',
+    );
+    expect(https.contains('/ResilNet/go/'), isTrue);
+    expect(https.contains('t=p'), isTrue);
+    expect(parseIdentityInvite(https)?.id, alice.myUserId);
+
+    final alias = encodeIdentityInviteAliasDeepLink(
+      id: alice.myUserId,
+      publicKeyPem: alice.publicKeyPem,
+      name: 'Alice',
+    );
+    expect(alias.startsWith('resilnet://p?d='), isTrue);
+    expect(parseIdentityInvite(alias)?.name, 'Alice');
+  });
+
+  test('share text prefers HTTPS go-link', () {
+    final text = encodeIdentityInviteShareText(
+      id: alice.myUserId,
+      publicKeyPem: alice.publicKeyPem,
+      name: 'Alice',
+      preamble: (l) => 'Invite $l',
+    );
+    expect(text.contains('ajarnthitasilo.github.io/ResilNet/go'), isTrue);
+    expect(parseIdentityInvite(text)?.id, alice.myUserId);
+  });
+
   test('identity JSON is not parsed as board invite', () {
     final json = encodeIdentityInvite(
       id: alice.myUserId,

@@ -319,7 +319,11 @@ class CryptoService {
       final storedPriv = await _readKey(_kPrivatePem);
       final storedPub = await _readKey(_kPublicPem);
       if (storedPriv != privatePem || storedPub != publicPem) {
-        debugPrint('[Crypto] identity write verify failed');
+        debugPrint(
+          '[Crypto] identity write verify failed '
+          'privOk=${storedPriv == privatePem} pubOk=${storedPub == publicPem} '
+          'privNull=${storedPriv == null} pubNull=${storedPub == null}',
+        );
         throw IdentityUnavailableException(
           'Identity persist verify failed',
           userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
