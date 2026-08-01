@@ -70,11 +70,21 @@ class BleMeshService extends ChangeNotifier {
   bool _advertising = false;
   bool _advertiseInFlight = false;
   bool _gattReady = false;
+  bool get gattReady => _gattReady;
+  bool get isAdvertising => _advertising;
+  Future<void>? _gattEnsureInFlight;
+  bool _peripheralPoweredOn = false;
+  bool _bulletinListenActive = false;
   Timer? _roleTimer;
   Timer? _holdAdvertiseTimer;
+  /// Prefer concurrent central+peripheral outside bulletin listen windows.
+  final bool _preferConcurrentRadio = true;
   bool _roleAdvertisePhase = true;
-  static const _iosScanWindow = Duration(seconds: 5);
-  static const _iosAdvertiseWindow = Duration(seconds: 3);
+  static const _iosScanWindow = Duration(seconds: 3);
+  /// Longer advertise so peers can write bulletins while we listen as peripheral.
+  static const _iosAdvertiseWindow = Duration(seconds: 7);
+  /// Re-assert advertising on Apple — the stack often drops peripheral ADV.
+  static const _iosAdvertiseRefresh = Duration(seconds: 7);
 
   /// Community display name for identity characteristic / presence ads.
   String localDisplayName = '';
@@ -102,11 +112,22 @@ class BleMeshService extends ChangeNotifier {
   List<Peer> _nearbyPeers = const [];
   List<Peer> get nearbyPeers => _nearbyPeers;
 
+  /// Recent public bulletins to push via GATT notify when a central subscribes
+  /// (phone↔phone: peer may connect to us before we discover them).
+  final List<ChatMessage> _recentBulletinNotifyQueue = <ChatMessage>[];
+  static const int _maxBulletinNotifyQueue = 8;
+  bool _centralSubscribedForNotify = false;
+  Future<void>? _notifyFlushInFlight;
+
   bool _running = false;
   bool get running => _running;
 
   String? _connectedDeviceId;
   String? get connectedDeviceId => _connectedDeviceId;
+  /// Set after GATT service discovery + MTU — safe to write.
+  String? _linkReadyDeviceId;
+  /// Negotiated ATT MTU per device (default 23 until requestMtu succeeds).
+  final Map<String, int> _mtuByDevice = {};
   DateTime _lastNearbyLog = DateTime.fromMillisecondsSinceEpoch(0);
 
   Future<void> start() async {
@@ -147,6 +168,7 @@ class BleMeshService extends ChangeNotifier {
 
   Future<void> stop() async {
     _running = false;
+    _bulletinListenActive = false;
     _roleTimer?.cancel();
     _roleTimer = null;
     _holdAdvertiseTimer?.cancel();
@@ -171,36 +193,172 @@ class BleMeshService extends ChangeNotifier {
     _nearby.clear();
     _nearbyLastSeenMs.clear();
     _connectedDeviceId = null;
+    _linkReadyDeviceId = null;
     _nearbyPeers = const [];
     notifyListeners();
   }
 
-  /// Stay in advertise longer so peers can connect/write (bulletins, catch-up).
+  /// Stay discoverable + receivable while Notices is open.
+  ///
+  /// - **macOS**: concurrent ADV+scan (desktop dual-role is usually reliable).
+  /// - **iOS**: staggered ADV/scan with a per-device phase offset — Apple phones
+  ///   often refuse GATT while also scanning as central.
   Future<void> holdAdvertise({
     Duration duration = const Duration(seconds: 12),
   }) async {
     if (!_running) return;
     _holdAdvertiseTimer?.cancel();
-    if (PlatformCaps.usesIosStyleBle) {
+    if (PlatformCaps.isMacOS) {
+      _bulletinListenActive = true;
       _roleTimer?.cancel();
-      _roleTimer = null;
-      _roleAdvertisePhase = true;
-      await _applyRolePhase();
+      await _ensureGattServer();
+      await _startAdvertising();
+      _startScanning();
+      _roleTimer = Timer.periodic(_iosAdvertiseRefresh, (_) {
+        if (!_running || !_bulletinListenActive) return;
+        unawaited(_startAdvertising());
+      });
       _holdAdvertiseTimer = Timer(duration, () {
         if (!_running) return;
-        _scheduleIosRoleFlip();
+        _bulletinListenActive = false;
+        _kickRadioRoles(force: true);
       });
+      return;
+    }
+    if (PlatformCaps.usesIosStyleBle) {
+      await _startStaggeredBulletinListen(duration: duration);
     } else {
       await _startAdvertising();
+      _startScanning();
     }
   }
 
-  /// iOS/macOS cannot run central+peripheral reliably at once — duty-cycle roles.
-  /// Android can usually do both; still advertise UUID-only for scan filters.
+  /// Notices sheet open: staggered ADV/scan so both phones can see each other
+  /// while remaining receivable most of the time.
+  Future<void> enterBulletinListenMode({
+    Duration duration = const Duration(seconds: 120),
+  }) =>
+      holdAdvertise(duration: duration);
+
+  /// Ensure GATT peripheral is set up (advertisable / writable by peers).
+  Future<bool> ensureGattReady() async {
+    await _ensureGattServer();
+    if (!_gattReady) {
+      await Future<void>.delayed(const Duration(milliseconds: 700));
+      await _ensureGattServer();
+    }
+    return _gattReady;
+  }
+
+  Future<void> _startStaggeredBulletinListen({
+    required Duration duration,
+  }) async {
+    _bulletinListenActive = true;
+    _roleTimer?.cancel();
+    _holdAdvertiseTimer?.cancel();
+    await _ensureGattServer();
+    // Opposite starting phase from peer when userIds differ — reduces both
+    // scanning (invisible) or both advertising (blind) at the same time.
+    _roleAdvertisePhase = myUserId.hashCode.isEven;
+    final offsetMs = (myUserId.hashCode.abs() % 1800) + 200;
+    await Future<void>.delayed(Duration(milliseconds: offsetMs));
+    if (!_running || !_bulletinListenActive) return;
+    await _applyBulletinListenPhase();
+    _scheduleBulletinListenFlip();
+    _holdAdvertiseTimer = Timer(duration, () {
+      if (!_running) return;
+      _bulletinListenActive = false;
+      _kickRadioRoles(force: true);
+    });
+  }
+
+  Future<void> _applyBulletinListenPhase() async {
+    if (!_running || !_bulletinListenActive) return;
+    if (_roleAdvertisePhase) {
+      await _scanSub?.cancel();
+      _scanSub = null;
+      await _startAdvertising();
+      debugPrint('[BLE] bulletin phase=ADV gatt=$_gattReady');
+    } else {
+      // Brief central pulse to find the peer; ADV resumes on next flip.
+      await _stopAdvertising();
+      _startScanning();
+      debugPrint(
+        '[BLE] bulletin phase=SCAN nearbyRaw=${_nearby.length} '
+        'gatt=$_gattReady',
+      );
+    }
+  }
+
+  void _scheduleBulletinListenFlip() {
+    _roleTimer?.cancel();
+    void tick() {
+      if (!_running || !_bulletinListenActive) return;
+      _roleAdvertisePhase = !_roleAdvertisePhase;
+      unawaited(_applyBulletinListenPhase());
+      final next =
+          _roleAdvertisePhase ? _iosAdvertiseWindow : _iosScanWindow;
+      _roleTimer = Timer(next, tick);
+    }
+    final first =
+        _roleAdvertisePhase ? _iosAdvertiseWindow : _iosScanWindow;
+    _roleTimer = Timer(first, tick);
+  }
+
+  /// Force scan/central mode before outbound fan-out.
+  ///
+  /// On iPhone: stop advertising and scan hard. On macOS: keep ADV up while
+  /// scanning — desktop stacks tolerate dual-role better.
+  Future<void> prepareOutboundFanOut({
+    Duration settle = const Duration(milliseconds: 2500),
+  }) async {
+    if (!_running) return;
+    _bulletinListenActive = false;
+    _holdAdvertiseTimer?.cancel();
+    _holdAdvertiseTimer = null;
+    if (PlatformCaps.isMacOS) {
+      _roleTimer?.cancel();
+      _roleTimer = null;
+      _startScanning();
+      unawaited(_startAdvertising());
+      await Future<void>.delayed(settle);
+      debugPrint(
+        '[BleMesh] prepareOutboundFanOut(mac) nearbyRaw=${_nearby.length} '
+        'peers=${_nearbyPeers.length} gatt=$_gattReady adv=$_advertising',
+      );
+      return;
+    }
+    if (PlatformCaps.usesIosStyleBle) {
+      _roleTimer?.cancel();
+      _roleTimer = null;
+      _roleAdvertisePhase = false;
+      await _stopAdvertising();
+      _startScanning();
+      await Future<void>.delayed(settle);
+      debugPrint(
+        '[BleMesh] prepareOutboundFanOut nearbyRaw=${_nearby.length} '
+        'peers=${_nearbyPeers.length} gatt=$_gattReady adv=$_advertising',
+      );
+    } else {
+      _startScanning();
+      await Future<void>.delayed(settle);
+    }
+  }
+
+  /// Resume background radio policy after an outbound burst.
+  void resumeRadioDutyCycle() {
+    if (!_running) return;
+    _bulletinListenActive = false;
+    _holdAdvertiseTimer?.cancel();
+    _holdAdvertiseTimer = null;
+    _kickRadioRoles(force: true);
+  }
+
+  /// iOS/macOS: prefer concurrent central+peripheral so bulletin receivers stay
+  /// connectable while we discover. Legacy flip-flop made phone↔phone miss.
   void _kickRadioRoles({bool force = false}) {
     _roleTimer?.cancel();
-    if (PlatformCaps.usesIosStyleBle) {
-      // Desync peers: stagger start + asymmetric scan-heavy windows.
+    if (PlatformCaps.usesIosStyleBle && !_preferConcurrentRadio) {
       _roleAdvertisePhase = myUserId.hashCode.isEven;
       final offsetMs = (myUserId.hashCode % 2500).abs() + 400;
       Future<void>.delayed(Duration(milliseconds: offsetMs), () {
@@ -211,12 +369,18 @@ class BleMeshService extends ChangeNotifier {
     } else {
       _startScanning();
       unawaited(_startAdvertising());
+      if (PlatformCaps.usesIosStyleBle) {
+        // Peripheral ADV often dies quietly — refresh periodically.
+        _roleTimer = Timer.periodic(_iosAdvertiseRefresh, (_) {
+          if (!_running) return;
+          unawaited(_startAdvertising());
+        });
+      }
     }
     if (force) {
       debugPrint(
         '[BLE] roles kicked iosStyle=${PlatformCaps.usesIosStyleBle} '
-        'advertiseFirst=$_roleAdvertisePhase '
-        'scan=${_iosScanWindow.inSeconds}s adv=${_iosAdvertiseWindow.inSeconds}s',
+        'concurrent=$_preferConcurrentRadio gatt=$_gattReady',
       );
     }
   }
@@ -236,12 +400,17 @@ class BleMeshService extends ChangeNotifier {
 
   Future<void> _applyRolePhase() async {
     if (!_running) return;
+    if (_preferConcurrentRadio) {
+      _startScanning();
+      await _startAdvertising();
+      return;
+    }
     if (_roleAdvertisePhase) {
       await _scanSub?.cancel();
       _scanSub = null;
       await _startAdvertising();
     } else {
-      // Keep GATT receivable while scanning — only pause ADV on iOS duty-cycle.
+      // Legacy: pause ADV while scanning (hurts bulletin receive).
       await _stopAdvertising();
       _startScanning();
     }
@@ -285,13 +454,32 @@ class BleMeshService extends ChangeNotifier {
       return true;
     }
     if (_parseFingerprintPeerPrefix(d.manufacturerData) != null) return true;
-    final n = d.name.toLowerCase();
-    return n.contains('resil');
+    final n = d.name.trim().toLowerCase();
+    // Darwin ads use localName "ResilNet" (manufacturer fingerprint is ignored).
+    return n == 'resilnet' || n.contains('resil');
   }
 
   bool _uuidEq(String a, String b) => a.toLowerCase() == b.toLowerCase();
 
   Future<void> _ensureGattServer() async {
+    if (_gattReady) return;
+    final inflight = _gattEnsureInFlight;
+    if (inflight != null) {
+      await inflight;
+      return;
+    }
+    final run = _ensureGattServerBody();
+    _gattEnsureInFlight = run;
+    try {
+      await run;
+    } finally {
+      if (identical(_gattEnsureInFlight, run)) {
+        _gattEnsureInFlight = null;
+      }
+    }
+  }
+
+  Future<void> _ensureGattServerBody() async {
     if (_gattReady) return;
     try {
       final supported = await BlePeripheral.isSupported();
@@ -299,7 +487,35 @@ class BleMeshService extends ChangeNotifier {
         debugPrint('[BLE] GATT peripheral unsupported on this device');
         return;
       }
+
+      try {
+        final allowed = await BlePeripheral.askBlePermission();
+        debugPrint('[BLE] peripheral permission allowed=$allowed');
+        // askBlePermission only *checks* status — do not abort on false:
+        // initialize()/CBPeripheralManager still triggers the system prompt
+        // when status is notDetermined.
+      } catch (e) {
+        debugPrint('[BLE] askBlePermission: $e');
+      }
+
+      final powered = Completer<void>();
+      BlePeripheral.setBleStateChangeCallback((on) {
+        _peripheralPoweredOn = on;
+        debugPrint('[BLE] peripheral poweredOn=$on');
+        if (on && !powered.isCompleted) powered.complete();
+        // Retry setup if we previously failed while BT was off.
+        if (on && !_gattReady) {
+          unawaited(_ensureGattServer());
+        }
+      });
+
       await BlePeripheral.initialize();
+      // Callback may have been missed if manager was already powered on.
+      await Future.any<void>([
+        powered.future,
+        Future<void>.delayed(const Duration(milliseconds: 1200)),
+      ]);
+
       BlePeripheral.setAdvertisingStatusUpdateCallback((advertising, error) {
         _advertising = advertising;
         if (error != null && error.isNotEmpty) {
@@ -307,9 +523,16 @@ class BleMeshService extends ChangeNotifier {
         }
       });
       BlePeripheral.setWriteRequestCallback((deviceId, characteristicId, offset, value) {
-        if (!_uuidEq(characteristicId, _meshCharUuidStr)) return null;
-        if (value == null || value.isEmpty) return null;
+        if (!_uuidEq(characteristicId, _meshCharUuidStr)) {
+          return WriteRequestResult(status: 0);
+        }
+        if (value == null || value.isEmpty) {
+          return WriteRequestResult(status: 0);
+        }
         final bytes = Uint8List.fromList(value);
+        debugPrint(
+          '[BleMesh] peripheral WRITE from=$deviceId bytes=${bytes.length}',
+        );
         _inboundChain = _inboundChain
             .then((_) async {
               try {
@@ -321,7 +544,22 @@ class BleMeshService extends ChangeNotifier {
             .catchError((Object e, StackTrace st) {
               debugPrint('[BleMesh] peripheral inbound chain error: $e');
             });
-        return null;
+        return WriteRequestResult(status: 0); // CBATTError.success
+      });
+      BlePeripheral.setCharacteristicSubscriptionChangeCallback((
+        deviceId,
+        characteristicId,
+        isSubscribed,
+        name,
+      ) {
+        if (!_uuidEq(characteristicId, _meshCharUuidStr)) return;
+        _centralSubscribedForNotify = isSubscribed;
+        debugPrint(
+          '[BleMesh] notify sub device=$deviceId subscribed=$isSubscribed',
+        );
+        if (isSubscribed) {
+          unawaited(_flushBulletinsViaNotify(deviceId: deviceId));
+        }
       });
       BlePeripheral.setReadRequestCallback((deviceId, characteristicId, offset, value) {
         if (_uuidEq(characteristicId, _identityCharUuidStr)) {
@@ -336,62 +574,71 @@ class BleMeshService extends ChangeNotifier {
         return ReadRequestResult(value: Uint8List(0));
       });
 
-      final added = Completer<void>();
-      BlePeripheral.setServiceAddedCallback((serviceId, error) {
-        if (added.isCompleted) return;
-        if (error != null && error.isNotEmpty) {
-          added.completeError(StateError(error));
-        } else {
-          added.complete();
-        }
-      });
+      Object? lastError;
+      for (var attempt = 1; attempt <= 3; attempt++) {
+        final added = Completer<void>();
+        BlePeripheral.setServiceAddedCallback((serviceId, error) {
+          if (added.isCompleted) return;
+          if (error != null && error.isNotEmpty) {
+            added.completeError(StateError(error));
+          } else {
+            added.complete();
+          }
+        });
 
-      try {
-        await BlePeripheral.clearServices();
-      } catch (_) {}
+        try {
+          await BlePeripheral.clearServices();
+        } catch (_) {}
 
-      await BlePeripheral.addService(
-        BleService(
-          uuid: _serviceUuidStr,
-          primary: true,
-          characteristics: [
-            BleCharacteristic(
-              uuid: _meshCharUuidStr,
-              properties: [
-                CharacteristicProperties.read.index,
-                CharacteristicProperties.write.index,
-                CharacteristicProperties.writeWithoutResponse.index,
-                CharacteristicProperties.notify.index,
-              ],
-              permissions: [
-                AttributePermissions.readable.index,
-                AttributePermissions.writeable.index,
-              ],
-              descriptors: [
-                BleDescriptor(
-                  uuid: '00002902-0000-1000-8000-00805F9B34FB',
-                  value: Uint8List.fromList([0, 0]),
+        try {
+          // Do NOT add CCCD 0x2902 manually — CoreBluetooth creates it when
+          // notify/indicate is set. Manual CCCD makes addService fail on iOS.
+          await BlePeripheral.addService(
+            BleService(
+              uuid: _serviceUuidStr,
+              primary: true,
+              characteristics: [
+                BleCharacteristic(
+                  uuid: _meshCharUuidStr,
+                  properties: [
+                    CharacteristicProperties.read.index,
+                    CharacteristicProperties.write.index,
+                    CharacteristicProperties.writeWithoutResponse.index,
+                    CharacteristicProperties.notify.index,
+                  ],
                   permissions: [
                     AttributePermissions.readable.index,
                     AttributePermissions.writeable.index,
                   ],
                 ),
+                BleCharacteristic(
+                  uuid: _identityCharUuidStr,
+                  properties: [CharacteristicProperties.read.index],
+                  permissions: [AttributePermissions.readable.index],
+                ),
               ],
             ),
-            BleCharacteristic(
-              uuid: _identityCharUuidStr,
-              properties: [CharacteristicProperties.read.index],
-              permissions: [AttributePermissions.readable.index],
-            ),
-          ],
-        ),
-      );
-      await added.future.timeout(const Duration(seconds: 6));
-      _gattReady = true;
-      debugPrint('[BLE] GATT peripheral ready uuid=$_serviceUuidStr');
+          );
+          await added.future.timeout(const Duration(seconds: 8));
+          _gattReady = true;
+          debugPrint(
+            '[BLE] GATT peripheral ready uuid=$_serviceUuidStr attempt=$attempt',
+          );
+          notifyListeners();
+          return;
+        } catch (e) {
+          lastError = e;
+          debugPrint('[BLE] addService attempt $attempt failed: $e');
+          await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
+        }
+      }
+      _gattReady = false;
+      debugPrint('[BLE] GATT peripheral setup failed: $lastError');
+      notifyListeners();
     } catch (e) {
       _gattReady = false;
       debugPrint('[BLE] GATT peripheral setup failed: $e');
+      notifyListeners();
     }
   }
 
@@ -418,6 +665,11 @@ class BleMeshService extends ChangeNotifier {
     try {
       await _ensureGattServer();
       if (!_gattReady) {
+        // One retry after a short delay — common when BT just powered on.
+        await Future<void>.delayed(const Duration(milliseconds: 600));
+        await _ensureGattServer();
+      }
+      if (!_gattReady) {
         debugPrint('[BLE] skip advertise — GATT not ready');
         return;
       }
@@ -426,17 +678,20 @@ class BleMeshService extends ChangeNotifier {
         manufacturerId: _mfgCompanyId,
         data: fp,
       );
+      // Darwin ble_peripheral ignores manufacturerData — localName + service
+      // UUID are what nearby iPhones/iPads can actually discover.
       await BlePeripheral.startAdvertising(
         services: [_serviceUuidStr],
-        localName: PlatformCaps.usesIosStyleBle ? null : 'ResilNet',
+        localName: 'ResilNet',
         manufacturerData: mfg,
-        addManufacturerDataInScanResponse: true,
+        addManufacturerDataInScanResponse: !PlatformCaps.usesIosStyleBle,
       );
       await Future<void>.delayed(const Duration(milliseconds: 250));
       final ok = await BlePeripheral.isAdvertising() ?? false;
       _advertising = ok;
       debugPrint(
-        '[BLE] advertising isAdvertising=$ok gatt=$_gattReady uuid=$_serviceUuidStr',
+        '[BLE] advertising isAdvertising=$ok gatt=$_gattReady '
+        'uuid=$_serviceUuidStr name=ResilNet',
       );
     } catch (e) {
       _advertising = false;
@@ -458,8 +713,9 @@ class BleMeshService extends ChangeNotifier {
   }
 
   void _startScanning() {
-    // Unfiltered + client filter: UUID ads and manufacturer fingerprints both
-    // visible (iOS filtered scans miss manufacturer-only windows).
+    // Unfiltered + client filter: Darwin never sends manufacturerData, but
+    // localName "ResilNet" + service UUID (when present) both match here.
+    // Service-UUID-only scans miss overflow-area UUIDs on Apple.
     _startFallbackScan();
   }
 
@@ -757,30 +1013,72 @@ class BleMeshService extends ChangeNotifier {
   }
 
   Future<void> connect(String deviceId) async {
-    if (_connectedDeviceId == deviceId) return;
+    if (_connectedDeviceId == deviceId && _linkReadyDeviceId == deviceId) {
+      return;
+    }
     await _connSub?.cancel();
     await _notifySub?.cancel();
+    _linkReadyDeviceId = null;
     debugPrint('[BLE] connect attempt device=$deviceId');
 
-    _connSub = _ble.connectToDevice(id: deviceId, connectionTimeout: const Duration(seconds: 8)).listen(
+    _connSub = _ble
+        .connectToDevice(
+          id: deviceId,
+          servicesWithCharacteristicsToDiscover: {
+            serviceUuid: [characteristicUuid, identityCharacteristicUuid],
+          },
+          connectionTimeout: const Duration(seconds: 8),
+        )
+        .listen(
       (u) async {
         if (u.connectionState == DeviceConnectionState.connected) {
           _connectedDeviceId = deviceId;
           debugPrint('[BLE] connected device=$deviceId');
           notifyListeners();
+          try {
+            await _ble.discoverAllServices(deviceId);
+            final services = await _ble.getDiscoveredServices(deviceId);
+            debugPrint(
+              '[BLE] discovered services=${services.length} device=$deviceId',
+            );
+          } catch (e) {
+            debugPrint('[BLE] discoverServices failed device=$deviceId: $e');
+          }
+          await _negotiateMtu(deviceId);
           await _subscribeIncoming(deviceId);
+          if (_connectedDeviceId == deviceId) {
+            _linkReadyDeviceId = deviceId;
+            debugPrint('[BLE] link ready device=$deviceId');
+            notifyListeners();
+          }
         } else if (u.connectionState == DeviceConnectionState.disconnected) {
           debugPrint('[BLE] disconnected device=$deviceId');
           _connectedDeviceId = null;
+          _linkReadyDeviceId = null;
+          _mtuByDevice.remove(deviceId);
           notifyListeners();
         }
       },
       onError: (e) {
         debugPrint('[BLE] connect failed device=$deviceId err=$e');
         _connectedDeviceId = null;
+        _linkReadyDeviceId = null;
+        _mtuByDevice.remove(deviceId);
         notifyListeners();
       },
     );
+  }
+
+  Future<void> _negotiateMtu(String deviceId) async {
+    try {
+      // Without this, ATT writes are capped near 20B and bulletin chunks (~200B) fail.
+      final mtu = await _ble.requestMtu(deviceId: deviceId, mtu: 512);
+      _mtuByDevice[deviceId] = mtu;
+      debugPrint('[BLE] MTU negotiated=$mtu device=$deviceId');
+    } catch (e) {
+      _mtuByDevice[deviceId] = _mtuByDevice[deviceId] ?? 23;
+      debugPrint('[BLE] MTU request failed device=$deviceId: $e');
+    }
   }
 
   Future<void> _subscribeIncoming(String deviceId) async {
@@ -1128,16 +1426,16 @@ class BleMeshService extends ChangeNotifier {
   Future<bool> sendToDevice(
     String deviceId, {
     required ChatMessage msg,
-    Duration connectTimeout = const Duration(seconds: 6),
+    Duration connectTimeout = const Duration(seconds: 10),
   }) async {
     final id = deviceId.trim();
     if (id.isEmpty) return false;
     try {
-      if (_connectedDeviceId != id) {
+      if (_linkReadyDeviceId != id) {
         final ready = Completer<bool>();
         late VoidCallback listener;
         listener = () {
-          if (_connectedDeviceId == id && !ready.isCompleted) {
+          if (_linkReadyDeviceId == id && !ready.isCompleted) {
             ready.complete(true);
           }
         };
@@ -1146,16 +1444,14 @@ class BleMeshService extends ChangeNotifier {
           await connect(id);
           final ok = await ready.future.timeout(
             connectTimeout,
-            onTimeout: () => _connectedDeviceId == id,
+            onTimeout: () => _linkReadyDeviceId == id,
           );
-          if (!ok || _connectedDeviceId != id) {
+          if (!ok || _linkReadyDeviceId != id) {
             debugPrint(
               '[BleMesh] sendToDevice connect timeout device=$id id=${msg.id}',
             );
             return false;
           }
-          // Allow notify subscription to settle briefly.
-          await Future<void>.delayed(const Duration(milliseconds: 120));
         } finally {
           removeListener(listener);
         }
@@ -1170,7 +1466,10 @@ class BleMeshService extends ChangeNotifier {
 
   /// Fan-out a public bulletin/presence-style message to every nearby radio
   /// (bound peers + unbound advertisers) plus the current link.
-  Future<int> fanOutNow(ChatMessage msg) async {
+  Future<int> fanOutNow(ChatMessage msg, {Set<String>? alreadySent}) async {
+    if (msg.payloadKind == PayloadKinds.bulletin) {
+      _queueBulletinForNotify(msg);
+    }
     final targets = <String>{};
     for (final p in _nearbyPeers) {
       final d = (p.deviceId ?? '').trim();
@@ -1181,21 +1480,138 @@ class BleMeshService extends ChangeNotifier {
     }
     final current = _connectedDeviceId;
     if (current != null && current.isNotEmpty) targets.add(current);
+    if (alreadySent != null) {
+      targets.removeWhere(alreadySent.contains);
+    }
 
     if (targets.isEmpty) {
       debugPrint('[BleMesh] fanOutNow skipped — no nearby radios id=${msg.id}');
-      return 0;
+      // Still try notify: a peer may already be connected to our peripheral.
+      return _flushBulletinsViaNotify();
     }
 
     var sent = 0;
     for (final deviceId in targets) {
       final ok = await sendToDevice(deviceId, msg: msg);
-      if (ok) sent++;
+      if (ok) {
+        sent++;
+        alreadySent?.add(deviceId);
+      }
     }
+    final notified = await _flushBulletinsViaNotify();
+    if (notified > 0 && sent == 0) sent = notified;
     debugPrint(
-      '[BleMesh] fanOutNow id=${msg.id} targets=${targets.length} sent=$sent',
+      '[BleMesh] fanOutNow id=${msg.id} targets=${targets.length} sent=$sent '
+      'notify=$notified gatt=$_gattReady',
     );
     return sent;
+  }
+
+  void _queueBulletinForNotify(ChatMessage msg) {
+    _recentBulletinNotifyQueue.removeWhere((m) => m.id == msg.id);
+    _recentBulletinNotifyQueue.add(msg);
+    while (_recentBulletinNotifyQueue.length > _maxBulletinNotifyQueue) {
+      _recentBulletinNotifyQueue.removeAt(0);
+    }
+  }
+
+  /// Push queued bulletins to subscribed centrals via GATT notify.
+  Future<int> _flushBulletinsViaNotify({String? deviceId}) async {
+    if (!_gattReady || _recentBulletinNotifyQueue.isEmpty) return 0;
+    // Don't claim success when nobody is listening — updateValue is fire-and-forget.
+    if (!_centralSubscribedForNotify && deviceId == null) return 0;
+    if (_notifyFlushInFlight != null) {
+      await _notifyFlushInFlight;
+      return 0;
+    }
+    final done = Completer<void>();
+    _notifyFlushInFlight = done.future;
+    var pushed = 0;
+    try {
+      // Snapshot — subscription callback may re-enter.
+      final batch = List<ChatMessage>.from(_recentBulletinNotifyQueue);
+      for (final msg in batch) {
+        final ok = await _notifyBulletinChunks(msg, deviceId: deviceId);
+        if (ok) pushed++;
+      }
+      if (pushed > 0) {
+        debugPrint(
+          '[BleMesh] notify flush pushed=$pushed '
+          'queue=${_recentBulletinNotifyQueue.length} '
+          'device=${deviceId ?? 'all'} subscribed=$_centralSubscribedForNotify',
+        );
+      }
+    } catch (e) {
+      debugPrint('[BleMesh] notify flush failed: $e');
+    } finally {
+      done.complete();
+      _notifyFlushInFlight = null;
+    }
+    return pushed;
+  }
+
+  Future<bool> _notifyBulletinChunks(
+    ChatMessage msg, {
+    String? deviceId,
+  }) async {
+    try {
+      final ciphertext = ResilNetChunkCodec.ciphertextFromMessage(
+        msg,
+        payloadType: ResilNetPayloadType.fromMessageKind(msg.payloadKind),
+      );
+      // Conservative ATT notify size — iOS rejects oversized updateValue.
+      const maxAtt = 180;
+      final chunks = ResilNetChunkCodec.encodeChunks(
+        ciphertext,
+        maxAttPayload: maxAtt,
+      );
+      for (var i = 0; i < chunks.length; i++) {
+        if (i > 0) {
+          await Future<void>.delayed(ResilNetChunkCodec.defaultInterChunkDelay);
+        }
+        await BlePeripheral.updateCharacteristic(
+          characteristicId: _meshCharUuidStr,
+          value: chunks[i],
+          deviceId: deviceId,
+        );
+      }
+      return true;
+    } catch (e) {
+      debugPrint('[BleMesh] notify bulletin failed id=${msg.id}: $e');
+      return false;
+    }
+  }
+
+  /// Multi-round fan-out for Apple duty/stack flakiness.
+  Future<int> fanOutReliable(
+    ChatMessage msg, {
+    int rounds = 3,
+  }) async {
+    if (msg.payloadKind == PayloadKinds.bulletin) {
+      _queueBulletinForNotify(msg);
+    }
+    final delivered = <String>{};
+    var total = 0;
+    for (var i = 0; i < rounds; i++) {
+      await prepareOutboundFanOut(
+        settle: Duration(milliseconds: 2000 + i * 800),
+      );
+      final n = await fanOutNow(msg, alreadySent: delivered);
+      total += n;
+      debugPrint(
+        '[BleMesh] fanOutReliable round=${i + 1}/$rounds sent=$n '
+        'cumulativeDevices=${delivered.length}',
+      );
+      if (total > 0 && i >= 1) break;
+      if (i + 1 < rounds) {
+        await Future<void>.delayed(Duration(milliseconds: 600 + i * 400));
+      }
+    }
+    // Last chance: peer may have subscribed while we were scanning/writing.
+    if (total == 0) {
+      total += await _flushBulletinsViaNotify();
+    }
+    return total;
   }
 
   /// Send a dedicated batched ACK frame over the open BLE link.
@@ -1276,6 +1692,10 @@ class BleMeshService extends ChangeNotifier {
     final deviceId = _connectedDeviceId;
     if (deviceId == null) throw StateError('no BLE connection');
 
+    if (!_mtuByDevice.containsKey(deviceId) || (_mtuByDevice[deviceId] ?? 0) < 50) {
+      await _negotiateMtu(deviceId);
+    }
+
     final c = QualifiedCharacteristic(
       serviceId: serviceUuid,
       characteristicId: characteristicUuid,
@@ -1286,7 +1706,17 @@ class BleMeshService extends ChangeNotifier {
       msg,
       payloadType: ResilNetPayloadType.fromMessageKind(msg.payloadKind),
     );
-    final chunks = ResilNetChunkCodec.encodeChunks(ciphertext);
+    // ATT payload ≈ MTU − 3 (opcode + handle). Stay conservative.
+    final mtu = _mtuByDevice[deviceId] ?? 23;
+    final maxAtt = (mtu - 3).clamp(20, 512);
+    final chunks = ResilNetChunkCodec.encodeChunks(
+      ciphertext,
+      maxAttPayload: maxAtt,
+    );
+    debugPrint(
+      '[BleMesh] send id=${msg.id} kind=${msg.payloadKind} '
+      'cipher=${ciphertext.length}B chunks=${chunks.length} mtu=$mtu att=$maxAtt',
+    );
     final rust = resilnet;
     if (rust != null) {
       await rust.chunkArq.registerOutbound(
@@ -1301,7 +1731,19 @@ class BleMeshService extends ChangeNotifier {
       if (i > 0) {
         await Future<void>.delayed(ResilNetChunkCodec.defaultInterChunkDelay);
       }
-      await _ble.writeCharacteristicWithResponse(c, value: chunks[i]);
+      final frame = chunks[i];
+      if (frame.length > maxAtt) {
+        throw StateError(
+          'chunk $i len=${frame.length} exceeds ATT max=$maxAtt (mtu=$mtu)',
+        );
+      }
+      try {
+        await _ble.writeCharacteristicWithResponse(c, value: frame);
+      } catch (e) {
+        // Retry once with write-without-response after a tiny MTU fallback.
+        debugPrint('[BleMesh] writeWithResponse failed chunk=$i: $e — retry WWR');
+        await _ble.writeCharacteristicWithoutResponse(c, value: frame);
+      }
     }
   }
 }

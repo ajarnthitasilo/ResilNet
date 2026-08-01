@@ -2492,6 +2492,24 @@ abstract class AppLocalizations {
   /// **'Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.'**
   String get noticeMeshPublishNoLink;
 
+  /// No description provided for @noticeMeshPublishSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulletin sent to {count} nearby device(s) over BLE.'**
+  String noticeMeshPublishSent(int count);
+
+  /// No description provided for @noticeMeshPublishBleFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby radios seen, but BLE write failed. Keep both apps open on the Notices screen and try again (or use an ESP32 relay).'**
+  String get noticeMeshPublishBleFailed;
+
+  /// No description provided for @noticeMeshPublishNoGatt.
+  ///
+  /// In en, this message translates to:
+  /// **'This device’s BLE receiver is not ready. Toggle Bluetooth and reopen Notices.'**
+  String get noticeMeshPublishNoGatt;
+
   /// No description provided for @chatNoticeHidden.
   ///
   /// In en, this message translates to:

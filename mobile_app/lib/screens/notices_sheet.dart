@@ -40,6 +40,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
   NoticeExpiry _expiry = NoticeExpiry.sevenDays;
   bool _urgent = false;
   bool _posting = false;
+  AppState? _appState;
 
   @override
   void initState() {
@@ -48,14 +49,22 @@ class _NoticesSheetState extends State<_NoticesSheet> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final s = context.read<AppState>();
+      _appState = s;
       if (_scope == 'geo') {
         unawaited(s.backfillGeoNotices());
+      } else if (_scope == 'mesh' && s.isReady) {
+        // Stay connectable so nearby phones can deliver bulletins to us.
+        unawaited(s.mesh.enterBulletinListenMode());
       }
     });
   }
 
   @override
   void dispose() {
+    final s = _appState;
+    if (s != null && s.isReady) {
+      s.mesh.resumeRadioDutyCycle();
+    }
     _text.dispose();
     super.dispose();
   }
@@ -86,12 +95,27 @@ class _NoticesSheetState extends State<_NoticesSheet> {
       if (notice == null) return;
       _text.clear();
       final warn = s.lastNoticePublishWarning;
-      if (warn != null && mounted) {
-        final msg = warn == 'no_mesh'
-            ? context.l10n.noticeMeshPublishNoLink
-            : context.l10n.noticePublishFailed;
+      if (!mounted) return;
+      if (_scope == 'mesh') {
+        final sent = s.lastBulletinBleSent;
+        if (sent > 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.noticeMeshPublishSent(sent))),
+          );
+        } else if (warn != null) {
+          final msg = switch (warn) {
+            'ble_send_failed' => context.l10n.noticeMeshPublishBleFailed,
+            'no_gatt' => context.l10n.noticeMeshPublishNoGatt,
+            'no_mesh' => context.l10n.noticeMeshPublishNoLink,
+            _ => context.l10n.noticePublishFailed,
+          };
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(msg)),
+          );
+        }
+      } else if (warn != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg)),
+          SnackBar(content: Text(context.l10n.noticePublishFailed)),
         );
       }
       setState(() {});
@@ -129,7 +153,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
               Text(
                 l10n.onlinePeopleCount(
                   _scope == 'mesh'
-                      ? (s.isReady ? s.mesh.nearbyPeers.length : 0)
+                      ? (s.isReady ? s.mesh.nearbyDeviceCount : 0)
                       : s.areaPresenceOnline().length,
                 ),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -221,7 +245,15 @@ class _NoticesSheetState extends State<_NoticesSheet> {
                     onRefresh: () => s.backfillGeoNotices(),
                     child: _buildNoticeList(context, s, l10n, items),
                   )
-                : _buildNoticeList(context, s, l10n, items),
+                : RefreshIndicator(
+                    // Re-arm BLE peripheral listen — not a server fetch.
+                    onRefresh: () async {
+                      if (s.isReady) {
+                        await s.mesh.enterBulletinListenMode();
+                      }
+                    },
+                    child: _buildNoticeList(context, s, l10n, items),
+                  ),
           ),
           Row(
             children: [

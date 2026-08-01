@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 /// Blocks screenshots / screen recording on sensitive chat surfaces.
 ///
 /// Android: [FLAG_SECURE] (captures come out black).
-/// iOS: secure-layer trick so captures are blank where supported.
+/// iOS: hosts FlutterView inside a secure UITextField canvas so captures
+/// blank without the old window.layer reparent layout bug.
 /// macOS: disables window sharing for screen capture APIs.
 class SecureScreen {
   SecureScreen._();

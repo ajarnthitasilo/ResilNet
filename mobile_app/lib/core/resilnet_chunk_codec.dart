@@ -166,26 +166,30 @@ class ResilNetChunkCodec {
 
   /// แบ่ง ciphertext เป็น radio payload frames (Encrypt-then-Chunk ขั้นที่ 2–3)
   ///
-  /// ถ้า ciphertext ≤ 190 bytes คืน list เดียว (ไม่มี header)
-  static List<Uint8List> encodeChunks(Uint8List ciphertext) {
-    if (ciphertext.length <= chunkThreshold) {
+  /// ถ้า ciphertext พอดีในหนึ่ง ATT write ([maxAttPayload] = MTU−3) คืน list
+  /// เดียวโดยไม่มี header — ไม่เช่นนั้นแบ่งเป็น framed chunks
+  static List<Uint8List> encodeChunks(
+    Uint8List ciphertext, {
+    int maxAttPayload = maxChunkDataLen + chunkHeaderLen,
+  }) {
+    final att = maxAttPayload.clamp(20, 512);
+    if (ciphertext.length <= att) {
       return [Uint8List.fromList(ciphertext)];
     }
 
+    final maxData = (att - chunkHeaderLen).clamp(8, maxChunkDataLen);
     final msgId = crc16(ciphertext);
     final checksum = crc16(ciphertext);
     final totalLen = ciphertext.length;
-    final totalChunks = (totalLen + maxChunkDataLen - 1) ~/ maxChunkDataLen;
+    final totalChunks = (totalLen + maxData - 1) ~/ maxData;
     if (totalChunks > 255) {
       throw ArgumentError('ciphertext too large: $totalChunks chunks');
     }
 
     final frames = <Uint8List>[];
     for (var i = 0; i < totalChunks; i++) {
-      final start = i * maxChunkDataLen;
-      final end = start + maxChunkDataLen > totalLen
-          ? totalLen
-          : start + maxChunkDataLen;
+      final start = i * maxData;
+      final end = start + maxData > totalLen ? totalLen : start + maxData;
       final data = Uint8List.sublistView(ciphertext, start, end);
       frames.add(
         _buildChunkFrame(
@@ -209,9 +213,11 @@ class ResilNetChunkCodec {
     final totalLen = payload[4] | (payload[5] << 8);
     if (totalChunks < 2 || totalChunks > 255) return false;
     if (chunkIndex >= totalChunks) return false;
-    if (totalLen <= chunkThreshold) return false;
+    if (totalLen < 2) return false;
     final dataLen = payload.length - chunkHeaderLen;
-    if (dataLen > maxChunkDataLen) return false;
+    if (dataLen < 1 || dataLen > maxChunkDataLen) return false;
+    // Allow framed payloads under the legacy 190B threshold — required when
+    // ATT MTU is small and a short bulletin still needs multiple writes.
     return true;
   }
 

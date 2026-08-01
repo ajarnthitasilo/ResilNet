@@ -384,6 +384,10 @@ class AppState extends ChangeNotifier {
   final Map<String, Set<String>> _noticeDeliveredTo = {};
   String? _lastNoticePublishWarning;
   String? get lastNoticePublishWarning => _lastNoticePublishWarning;
+
+  /// How many BLE radios accepted the last #mesh bulletin fan-out (0 = none).
+  int _lastBulletinBleSent = 0;
+  int get lastBulletinBleSent => _lastBulletinBleSent;
   int _lastPresenceSummaryMesh = -1;
   int _lastPresenceSummaryNostr = -1;
   Timer? _presenceSummaryDebounce;
@@ -738,16 +742,22 @@ class AppState extends ChangeNotifier {
       };
       resilnet.addListener(_onResilnetUi!);
 
-      final storedName = await _storage.read(key: _kDisplayName);
+      var storedName = await _storage.read(key: _kDisplayName);
+      final prefs = await SharedPreferences.getInstance();
+      // SharedPreferences mirror — Keychain write can fail silently on some
+      // iOS builds; prefs keep the display name recoverable.
+      if (storedName == null || storedName.trim().isEmpty) {
+        storedName = prefs.getString(_kDisplayName);
+      }
       if (storedName != null) {
         final trimmed = storedName.trim();
         if (isLegacyDefaultDisplayName(trimmed)) {
           await _storage.delete(key: _kDisplayName);
+          await prefs.remove(_kDisplayName);
         } else if (trimmed.isNotEmpty) {
           _displayName = trimmed;
         }
       }
-      final prefs = await SharedPreferences.getInstance();
       _notificationsEnabled = prefs.getBool(_kNotificationsEnabled) ?? true;
       _saveMessageHistory = prefs.getBool(_kSaveMessageHistory) ?? true;
       _meshRetention = MeshRetention.fromDays(
@@ -2302,25 +2312,39 @@ class AppState extends ChangeNotifier {
   /// Broadcast bulletin to nearby radios (fan-out) + optional UDP SoftAP.
   Future<bool> _broadcastBulletin(String bulletinId, String wire) async {
     try {
-      // Stay connectable so peers (and backgrounded phones) can accept GATT writes.
-      unawaited(_mesh?.holdAdvertise());
       final envelope = _bulletinEnvelope(bulletinId, wire);
       final bleConnected = _mesh?.connectedDeviceId != null;
       final nearbyCount = _mesh?.nearbyPeerCount ?? 0;
       final nearbyRaw = _mesh?.nearbyDeviceCount ?? 0;
       final udpActive = resilnet.isGatewayWifiActive;
+      final gattReady = _mesh?.gattReady ?? false;
+      _lastBulletinBleSent = 0;
+      // Make sure our peripheral is up before we claim "no_gatt".
+      if (!gattReady) {
+        await _mesh?.ensureGattReady();
+      }
+      final gattNow = _mesh?.gattReady ?? false;
       if (!bleConnected && nearbyRaw == 0 && !udpActive) {
         _lastNoticePublishWarning = 'no_mesh';
         debugPrint(
           '[Bulletin] no BLE/UDP path — stored locally for ESP32 catch-up '
-          'id=$bulletinId',
+          'id=$bulletinId gatt=$gattNow',
         );
       }
       var bleSent = 0;
       try {
-        bleSent = await _mesh?.fanOutNow(envelope) ?? 0;
+        // Multi-round scan→write; keep ADV up so we remain a relay.
+        bleSent = await _mesh?.fanOutReliable(envelope) ?? 0;
+        _lastBulletinBleSent = bleSent;
+        // Return to staggered listen so we can receive the peer's reply / relay.
+        unawaited(
+          _mesh?.enterBulletinListenMode(
+            duration: const Duration(seconds: 90),
+          ),
+        );
       } catch (e) {
         debugPrint('[Bulletin] BLE fan-out failed id=$bulletinId: $e');
+        _mesh?.resumeRadioDutyCycle();
       }
       var udpOk = false;
       if (udpActive) {
@@ -2331,16 +2355,24 @@ class AppState extends ChangeNotifier {
           debugPrint('[Bulletin] UDP send failed id=$bulletinId: $e');
         }
       }
-      // Push into ESP32 mule ASAP for late joiners / backgrounded phones.
       unawaited(_esp32?.nudgeSync());
       final ok = bleSent > 0 || udpOk;
       debugPrint(
         '[Bulletin] broadcast id=$bulletinId bleSent=$bleSent '
-        'nearbyPeers=$nearbyCount nearbyRaw=$nearbyRaw udp=$udpOk ok=$ok',
+        'nearbyPeers=$nearbyCount nearbyRaw=$nearbyRaw udp=$udpOk '
+        'gatt=$gattNow ok=$ok',
       );
-      if (!ok && (bleConnected || nearbyRaw > 0 || udpActive)) {
-        // Path looked available but hand-off failed — still keep wire for catch-up.
-        _lastNoticePublishWarning ??= 'no_mesh';
+      if (!ok) {
+        if (nearbyCount > 0 || nearbyRaw > 0 || bleConnected) {
+          // Peers/radios seen but GATT write failed — classic iOS role miss.
+          _lastNoticePublishWarning = 'ble_send_failed';
+        } else if (!gattNow) {
+          _lastNoticePublishWarning = 'no_gatt';
+        } else {
+          _lastNoticePublishWarning ??= 'no_mesh';
+        }
+      } else {
+        _lastNoticePublishWarning = null;
       }
       return ok;
     } catch (e) {
@@ -2407,6 +2439,8 @@ class AppState extends ChangeNotifier {
       '[Bulletin] ingested id=${wire.bulletinId} from=${wire.senderId} '
       'nick=$nickLabel via=$via',
     );
+    // Stay peripheral so we can relay one hop to phones still scanning.
+    unawaited(_mesh?.holdAdvertise(duration: const Duration(seconds: 15)));
     return true;
   }
 
@@ -2602,16 +2636,36 @@ class AppState extends ChangeNotifier {
   Future<void> setDisplayName(String v) async {
     final next = effectiveDisplayName(v);
     _displayName = next;
-    if (next.isEmpty) {
-      await _storage.delete(key: _kDisplayName);
-    } else {
-      await _storage.write(key: _kDisplayName, value: next);
+    Object? persistError;
+    try {
+      if (next.isEmpty) {
+        await _storage.delete(key: _kDisplayName);
+      } else {
+        await _storage.write(key: _kDisplayName, value: next);
+      }
+    } catch (e) {
+      persistError = e;
+      debugPrint('[ResilNet] Keychain display name failed: $e');
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (next.isEmpty) {
+        await prefs.remove(_kDisplayName);
+      } else {
+        await prefs.setString(_kDisplayName, next);
+      }
+    } catch (e) {
+      persistError ??= e;
+      debugPrint('[ResilNet] prefs display name failed: $e');
     }
     _syncMeshIdentity();
     notifyListeners();
-    // Broadcast community nick to nearby mesh + Nostr presence.
     unawaited(announceGeohashPresence(force: true));
     unawaited(_mesh?.holdAdvertise());
+    if (persistError != null) {
+      // In-memory + mesh identity still updated; surface write issues.
+      throw persistError;
+    }
   }
 
   void _syncMeshIdentity() {
@@ -3064,7 +3118,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Re-route an outbound message that failed or is stuck pending.
+  /// Re-route an outbound message that failed, is pending, or looked “sent”
+  /// locally but may not have reached the peer (no delivery ACK yet).
   Future<bool> retryOutbound(ChatMessage msg) async {
     final pending = msg.copyWith(status: MessageStatus.pending);
     await persistChatMessage(pending);
@@ -3851,8 +3906,9 @@ class AppState extends ChangeNotifier {
         senderName: nick.isEmpty ? null : nick,
         senderPk: CryptoService.compactPublicKey(crypto.publicKeyPem),
       );
-      unawaited(_mesh?.holdAdvertise());
+      await _mesh?.prepareOutboundFanOut();
       final n = await _mesh?.fanOutNow(msg) ?? 0;
+      unawaited(_mesh?.holdAdvertise(duration: const Duration(seconds: 12)));
       final nickLabel = nick.isEmpty ? '-' : nick;
       debugPrint(
         '[GeoPresence] mesh fan-out g=$channel nick=$nickLabel sent=$n',
@@ -4232,10 +4288,13 @@ class AppState extends ChangeNotifier {
       // Fan-out to every nearby radio (GATT peripheral on peers accepts writes).
       var bleOk = false;
       try {
-        final n = await _mesh?.fanOutNow(outbound) ?? 0;
+        await _mesh?.prepareOutboundFanOut();
+        final n = await _mesh?.fanOutReliable(outbound, rounds: 2) ?? 0;
         bleOk = n > 0;
+        unawaited(_mesh?.holdAdvertise(duration: const Duration(seconds: 15)));
       } catch (e) {
         debugPrint('[ResilNet] bulletin/presence BLE send failed: $e');
+        _mesh?.resumeRadioDutyCycle();
       }
       var udpOk = false;
       if (resilnet.isGatewayWifiActive) {

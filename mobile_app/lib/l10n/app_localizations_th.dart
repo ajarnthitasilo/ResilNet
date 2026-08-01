@@ -1365,6 +1365,19 @@ class AppLocalizationsTh extends AppLocalizations {
       'บันทึกในเครื่องแล้ว เชื่อมต่อวิทยุ mesh ใกล้เคียง (หรือ Wi‑Fi gateway) เพื่อให้เครื่องอื่นรับได้';
 
   @override
+  String noticeMeshPublishSent(int count) {
+    return 'ส่งประกาศไปยังอุปกรณ์ใกล้เคียง $count เครื่องผ่าน BLE แล้ว';
+  }
+
+  @override
+  String get noticeMeshPublishBleFailed =>
+      'เห็นวิทยุใกล้ ๆ แต่ส่ง BLE ไม่สำเร็จ เปิดหน้าประกาศทั้งสองเครื่องแล้วลองใหม่ (หรือใช้ ESP32 เป็นตัวกลาง)';
+
+  @override
+  String get noticeMeshPublishNoGatt =>
+      'ตัวรับ BLE ของเครื่องนี้ยังไม่พร้อม ลองปิด/เปิด Bluetooth แล้วเปิดหน้าประกาศใหม่';
+
+  @override
   String get chatNoticeHidden => 'ประกาศพื้นที่ — เปิดหน้าประกาศ';
 
   @override

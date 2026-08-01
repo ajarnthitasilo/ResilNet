@@ -179,9 +179,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
         );
         if (!mounted) return;
         final warn = s.lastNoticePublishWarning;
-        if (warn == 'no_mesh') {
+        final sent = s.lastBulletinBleSent;
+        if (sent > 0) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.noticeMeshPublishNoLink)),
+            SnackBar(content: Text(context.l10n.noticeMeshPublishSent(sent))),
+          );
+        } else if (warn != null) {
+          final msg = switch (warn) {
+            'ble_send_failed' => context.l10n.noticeMeshPublishBleFailed,
+            'no_gatt' => context.l10n.noticeMeshPublishNoGatt,
+            'no_mesh' => context.l10n.noticeMeshPublishNoLink,
+            _ => context.l10n.noticePublishFailed,
+          };
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(msg)),
           );
         }
       } else if (s.feedChannel == FeedChannel.geo) {

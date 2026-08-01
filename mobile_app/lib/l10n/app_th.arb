@@ -478,6 +478,14 @@
   },
   "noticePublishFailed": "โพสต์ประกาศไปกระดานพื้นที่ไม่สำเร็จ ตรวจการเชื่อมต่อ Nostr",
   "noticeMeshPublishNoLink": "บันทึกในเครื่องแล้ว เชื่อมต่อวิทยุ mesh ใกล้เคียง (หรือ Wi‑Fi gateway) เพื่อให้เครื่องอื่นรับได้",
+  "noticeMeshPublishSent": "ส่งประกาศไปยังอุปกรณ์ใกล้เคียง {count} เครื่องผ่าน BLE แล้ว",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noticeMeshPublishBleFailed": "เห็นวิทยุใกล้ ๆ แต่ส่ง BLE ไม่สำเร็จ เปิดหน้าประกาศทั้งสองเครื่องแล้วลองใหม่ (หรือใช้ ESP32 เป็นตัวกลาง)",
+  "noticeMeshPublishNoGatt": "ตัวรับ BLE ของเครื่องนี้ยังไม่พร้อม ลองปิด/เปิด Bluetooth แล้วเปิดหน้าประกาศใหม่",
   "chatNoticeHidden": "ประกาศพื้นที่ — เปิดหน้าประกาศ",
   "identityDisplayNameTitle": "ชื่อที่แสดง",
   "identitySaveName": "บันทึกชื่อ",

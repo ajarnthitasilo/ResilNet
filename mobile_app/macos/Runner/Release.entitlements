@@ -7,6 +7,9 @@
 	     entitlement requires Apple Development signing + Mac provisioning. -->
 	<key>com.apple.security.app-sandbox</key>
 	<false/>
+	<!-- Explicit Bluetooth access for BLE mesh central + peripheral. -->
+	<key>com.apple.security.device.bluetooth</key>
+	<true/>
 	<key>com.apple.security.network.client</key>
 	<true/>
 	<key>com.apple.security.network.server</key>

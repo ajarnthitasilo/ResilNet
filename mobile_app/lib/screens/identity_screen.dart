@@ -27,6 +27,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
   late final TextEditingController _name;
   final _nameFocus = FocusNode();
   bool _saving = false;
+  bool _nameDirty = false;
   String? _cachedQrData;
   String? _cachedName;
   String? _cachedUserId;
@@ -35,21 +36,54 @@ class _IdentityScreenState extends State<IdentityScreen> {
   void initState() {
     super.initState();
     _name = TextEditingController();
+    _name.addListener(_onNameEdited);
   }
 
   @override
   void dispose() {
+    _name.removeListener(_onNameEdited);
     _nameFocus.dispose();
     _name.dispose();
     super.dispose();
   }
 
+  void _onNameEdited() {
+    _nameDirty = true;
+  }
+
   void _syncNameField(String displayName) {
-    if (_nameFocus.hasFocus || _name.text == displayName) return;
+    // On iOS/iPad, tapping Save dismisses the keyboard first (viewInsets
+    // rebuild). Syncing here would overwrite the typed name with the old
+    // AppState value before onPressed runs — so skip while dirty.
+    if (_nameDirty || _nameFocus.hasFocus || _name.text == displayName) return;
+    _name.removeListener(_onNameEdited);
     _name.value = _name.value.copyWith(
       text: displayName,
       selection: TextSelection.collapsed(offset: displayName.length),
     );
+    _name.addListener(_onNameEdited);
+  }
+
+  Future<void> _saveDisplayName() async {
+    // Snapshot before any keyboard/unfocus rebuild can touch the controller.
+    final next = _name.text.trim();
+    _nameDirty = true;
+    try {
+      await context.read<AppState>().setDisplayName(next);
+      if (!mounted) return;
+      _nameDirty = false;
+      _nameFocus.unfocus();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.identitySaveName)),
+      );
+    } catch (e) {
+      debugPrint('[ResilNet] setDisplayName failed: $e');
+      if (!mounted) return;
+      // Name may still be in memory / prefs — tell the user.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${context.l10n.identitySaveName}: $e')),
+      );
+    }
   }
 
   Future<void> _copyUserId(String userId) async {
@@ -242,19 +276,24 @@ class _IdentityScreenState extends State<IdentityScreen> {
             TextField(
               controller: _name,
               focusNode: _nameFocus,
+              textInputAction: TextInputAction.done,
               decoration: InputDecoration(
                 labelText: context.l10n.identityDisplayNameTitle,
               ),
-              onSubmitted: (v) =>
-                  context.read<AppState>().setDisplayName(v.trim()),
+              onSubmitted: (_) => unawaited(_saveDisplayName()),
             ),
             const SizedBox(height: 10),
             Align(
               alignment: Alignment.centerLeft,
-              child: TextButton(
-                onPressed: () =>
-                    context.read<AppState>().setDisplayName(_name.text.trim()),
-                child: Text(context.l10n.identitySaveName),
+              child: Listener(
+                onPointerDown: (_) {
+                  // Capture typed text before iOS keyboard dismiss rebuild.
+                  _nameDirty = true;
+                },
+                child: TextButton(
+                  onPressed: () => unawaited(_saveDisplayName()),
+                  child: Text(context.l10n.identitySaveName),
+                ),
               ),
             ),
             const SizedBox(height: 8),

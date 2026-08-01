@@ -657,6 +657,14 @@
   },
   "noticePublishFailed": "Could not publish notice to the area board. Check Nostr connection.",
   "noticeMeshPublishNoLink": "Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.",
+  "noticeMeshPublishSent": "Bulletin sent to {count} nearby device(s) over BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Nearby radios seen, but BLE write failed. Keep both apps open on the Notices screen and try again (or use an ESP32 relay).",
+  "noticeMeshPublishNoGatt": "This device’s BLE receiver is not ready. Toggle Bluetooth and reopen Notices.",
   "chatNoticeHidden": "Area notice — open Notices",
   "identityDisplayNameTitle": "Display name",
   "identitySaveName": "Save name",

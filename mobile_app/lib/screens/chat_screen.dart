@@ -805,7 +805,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 l10n.chatLoadFailed(_loadError!),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
               const SizedBox(height: 12),
@@ -824,7 +824,7 @@ class _ChatScreenState extends State<ChatScreen> {
           l10n.chatEmptyThread,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.white.withValues(alpha: 0.7),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.72),
             height: 1.4,
           ),
         ),
@@ -1392,7 +1392,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               if (isMe &&
                   (m.status == MessageStatus.failed ||
-                      m.status == MessageStatus.pending))
+                      m.status == MessageStatus.pending ||
+                      m.status == MessageStatus.sent ||
+                      m.status == MessageStatus.relayed))
                 ListTile(
                   leading: const Icon(Icons.refresh),
                   title: Text(l10n.chatRetry),
@@ -1507,7 +1509,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  'Me: ${formatShortPeerId(myId)}',
+                  'Me: ${s.displayName.trim().isNotEmpty ? s.displayName.trim() : formatShortPeerId(myId)}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Theme.of(context)
                         .colorScheme

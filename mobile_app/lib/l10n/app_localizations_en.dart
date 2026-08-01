@@ -1374,6 +1374,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.';
 
   @override
+  String noticeMeshPublishSent(int count) {
+    return 'Bulletin sent to $count nearby device(s) over BLE.';
+  }
+
+  @override
+  String get noticeMeshPublishBleFailed =>
+      'Nearby radios seen, but BLE write failed. Keep both apps open on the Notices screen and try again (or use an ESP32 relay).';
+
+  @override
+  String get noticeMeshPublishNoGatt =>
+      'This device’s BLE receiver is not ready. Toggle Bluetooth and reopen Notices.';
+
+  @override
   String get chatNoticeHidden => 'Area notice — open Notices';
 
   @override
