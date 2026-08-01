@@ -210,7 +210,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
           Text(
             _scope == 'mesh' ? l10n.noticesMeshIntro : l10n.noticesGeoIntro,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.55),
+                  color: ResilNetTheme.mutedOnSurface(context),
                   height: 1.35,
                 ),
           ),
@@ -238,7 +238,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
               IconButton.filled(
                 onPressed: _posting ? null : () => _post(s),
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.white.withValues(alpha: 0.12),
+                  backgroundColor: ResilNetTheme.glassFill(context, darkAlpha: 0.12),
                 ),
                 icon: _posting
                     ? const SizedBox(
@@ -269,7 +269,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
               Text(
                 l10n.noticeExpiresIn,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white54,
+                      color: ResilNetTheme.mutedOnSurface(context),
                     ),
               ),
               const SizedBox(width: 8),
@@ -350,7 +350,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
               Text(
                 l10n.noticesBackfilling,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.45),
+                      color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                     ),
               ),
             ],
@@ -361,7 +361,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
           Text(
             l10n.noticesBackfillLoaded(backfillCount),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.45),
+                  color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                 ),
           ),
         ],
@@ -390,7 +390,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
                   Text(
                     l10n.noticesBackfilling,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.55),
+                      color: ResilNetTheme.mutedOnSurface(context),
                     ),
                   ),
                 ],
@@ -414,14 +414,14 @@ class _NoticesSheetState extends State<_NoticesSheet> {
                   Text(
                     l10n.noticesEmpty,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.45),
+                      color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     l10n.noticesEmptyHint,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: ResilNetTheme.mutedOnSurface(context, alpha: 0.3),
                       fontSize: 13,
                     ),
                   ),
@@ -437,10 +437,11 @@ class _NoticesSheetState extends State<_NoticesSheet> {
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: items.length,
       separatorBuilder: (_, _) => Divider(
-        color: Colors.white.withValues(alpha: 0.06),
+        color: ResilNetTheme.barBorder(context),
       ),
       itemBuilder: (context, i) {
         final n = items[i];
+        final onSurface = Theme.of(context).colorScheme.onSurface;
         final created = DateTime.fromMillisecondsSinceEpoch(n.createdAt);
         final expires = n.expiresAt == null
             ? null
@@ -456,7 +457,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
             style: TextStyle(
               color: n.urgent
                   ? Colors.orangeAccent
-                  : Colors.white.withValues(alpha: 0.9),
+                  : onSurface.withValues(alpha: 0.9),
             ),
           ),
           subtitle: Column(
@@ -516,7 +517,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
 
     final action = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: const Color(0xFF1C1C1E),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -636,21 +637,23 @@ class _ExpiryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: selected
-              ? Colors.white.withValues(alpha: 0.16)
-              : Colors.white.withValues(alpha: 0.04),
+              ? ResilNetTheme.glassFill(context, darkAlpha: 0.16)
+              : ResilNetTheme.glassFill(context, darkAlpha: 0.04),
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: ResilNetTheme.glassBorder(context)),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.white.withValues(alpha: selected ? 0.95 : 0.55),
+            color: onSurface.withValues(alpha: selected ? 0.95 : 0.55),
           ),
         ),
       ),

@@ -1,6 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// ResilNet look — emerald identity; follows system light/dark via [ThemeMode.system].
+///
+/// Light mode aims for a soft **liquid glass** feel (frosted translucent panels).
+/// Dark mode keeps the existing deep-navy mesh aesthetic.
 class ResilNetTheme {
   static const deepNavy = Color(0xFF0B1224);
   static const deepNavy2 = Color(0xFF0A0F1C);
@@ -12,10 +18,14 @@ class ResilNetTheme {
   static const gradientTop = Color(0xFF0B1A33);
   static const gradientBottom = Color(0xFF1A1030);
 
-  static const lightCanvas = Color(0xFFF4F7FB);
-  static const lightSurface = Color(0xFFFFFFFF);
-  static const lightGradientTop = Color(0xFFEEF5F2);
-  static const lightGradientBottom = Color(0xFFE8EEF8);
+  /// Soft cool canvas under frosted panels (not flat white).
+  static const lightCanvas = Color(0xFFE8F0F6);
+  static const lightSurface = Color(0xF2FFFFFF);
+  static const lightGlass = Color(0xB8FFFFFF);
+  static const lightGlassBorder = Color(0x66FFFFFF);
+  static const lightGradientTop = Color(0xFFDCEEF0);
+  static const lightGradientMid = Color(0xFFE8F2F8);
+  static const lightGradientBottom = Color(0xFFF0E8F4);
 
   static const scaffoldGradient = LinearGradient(
     begin: Alignment.topCenter,
@@ -24,9 +34,10 @@ class ResilNetTheme {
   );
 
   static const scaffoldGradientLight = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [lightGradientTop, lightGradientBottom],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [lightGradientTop, lightGradientMid, lightGradientBottom],
+    stops: [0.0, 0.45, 1.0],
   );
 
   static bool isDark(BuildContext context) =>
@@ -42,6 +53,80 @@ class ResilNetTheme {
   static Color mutedOnSurface(BuildContext context, {double alpha = 0.55}) =>
       Theme.of(context).colorScheme.onSurface.withValues(alpha: alpha);
 
+  /// Soft surface fill for status chips / bars (adapts to light/dark).
+  static Color barSurface(BuildContext context) => isDark(context)
+      ? deepNavy
+      : Colors.white.withValues(alpha: 0.55);
+
+  static Color barBorder(BuildContext context) => isDark(context)
+      ? Colors.white.withValues(alpha: 0.06)
+      : Colors.white.withValues(alpha: 0.65);
+
+  /// Panel / chip fill that reads as glass in light mode.
+  static Color glassFill(BuildContext context, {double darkAlpha = 0.06}) =>
+      isDark(context)
+          ? Colors.white.withValues(alpha: darkAlpha)
+          : Colors.white.withValues(alpha: 0.55);
+
+  static Color glassBorder(BuildContext context) => isDark(context)
+      ? Colors.white.withValues(alpha: 0.08)
+      : Colors.white.withValues(alpha: 0.7);
+
+  /// Frosted panel decoration — blur when supported, solid fallback otherwise.
+  static BoxDecoration glassDecoration(
+    BuildContext context, {
+    BorderRadius borderRadius = const BorderRadius.all(Radius.circular(16)),
+    double blurSigma = 18,
+  }) {
+    final dark = isDark(context);
+    return BoxDecoration(
+      borderRadius: borderRadius,
+      color: dark
+          ? surface.withValues(alpha: 0.55)
+          : Colors.white.withValues(alpha: 0.48),
+      border: Border.all(
+        color: dark
+            ? Colors.white.withValues(alpha: 0.08)
+            : Colors.white.withValues(alpha: 0.72),
+      ),
+      boxShadow: dark
+          ? null
+          : [
+              BoxShadow(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.06),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+    );
+  }
+
+  /// Wrap [child] in a frosted glass panel (BackdropFilter + border).
+  static Widget glassPanel({
+    required BuildContext context,
+    required Widget child,
+    BorderRadius borderRadius = const BorderRadius.all(Radius.circular(16)),
+    EdgeInsetsGeometry? padding,
+    double blurSigma = 18,
+  }) {
+    final deco = glassDecoration(
+      context,
+      borderRadius: borderRadius,
+      blurSigma: blurSigma,
+    );
+    final content = padding == null ? child : Padding(padding: padding, child: child);
+    if (isDark(context)) {
+      return DecoratedBox(decoration: deco, child: content);
+    }
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+        child: DecoratedBox(decoration: deco, child: content),
+      ),
+    );
+  }
+
   static ThemeData dark() {
     final scheme = ColorScheme.fromSeed(
       seedColor: emerald,
@@ -56,14 +141,19 @@ class ResilNetTheme {
         primary: emerald,
         secondary: channelGreen,
         surface: deepNavy,
+        onSurface: Colors.white,
       ),
       scaffoldBackgroundColor: deepNavy,
       dividerColor: Colors.white.withValues(alpha: 0.08),
+      iconTheme: const IconThemeData(color: Colors.white),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         foregroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.white),
+        actionsIconTheme: IconThemeData(color: Colors.white),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
         centerTitle: false,
       ),
       cardTheme: CardThemeData(
@@ -124,7 +214,7 @@ class ResilNetTheme {
     final scheme = ColorScheme.fromSeed(
       seedColor: emerald,
       brightness: Brightness.light,
-      surface: lightSurface,
+      surface: const Color(0xFFF7FBFD),
     );
 
     return ThemeData(
@@ -133,31 +223,52 @@ class ResilNetTheme {
       colorScheme: scheme.copyWith(
         primary: const Color(0xFF0D9488),
         secondary: const Color(0xFF059669),
-        surface: lightSurface,
+        surface: const Color(0xF2FFFFFF),
         onSurface: const Color(0xFF0F172A),
+        surfaceContainerHighest: Colors.white.withValues(alpha: 0.72),
       ),
       scaffoldBackgroundColor: lightCanvas,
-      dividerColor: Colors.black.withValues(alpha: 0.08),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+      dividerColor: const Color(0xFF0F172A).withValues(alpha: 0.08),
+      iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.white.withValues(alpha: 0.35),
         elevation: 0,
         scrolledUnderElevation: 0,
-        foregroundColor: Color(0xFF0F172A),
+        foregroundColor: const Color(0xFF0F172A),
+        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        actionsIconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         centerTitle: false,
       ),
       cardTheme: CardThemeData(
-        color: lightSurface.withValues(alpha: 0.92),
+        color: Colors.white.withValues(alpha: 0.55),
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: Colors.white.withValues(alpha: 0.88),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: Colors.white.withValues(alpha: 0.82),
+        modalBackgroundColor: Colors.white.withValues(alpha: 0.88),
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: const Color(0xFFE2E8F0),
+        backgroundColor: Colors.white.withValues(alpha: 0.55),
         selectedColor: emerald.withValues(alpha: 0.18),
         labelStyle: const TextStyle(color: Color(0xFF334155), fontSize: 13),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        side: BorderSide.none,
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.65)),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
@@ -165,10 +276,12 @@ class ResilNetTheme {
             if (states.contains(WidgetState.selected)) {
               return emerald.withValues(alpha: 0.16);
             }
-            return Colors.transparent;
+            return Colors.white.withValues(alpha: 0.35);
           }),
           foregroundColor: WidgetStateProperty.all(const Color(0xFF0F172A)),
-          side: WidgetStateProperty.all(BorderSide.none),
+          side: WidgetStateProperty.all(
+            BorderSide(color: Colors.white.withValues(alpha: 0.65)),
+          ),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
@@ -176,22 +289,24 @@ class ResilNetTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.9),
+        fillColor: Colors.white.withValues(alpha: 0.62),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
           borderSide: BorderSide(color: emerald.withValues(alpha: 0.55)),
         ),
-        hintStyle: TextStyle(color: Colors.black.withValues(alpha: 0.35)),
+        hintStyle: TextStyle(
+          color: const Color(0xFF0F172A).withValues(alpha: 0.35),
+        ),
       ),
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
