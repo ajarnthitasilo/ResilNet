@@ -854,6 +854,474 @@ abstract class AppLocalizations {
   /// **'Download .bin files and update the ESP32 board via OTA'**
   String get settingsFirmwareSubtitle;
 
+  /// No description provided for @mtBridgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Meshtastic bridge'**
+  String get mtBridgeTitle;
+
+  /// No description provided for @mtBridgeSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Text-only A/B bridge — not ResilNet E2EE'**
+  String get mtBridgeSettingsSubtitle;
+
+  /// No description provided for @mtBridgeIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Move short plaintext between Meshtastic and ResilNet. Modes A and B cannot run at the same time. This is not end-to-end encryption.'**
+  String get mtBridgeIntro;
+
+  /// No description provided for @mtBridgeModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get mtBridgeModeLabel;
+
+  /// No description provided for @mtBridgeModeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get mtBridgeModeOff;
+
+  /// No description provided for @mtBridgeModeA.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingest A'**
+  String get mtBridgeModeA;
+
+  /// No description provided for @mtBridgeModeB.
+  ///
+  /// In en, this message translates to:
+  /// **'Egress B'**
+  String get mtBridgeModeB;
+
+  /// No description provided for @mtBridgeModeOffShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get mtBridgeModeOffShort;
+
+  /// No description provided for @mtBridgeModeAShort.
+  ///
+  /// In en, this message translates to:
+  /// **'In A'**
+  String get mtBridgeModeAShort;
+
+  /// No description provided for @mtBridgeModeBShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Out B'**
+  String get mtBridgeModeBShort;
+
+  /// No description provided for @mtBridgeMutexHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Selecting a mode turns the other off automatically. Simultaneous A+B is not supported.'**
+  String get mtBridgeMutexHint;
+
+  /// No description provided for @mtBridgeStatusLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode} · {transport}'**
+  String mtBridgeStatusLine(String mode, String transport);
+
+  /// No description provided for @mtBridgeTransportDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo (logging)'**
+  String get mtBridgeTransportDemo;
+
+  /// No description provided for @mtBridgeIngestSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Meshtastic → ResilNet'**
+  String get mtBridgeIngestSection;
+
+  /// No description provided for @mtBridgeIngestHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Inbound text appears under Notices as #meshtastic. Mesh relay is optional (off by default).'**
+  String get mtBridgeIngestHint;
+
+  /// No description provided for @mtBridgeRelayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Also relay on ResilNet mesh'**
+  String get mtBridgeRelayTitle;
+
+  /// No description provided for @mtBridgeRelayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, signed public bulletins are broadcast. Off = this phone’s Notices only.'**
+  String get mtBridgeRelayHint;
+
+  /// No description provided for @mtBridgeSimulateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo message'**
+  String get mtBridgeSimulateHint;
+
+  /// No description provided for @mtBridgeSimulate.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulate Meshtastic message'**
+  String get mtBridgeSimulate;
+
+  /// No description provided for @mtBridgeIngestOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingested into Notices (#meshtastic)'**
+  String get mtBridgeIngestOk;
+
+  /// No description provided for @mtBridgeEgressWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: messages sent here are NOT ResilNet E2EE. Anyone on the Meshtastic path can read them.'**
+  String get mtBridgeEgressWarning;
+
+  /// No description provided for @mtBridgeEgressSection.
+  ///
+  /// In en, this message translates to:
+  /// **'ResilNet → Meshtastic'**
+  String get mtBridgeEgressSection;
+
+  /// No description provided for @mtBridgeComposeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Text to publish'**
+  String get mtBridgeComposeHint;
+
+  /// No description provided for @mtBridgeSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to Meshtastic'**
+  String get mtBridgeSend;
+
+  /// No description provided for @mtBridgeEgressOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued for Meshtastic (see log / history)'**
+  String get mtBridgeEgressOk;
+
+  /// No description provided for @mtBridgeLastEgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Last egress'**
+  String get mtBridgeLastEgress;
+
+  /// No description provided for @mtBridgeEgressHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent egress'**
+  String get mtBridgeEgressHistory;
+
+  /// No description provided for @mtBridgeOffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Ingest (A) or Egress (B) to use the bridge.'**
+  String get mtBridgeOffHint;
+
+  /// No description provided for @mtBridgeNoticeBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'MESHTASTIC · not E2EE'**
+  String get mtBridgeNoticeBadge;
+
+  /// No description provided for @mtBridgeSenderFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Meshtastic'**
+  String get mtBridgeSenderFallback;
+
+  /// No description provided for @mtBridgeUseMqtt.
+  ///
+  /// In en, this message translates to:
+  /// **'Use MQTT transport'**
+  String get mtBridgeUseMqtt;
+
+  /// No description provided for @mtBridgeUseMqttHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Off = demo logging only (MQTT inbound ignored). On = MQTT for ingest/egress when connected.'**
+  String get mtBridgeUseMqttHint;
+
+  /// No description provided for @mtBridgeMqttHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Broker host'**
+  String get mtBridgeMqttHost;
+
+  /// No description provided for @mtBridgeMqttPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get mtBridgeMqttPort;
+
+  /// No description provided for @mtBridgeMqttTls.
+  ///
+  /// In en, this message translates to:
+  /// **'Use TLS (mqtts)'**
+  String get mtBridgeMqttTls;
+
+  /// No description provided for @mtBridgeMqttTlsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Typical port 8883. Uses system certificates; fails soft on handshake errors.'**
+  String get mtBridgeMqttTlsHint;
+
+  /// No description provided for @mtBridgeMqttAutoReconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-reconnect'**
+  String get mtBridgeMqttAutoReconnect;
+
+  /// No description provided for @mtBridgeMqttAutoReconnectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, the client tries to reconnect after drops. Status shows Connecting until restored.'**
+  String get mtBridgeMqttAutoReconnectHint;
+
+  /// No description provided for @mtBridgeMqttTopicHelpers.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic helpers'**
+  String get mtBridgeMqttTopicHelpers;
+
+  /// No description provided for @mtBridgeMqttRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Region prefix (optional)'**
+  String get mtBridgeMqttRegion;
+
+  /// No description provided for @mtBridgeMqttRegionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When set, Apply rebuilds root as msh/<region>/2/json (overrides topic root).'**
+  String get mtBridgeMqttRegionHint;
+
+  /// No description provided for @mtBridgeMqttTopicRoot.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON topic root'**
+  String get mtBridgeMqttTopicRoot;
+
+  /// No description provided for @mtBridgeMqttDownlinkChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Downlink channel name'**
+  String get mtBridgeMqttDownlinkChannel;
+
+  /// No description provided for @mtBridgeMqttApplyTopics.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply root → subscribe / publish topics'**
+  String get mtBridgeMqttApplyTopics;
+
+  /// No description provided for @mtBridgeMqttAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced MQTT'**
+  String get mtBridgeMqttAdvanced;
+
+  /// No description provided for @mtBridgeMqttAdvancedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'TLS, reconnect, topics, credentials'**
+  String get mtBridgeMqttAdvancedHint;
+
+  /// No description provided for @mtBridgeMqttTopicIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe topic'**
+  String get mtBridgeMqttTopicIn;
+
+  /// No description provided for @mtBridgeMqttTopicOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish topic'**
+  String get mtBridgeMqttTopicOut;
+
+  /// No description provided for @mtBridgeMqttGatewayFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway node id (from)'**
+  String get mtBridgeMqttGatewayFrom;
+
+  /// No description provided for @mtBridgeMqttGatewayFromHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Decimal id or !hex — required for sendtext downlink'**
+  String get mtBridgeMqttGatewayFromHint;
+
+  /// No description provided for @mtBridgeMqttChannelIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh channel index (optional 0–7)'**
+  String get mtBridgeMqttChannelIndex;
+
+  /// No description provided for @mtBridgeMqttUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Username (optional)'**
+  String get mtBridgeMqttUser;
+
+  /// No description provided for @mtBridgeMqttPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Password (optional)'**
+  String get mtBridgeMqttPass;
+
+  /// No description provided for @mtBridgeMqttPassStored.
+  ///
+  /// In en, this message translates to:
+  /// **'A password is stored on this device (not shown).'**
+  String get mtBridgeMqttPassStored;
+
+  /// No description provided for @mtBridgeMqttPassReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'New password (leave blank to keep)'**
+  String get mtBridgeMqttPassReplace;
+
+  /// No description provided for @mtBridgeMqttPassReplaceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to keep the stored password.'**
+  String get mtBridgeMqttPassReplaceHint;
+
+  /// No description provided for @mtBridgeMqttPassClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear password'**
+  String get mtBridgeMqttPassClear;
+
+  /// No description provided for @mtBridgeMqttSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save MQTT settings'**
+  String get mtBridgeMqttSave;
+
+  /// No description provided for @mtBridgeMqttSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT settings saved'**
+  String get mtBridgeMqttSaved;
+
+  /// No description provided for @mtBridgeMqttConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get mtBridgeMqttConnect;
+
+  /// No description provided for @mtBridgeMqttDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get mtBridgeMqttDisconnect;
+
+  /// No description provided for @mtBridgeMqttConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT connected'**
+  String get mtBridgeMqttConnected;
+
+  /// No description provided for @mtBridgeMqttConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT connecting…'**
+  String get mtBridgeMqttConnecting;
+
+  /// No description provided for @mtBridgeMqttDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT disconnected'**
+  String get mtBridgeMqttDisconnected;
+
+  /// No description provided for @mtBridgeMqttError.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT error'**
+  String get mtBridgeMqttError;
+
+  /// No description provided for @mtBridgeErrModeIngest.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to Ingest (A) first'**
+  String get mtBridgeErrModeIngest;
+
+  /// No description provided for @mtBridgeErrModeEgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to Egress (B) first'**
+  String get mtBridgeErrModeEgress;
+
+  /// No description provided for @mtBridgeErrRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow down — rate limited'**
+  String get mtBridgeErrRate;
+
+  /// No description provided for @mtBridgeErrDedupe.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate message ignored'**
+  String get mtBridgeErrDedupe;
+
+  /// No description provided for @mtBridgeErrLoop.
+  ///
+  /// In en, this message translates to:
+  /// **'Dropped to prevent a bridge loop'**
+  String get mtBridgeErrLoop;
+
+  /// No description provided for @mtBridgeErrEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Message is empty'**
+  String get mtBridgeErrEmpty;
+
+  /// No description provided for @mtBridgeErrPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish failed'**
+  String get mtBridgeErrPublish;
+
+  /// No description provided for @mtBridgeErrNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT not connected'**
+  String get mtBridgeErrNotConnected;
+
+  /// No description provided for @mtBridgeErrMissingHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter MQTT broker host'**
+  String get mtBridgeErrMissingHost;
+
+  /// No description provided for @mtBridgeErrMissingTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter subscribe and publish topics'**
+  String get mtBridgeErrMissingTopic;
+
+  /// No description provided for @mtBridgeErrMissingFromNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter gateway node id (from) for sendtext'**
+  String get mtBridgeErrMissingFromNode;
+
+  /// No description provided for @mtBridgeErrConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT connect failed'**
+  String get mtBridgeErrConnect;
+
+  /// No description provided for @mtBridgeErrConnectTls.
+  ///
+  /// In en, this message translates to:
+  /// **'MQTT TLS connect failed'**
+  String get mtBridgeErrConnectTls;
+
   /// No description provided for @settingsData.
   ///
   /// In en, this message translates to:
@@ -1850,6 +2318,30 @@ abstract class AppLocalizations {
   /// **'#location channels'**
   String get locationSheetTitle;
 
+  /// No description provided for @channelPinsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get channelPinsTitle;
+
+  /// No description provided for @channelPinsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin channels you use often — they stay at the top'**
+  String get channelPinsHint;
+
+  /// No description provided for @channelPinTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin this channel'**
+  String get channelPinTooltip;
+
+  /// No description provided for @channelUnpinTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get channelUnpinTooltip;
+
   /// No description provided for @locationSheetIntro.
   ///
   /// In en, this message translates to:
@@ -2101,6 +2593,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not open the user guide'**
   String get docsOpenFailed;
+
+  /// No description provided for @firmwareOtaGuideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flash guide & OTA protocol'**
+  String get firmwareOtaGuideTitle;
+
+  /// No description provided for @firmwareOtaGuideSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens the web guide — .bin downloads and full steps'**
+  String get firmwareOtaGuideSubtitle;
+
+  /// No description provided for @firmwareWebDownloadsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware downloads on the web'**
+  String get firmwareWebDownloadsTitle;
+
+  /// No description provided for @firmwareWebDownloadsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Per-version links and checksums on the docs site'**
+  String get firmwareWebDownloadsSubtitle;
 
   /// No description provided for @inviteCopyShortLink.
   ///

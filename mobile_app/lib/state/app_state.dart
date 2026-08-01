@@ -17,6 +17,7 @@ import '../core/direct_message_notify.dart';
 import '../core/geohash.dart';
 import '../core/identity_invite_wire.dart';
 import '../core/media_part_codec.dart';
+import '../core/meshtastic_bridge_core.dart';
 import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/peer_id.dart';
@@ -43,6 +44,7 @@ import '../services/database_service.dart';
 import '../services/esp32_sync_service.dart';
 import '../services/firmware_service.dart';
 import '../services/geo_service.dart';
+import '../services/meshtastic_bridge_service.dart';
 import '../services/notification_service.dart';
 import '../services/nostr_sync_service.dart';
 import '../services/resilnet_packet_codec.dart';
@@ -65,6 +67,8 @@ class AppState extends ChangeNotifier {
   UdpTransportService? _udp;
   NostrSyncService? _nostr;
   FirmwareService? _firmware;
+  MeshtasticBridgeService? _meshtasticBridge;
+  VoidCallback? _onMeshtasticBridgeChanged;
   late AckHandlerService _ackHandler;
   AckQueueManager? _ackQueue;
   StreamSubscription<MessagePacketDto>? _rustIncomingSub;
@@ -106,6 +110,40 @@ class AppState extends ChangeNotifier {
     if (f == null) throw StateError('FirmwareService not initialized');
     return f;
   }
+
+  /// Text-only Meshtastic ↔ ResilNet bridge (not E2EE). Null until [init].
+  MeshtasticBridgeService? get meshtasticBridge => _meshtasticBridge;
+
+  MeshtasticBridgeMode get meshtasticBridgeMode =>
+      _meshtasticBridge?.mode ?? MeshtasticBridgeMode.off;
+
+  static const _kMeshtasticBridgeMode = 'resilnet_meshtastic_bridge_mode';
+  static const _kMeshtasticRelayToMesh = 'resilnet_meshtastic_relay_to_mesh';
+  static const _kMeshtasticUseMqtt = 'resilnet_meshtastic_use_mqtt';
+  static const _kMeshtasticMqttHost = 'resilnet_meshtastic_mqtt_host';
+  static const _kMeshtasticMqttPort = 'resilnet_meshtastic_mqtt_port';
+  static const _kMeshtasticMqttTopicIn = 'resilnet_meshtastic_mqtt_topic_in';
+  static const _kMeshtasticMqttTopicOut = 'resilnet_meshtastic_mqtt_topic_out';
+  static const _kMeshtasticMqttUser = 'resilnet_meshtastic_mqtt_user';
+  static const _kMeshtasticMqttPass = 'resilnet_meshtastic_mqtt_pass';
+  static const _kMeshtasticMqttUseTls = 'resilnet_meshtastic_mqtt_use_tls';
+  static const _kMeshtasticMqttAutoReconnect =
+      'resilnet_meshtastic_mqtt_auto_reconnect';
+  static const _kMeshtasticMqttGatewayFrom =
+      'resilnet_meshtastic_mqtt_gateway_from';
+  static const _kMeshtasticMqttChannelIndex =
+      'resilnet_meshtastic_mqtt_channel_index';
+  static const _kMeshtasticMqttRegion = 'resilnet_meshtastic_mqtt_region';
+  static const _kMeshtasticMqttRoot = 'resilnet_meshtastic_mqtt_root';
+  static const _kMeshtasticMqttDownlinkCh =
+      'resilnet_meshtastic_mqtt_downlink_ch';
+
+  bool _meshtasticRelayToMesh = false;
+  bool get meshtasticRelayToMesh => _meshtasticRelayToMesh;
+
+  bool _meshtasticMqttPasswordStored = false;
+  /// True when a MQTT password is kept in secure storage (value never echoed).
+  bool get meshtasticMqttPasswordStored => _meshtasticMqttPasswordStored;
 
   BleMeshService get mesh {
     final m = _mesh;
@@ -217,6 +255,69 @@ class AppState extends ChangeNotifier {
   String _displayName = '';
   String get displayName => effectiveDisplayName(_displayName);
 
+  /// Local-only contact aliases (device-only nicknames keyed by peer id).
+  final Map<String, String> _contactAliases = <String, String>{};
+
+  /// Bumped when aliases change so list FutureBuilders can be keyed if needed.
+  int _contactAliasEpoch = 0;
+  int get contactAliasEpoch => _contactAliasEpoch;
+
+  String? contactAlias(String peerId) {
+    final id = peerId.trim();
+    if (id.isEmpty) return null;
+    final a = _contactAliases[id];
+    if (a == null || a.isEmpty) return null;
+    return a;
+  }
+
+  /// UI label: local alias → [fallbackNick] → short peer id.
+  String peerDisplayLabel(String peerId, {String? fallbackNick}) {
+    final id = peerId.trim();
+    final alias = contactAlias(id);
+    return peerListLabel(
+      aliasOrNick: alias ?? fallbackNick,
+      id: id,
+    );
+  }
+
+  Future<void> _loadContactAliases() async {
+    final map = await db.getAllContactAliases();
+    _contactAliases
+      ..clear()
+      ..addAll(map);
+  }
+
+  /// Persist a device-local nickname and refresh listeners immediately.
+  Future<void> setContactAlias({
+    required String publicKeyHash,
+    required String aliasName,
+  }) async {
+    final id = publicKeyHash.trim();
+    if (id.isEmpty) return;
+    final alias = aliasName.trim();
+    await db.setContactAlias(publicKeyHash: id, aliasName: alias);
+    if (alias.isEmpty) {
+      _contactAliases.remove(id);
+    } else {
+      _contactAliases[id] = alias;
+    }
+    _contactAliasEpoch++;
+    notifyListeners();
+  }
+
+  AreaPresenceEntry _withLocalAlias(AreaPresenceEntry e) {
+    final alias = contactAlias(e.id);
+    if (alias == null) return e;
+    return AreaPresenceEntry(
+      id: e.id,
+      label: peerListLabel(aliasOrNick: alias, id: e.id),
+      source: e.source,
+      geohash: e.geohash,
+      lastSeen: e.lastSeen,
+      peer: e.peer,
+    );
+  }
+
   static const _kNotificationsEnabled = 'resilnet_notifications_enabled';
   bool _notificationsEnabled = true;
   bool get notificationsEnabled => _notificationsEnabled;
@@ -262,6 +363,19 @@ class AppState extends ChangeNotifier {
   Set<String> get favoritePeerIds => Set.unmodifiable(_favoritePeerIds);
   final Set<String> _favoriteNearbyNotified = <String>{};
   final Set<String> _favoriteAreaNotified = <String>{};
+
+  /// Pinned #location / area channels (`mesh` or geohash without `#`).
+  static const _kPinnedLocationChannels = 'resilnet_pinned_location_channels';
+  static const pinnedMeshChannelId = 'mesh';
+  static const _maxPinnedLocationChannels = 12;
+  final List<String> _pinnedLocationChannels = <String>[];
+  List<String> get pinnedLocationChannels =>
+      List.unmodifiable(_pinnedLocationChannels);
+
+  /// Pinned feed tabs (directs / mesh / geo) — shown first in the picker.
+  static const _kPinnedFeedChannels = 'resilnet_pinned_feed_channels';
+  final List<String> _pinnedFeedChannels = <String>[];
+  List<String> get pinnedFeedChannels => List.unmodifiable(_pinnedFeedChannels);
 
   /// Dedupe window for "someone came online" local notifications (any peer).
   final Set<String> _peerOnlineNotified = <String>{};
@@ -543,7 +657,8 @@ class AppState extends ChangeNotifier {
         sendAckBatch: _sendAckBatch,
       );
       await _ackQueue!.restoreFromDatabase();
-      _onAckQueueChanged = notifyListeners;
+      // Debounce ACK UI ticks — queue churn must not rebuild the whole tree.
+      _onAckQueueChanged = _scheduleRadioUiNotify;
       _ackQueue!.addListener(_onAckQueueChanged!);
 
       _onResilnetFlush = () {
@@ -636,9 +751,11 @@ class AppState extends ChangeNotifier {
       _screenshotAlerts = prefs.getBool(_kScreenshotAlerts) ?? true;
       _meshBridgeEnabled = prefs.getBool(_kMeshBridgeEnabled) ?? true;
       _loadFavorites(prefs);
+      _loadPinnedChannels(prefs);
       _nostrExpiry = NoticeExpiry.fromDays(prefs.getInt(_kNostrExpiryDays));
       _loadNotices(prefs);
       await _loadAnnouncementBoards(prefs);
+      await _loadContactAliases();
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
       if (!_onboardingCompleted) {
         await _restoreOnboardingIfReturningUser(prefs);
@@ -656,6 +773,30 @@ class AppState extends ChangeNotifier {
         orElse: () => GeoPrecision.region,
       );
       _transportMode = TransportMode.fromName(prefs.getString(_kTransportMode));
+
+      final mtCb = _onMeshtasticBridgeChanged;
+      if (mtCb != null) {
+        _meshtasticBridge?.removeListener(mtCb);
+      }
+      _meshtasticBridge?.dispose();
+      _meshtasticBridge = MeshtasticBridgeService(
+        onIngest: (event) => ingestMeshtasticText(event),
+      );
+      _onMeshtasticBridgeChanged = () {
+        if (!_initDone) return;
+        notifyListeners();
+      };
+      _meshtasticBridge!.addListener(_onMeshtasticBridgeChanged!);
+      await _meshtasticBridge!.setMode(
+        MeshtasticBridgeModeX.fromPrefs(prefs.getString(_kMeshtasticBridgeMode)),
+      );
+      _meshtasticRelayToMesh = prefs.getBool(_kMeshtasticRelayToMesh) ?? false;
+      final useMqtt = prefs.getBool(_kMeshtasticUseMqtt) ?? false;
+      _meshtasticBridge!.setUseMqtt(useMqtt);
+      await _applyMeshtasticMqttConfigFromPrefs(prefs);
+      final storedPass = await _storage.read(key: _kMeshtasticMqttPass);
+      _meshtasticMqttPasswordStored =
+          storedPass != null && storedPass.isNotEmpty;
 
       _restoreStoredGeohash(prefs);
       await _applyBootstrapGeohashIfNeeded(prefs);
@@ -1032,7 +1173,7 @@ class AppState extends ChangeNotifier {
     if (data.name == null || data.name!.isEmpty) {
       final existing = await db.getContactAlias(data.id);
       if (existing == null || existing.isEmpty) {
-        await db.setContactAlias(
+        await setContactAlias(
           publicKeyHash: data.id,
           aliasName: formatShortPeerId(data.id),
         );
@@ -1494,6 +1635,146 @@ class AppState extends ChangeNotifier {
     );
   }
 
+  bool isLocationChannelPinned(String id) {
+    final key = _normalizePinnedLocationId(id);
+    if (key == null) return false;
+    return _pinnedLocationChannels.contains(key);
+  }
+
+  Future<void> togglePinnedLocationChannel(String id) async {
+    final key = _normalizePinnedLocationId(id);
+    if (key == null) return;
+    if (_pinnedLocationChannels.contains(key)) {
+      _pinnedLocationChannels.remove(key);
+    } else {
+      _pinnedLocationChannels.remove(key);
+      _pinnedLocationChannels.insert(0, key);
+      while (_pinnedLocationChannels.length > _maxPinnedLocationChannels) {
+        _pinnedLocationChannels.removeLast();
+      }
+    }
+    await _persistPinnedLocationChannels();
+    notifyListeners();
+  }
+
+  /// Open a pinned location entry (`mesh` or geohash).
+  Future<void> openPinnedLocationChannel(String id) async {
+    final key = _normalizePinnedLocationId(id);
+    if (key == null) return;
+    if (key == pinnedMeshChannelId) {
+      await setFeedChannel(FeedChannel.mesh);
+      return;
+    }
+    final precision = GeoPrecision.forHashLength(key.length);
+    final current = _currentGeohash;
+    if (current != null &&
+        current.isNotEmpty &&
+        (current.startsWith(key) ||
+            Geohash.atPrecision(current, precision) == key)) {
+      await setGeoPrecision(precision);
+    } else {
+      final ok = await setManualGeohash(key);
+      if (!ok) return;
+      await setGeoPrecision(precision);
+    }
+    await setFeedChannel(FeedChannel.geo);
+  }
+
+  bool isFeedChannelPinned(FeedChannel ch) =>
+      _pinnedFeedChannels.contains(ch.name);
+
+  Future<void> togglePinnedFeedChannel(FeedChannel ch) async {
+    final key = ch.name;
+    if (_pinnedFeedChannels.contains(key)) {
+      _pinnedFeedChannels.remove(key);
+    } else {
+      _pinnedFeedChannels.remove(key);
+      _pinnedFeedChannels.insert(0, key);
+    }
+    await _persistPinnedFeedChannels();
+    notifyListeners();
+  }
+
+  /// Feed channels with pinned tabs first (stable relative order otherwise).
+  List<FeedChannel> feedChannelsForPicker() {
+    final pinned = <FeedChannel>[];
+    final rest = <FeedChannel>[];
+    for (final name in _pinnedFeedChannels) {
+      for (final ch in FeedChannel.values) {
+        if (ch.name == name) {
+          pinned.add(ch);
+          break;
+        }
+      }
+    }
+    for (final ch in FeedChannel.values) {
+      if (!pinned.contains(ch)) rest.add(ch);
+    }
+    return [...pinned, ...rest];
+  }
+
+  String? _normalizePinnedLocationId(String raw) {
+    final t = raw.trim().toLowerCase();
+    if (t.isEmpty) return null;
+    if (t == pinnedMeshChannelId || t == '#mesh' || t == 'bluetooth') {
+      return pinnedMeshChannelId;
+    }
+    final hash = Geohash.normalizeFull(t.startsWith('#') ? t.substring(1) : t);
+    if (hash.isEmpty) return null;
+    return hash;
+  }
+
+  void _loadPinnedChannels(SharedPreferences prefs) {
+    _pinnedLocationChannels.clear();
+    _pinnedFeedChannels.clear();
+    try {
+      final loc = prefs.getString(_kPinnedLocationChannels);
+      if (loc != null && loc.isNotEmpty) {
+        final list = jsonDecode(loc) as List<dynamic>;
+        for (final item in list) {
+          if (item is! String) continue;
+          final key = _normalizePinnedLocationId(item);
+          if (key != null && !_pinnedLocationChannels.contains(key)) {
+            _pinnedLocationChannels.add(key);
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] load pinned location channels failed: $e');
+    }
+    try {
+      final feed = prefs.getString(_kPinnedFeedChannels);
+      if (feed != null && feed.isNotEmpty) {
+        final list = jsonDecode(feed) as List<dynamic>;
+        for (final item in list) {
+          if (item is! String || item.isEmpty) continue;
+          if (FeedChannel.values.any((c) => c.name == item) &&
+              !_pinnedFeedChannels.contains(item)) {
+            _pinnedFeedChannels.add(item);
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] load pinned feed channels failed: $e');
+    }
+  }
+
+  Future<void> _persistPinnedLocationChannels() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _kPinnedLocationChannels,
+      jsonEncode(_pinnedLocationChannels),
+    );
+  }
+
+  Future<void> _persistPinnedFeedChannels() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _kPinnedFeedChannels,
+      jsonEncode(_pinnedFeedChannels),
+    );
+  }
+
   void _onMeshPeersChanged() {
     unawaited(_notifyOnlineAppearancesFromMesh());
   }
@@ -1727,6 +2008,186 @@ class AppState extends ChangeNotifier {
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
+  Future<void> setMeshtasticBridgeMode(MeshtasticBridgeMode mode) async {
+    final b = _meshtasticBridge;
+    if (b == null) return;
+    await b.setMode(mode);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kMeshtasticBridgeMode, mode.prefsValue);
+    notifyListeners();
+  }
+
+  Future<void> setMeshtasticRelayToMesh(bool value) async {
+    _meshtasticRelayToMesh = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kMeshtasticRelayToMesh, value);
+    notifyListeners();
+  }
+
+  Future<void> setMeshtasticUseMqtt(bool value) async {
+    final b = _meshtasticBridge;
+    if (b == null) return;
+    b.setUseMqtt(value);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kMeshtasticUseMqtt, value);
+    if (!value) {
+      await b.disconnectMqtt();
+    }
+    notifyListeners();
+  }
+
+  Future<void> _applyMeshtasticMqttConfigFromPrefs(SharedPreferences prefs) async {
+    final b = _meshtasticBridge;
+    if (b == null) return;
+    final pass = await _storage.read(key: _kMeshtasticMqttPass) ?? '';
+    final chIdx = prefs.getInt(_kMeshtasticMqttChannelIndex);
+    b.mqttTransport.applyConfig(
+      host: prefs.getString(_kMeshtasticMqttHost) ?? '',
+      port: prefs.getInt(_kMeshtasticMqttPort) ?? 1883,
+      topicIn: prefs.getString(_kMeshtasticMqttTopicIn) ?? 'msh/2/json/#',
+      topicOut: prefs.getString(_kMeshtasticMqttTopicOut) ?? 'msh/2/json/mqtt/',
+      username: prefs.getString(_kMeshtasticMqttUser) ?? '',
+      password: pass,
+      useTls: prefs.getBool(_kMeshtasticMqttUseTls) ?? false,
+      autoReconnect: prefs.getBool(_kMeshtasticMqttAutoReconnect) ?? false,
+      gatewayFromNodeId: prefs.getInt(_kMeshtasticMqttGatewayFrom) ?? 0,
+      downlinkChannelIndex: chIdx,
+    );
+  }
+
+  Future<void> saveMeshtasticMqttConfig({
+    required String host,
+    required int port,
+    required String topicIn,
+    required String topicOut,
+    required String username,
+    String password = '',
+    bool clearPassword = false,
+    bool useTls = false,
+    bool autoReconnect = false,
+    int gatewayFromNodeId = 0,
+    int? downlinkChannelIndex,
+    String region = '',
+    String topicRoot = '',
+    String downlinkChannelName = 'mqtt',
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kMeshtasticMqttHost, host.trim());
+    await prefs.setInt(_kMeshtasticMqttPort, port);
+    await prefs.setString(_kMeshtasticMqttTopicIn, topicIn.trim());
+    await prefs.setString(_kMeshtasticMqttTopicOut, topicOut.trim());
+    await prefs.setString(_kMeshtasticMqttUser, username.trim());
+    await prefs.setBool(_kMeshtasticMqttUseTls, useTls);
+    await prefs.setBool(_kMeshtasticMqttAutoReconnect, autoReconnect);
+    await prefs.setInt(_kMeshtasticMqttGatewayFrom, gatewayFromNodeId);
+    await prefs.setString(_kMeshtasticMqttRegion, region.trim());
+    await prefs.setString(_kMeshtasticMqttRoot, topicRoot.trim());
+    await prefs.setString(_kMeshtasticMqttDownlinkCh, downlinkChannelName.trim());
+    if (downlinkChannelIndex == null) {
+      await prefs.remove(_kMeshtasticMqttChannelIndex);
+    } else {
+      await prefs.setInt(_kMeshtasticMqttChannelIndex, downlinkChannelIndex);
+    }
+    if (clearPassword) {
+      await _storage.delete(key: _kMeshtasticMqttPass);
+      _meshtasticMqttPasswordStored = false;
+    } else if (password.isNotEmpty) {
+      await _storage.write(key: _kMeshtasticMqttPass, value: password);
+      _meshtasticMqttPasswordStored = true;
+    }
+    await _applyMeshtasticMqttConfigFromPrefs(prefs);
+    notifyListeners();
+  }
+
+  Future<void> clearMeshtasticMqttPassword() async {
+    await _storage.delete(key: _kMeshtasticMqttPass);
+    _meshtasticMqttPasswordStored = false;
+    final prefs = await SharedPreferences.getInstance();
+    await _applyMeshtasticMqttConfigFromPrefs(prefs);
+    notifyListeners();
+  }
+
+  Future<bool> connectMeshtasticMqtt() async {
+    final b = _meshtasticBridge;
+    if (b == null) return false;
+    final prefs = await SharedPreferences.getInstance();
+    await _applyMeshtasticMqttConfigFromPrefs(prefs);
+    return b.connectMqtt();
+  }
+
+  Future<void> disconnectMeshtasticMqtt() async {
+    await _meshtasticBridge?.disconnectMqtt();
+    notifyListeners();
+  }
+
+  /// Mode A: Meshtastic text → local `#meshtastic` notice (+ optional mesh bulletin).
+  Future<void> ingestMeshtasticText(MeshtasticTextEvent event) async {
+    final body = normalizeBridgeText(event.text);
+    if (body.isEmpty) return;
+    final notice = LocalNotice(
+      id: _uuid.v4(),
+      scope: 'mesh',
+      channelLabel: MeshtasticBridgeTags.channelLabel,
+      text: body,
+      createdAt: event.receivedAtMs ?? DateTime.now().millisecondsSinceEpoch,
+      expiresAt: NoticeExpiry.sevenDays.expiresAtMs,
+      urgent: false,
+      senderId: meshtasticSyntheticSenderId(event.fromId),
+    );
+    _notices.insert(0, notice);
+    _noticeDeliveredTo[notice.id] = <String>{};
+    await _persistNotices();
+
+    // Optional relay onto ResilNet public mesh (default OFF — local Notices only).
+    if (shouldRelayMeshtasticToMesh(
+      relayEnabled: _meshtasticRelayToMesh,
+      e2eeEnabled: _e2eeEnabled,
+    )) {
+      final wire = buildSignedBulletin(
+        crypto: crypto,
+        bulletinId: notice.id,
+        text: notice.text,
+        createdAt: notice.createdAt,
+        expiresAt: notice.expiresAt,
+        urgent: false,
+        senderName: displayName,
+      ).encode();
+      _bulletinWires[notice.id] = wire;
+      await _persistNotices();
+      unawaited(_broadcastBulletin(notice.id, wire));
+    }
+    notifyListeners();
+  }
+
+  Future<void> simulateMeshtasticInbound(String text) async {
+    final b = _meshtasticBridge;
+    if (b == null) return;
+    await b.simulateMeshtasticMessage(text);
+  }
+
+  /// Mode B: app → Meshtastic transport (not sealed E2EE).
+  Future<bool> sendToMeshtastic(String text) async {
+    final b = _meshtasticBridge;
+    if (b == null) return false;
+    final ok = await b.egressToMeshtastic(text);
+    if (!ok) return false;
+    final preview = b.lastEgressPreview ?? normalizeBridgeText(text);
+    final notice = LocalNotice(
+      id: _uuid.v4(),
+      scope: 'mesh',
+      channelLabel: MeshtasticBridgeTags.channelLabel,
+      text: preview,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      expiresAt: NoticeExpiry.oneDay.expiresAtMs,
+      urgent: false,
+      senderId: myUserIdReady ? myUserId : null,
+    );
+    _notices.insert(0, notice);
+    await _persistNotices();
+    notifyListeners();
+    return true;
+  }
+
   /// Pin a public notice on #mesh or Area.
   ///
   /// - `geo`: published to the Nostr area board (internet).
@@ -1860,6 +2321,7 @@ class AppState extends ChangeNotifier {
         'nearbyPeers=$nearbyCount nearbyRaw=$nearbyRaw udp=$udpOk ok=$ok',
       );
       if (!ok && (bleConnected || nearbyRaw > 0 || udpActive)) {
+        // Path looked available but hand-off failed — still keep wire for catch-up.
         _lastNoticePublishWarning ??= 'no_mesh';
       }
       return ok;
@@ -3170,7 +3632,7 @@ class AppState extends ChangeNotifier {
       channel: channel,
       mode: _transportMode,
       nowMs: DateTime.now().millisecondsSinceEpoch,
-    );
+    ).map(_withLocalAlias).toList();
   }
 
   /// People icon / badge for the current feed (excludes self).
@@ -3186,7 +3648,7 @@ class AppState extends ChangeNotifier {
             if (p.id != me && p.publicKey.trim().isNotEmpty)
               AreaPresenceEntry(
                 id: p.id,
-                label: peerListLabel(aliasOrNick: p.displayName, id: p.id),
+                label: peerDisplayLabel(p.id, fallbackNick: p.displayName),
                 source: PresenceSource.mesh,
                 geohash: p.geohash,
                 lastSeen: p.lastSeen,
@@ -3205,7 +3667,7 @@ class AppState extends ChangeNotifier {
           channel: selectedAreaHash,
           mode: _transportMode,
           nowMs: DateTime.now().millisecondsSinceEpoch,
-        ).where((e) => e.id != me).toList();
+        ).map(_withLocalAlias).where((e) => e.id != me).toList();
         list = _withBleRadioDiscovery(list);
     }
     return list;
@@ -3496,6 +3958,8 @@ class AppState extends ChangeNotifier {
     _favoritePeerIds.clear();
     _favoriteNearbyNotified.clear();
     _favoriteAreaNotified.clear();
+    _pinnedLocationChannels.clear();
+    _pinnedFeedChannels.clear();
     _peerOnlineNotified.clear();
     _lastPresenceSummaryMesh = -1;
     _lastPresenceSummaryNostr = -1;
@@ -3505,6 +3969,29 @@ class AppState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_kNotices);
     await prefs.remove(_kFavoritePeerIds);
+    await prefs.remove(_kPinnedLocationChannels);
+    await prefs.remove(_kPinnedFeedChannels);
+    await prefs.remove(_kMeshtasticBridgeMode);
+    await prefs.remove(_kMeshtasticRelayToMesh);
+    await prefs.remove(_kMeshtasticUseMqtt);
+    await prefs.remove(_kMeshtasticMqttHost);
+    await prefs.remove(_kMeshtasticMqttPort);
+    await prefs.remove(_kMeshtasticMqttTopicIn);
+    await prefs.remove(_kMeshtasticMqttTopicOut);
+    await prefs.remove(_kMeshtasticMqttUser);
+    await prefs.remove(_kMeshtasticMqttUseTls);
+    await prefs.remove(_kMeshtasticMqttAutoReconnect);
+    await prefs.remove(_kMeshtasticMqttGatewayFrom);
+    await prefs.remove(_kMeshtasticMqttChannelIndex);
+    await prefs.remove(_kMeshtasticMqttRegion);
+    await prefs.remove(_kMeshtasticMqttRoot);
+    await prefs.remove(_kMeshtasticMqttDownlinkCh);
+    await _storage.delete(key: _kMeshtasticMqttPass);
+    _meshtasticRelayToMesh = false;
+    _meshtasticMqttPasswordStored = false;
+    await _meshtasticBridge?.disconnectMqtt();
+    await _meshtasticBridge?.setMode(MeshtasticBridgeMode.off);
+    _meshtasticBridge?.setUseMqtt(false);
     await prefs.remove(_kAnnouncementBoards);
     await prefs.remove(_kAnnouncementPosts);
     for (final id in _boardPrivateKeys.keys.toList()) {
@@ -3545,7 +4032,7 @@ class AppState extends ChangeNotifier {
       sendAckBatch: _sendAckBatch,
     );
     await _ackQueue!.restoreFromDatabase();
-    _onAckQueueChanged = notifyListeners;
+    _onAckQueueChanged = _scheduleRadioUiNotify;
     _ackQueue!.addListener(_onAckQueueChanged!);
 
     _mesh = BleMeshService(
@@ -4272,6 +4759,11 @@ class AppState extends ChangeNotifier {
     if (flushCb != null) resilnet.removeListener(flushCb);
     final uiCb = _onResilnetUi;
     if (uiCb != null) resilnet.removeListener(uiCb);
+
+    final mtCb = _onMeshtasticBridgeChanged;
+    if (mtCb != null) _meshtasticBridge?.removeListener(mtCb);
+    _meshtasticBridge?.dispose();
+    _meshtasticBridge = null;
 
     unawaited(_stopRadios(reason: 'dispose', includeNostr: true));
     _ackQueue?.dispose();

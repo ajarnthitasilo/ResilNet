@@ -455,6 +455,258 @@ class AppLocalizationsEn extends AppLocalizations {
       'Download .bin files and update the ESP32 board via OTA';
 
   @override
+  String get mtBridgeTitle => 'Meshtastic bridge';
+
+  @override
+  String get mtBridgeSettingsSubtitle =>
+      'Text-only A/B bridge — not ResilNet E2EE';
+
+  @override
+  String get mtBridgeIntro =>
+      'Move short plaintext between Meshtastic and ResilNet. Modes A and B cannot run at the same time. This is not end-to-end encryption.';
+
+  @override
+  String get mtBridgeModeLabel => 'Mode';
+
+  @override
+  String get mtBridgeModeOff => 'Off';
+
+  @override
+  String get mtBridgeModeA => 'Ingest A';
+
+  @override
+  String get mtBridgeModeB => 'Egress B';
+
+  @override
+  String get mtBridgeModeOffShort => 'Off';
+
+  @override
+  String get mtBridgeModeAShort => 'In A';
+
+  @override
+  String get mtBridgeModeBShort => 'Out B';
+
+  @override
+  String get mtBridgeMutexHint =>
+      'Selecting a mode turns the other off automatically. Simultaneous A+B is not supported.';
+
+  @override
+  String mtBridgeStatusLine(String mode, String transport) {
+    return '$mode · $transport';
+  }
+
+  @override
+  String get mtBridgeTransportDemo => 'Demo (logging)';
+
+  @override
+  String get mtBridgeIngestSection => 'Meshtastic → ResilNet';
+
+  @override
+  String get mtBridgeIngestHint =>
+      'Inbound text appears under Notices as #meshtastic. Mesh relay is optional (off by default).';
+
+  @override
+  String get mtBridgeRelayTitle => 'Also relay on ResilNet mesh';
+
+  @override
+  String get mtBridgeRelayHint =>
+      'When on, signed public bulletins are broadcast. Off = this phone’s Notices only.';
+
+  @override
+  String get mtBridgeSimulateHint => 'Demo message';
+
+  @override
+  String get mtBridgeSimulate => 'Simulate Meshtastic message';
+
+  @override
+  String get mtBridgeIngestOk => 'Ingested into Notices (#meshtastic)';
+
+  @override
+  String get mtBridgeEgressWarning =>
+      'Warning: messages sent here are NOT ResilNet E2EE. Anyone on the Meshtastic path can read them.';
+
+  @override
+  String get mtBridgeEgressSection => 'ResilNet → Meshtastic';
+
+  @override
+  String get mtBridgeComposeHint => 'Text to publish';
+
+  @override
+  String get mtBridgeSend => 'Send to Meshtastic';
+
+  @override
+  String get mtBridgeEgressOk => 'Queued for Meshtastic (see log / history)';
+
+  @override
+  String get mtBridgeLastEgress => 'Last egress';
+
+  @override
+  String get mtBridgeEgressHistory => 'Recent egress';
+
+  @override
+  String get mtBridgeOffHint =>
+      'Turn on Ingest (A) or Egress (B) to use the bridge.';
+
+  @override
+  String get mtBridgeNoticeBadge => 'MESHTASTIC · not E2EE';
+
+  @override
+  String get mtBridgeSenderFallback => 'Meshtastic';
+
+  @override
+  String get mtBridgeUseMqtt => 'Use MQTT transport';
+
+  @override
+  String get mtBridgeUseMqttHint =>
+      'Off = demo logging only (MQTT inbound ignored). On = MQTT for ingest/egress when connected.';
+
+  @override
+  String get mtBridgeMqttHost => 'Broker host';
+
+  @override
+  String get mtBridgeMqttPort => 'Port';
+
+  @override
+  String get mtBridgeMqttTls => 'Use TLS (mqtts)';
+
+  @override
+  String get mtBridgeMqttTlsHint =>
+      'Typical port 8883. Uses system certificates; fails soft on handshake errors.';
+
+  @override
+  String get mtBridgeMqttAutoReconnect => 'Auto-reconnect';
+
+  @override
+  String get mtBridgeMqttAutoReconnectHint =>
+      'When on, the client tries to reconnect after drops. Status shows Connecting until restored.';
+
+  @override
+  String get mtBridgeMqttTopicHelpers => 'Topic helpers';
+
+  @override
+  String get mtBridgeMqttRegion => 'Region prefix (optional)';
+
+  @override
+  String get mtBridgeMqttRegionHint =>
+      'When set, Apply rebuilds root as msh/<region>/2/json (overrides topic root).';
+
+  @override
+  String get mtBridgeMqttTopicRoot => 'JSON topic root';
+
+  @override
+  String get mtBridgeMqttDownlinkChannel => 'Downlink channel name';
+
+  @override
+  String get mtBridgeMqttApplyTopics =>
+      'Apply root → subscribe / publish topics';
+
+  @override
+  String get mtBridgeMqttAdvanced => 'Advanced MQTT';
+
+  @override
+  String get mtBridgeMqttAdvancedHint => 'TLS, reconnect, topics, credentials';
+
+  @override
+  String get mtBridgeMqttTopicIn => 'Subscribe topic';
+
+  @override
+  String get mtBridgeMqttTopicOut => 'Publish topic';
+
+  @override
+  String get mtBridgeMqttGatewayFrom => 'Gateway node id (from)';
+
+  @override
+  String get mtBridgeMqttGatewayFromHint =>
+      'Decimal id or !hex — required for sendtext downlink';
+
+  @override
+  String get mtBridgeMqttChannelIndex => 'Mesh channel index (optional 0–7)';
+
+  @override
+  String get mtBridgeMqttUser => 'Username (optional)';
+
+  @override
+  String get mtBridgeMqttPass => 'Password (optional)';
+
+  @override
+  String get mtBridgeMqttPassStored =>
+      'A password is stored on this device (not shown).';
+
+  @override
+  String get mtBridgeMqttPassReplace => 'New password (leave blank to keep)';
+
+  @override
+  String get mtBridgeMqttPassReplaceHint =>
+      'Leave empty to keep the stored password.';
+
+  @override
+  String get mtBridgeMqttPassClear => 'Clear password';
+
+  @override
+  String get mtBridgeMqttSave => 'Save MQTT settings';
+
+  @override
+  String get mtBridgeMqttSaved => 'MQTT settings saved';
+
+  @override
+  String get mtBridgeMqttConnect => 'Connect';
+
+  @override
+  String get mtBridgeMqttDisconnect => 'Disconnect';
+
+  @override
+  String get mtBridgeMqttConnected => 'MQTT connected';
+
+  @override
+  String get mtBridgeMqttConnecting => 'MQTT connecting…';
+
+  @override
+  String get mtBridgeMqttDisconnected => 'MQTT disconnected';
+
+  @override
+  String get mtBridgeMqttError => 'MQTT error';
+
+  @override
+  String get mtBridgeErrModeIngest => 'Switch to Ingest (A) first';
+
+  @override
+  String get mtBridgeErrModeEgress => 'Switch to Egress (B) first';
+
+  @override
+  String get mtBridgeErrRate => 'Slow down — rate limited';
+
+  @override
+  String get mtBridgeErrDedupe => 'Duplicate message ignored';
+
+  @override
+  String get mtBridgeErrLoop => 'Dropped to prevent a bridge loop';
+
+  @override
+  String get mtBridgeErrEmpty => 'Message is empty';
+
+  @override
+  String get mtBridgeErrPublish => 'Publish failed';
+
+  @override
+  String get mtBridgeErrNotConnected => 'MQTT not connected';
+
+  @override
+  String get mtBridgeErrMissingHost => 'Enter MQTT broker host';
+
+  @override
+  String get mtBridgeErrMissingTopic => 'Enter subscribe and publish topics';
+
+  @override
+  String get mtBridgeErrMissingFromNode =>
+      'Enter gateway node id (from) for sendtext';
+
+  @override
+  String get mtBridgeErrConnect => 'MQTT connect failed';
+
+  @override
+  String get mtBridgeErrConnectTls => 'MQTT TLS connect failed';
+
+  @override
   String get settingsData => 'Data';
 
   @override
@@ -1025,6 +1277,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationSheetTitle => '#location channels';
 
   @override
+  String get channelPinsTitle => 'Pinned';
+
+  @override
+  String get channelPinsHint =>
+      'Pin channels you use often — they stay at the top';
+
+  @override
+  String get channelPinTooltip => 'Pin this channel';
+
+  @override
+  String get channelUnpinTooltip => 'Unpin';
+
+  @override
   String get locationSheetIntro =>
       'Chat with people nearby using coarse geohash — not precise GPS. Presence on Internet uses anonymous Nostr keys.';
 
@@ -1162,6 +1427,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get docsOpenFailed => 'Could not open the user guide';
+
+  @override
+  String get firmwareOtaGuideTitle => 'Flash guide & OTA protocol';
+
+  @override
+  String get firmwareOtaGuideSubtitle =>
+      'Opens the web guide — .bin downloads and full steps';
+
+  @override
+  String get firmwareWebDownloadsTitle => 'Firmware downloads on the web';
+
+  @override
+  String get firmwareWebDownloadsSubtitle =>
+      'Per-version links and checksums on the docs site';
 
   @override
   String get inviteCopyShortLink => 'Copy short link';

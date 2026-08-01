@@ -14,6 +14,7 @@ import 'announcements_screen.dart';
 import 'esp32_firmware_screen.dart';
 import 'info_sheet.dart';
 import 'mesh_topology_screen.dart';
+import 'meshtastic_bridge_screen.dart';
 import 'panic_wipe.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -119,11 +120,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final s = context.watch<AppState>();
     final override = s.localeOverrideCode;
 
-    return Scaffold(
+    return Container(
+      decoration: ResilNetTheme.pageDecoration(context),
+      child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(title: Text(l10n.settings)),
-      body: Container(
-        decoration: ResilNetTheme.pageDecoration(context),
-        child: ListView(
+      body: ListView(
           padding: const EdgeInsets.all(18),
           children: [
             _section(l10n.language),
@@ -191,7 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 s.meshBridgeEnabled ? Icons.hub : Icons.hub_outlined,
                 color: s.meshBridgeEnabled
                     ? ResilNetTheme.emerald
-                    : Colors.white54,
+                    : ResilNetTheme.mutedOnSurface(context),
               ),
               title: Text(l10n.meshBridgeTitle),
               subtitle: Text(l10n.meshBridgeSubtitle),
@@ -300,7 +302,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         size: 8,
                         color: row.connected
                             ? ResilNetTheme.emerald
-                            : Colors.white24,
+                            : ResilNetTheme.mutedOnSurface(
+                                context,
+                                alpha: 0.28,
+                              ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -311,7 +316,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               .labelSmall
                               ?.copyWith(
                                 fontFamily: 'monospace',
-                                color: Colors.white54,
+                                color: ResilNetTheme.mutedOnSurface(
+                                  context,
+                                  alpha: 0.72,
+                                ),
                               ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -422,6 +430,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.cell_tower_outlined),
+              title: Text(l10n.mtBridgeTitle),
+              subtitle: Text(l10n.mtBridgeSettingsSubtitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const MeshtasticBridgeScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.download_outlined),
               title: Text(l10n.settingsFirmwareTitle),
               subtitle: Text(l10n.settingsFirmwareSubtitle),
@@ -457,7 +479,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               contentPadding: EdgeInsets.zero,
               leading: Icon(
                 Icons.delete_sweep_outlined,
-                color: _clearing || _wiping ? Colors.white38 : Colors.redAccent,
+                color: _clearing || _wiping
+                    ? ResilNetTheme.mutedOnSurface(context, alpha: 0.38)
+                    : Colors.redAccent,
               ),
               title: Text(l10n.settingsClearTitle),
               subtitle: Text(l10n.settingsClearSubtitle),
@@ -484,7 +508,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               contentPadding: EdgeInsets.zero,
               leading: Icon(
                 Icons.warning_amber_rounded,
-                color: _wiping ? Colors.white38 : Colors.redAccent,
+                color: _wiping
+                    ? ResilNetTheme.mutedOnSurface(context, alpha: 0.38)
+                    : Colors.redAccent,
               ),
               title: Text(
                 l10n.panicWipeTitle,

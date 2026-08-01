@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../core/meshtastic_bridge_core.dart';
 import '../core/peer_id.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/local_notice.dart';
@@ -446,7 +447,16 @@ class _NoticesSheetState extends State<_NoticesSheet> {
         final expires = n.expiresAt == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(n.expiresAt!);
-        final anon = formatAnonSender(n.senderId);
+        final isMeshtastic = isMeshtasticBridgeNotice(
+          channelLabel: n.channelLabel,
+          text: n.text,
+        );
+        final senderLabel = isMeshtastic
+            ? meshtasticNoticeSenderLabel(
+                n.senderId,
+                fallback: l10n.mtBridgeSenderFallback,
+              )
+            : formatAnonSender(n.senderId);
         final meta = expires == null
             ? '${n.channelLabel} · ${_formatWhen(created)}'
             : '${n.channelLabel} · ${_formatWhen(created)} · ${l10n.noticeExpiresIn} ${_formatWhen(expires)}';
@@ -463,18 +473,34 @@ class _NoticesSheetState extends State<_NoticesSheet> {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (isMeshtastic) ...[
+                const SizedBox(height: 4),
+                Text(
+                  l10n.mtBridgeNoticeBadge,
+                  style: TextStyle(
+                    color: Colors.amber.shade200,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
               const SizedBox(height: 2),
               GestureDetector(
-                onTap: n.senderId == null || n.senderId!.isEmpty
+                onTap: isMeshtastic ||
+                        n.senderId == null ||
+                        n.senderId!.isEmpty
                     ? null
                     : () => _showAnonActions(context, s, n),
                 child: Text(
-                  anon,
+                  senderLabel,
                   style: TextStyle(
                     color: ResilNetTheme.channelGreen,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    decoration: n.senderId == null || n.senderId!.isEmpty
+                    decoration: isMeshtastic ||
+                            n.senderId == null ||
+                            n.senderId!.isEmpty
                         ? null
                         : TextDecoration.underline,
                     decorationColor: ResilNetTheme.channelGreen.withValues(

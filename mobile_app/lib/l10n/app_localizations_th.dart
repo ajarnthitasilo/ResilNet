@@ -452,6 +452,256 @@ class AppLocalizationsTh extends AppLocalizations {
       'ดาวน์โหลดไฟล์ .bin และอัปเดตแอป/บอร์ด ESP32 ผ่าน OTA';
 
   @override
+  String get mtBridgeTitle => 'สะพาน Meshtastic';
+
+  @override
+  String get mtBridgeSettingsSubtitle =>
+      'สะพานข้อความสั้นโหมด A/B — ไม่ใช่ E2EE ของ ResilNet';
+
+  @override
+  String get mtBridgeIntro =>
+      'ส่งข้อความสั้นแบบ plaintext ระหว่าง Meshtastic กับ ResilNet โหมด A กับ B ใช้พร้อมกันไม่ได้ และไม่ใช่การเข้ารหัสปลายทางถึงปลายทาง';
+
+  @override
+  String get mtBridgeModeLabel => 'โหมด';
+
+  @override
+  String get mtBridgeModeOff => 'ปิด';
+
+  @override
+  String get mtBridgeModeA => 'รับเข้า A';
+
+  @override
+  String get mtBridgeModeB => 'ส่งออก B';
+
+  @override
+  String get mtBridgeModeOffShort => 'ปิด';
+
+  @override
+  String get mtBridgeModeAShort => 'รับ A';
+
+  @override
+  String get mtBridgeModeBShort => 'ส่ง B';
+
+  @override
+  String get mtBridgeMutexHint =>
+      'เลือกโหมดหนึ่งจะปิดอีกโหมดโดยอัตโนมัติ — ไม่รองรับเปิด A และ B พร้อมกัน';
+
+  @override
+  String mtBridgeStatusLine(String mode, String transport) {
+    return '$mode · $transport';
+  }
+
+  @override
+  String get mtBridgeTransportDemo => 'ทดลอง (logging)';
+
+  @override
+  String get mtBridgeIngestSection => 'Meshtastic → ResilNet';
+
+  @override
+  String get mtBridgeIngestHint =>
+      'ข้อความขาเข้าจะอยู่ในประกาศเป็น #meshtastic การทวนขึ้น mesh เป็นทางเลือก (ปิดเป็นค่าเริ่มต้น)';
+
+  @override
+  String get mtBridgeRelayTitle => 'ทวนขึ้น mesh ของ ResilNet ด้วย';
+
+  @override
+  String get mtBridgeRelayHint =>
+      'เมื่อเปิด จะกระจายประกาศสาธารณะที่เซ็นแล้ว ปิด = เก็บในประกาศของเครื่องนี้เท่านั้น';
+
+  @override
+  String get mtBridgeSimulateHint => 'ข้อความทดลอง';
+
+  @override
+  String get mtBridgeSimulate => 'จำลองข้อความจาก Meshtastic';
+
+  @override
+  String get mtBridgeIngestOk => 'รับเข้าประกาศแล้ว (#meshtastic)';
+
+  @override
+  String get mtBridgeEgressWarning =>
+      'คำเตือน: ข้อความที่ส่งตรงนี้ไม่ใช่ E2EE ของ ResilNet ผู้ที่อยู่บนเส้นทาง Meshtastic อ่านได้';
+
+  @override
+  String get mtBridgeEgressSection => 'ResilNet → Meshtastic';
+
+  @override
+  String get mtBridgeComposeHint => 'ข้อความที่จะส่ง';
+
+  @override
+  String get mtBridgeSend => 'ส่งไป Meshtastic';
+
+  @override
+  String get mtBridgeEgressOk => 'จัดคิวไป Meshtastic แล้ว (ดู log / ประวัติ)';
+
+  @override
+  String get mtBridgeLastEgress => 'ข้อความส่งออกล่าสุด';
+
+  @override
+  String get mtBridgeEgressHistory => 'ประวัติส่งออก';
+
+  @override
+  String get mtBridgeOffHint =>
+      'เปิดโหมดรับเข้า (A) หรือส่งออก (B) เพื่อใช้สะพาน';
+
+  @override
+  String get mtBridgeNoticeBadge => 'MESHTASTIC · ไม่ใช่ E2EE';
+
+  @override
+  String get mtBridgeSenderFallback => 'Meshtastic';
+
+  @override
+  String get mtBridgeUseMqtt => 'ใช้ MQTT';
+
+  @override
+  String get mtBridgeUseMqttHint =>
+      'ปิด = ทดลองในเครื่องเท่านั้น (ไม่รับ MQTT เข้า) เปิด = ใช้ MQTT เมื่อเชื่อมต่อแล้ว';
+
+  @override
+  String get mtBridgeMqttHost => 'โฮสต์ broker';
+
+  @override
+  String get mtBridgeMqttPort => 'พอร์ต';
+
+  @override
+  String get mtBridgeMqttTls => 'ใช้ TLS (mqtts)';
+
+  @override
+  String get mtBridgeMqttTlsHint =>
+      'พอร์ตทั่วไป 8883 ใช้ใบรับรองของระบบ — ล้มเหลวแบบชัดเจนถ้า handshake ไม่ผ่าน';
+
+  @override
+  String get mtBridgeMqttAutoReconnect => 'เชื่อมต่อใหม่อัตโนมัติ';
+
+  @override
+  String get mtBridgeMqttAutoReconnectHint =>
+      'เมื่อเปิด ลูกค้าจะพยายามเชื่อมใหม่หลังหลุด สถานะจะเป็น Connecting จนกลับมา';
+
+  @override
+  String get mtBridgeMqttTopicHelpers => 'ตัวช่วยท็อปิก';
+
+  @override
+  String get mtBridgeMqttRegion => 'คำนำหน้า region (ถ้ามี)';
+
+  @override
+  String get mtBridgeMqttRegionHint =>
+      'ถ้ามีค่า กด Apply จะสร้างราก msh/<region>/2/json (ทับ topic root)';
+
+  @override
+  String get mtBridgeMqttTopicRoot => 'รากท็อปิก JSON';
+
+  @override
+  String get mtBridgeMqttDownlinkChannel => 'ชื่อช่อง downlink';
+
+  @override
+  String get mtBridgeMqttApplyTopics => 'ใช้ราก → ท็อปิก subscribe / publish';
+
+  @override
+  String get mtBridgeMqttAdvanced => 'MQTT ขั้นสูง';
+
+  @override
+  String get mtBridgeMqttAdvancedHint => 'TLS, เชื่อมใหม่, ท็อปิก, รหัสผ่าน';
+
+  @override
+  String get mtBridgeMqttTopicIn => 'ท็อปิก subscribe';
+
+  @override
+  String get mtBridgeMqttTopicOut => 'ท็อปิก publish';
+
+  @override
+  String get mtBridgeMqttGatewayFrom => 'Node id ของเกตเวย์ (from)';
+
+  @override
+  String get mtBridgeMqttGatewayFromHint =>
+      'เลขทศนิยม หรือ !hex — จำเป็นสำหรับ sendtext';
+
+  @override
+  String get mtBridgeMqttChannelIndex => 'ดัชนีช่อง mesh (ถ้ามี 0–7)';
+
+  @override
+  String get mtBridgeMqttUser => 'ชื่อผู้ใช้ (ถ้ามี)';
+
+  @override
+  String get mtBridgeMqttPass => 'รหัสผ่าน (ถ้ามี)';
+
+  @override
+  String get mtBridgeMqttPassStored =>
+      'มีรหัสผ่านเก็บในเครื่องแล้ว (ไม่แสดงค่า)';
+
+  @override
+  String get mtBridgeMqttPassReplace => 'รหัสผ่านใหม่ (ว่าง = คงของเดิม)';
+
+  @override
+  String get mtBridgeMqttPassReplaceHint => 'เว้นว่างเพื่อคงรหัสผ่านที่เก็บไว้';
+
+  @override
+  String get mtBridgeMqttPassClear => 'ล้างรหัสผ่าน';
+
+  @override
+  String get mtBridgeMqttSave => 'บันทึก MQTT';
+
+  @override
+  String get mtBridgeMqttSaved => 'บันทึกการตั้งค่า MQTT แล้ว';
+
+  @override
+  String get mtBridgeMqttConnect => 'เชื่อมต่อ';
+
+  @override
+  String get mtBridgeMqttDisconnect => 'ตัดการเชื่อมต่อ';
+
+  @override
+  String get mtBridgeMqttConnected => 'MQTT เชื่อมต่อแล้ว';
+
+  @override
+  String get mtBridgeMqttConnecting => 'กำลังเชื่อม MQTT…';
+
+  @override
+  String get mtBridgeMqttDisconnected => 'MQTT ยังไม่เชื่อมต่อ';
+
+  @override
+  String get mtBridgeMqttError => 'MQTT ผิดพลาด';
+
+  @override
+  String get mtBridgeErrModeIngest => 'สลับเป็นโหมดรับเข้า (A) ก่อน';
+
+  @override
+  String get mtBridgeErrModeEgress => 'สลับเป็นโหมดส่งออก (B) ก่อน';
+
+  @override
+  String get mtBridgeErrRate => 'ช้าลง — จำกัดอัตราการส่ง';
+
+  @override
+  String get mtBridgeErrDedupe => 'ข้อความซ้ำ ข้ามแล้ว';
+
+  @override
+  String get mtBridgeErrLoop => 'ตัดทิ้งเพื่อกันลูปของสะพาน';
+
+  @override
+  String get mtBridgeErrEmpty => 'ข้อความว่าง';
+
+  @override
+  String get mtBridgeErrPublish => 'ส่งไม่สำเร็จ';
+
+  @override
+  String get mtBridgeErrNotConnected => 'ยังไม่ได้เชื่อม MQTT';
+
+  @override
+  String get mtBridgeErrMissingHost => 'กรอกโฮสต์ MQTT';
+
+  @override
+  String get mtBridgeErrMissingTopic => 'กรอกท็อปิก subscribe และ publish';
+
+  @override
+  String get mtBridgeErrMissingFromNode =>
+      'กรอก node id ของเกตเวย์ (from) สำหรับ sendtext';
+
+  @override
+  String get mtBridgeErrConnect => 'เชื่อม MQTT ไม่สำเร็จ';
+
+  @override
+  String get mtBridgeErrConnectTls => 'เชื่อม MQTT แบบ TLS ไม่สำเร็จ';
+
+  @override
   String get settingsData => 'จัดการข้อมูล';
 
   @override
@@ -1018,6 +1268,18 @@ class AppLocalizationsTh extends AppLocalizations {
   String get locationSheetTitle => '#ช่องตามตำแหน่ง';
 
   @override
+  String get channelPinsTitle => 'ปักหมุดไว้';
+
+  @override
+  String get channelPinsHint => 'ปักหมุดช่องที่ใช้บ่อย — จะโชว์ด้านบนของรายการ';
+
+  @override
+  String get channelPinTooltip => 'ปักหมุดช่องนี้';
+
+  @override
+  String get channelUnpinTooltip => 'เอาหมุดออก';
+
+  @override
   String get locationSheetIntro =>
       'คุยกับคนใกล้ตัวผ่าน geohash แบบหยาบ — ไม่ใช่ GPS แม่นยำ Presence บน Internet ใช้นามแฝง Nostr';
 
@@ -1156,6 +1418,20 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get docsOpenFailed => 'เปิดคู่มือไม่สำเร็จ';
+
+  @override
+  String get firmwareOtaGuideTitle => 'วิธีแฟลชและโปรโตคอล OTA';
+
+  @override
+  String get firmwareOtaGuideSubtitle =>
+      'เปิดคู่มือบนเว็บ — ดาวน์โหลด .bin และขั้นตอนละเอียด';
+
+  @override
+  String get firmwareWebDownloadsTitle => 'ดาวน์โหลดเฟิร์มแวร์บนเว็บ';
+
+  @override
+  String get firmwareWebDownloadsSubtitle =>
+      'ลิงก์แต่ละเวอร์ชัน / checksum บนหน้าเอกสาร';
 
   @override
   String get inviteCopyShortLink => 'คัดลอกลิงก์สั้น';
