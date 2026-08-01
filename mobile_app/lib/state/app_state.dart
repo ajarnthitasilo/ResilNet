@@ -1824,27 +1824,45 @@ class AppState extends ChangeNotifier {
     );
   }
 
-  /// Broadcast bulletin ไปยังเครื่องที่เชื่อมต่อ BLE/UDP ตอนนี้ (best-effort)
+  /// Broadcast bulletin to nearby radios (fan-out) + optional UDP SoftAP.
   Future<bool> _broadcastBulletin(String bulletinId, String wire) async {
     try {
       final envelope = _bulletinEnvelope(bulletinId, wire);
       final bleConnected = _mesh?.connectedDeviceId != null;
+      final nearbyCount = _mesh?.nearbyPeerCount ?? 0;
+      final nearbyRaw = _mesh?.nearbyDeviceCount ?? 0;
       final udpActive = resilnet.isGatewayWifiActive;
-      if (!bleConnected && !udpActive) {
+      if (!bleConnected && nearbyRaw == 0 && !udpActive) {
         _lastNoticePublishWarning = 'no_mesh';
         debugPrint(
           '[Bulletin] no BLE/UDP path — stored locally for ESP32 catch-up '
           'id=$bulletinId',
         );
       }
-      // Await hand-off so logs show failures; still best-effort delivery.
-      var ok = false;
+      var bleSent = 0;
       try {
-        ok = await routeOutbound(envelope);
+        bleSent = await _mesh?.fanOutNow(envelope) ?? 0;
       } catch (e) {
-        debugPrint('[Bulletin] routeOutbound failed id=$bulletinId: $e');
+        debugPrint('[Bulletin] BLE fan-out failed id=$bulletinId: $e');
       }
-      return ok || bleConnected || udpActive;
+      var udpOk = false;
+      if (udpActive) {
+        try {
+          await _udp?.sendDirectNow(envelope);
+          udpOk = true;
+        } catch (e) {
+          debugPrint('[Bulletin] UDP send failed id=$bulletinId: $e');
+        }
+      }
+      final ok = bleSent > 0 || udpOk;
+      debugPrint(
+        '[Bulletin] broadcast id=$bulletinId bleSent=$bleSent '
+        'nearbyPeers=$nearbyCount nearbyRaw=$nearbyRaw udp=$udpOk ok=$ok',
+      );
+      if (!ok && (bleConnected || nearbyRaw > 0 || udpActive)) {
+        _lastNoticePublishWarning ??= 'no_mesh';
+      }
+      return ok;
     } catch (e) {
       debugPrint('[Bulletin] broadcast failed id=$bulletinId: $e');
       return false;
@@ -1986,6 +2004,8 @@ class AppState extends ChangeNotifier {
   /// Re-send active notices to a newly discovered messageable peer.
   Future<void> _catchUpNoticesForPeer(Peer peer) async {
     if (peer.id == myUserId || peer.publicKey.isEmpty) return;
+    final deviceId = (peer.deviceId ?? '').trim();
+    if (deviceId.isEmpty) return;
     final active = _notices.where((n) => !n.isExpired).toList();
     for (final notice in active) {
       final delivered = _noticeDeliveredTo.putIfAbsent(
@@ -2006,9 +2026,21 @@ class AppState extends ChangeNotifier {
         // wire (own or relayed) so late joiners get it without key exchange.
         final wire = _bulletinWires[notice.id];
         if (wire == null) continue;
-        debugPrint('[Bulletin] catch-up id=${notice.id} peer=${peer.id}');
-        await _mesh?.sendDirectNow(_bulletinEnvelope(notice.id, wire, ttl: 2));
-        delivered.add(peer.id);
+        debugPrint(
+          '[Bulletin] catch-up id=${notice.id} peer=${peer.id} device=$deviceId',
+        );
+        final ok = await _mesh?.sendToDevice(
+              deviceId,
+              msg: _bulletinEnvelope(notice.id, wire, ttl: 2),
+            ) ??
+            false;
+        if (ok) {
+          delivered.add(peer.id);
+        } else {
+          debugPrint(
+            '[Bulletin] catch-up not delivered id=${notice.id} peer=${peer.id}',
+          );
+        }
       } catch (e) {
         debugPrint(
           '[Bulletin] catch-up failed id=${notice.id} peer=${peer.id} err=$e',
@@ -3629,20 +3661,29 @@ class AppState extends ChangeNotifier {
 
     if (isPresence || isBulletin) {
       // Presence/bulletin are fire-and-forget — skip chat persistence.
-      // Await BLE/UDP so failures surface in logs (still no chat ACKs).
+      // Bulletins fan-out to every nearby radio; presence stays single-link.
+      var bleOk = false;
       try {
-        await _mesh?.sendDirectNow(outbound);
+        if (isBulletin) {
+          final n = await _mesh?.fanOutNow(outbound) ?? 0;
+          bleOk = n > 0;
+        } else {
+          await _mesh?.sendDirectNow(outbound);
+          bleOk = _mesh?.connectedDeviceId != null;
+        }
       } catch (e) {
         debugPrint('[ResilNet] bulletin/presence BLE send failed: $e');
       }
+      var udpOk = false;
       if (resilnet.isGatewayWifiActive) {
         try {
           await _udp?.sendDirectNow(outbound);
+          udpOk = true;
         } catch (e) {
           debugPrint('[ResilNet] bulletin/presence UDP send failed: $e');
         }
       }
-      return true;
+      return bleOk || udpOk;
     }
 
     var transports = _applyBridgePolicyForMessage(

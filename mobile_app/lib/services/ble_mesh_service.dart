@@ -72,12 +72,16 @@ class BleMeshService extends ChangeNotifier {
   StreamSubscription<BleStatus>? _bleStatusSub;
   StreamSubscription<ConnectionStateUpdate>? _connSub;
   StreamSubscription<List<int>>? _notifySub;
+  Future<void> _inboundChain = Future.value();
   Timer? _sendTimer;
   Timer? _cleanupTimer;
 
   final Map<String, DiscoveredDevice> _nearby = {};
   final Map<String, int> _nearbyLastSeenMs = {};
-  int get nearbyPeerCount => _nearbyPeers.isNotEmpty ? _nearbyPeers.length : _nearby.length;
+  int get nearbyPeerCount =>
+      _nearbyPeers.isNotEmpty ? _nearbyPeers.length : _nearby.length;
+  /// Raw BLE advertisers currently in the scan window (may exceed bound peers).
+  int get nearbyDeviceCount => _nearby.length;
   List<Peer> _nearbyPeers = const [];
   List<Peer> get nearbyPeers => _nearbyPeers;
 
@@ -649,17 +653,31 @@ class BleMeshService extends ChangeNotifier {
       characteristicId: characteristicUuid,
       deviceId: deviceId,
     );
-    _notifySub = _ble.subscribeToCharacteristic(c).listen((data) async {
-      if (data.isEmpty) {
-        debugPrint('[BleMesh] drop empty packet from device=$deviceId');
-        return;
-      }
-      try {
-        await _handleIncomingBytes(Uint8List.fromList(data));
-      } catch (e) {
-        debugPrint('[BleMesh] drop malformed packet from device=$deviceId: $e');
-      }
-    });
+    _notifySub = _ble.subscribeToCharacteristic(c).listen(
+      (data) {
+        _inboundChain = _inboundChain
+            .then((_) async {
+              if (data.isEmpty) {
+                debugPrint('[BleMesh] drop empty packet from device=$deviceId');
+                return;
+              }
+              try {
+                await _handleIncomingBytes(Uint8List.fromList(data));
+              } catch (e) {
+                debugPrint(
+                  '[BleMesh] drop malformed packet from device=$deviceId: $e',
+                );
+              }
+            })
+            .catchError((Object e, StackTrace st) {
+              debugPrint('[BleMesh] inbound chain error: $e');
+            });
+      },
+      onError: (Object e, StackTrace st) {
+        debugPrint('[BleMesh] notify stream error device=$deviceId: $e');
+      },
+      cancelOnError: false,
+    );
   }
 
   Future<void> _handleIncomingBytes(Uint8List bytes) async {
@@ -931,7 +949,7 @@ class BleMeshService extends ChangeNotifier {
     return ok;
   }
 
-  /// Send a sealed message over BLE immediately (no SQLite pending queue).
+  /// Send a sealed/public message over BLE immediately (no SQLite pending queue).
   Future<void> sendDirectNow(ChatMessage msg) async {
     if (_connectedDeviceId == null) {
       debugPrint('[BleMesh] sendDirectNow skipped — no connection id=${msg.id}');
@@ -942,6 +960,83 @@ class BleMeshService extends ChangeNotifier {
     } catch (e) {
       debugPrint('[BleMesh] sendDirectNow failed id=${msg.id}: $e');
     }
+  }
+
+  /// Connect (if needed) then send [msg] to a specific BLE peripheral.
+  ///
+  /// Used for public bulletin fan-out — discovery can list many peers while
+  /// only one GATT link is active at a time.
+  Future<bool> sendToDevice(
+    String deviceId, {
+    required ChatMessage msg,
+    Duration connectTimeout = const Duration(seconds: 6),
+  }) async {
+    final id = deviceId.trim();
+    if (id.isEmpty) return false;
+    try {
+      if (_connectedDeviceId != id) {
+        final ready = Completer<bool>();
+        late VoidCallback listener;
+        listener = () {
+          if (_connectedDeviceId == id && !ready.isCompleted) {
+            ready.complete(true);
+          }
+        };
+        addListener(listener);
+        try {
+          await connect(id);
+          final ok = await ready.future.timeout(
+            connectTimeout,
+            onTimeout: () => _connectedDeviceId == id,
+          );
+          if (!ok || _connectedDeviceId != id) {
+            debugPrint(
+              '[BleMesh] sendToDevice connect timeout device=$id id=${msg.id}',
+            );
+            return false;
+          }
+          // Allow notify subscription to settle briefly.
+          await Future<void>.delayed(const Duration(milliseconds: 120));
+        } finally {
+          removeListener(listener);
+        }
+      }
+      await _sendBleChunkedMessage(msg);
+      return true;
+    } catch (e) {
+      debugPrint('[BleMesh] sendToDevice failed device=$id id=${msg.id}: $e');
+      return false;
+    }
+  }
+
+  /// Fan-out a public bulletin/presence-style message to every nearby radio
+  /// (bound peers + unbound advertisers) plus the current link.
+  Future<int> fanOutNow(ChatMessage msg) async {
+    final targets = <String>{};
+    for (final p in _nearbyPeers) {
+      final d = (p.deviceId ?? '').trim();
+      if (d.isNotEmpty) targets.add(d);
+    }
+    for (final d in _nearby.keys) {
+      if (d.trim().isNotEmpty) targets.add(d.trim());
+    }
+    final current = _connectedDeviceId;
+    if (current != null && current.isNotEmpty) targets.add(current);
+
+    if (targets.isEmpty) {
+      debugPrint('[BleMesh] fanOutNow skipped — no nearby radios id=${msg.id}');
+      return 0;
+    }
+
+    var sent = 0;
+    for (final deviceId in targets) {
+      final ok = await sendToDevice(deviceId, msg: msg);
+      if (ok) sent++;
+    }
+    debugPrint(
+      '[BleMesh] fanOutNow id=${msg.id} targets=${targets.length} sent=$sent',
+    );
+    return sent;
   }
 
   /// Send a dedicated batched ACK frame over the open BLE link.
