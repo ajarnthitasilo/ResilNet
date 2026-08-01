@@ -13,14 +13,18 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../app/theme.dart';
+import '../core/chat_image_codec.dart';
+import '../core/voice_payload.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/announcement_board.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
 import '../services/photos_permission.dart';
+import '../services/secure_screen.dart';
 import '../state/app_state.dart';
 import '../widgets/invite_actions_sheet.dart';
 import 'qr_capture_screen.dart';
+import 'voice_record_sheet.dart';
 
 Future<void> openAnnouncementsScreen(BuildContext context) {
   return Navigator.of(context).push(
@@ -41,10 +45,16 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   final _audio = AudioRecorderService();
   AnnouncementPostMode _mode = AnnouncementPostMode.locked;
   bool _posting = false;
-  bool _recordingVoice = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(SecureScreen.acquire());
+  }
 
   @override
   void dispose() {
+    unawaited(SecureScreen.release());
     _compose.dispose();
     _audio.dispose();
     super.dispose();
@@ -197,7 +207,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
               Text(
                 l10n.announceInviteSharePreamble(board.title),
                 style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
-                      color: Colors.white70,
+                      color: ResilNetTheme.mutedOnSurface(ctx, alpha: 0.72),
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -205,7 +215,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
               Text(
                 l10n.inviteLongPressHint,
                 style: Theme.of(ctx).textTheme.labelSmall?.copyWith(
-                      color: Colors.white54,
+                      color: ResilNetTheme.mutedOnSurface(ctx, alpha: 0.55),
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -425,7 +435,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       _postBody(s, board, _compose.text);
 
   Future<void> _attachImage(AppState s, AnnouncementBoard board) async {
-    if (_posting || _recordingVoice) return;
+    if (_posting) return;
     if (!_hasInternet(s)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.announceNeedInternet)),
@@ -434,12 +444,19 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     }
     final file = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      maxWidth: 1280,
-      imageQuality: 75,
+      maxWidth: 1600,
+      imageQuality: 85,
     );
     if (file == null) return;
-    final bytes = await File(file.path).readAsBytes();
-    if (bytes.length > 180000) {
+    final raw = await File(file.path).readAsBytes();
+    final budget = ChatImageCodec.budgetForConnectivity(online: true);
+    final bytes = await Future(
+      () => ChatImageCodec.compressToBudget(
+        Uint8List.fromList(raw),
+        maxBytes: budget,
+      ),
+    );
+    if (bytes == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.announceImageTooLarge)),
@@ -450,33 +467,30 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     await _postBody(s, board, payload);
   }
 
-  Future<void> _toggleVoice(AppState s, AnnouncementBoard board) async {
+  Future<void> _openVoice(AppState s, AnnouncementBoard board) async {
     if (_posting) return;
-    if (_recordingVoice) {
-      final recorded = await _audio.stopRecording();
-      if (mounted) setState(() => _recordingVoice = false);
-      final opus = recorded?.bytes;
-      if (opus == null || opus.isEmpty) return;
-      if (!_hasInternet(s)) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.announceNeedInternet)),
-        );
-        return;
-      }
-      final payload = AnnouncementMedia.encodeAudio(base64Encode(opus));
-      await _postBody(s, board, payload);
-      return;
-    }
     if (!_hasInternet(s)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.announceNeedInternet)),
       );
       return;
     }
+    HapticFeedback.lightImpact();
     try {
-      await _audio.startRecording();
-      if (mounted) setState(() => _recordingVoice = true);
+      final result = await showVoiceRecordSheet(context);
+      if (!mounted || result == null) return;
+      if (result.bytes.length > AudioRecorderService.maxBytes) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
+        );
+        return;
+      }
+      final wire = VoicePayload.encodeWire(
+        bytes: result.bytes,
+        ext: result.ext,
+      );
+      final payload = AnnouncementMedia.encodeAudio(wire);
+      await _postBody(s, board, payload);
     } catch (e) {
       if (!mounted) return;
       showMicPermissionError(
@@ -507,15 +521,18 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     if (plain == null) {
       return Text(
         l10n.announceLockedPlaceholder,
-        style: const TextStyle(
-          color: Colors.white54,
+        style: TextStyle(
+          color: ResilNetTheme.mutedOnSurface(context),
           fontStyle: FontStyle.italic,
         ),
       );
     }
     final media = AnnouncementMedia.parse(plain);
     if (media == null) {
-      return Text(plain, style: const TextStyle(color: Colors.white));
+      return Text(
+        plain,
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+      );
     }
     if (media.kind == 'image') {
       try {
@@ -545,7 +562,13 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     return FilledButton.tonalIcon(
       onPressed: () async {
         try {
-          await _audio.playBytes(Uint8List.fromList(base64Decode(media.data)));
+          // Prefer VoicePayload JSON (same as 1:1); fall back to raw b64.
+          final decoded = VoicePayload.decode(media.data);
+          if (decoded != null) {
+            await _audio.playBytes(decoded.bytes, ext: decoded.ext);
+          } else {
+            await _audio.playBytes(Uint8List.fromList(base64Decode(media.data)));
+          }
         } catch (_) {}
       },
       icon: const Icon(Icons.play_arrow),
@@ -565,7 +588,10 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         boardId == null ? const <AnnouncementPost>[] : s.postsForBoard(boardId);
     final pending = s.pendingBoardKeyRequests;
 
-    return Scaffold(
+    return Container(
+      decoration: ResilNetTheme.pageDecoration(context),
+      child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(l10n.announceTitle),
         actions: [
@@ -586,9 +612,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
           ),
         ],
       ),
-      body: Container(
-        decoration: ResilNetTheme.pageDecoration(context),
-        child: boards.isEmpty
+      body: boards.isEmpty
             ? Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
@@ -598,7 +622,12 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                       Text(
                         l10n.announceEmpty,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white70),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: ResilNetTheme.mutedOnSurface(
+                                context,
+                                alpha: 0.72,
+                              ),
+                            ),
                       ),
                       const SizedBox(height: 16),
                       FilledButton(
@@ -826,39 +855,34 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                               style: Theme.of(context)
                                   .textTheme
                                   .labelSmall
-                                  ?.copyWith(color: Colors.white38),
+                                  ?.copyWith(
+                                    color: ResilNetTheme.mutedOnSurface(
+                                      context,
+                                      alpha: 0.45,
+                                    ),
+                                  ),
                             ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
                                 IconButton(
                                   tooltip: l10n.chatAttachImage,
-                                  onPressed: _posting || _recordingVoice
+                                  onPressed: _posting
                                       ? null
                                       : () => unawaited(_attachImage(s, board)),
                                   icon: const Icon(Icons.image_outlined),
                                 ),
                                 IconButton(
-                                  tooltip: _recordingVoice
-                                      ? l10n.voicePttRecording
-                                      : l10n.voicePttHold,
+                                  tooltip: l10n.voicePttHold,
                                   onPressed: _posting
                                       ? null
-                                      : () =>
-                                          unawaited(_toggleVoice(s, board)),
-                                  icon: Icon(
-                                    _recordingVoice
-                                        ? Icons.mic
-                                        : Icons.mic_none_outlined,
-                                    color: _recordingVoice
-                                        ? Colors.redAccent
-                                        : null,
-                                  ),
+                                      : () => unawaited(_openVoice(s, board)),
+                                  icon: const Icon(Icons.mic_none_outlined),
                                 ),
                                 Expanded(
                                   child: TextField(
                                     controller: _compose,
-                                    enabled: !_posting && !_recordingVoice,
+                                    enabled: !_posting,
                                     minLines: 1,
                                     maxLines: 3,
                                     decoration: InputDecoration(
@@ -868,7 +892,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                                 ),
                                 const SizedBox(width: 8),
                                 IconButton.filled(
-                                  onPressed: _posting || _recordingVoice
+                                  onPressed: _posting
                                       ? null
                                       : () => unawaited(_post(s, board)),
                                   icon: _posting

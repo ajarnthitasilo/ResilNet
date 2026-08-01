@@ -5,6 +5,7 @@ import '../models/feed_channel.dart';
 import '../models/notice_expiry.dart';
 import '../state/app_state.dart';
 import 'docs_links.dart';
+import 'peer_id.dart';
 
 /// Result of intercepting a leading `/` compose command.
 class SlashHandleResult {
@@ -99,10 +100,11 @@ class SlashCommands {
         if (!state.isReady) return l10n.slashWhoEmpty;
         for (final p in state.mesh.nearbyPeers) {
           if (p.isBlocked) continue;
-          final name = p.displayName?.trim();
-          lines.add(
-            (name != null && name.isNotEmpty) ? '$name (${p.id})' : p.id,
+          final label = state.peerDisplayLabel(
+            p.id,
+            fallbackNick: p.displayName,
           );
+          lines.add('$label (${formatShortPeerId(p.id)})');
         }
       case FeedChannel.geo:
         for (final e in state.areaPresenceOnline()) {

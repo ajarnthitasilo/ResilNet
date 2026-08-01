@@ -77,6 +77,24 @@ class Esp32SyncService extends ChangeNotifier {
     });
   }
 
+  /// Kick a fresh ESP32 scan/sync so newly posted bulletins land on the mule.
+  Future<void> nudgeSync() async {
+    if (_phase == SyncPhase.syncing) return;
+    debugPrint('[Esp32Sync] nudgeSync phase=$_phase');
+    try {
+      await _scanSub?.cancel();
+      _scanSub = null;
+      _scanTimer?.cancel();
+      _scanTimer = null;
+      if (_phase != SyncPhase.idle) {
+        _setPhase(SyncPhase.scanning);
+      }
+      await startBackgroundScan();
+    } catch (e) {
+      debugPrint('[Esp32Sync] nudgeSync failed: $e');
+    }
+  }
+
   Future<void> stop() async {
     await _scanSub?.cancel();
     await _connSub?.cancel();

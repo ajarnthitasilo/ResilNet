@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../app/theme.dart';
+import '../core/docs_links.dart';
 import '../services/firmware_config.dart';
 import '../services/firmware_service.dart';
 import '../state/app_state.dart';
@@ -87,30 +89,6 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
     };
   }
 
-  Future<void> _showOtaInfo() async {
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('แฟลชผ่าน BLE (OTA)'),
-        content: const Text(
-          'แอปรองรับการส่งไฟล์ .bin ผ่าน Bluetooth OTA แล้ว (Esp32OtaService)\n\n'
-          'แต่บอร์ด ESP32 ต้องมี OTA service ในเฟิร์มแวร์ก่อน — '
-          'ดูรายละเอียดใน docs/esp32_ble_ota.md\n\n'
-          'ขั้นตอนตอนนี้:\n'
-          '1. ดาวน์โหลด .bin ลงเครื่อง\n'
-          '2. แฟลชครั้งแรกผ่าน USB (PlatformIO)\n'
-          '3. อัปเดตครั้งถัดไปผ่านแอปเมื่อ firmware รองรับ OTA',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('ปิด'),
-          ),
-        ],
-      ),
-    );
-  }
-
   String _formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) {
@@ -180,9 +158,10 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
   @override
   Widget build(BuildContext context) {
     final fw = context.watch<AppState>().firmware;
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.firmwareDownloadTitle)),
+      appBar: AppBar(title: Text(l10n.firmwareDownloadTitle)),
       body: ListView(
         padding: const EdgeInsets.all(18),
         children: [
@@ -190,7 +169,7 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
             'ดาวน์โหลดไฟล์ .bin เก็บในเครื่องเพื่อแฟลชบอร์ด ESP32 '
             '(แฟลชผ่าน BLE OTA เมื่อเฟิร์มแวร์บอร์ดรองรับ)',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.65),
+              color: ResilNetTheme.mutedOnSurface(context, alpha: 0.72),
             ),
           ),
           const SizedBox(height: 12),
@@ -214,10 +193,21 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
           const SizedBox(height: 8),
           Card(
             child: ListTile(
-              leading: const Icon(Icons.info_outline),
-              title: const Text('วิธีแฟลชและโปรโตคอล OTA'),
-              subtitle: const Text('docs/esp32_ble_ota.md'),
-              onTap: _showOtaInfo,
+              leading: const Icon(Icons.menu_book_outlined),
+              title: Text(l10n.firmwareOtaGuideTitle),
+              subtitle: Text(l10n.firmwareOtaGuideSubtitle),
+              trailing: const Icon(Icons.open_in_new, size: 20),
+              onTap: () => DocsLinks.openOtaGuideOrSnack(context),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.download_for_offline_outlined),
+              title: Text(l10n.firmwareWebDownloadsTitle),
+              subtitle: Text(l10n.firmwareWebDownloadsSubtitle),
+              trailing: const Icon(Icons.open_in_new, size: 20),
+              onTap: () => DocsLinks.openFirmwareGuideOrSnack(context),
             ),
           ),
         ],

@@ -10,32 +10,40 @@ String formatShortPeerId(String id, {int len = 6}) {
   return '${trimmed.substring(0, n)}...';
 }
 
-/// List-row label: human alias when present, otherwise first 6 id chars.
+/// List-row label: human alias / community nick when present, else short id.
 ///
-/// Long hash-like "names" (no spaces, mostly alnum, length > 12) are treated
-/// as ids and shortened so lists stay one line.
+/// Only collapses the label when [aliasOrNick] is literally the peer id (or a
+/// truncated form of it). Real nicknames — even long alphanumeric ones — show.
 String peerListLabel({String? aliasOrNick, String? id}) {
   final alias = (aliasOrNick ?? '').trim();
   final fallback = (id ?? '').trim();
   // Never surface OS Bluetooth names (iPad/iPhone/…) — stay anonymous.
-  if (alias.isNotEmpty &&
-      !_looksLikePeerHash(alias) &&
-      !_looksLikeOsDeviceName(alias)) {
-    if (alias.length > 28) return '${alias.substring(0, 6)}...';
+  if (alias.isNotEmpty && !_looksLikeOsDeviceName(alias)) {
+    if (_isRedundantIdAlias(alias, fallback)) {
+      return formatShortPeerId(fallback.isNotEmpty ? fallback : alias);
+    }
+    if (alias.length > 28) return '${alias.substring(0, 28)}…';
     return alias;
   }
-  final source = (alias.isNotEmpty && !_looksLikeOsDeviceName(alias))
-      ? alias
-      : fallback;
-  return formatShortPeerId(source);
+  return formatShortPeerId(fallback);
 }
 
-bool _looksLikePeerHash(String value) {
-  if (value.length <= 12) return false;
-  if (value.contains(' ')) return false;
-  // Peer ids / pubkey hashes are typically long base64url / hex without spaces.
-  final alnum = RegExp(r'^[A-Za-z0-9+/=_-]+$');
-  return alnum.hasMatch(value);
+/// True when [alias] is just the peer id (or the old auto short-hash alias).
+bool _isRedundantIdAlias(String alias, String id) {
+  if (id.isEmpty) {
+    if (alias.length <= 12) return false;
+    if (alias.contains(' ')) return false;
+    return RegExp(r'^[A-Za-z0-9+/=_-]+$').hasMatch(alias);
+  }
+  if (alias == id) return true;
+  if (id.startsWith(alias) && alias.length >= 4 && alias.length <= 12) {
+    return true;
+  }
+  if (alias.endsWith('...')) {
+    final stem = alias.substring(0, alias.length - 3);
+    if (stem.length >= 4 && id.startsWith(stem)) return true;
+  }
+  return false;
 }
 
 /// BLE often exposes the phone's system name; treat those as non-aliases.

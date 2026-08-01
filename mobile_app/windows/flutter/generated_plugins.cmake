@@ -5,10 +5,10 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   audioplayers_windows
+  ble_peripheral
   connectivity_plus
   emoji_picker_flutter
   file_selector_windows
-  flutter_ble_peripheral
   flutter_secure_storage_windows
   gal
   geolocator_windows

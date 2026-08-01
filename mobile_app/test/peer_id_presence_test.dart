@@ -39,6 +39,17 @@ void main() {
 
     test('keeps real human aliases', () {
       expect(peerListLabel(aliasOrNick: 'Pad', id: 'aabbccddeeff'), 'Pad');
+      expect(
+        peerListLabel(aliasOrNick: 'ผู้ใหญ่บ้าน', id: 'aabbccddeeff0011'),
+        'ผู้ใหญ่บ้าน',
+      );
+    });
+
+    test('truncates long human aliases at 28 chars', () {
+      final long = 'ชื่อเล่นยาวมากๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆๆ';
+      final label = peerListLabel(aliasOrNick: long, id: 'aabbccddeeff0011');
+      expect(label.endsWith('…'), isTrue);
+      expect(label.length <= 29, isTrue);
     });
 
     test('merge drops empty-key BLE stubs', () {

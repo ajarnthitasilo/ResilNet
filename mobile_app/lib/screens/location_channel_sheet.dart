@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -77,6 +79,24 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
     Navigator.pop(context);
   }
 
+  Future<void> _selectPinned(AppState s, String id) async {
+    await s.openPinnedLocationChannel(id);
+    if (mounted) Navigator.pop(context);
+  }
+
+  String _pinnedTitle(AppLocalizations l10n, String id) {
+    if (id == AppState.pinnedMeshChannelId) return 'mesh';
+    return Geohash.channelLabel(id);
+  }
+
+  String _pinnedSubtitle(AppLocalizations l10n, String id) {
+    if (id == AppState.pinnedMeshChannelId) {
+      return l10n.locationMeshSubtitle;
+    }
+    final p = GeoPrecision.forHashLength(id.length);
+    return '${_precisionLabel(l10n, p)} • ${p.approxRadiusLabel}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
@@ -84,12 +104,15 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
     final full = s.currentGeohash;
     final meshSelected = s.feedChannel == FeedChannel.mesh;
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
+    final muted = ResilNetTheme.mutedOnSurface(context);
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final pinned = s.pinnedLocationChannels;
 
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.82,
       decoration: BoxDecoration(
         gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: EdgeInsets.fromLTRB(16, 14, 16, 12 + bottom),
       child: Column(
@@ -112,7 +135,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
           Text(
             l10n.locationSheetIntro,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.55),
+                  color: muted,
                 ),
           ),
           if (s.geoIsManual) ...[
@@ -128,6 +151,40 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
           Expanded(
             child: ListView(
               children: [
+                if (pinned.isNotEmpty) ...[
+                  Text(
+                    l10n.channelPinsTitle,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: ResilNetTheme.emerald,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  for (final id in pinned)
+                    _row(
+                      context,
+                      title: _pinnedTitle(l10n, id),
+                      count: id == AppState.pinnedMeshChannelId
+                          ? _peopleCount(s, mesh: true)
+                          : (s.feedChannel == FeedChannel.geo &&
+                                  s.selectedAreaHash == id
+                              ? _peopleCount(s, mesh: false)
+                              : null),
+                      subtitle: _pinnedSubtitle(l10n, id),
+                      selected: id == AppState.pinnedMeshChannelId
+                          ? meshSelected
+                          : (!meshSelected &&
+                              s.feedChannel == FeedChannel.geo &&
+                              s.selectedAreaHash == id),
+                      pinned: true,
+                      onTap: () => unawaited(_selectPinned(s, id)),
+                      onPin: () => unawaited(s.togglePinnedLocationChannel(id)),
+                    ),
+                  Divider(
+                    height: 20,
+                    color: onSurface.withValues(alpha: 0.12),
+                  ),
+                ],
                 _row(
                   context,
                   title: 'mesh',
@@ -135,10 +192,14 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                   subtitle: l10n.locationMeshSubtitle,
                   selected: meshSelected,
                   accent: true,
+                  pinned: s.isLocationChannelPinned(AppState.pinnedMeshChannelId),
                   onTap: () {
                     s.setFeedChannel(FeedChannel.mesh);
                     Navigator.pop(context);
                   },
+                  onPin: () => unawaited(
+                    s.togglePinnedLocationChannel(AppState.pinnedMeshChannelId),
+                  ),
                 ),
                 for (final p in [
                   GeoPrecision.block,
@@ -147,11 +208,14 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                   GeoPrecision.province,
                   GeoPrecision.region,
                 ]) ...[
-                  const Divider(height: 1, color: Colors.white12),
+                  Divider(
+                    height: 1,
+                    color: onSurface.withValues(alpha: 0.1),
+                  ),
                   Builder(
                     builder: (context) {
                       final hash = full == null || full.isEmpty
-                          ? '—'
+                          ? null
                           : Geohash.atPrecision(full, p);
                       final selected = !meshSelected &&
                           s.feedChannel == FeedChannel.geo &&
@@ -159,17 +223,24 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                       final count = selected
                           ? _peopleCount(s, mesh: false)
                           : null;
+                      final canPin = hash != null && hash.isNotEmpty;
                       return _row(
                         context,
                         title: _precisionLabel(l10n, p),
                         count: count,
-                        subtitle: '#$hash • ${p.approxRadiusLabel}',
+                        subtitle: '#${hash ?? '—'} • ${p.approxRadiusLabel}',
                         selected: selected,
+                        pinned: canPin && s.isLocationChannelPinned(hash),
                         onTap: () async {
                           await s.setFeedChannel(FeedChannel.geo);
                           await s.setGeoPrecision(p);
                           if (context.mounted) Navigator.pop(context);
                         },
+                        onPin: canPin
+                            ? () => unawaited(
+                                  s.togglePinnedLocationChannel(hash),
+                                )
+                            : null,
                       );
                     },
                   ),
@@ -180,7 +251,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
           Text(
             l10n.geoTeleportHint,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.white38,
+                  color: muted,
                 ),
           ),
           const SizedBox(height: 6),
@@ -205,6 +276,29 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
                 onPressed: () => _teleportToGeohash(s),
                 icon: const Icon(Icons.near_me_outlined, size: 18),
                 label: Text(l10n.locationTeleport),
+              ),
+              IconButton(
+                tooltip: l10n.channelPinTooltip,
+                onPressed: () async {
+                  final parsed = Geohash.parseInput(_teleport.text);
+                  if (parsed == null) {
+                    setState(
+                      () => _teleportError = context.l10n.geoTeleportInvalid,
+                    );
+                    return;
+                  }
+                  setState(() => _teleportError = null);
+                  await s.togglePinnedLocationChannel(parsed);
+                },
+                icon: Icon(
+                  () {
+                    final parsed = Geohash.parseInput(_teleport.text);
+                    if (parsed == null) return Icons.push_pin_outlined;
+                    return s.isLocationChannelPinned(parsed)
+                        ? Icons.push_pin
+                        : Icons.push_pin_outlined;
+                  }(),
+                ),
               ),
             ],
           ),
@@ -231,10 +325,14 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
     required String subtitle,
     required bool selected,
     required VoidCallback onTap,
+    required VoidCallback? onPin,
+    bool pinned = false,
     int? count,
     bool accent = false,
   }) {
     final l10n = context.l10n;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final muted = ResilNetTheme.mutedOnSurface(context);
     final countLabel = count == null
         ? '[? people]'
         : '[${l10n.onlinePeopleCount(count)}]';
@@ -245,7 +343,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
           Text(
             title,
             style: TextStyle(
-              color: accent ? const Color(0xFF7EB6FF) : Colors.white,
+              color: accent ? const Color(0xFF7EB6FF) : onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -254,7 +352,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
             child: Text(
               countLabel,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white54,
+                    color: muted,
                   ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -264,13 +362,30 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
       subtitle: Text(
         subtitle,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.white54,
+              color: muted,
               fontFamily: 'monospace',
             ),
       ),
-      trailing: selected
-          ? const Icon(Icons.check, color: Colors.white)
-          : const Icon(Icons.bookmark_border, size: 20, color: Colors.white54),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (onPin != null)
+            IconButton(
+              tooltip: pinned ? l10n.channelUnpinTooltip : l10n.channelPinTooltip,
+              visualDensity: VisualDensity.compact,
+              onPressed: onPin,
+              icon: Icon(
+                pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                size: 20,
+                color: pinned ? ResilNetTheme.emerald : muted,
+              ),
+            ),
+          if (selected)
+            Icon(Icons.check, color: onSurface)
+          else
+            const SizedBox(width: 24),
+        ],
+      ),
       onTap: onTap,
     );
   }

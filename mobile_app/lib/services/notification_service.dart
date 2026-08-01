@@ -14,13 +14,17 @@ class NotificationService {
   Future<void> init() async {
     if (_initialized) return;
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    // Request permission at init time on iOS; show alerts in foreground too.
-    const ios = DarwinInitializationSettings(
+    // Request permission at init time on iOS/macOS; show alerts in foreground too.
+    const darwin = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
-    const settings = InitializationSettings(android: android, iOS: ios);
+    const settings = InitializationSettings(
+      android: android,
+      iOS: darwin,
+      macOS: darwin,
+    );
     await _plugin.initialize(settings: settings);
 
     const directChannel = AndroidNotificationChannel(
@@ -44,23 +48,49 @@ class NotificationService {
 
     _initialized = true;
     debugPrint('[Notify] initialized');
-    await logPermissionStatus(reason: 'init');
+    try {
+      await logPermissionStatus(reason: 'init');
+    } catch (e) {
+      debugPrint('[Notify] logPermissionStatus skipped: $e');
+    }
   }
 
   Future<void> requestPermissions({String reason = 'unknown'}) async {
     debugPrint('[Notify] permission request begin reason=$reason');
-    final status = await Permission.notification.request();
-    debugPrint('[Notify] permission request result=$status reason=$reason');
-    final ios = _plugin
-        .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >();
-    final iosRes = await ios?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    debugPrint('[Notify] iOS permission result=$iosRes reason=$reason');
+    try {
+      final status = await Permission.notification.request();
+      debugPrint('[Notify] permission request result=$status reason=$reason');
+    } catch (e) {
+      debugPrint('[Notify] permission request skipped: $e');
+    }
+    try {
+      final ios = _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+      final iosRes = await ios?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      debugPrint('[Notify] iOS permission result=$iosRes reason=$reason');
+    } catch (e) {
+      debugPrint('[Notify] iOS permission skipped: $e');
+    }
+    try {
+      final mac = _plugin
+          .resolvePlatformSpecificImplementation<
+            MacOSFlutterLocalNotificationsPlugin
+          >();
+      final macRes = await mac?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      debugPrint('[Notify] macOS permission result=$macRes reason=$reason');
+    } catch (e) {
+      debugPrint('[Notify] macOS permission skipped: $e');
+    }
     await logPermissionStatus(reason: 'post-request:$reason');
   }
 

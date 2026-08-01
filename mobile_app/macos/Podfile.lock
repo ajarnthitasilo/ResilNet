@@ -4,14 +4,14 @@ PODS:
   - audioplayers_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
+  - ble_peripheral (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - connectivity_plus (0.0.1):
     - FlutterMacOS
   - emoji_picker_flutter (0.0.1):
     - FlutterMacOS
   - file_selector_macos (0.0.1):
-    - FlutterMacOS
-  - flutter_ble_peripheral (2.0.1):
-    - Flutter
     - FlutterMacOS
   - flutter_local_notifications (0.0.1):
     - FlutterMacOS
@@ -57,10 +57,10 @@ PODS:
 DEPENDENCIES:
   - app_links (from `Flutter/ephemeral/.symlinks/plugins/app_links/macos`)
   - audioplayers_darwin (from `Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/darwin`)
+  - ble_peripheral (from `Flutter/ephemeral/.symlinks/plugins/ble_peripheral/darwin`)
   - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos`)
   - emoji_picker_flutter (from `Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos`)
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
-  - flutter_ble_peripheral (from `Flutter/ephemeral/.symlinks/plugins/flutter_ble_peripheral/darwin`)
   - flutter_local_notifications (from `Flutter/ephemeral/.symlinks/plugins/flutter_local_notifications/macos`)
   - flutter_secure_storage_darwin (from `Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
   - FlutterMacOS (from `Flutter/ephemeral`)
@@ -87,14 +87,14 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/app_links/macos
   audioplayers_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/darwin
+  ble_peripheral:
+    :path: Flutter/ephemeral/.symlinks/plugins/ble_peripheral/darwin
   connectivity_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos
   emoji_picker_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos
   file_selector_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
-  flutter_ble_peripheral:
-    :path: Flutter/ephemeral/.symlinks/plugins/flutter_ble_peripheral/darwin
   flutter_local_notifications:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_local_notifications/macos
   flutter_secure_storage_darwin:
@@ -129,10 +129,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_links: 05a6ec2341985eb05e9f97dc63f5837c39895c3f
   audioplayers_darwin: 835ced6edd4c9fc8ebb0a7cc9e294a91d99917d5
+  ble_peripheral: 1d6cb378caaef61cd39410652a4de1a68dfba4f2
   connectivity_plus: 4adf20a405e25b42b9c9f87feff8f4b6fde18a4e
   emoji_picker_flutter: 51ca408e289d84d1e460016b2a28721ec754fcf7
   file_selector_macos: 9e9e068e90ebee155097d00e89ae91edb2374db7
-  flutter_ble_peripheral: b141df08802a7f8be87a3fcdd1e04b933a5c5a40
   flutter_local_notifications: 1fc7ffb10a83d6a2eeeeddb152d43f1944b0aad0
   flutter_secure_storage_darwin: acdb3f316ed05a3e68f856e0353b133eec373a23
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1

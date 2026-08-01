@@ -139,32 +139,28 @@ class _PeerListScreenState extends State<PeerListScreen> {
               return Card(
                 child: ListTile(
                   leading: Identicon(id: peer.id),
-                  title: FutureBuilder<String>(
-                    future: s.db.resolveDisplayName(peer.id),
-                    builder: (context, nameSnap) {
-                      final name =
-                          nameSnap.data ?? formatShortPeerId(peer.id);
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          s.peerDisplayLabel(
+                            peer.id,
+                            fallbackNick: peer.displayName,
                           ),
-                          if (s.isFavorite(peer.id))
-                            const Padding(
-                              padding: EdgeInsets.only(left: 6),
-                              child: Icon(
-                                Icons.star,
-                                size: 16,
-                                color: Colors.amberAccent,
-                              ),
-                            ),
-                        ],
-                      );
-                    },
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (s.isFavorite(peer.id))
+                        const Padding(
+                          padding: EdgeInsets.only(left: 6),
+                          child: Icon(
+                            Icons.star,
+                            size: 16,
+                            color: Colors.amberAccent,
+                          ),
+                        ),
+                    ],
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -52,6 +52,8 @@
 	<string>ResilNet uses the microphone for sealed voice notes.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>ResilNet uses location for Area geohash presence over Nostr (optional on Mac).</string>
+	<key>NSLocationUsageDescription</key>
+	<string>ResilNet uses location for Area geohash presence over Nostr (optional on Mac).</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>ResilNet saves invite QR images to your photo library when you choose Save.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

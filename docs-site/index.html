@@ -19,7 +19,46 @@
       border-color: var(--theme-color);
     }
     .markdown-section code { font-size: 0.9em; }
-    .markdown-section table { display: table; width: 100%; }
+    .markdown-section {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .markdown-section table {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-collapse: collapse;
+    }
+    .markdown-section th,
+    .markdown-section td {
+      white-space: nowrap;
+    }
+    .markdown-section pre {
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .markdown-section img {
+      max-width: 100%;
+      height: auto;
+    }
+    .markdown-section a {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    @media (max-width: 768px) {
+      .markdown-section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .markdown-section th,
+      .markdown-section td {
+        white-space: normal;
+      }
+    }
   </style>
   <script>
     // Project Pages live at https://<user>.github.io/<repo>/ — set <base> so

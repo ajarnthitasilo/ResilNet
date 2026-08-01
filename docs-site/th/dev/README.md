@@ -41,9 +41,16 @@ flutter build apk --release \
 
 ## เอกสารเทคนิคอื่นใน repo
 
-- `docs/esp32_ble_ota.md` — โปรโตคอล OTA
+- [แฟลช / BLE OTA (คู่มือผู้ใช้)](../guide/esp32-ota.md) — ดาวน์โหลด + ขั้นตอนแฟลช
+- `docs/esp32_ble_ota.md` — โปรโตคอล OTA เชิงลึก (ใน GitHub repo)
 - `releases/firmware/README.md` — นโยบาย hybrid baseline
 - `mobile_app/docs/GEO_PRESENCE_NOSTR.md` — geo presence
+
+**CDN เฟิร์มแวร์ (ลิงก์ตรง):**
+
+- https://ajarnthitasilo.github.io/ResilNet/firmware/manifest.json
+- https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_standalone/latest.bin
+- https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_lora_gateway/latest.bin
 
 ## ดูเว็บนี้บนเครื่อง
 

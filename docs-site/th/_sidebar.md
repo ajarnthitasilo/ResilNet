@@ -6,6 +6,7 @@
   * [กระดานชุมชน](/th/guide/boards)
   * [ESP32 Mule](/th/guide/esp32-mule)
   * [ESP32 LoRa Gateway](/th/guide/esp32-lora)
+  * [แฟลช / BLE OTA](/th/guide/esp32-ota)
 * [เฟิร์มแวร์](/th/firmware/)
 * [คำถามที่พบบ่อย](/th/faq/)
 * [สำหรับนักพัฒนา](/th/dev/)

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,16 +24,24 @@ class _FeedChannelSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
+    final muted = ResilNetTheme.mutedOnSurface(context);
+    final channels = s.feedChannelsForPicker();
     return Container(
       decoration: BoxDecoration(
         gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final ch in FeedChannel.values)
+          Text(
+            l10n.channelPinsHint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: muted),
+          ),
+          const SizedBox(height: 8),
+          for (final ch in channels)
             ListTile(
               leading: Icon(switch (ch) {
                 FeedChannel.directs => Icons.lock_outline,
@@ -48,9 +58,31 @@ class _FeedChannelSheet extends StatelessWidget {
                 FeedChannel.mesh => l10n.feedMeshSubtitle,
                 FeedChannel.geo => l10n.feedGeoSubtitle,
               }),
-              trailing: s.feedChannel == ch
-                  ? const Icon(Icons.check, color: Colors.white)
-                  : null,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: s.isFeedChannelPinned(ch)
+                        ? l10n.channelUnpinTooltip
+                        : l10n.channelPinTooltip,
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => unawaited(s.togglePinnedFeedChannel(ch)),
+                    icon: Icon(
+                      s.isFeedChannelPinned(ch)
+                          ? Icons.push_pin
+                          : Icons.push_pin_outlined,
+                      size: 20,
+                      color: s.isFeedChannelPinned(ch)
+                          ? ResilNetTheme.emerald
+                          : muted,
+                    ),
+                  ),
+                  if (s.feedChannel == ch)
+                    const Icon(Icons.check)
+                  else
+                    const SizedBox(width: 24),
+                ],
+              ),
               onTap: () {
                 s.setFeedChannel(ch);
                 Navigator.pop(context);
@@ -77,6 +109,7 @@ class _TransportModeSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
+    final muted = ResilNetTheme.mutedOnSurface(context);
     final items = <(TransportMode, String, IconData)>[
       (TransportMode.mesh, l10n.transportModeMesh, Icons.bluetooth),
       (TransportMode.internet, l10n.transportModeInternet, Icons.public),
@@ -85,7 +118,7 @@ class _TransportModeSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
       child: Column(
@@ -98,7 +131,7 @@ class _TransportModeSheet extends StatelessWidget {
           Text(
             l10n.transportModeSubtitle,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.55),
+                  color: muted,
                 ),
           ),
           const SizedBox(height: 8),
@@ -107,7 +140,7 @@ class _TransportModeSheet extends StatelessWidget {
               leading: Icon(item.$3),
               title: Text(item.$2),
               trailing: s.transportMode == item.$1
-                  ? const Icon(Icons.check, color: Colors.white)
+                  ? const Icon(Icons.check)
                   : null,
               onTap: () {
                 s.setTransportMode(item.$1);

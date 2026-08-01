@@ -38,7 +38,7 @@ class MeshStatusBar extends StatelessWidget {
     };
   }
 
-  Color _phaseColor(SyncPhase phase) {
+  Color _phaseColor(BuildContext context, SyncPhase phase) {
     switch (phase) {
       case SyncPhase.scanning:
         return Colors.amberAccent;
@@ -47,7 +47,7 @@ class MeshStatusBar extends StatelessWidget {
       case SyncPhase.cloudSync:
         return Colors.lightBlueAccent;
       case SyncPhase.idle:
-        return Colors.white24;
+        return ResilNetTheme.mutedOnSurface(context, alpha: 0.28);
     }
   }
 
@@ -96,9 +96,9 @@ class MeshStatusBar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0B1224),
+        color: ResilNetTheme.barSurface(context),
         border: Border(
-          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+          bottom: BorderSide(color: ResilNetTheme.barBorder(context)),
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -111,7 +111,9 @@ class MeshStatusBar extends StatelessWidget {
                 width: 10,
                 height: 10,
                 decoration: BoxDecoration(
-                  color: meshRunning ? _phaseColor(phase) : Colors.white24,
+                  color: meshRunning
+                      ? _phaseColor(context, phase)
+                      : ResilNetTheme.mutedOnSurface(context, alpha: 0.28),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -181,7 +183,7 @@ class MeshStatusBar extends StatelessWidget {
               ResilNetProtocol.syncRangeMeters,
             ),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.55),
+                  color: ResilNetTheme.mutedOnSurface(context),
                 ),
           ),
           if (s.isGatewayWifiActive) ...[
@@ -193,7 +195,7 @@ class MeshStatusBar extends StatelessWidget {
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: chunkProgress != null
                         ? ResilNetTheme.emerald
-                        : Colors.white.withValues(alpha: 0.45),
+                        : ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                   ),
             ),
           ],

@@ -9,6 +9,7 @@ class LocalNotice {
     this.expiresAt,
     this.urgent = false,
     this.senderId,
+    this.senderName,
   });
 
   final String id;
@@ -21,6 +22,9 @@ class LocalNotice {
 
   /// Author peer id (pubkey hash). Set for both local posts and received notices.
   final String? senderId;
+
+  /// Community display name carried on the wire (optional).
+  final String? senderName;
 
   bool get isExpired {
     final e = expiresAt;
@@ -37,6 +41,8 @@ class LocalNotice {
         'expiresAt': expiresAt,
         'urgent': urgent,
         if (senderId != null) 'senderId': senderId,
+        if (senderName != null && senderName!.isNotEmpty)
+          'senderName': senderName,
       };
 
   static LocalNotice fromJson(Map<String, Object?> json) {
@@ -49,10 +55,11 @@ class LocalNotice {
       expiresAt: json['expiresAt'] as int?,
       urgent: json['urgent'] as bool? ?? false,
       senderId: json['senderId'] as String?,
+      senderName: (json['senderName'] as String?)?.trim(),
     );
   }
 
-  LocalNotice withSender(String? sender) {
+  LocalNotice withSender(String? sender, {String? name}) {
     return LocalNotice(
       id: id,
       scope: scope,
@@ -62,6 +69,7 @@ class LocalNotice {
       expiresAt: expiresAt,
       urgent: urgent,
       senderId: sender ?? senderId,
+      senderName: name ?? senderName,
     );
   }
 }

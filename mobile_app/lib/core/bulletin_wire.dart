@@ -56,6 +56,7 @@ class BulletinWireData {
       expiresAt: expiresAt,
       urgent: urgent,
       senderId: senderId,
+      senderName: senderName,
     );
   }
 

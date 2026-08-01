@@ -10,5 +10,8 @@ PRODUCT_NAME = resilnet
 // The application's bundle identifier (align with iOS; not Android's com.example.*)
 PRODUCT_BUNDLE_IDENTIFIER = com.ajarnnarin.resilnet
 
+// Same Apple team as iOS (optional for ad-hoc local mac builds).
+// DEVELOPMENT_TEAM = 8PS7CND77B
+
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 ResilNet. All rights reserved.

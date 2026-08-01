@@ -815,6 +815,22 @@ class DatabaseService {
     return rows.first['aliasName'] as String?;
   }
 
+  /// All local-only contact aliases (publicKeyHash → aliasName).
+  Future<Map<String, String>> getAllContactAliases() async {
+    final rows = await _database.query(
+      'contacts',
+      columns: ['publicKeyHash', 'aliasName'],
+    );
+    final out = <String, String>{};
+    for (final row in rows) {
+      final id = (row['publicKeyHash'] as String?)?.trim() ?? '';
+      final alias = (row['aliasName'] as String?)?.trim() ?? '';
+      if (id.isEmpty || alias.isEmpty) continue;
+      out[id] = alias;
+    }
+    return out;
+  }
+
   /// ชื่อที่ควรแสดงใน UI: Alias → peers.displayName → short hash (ไม่ใช้ id เต็ม)
   Future<String> resolveDisplayName(String publicKeyHash) async {
     final alias = await getContactAlias(publicKeyHash);

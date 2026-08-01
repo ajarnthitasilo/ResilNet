@@ -6,6 +6,7 @@
   * [Community boards](/en/guide/boards)
   * [ESP32 Mule](/en/guide/esp32-mule)
   * [ESP32 LoRa Gateway](/en/guide/esp32-lora)
+  * [Flash / BLE OTA](/en/guide/esp32-ota)
 * [Firmware](/en/firmware/)
 * [FAQ](/en/faq/)
 * [For developers](/en/dev/)

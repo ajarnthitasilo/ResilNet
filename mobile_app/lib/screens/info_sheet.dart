@@ -21,6 +21,7 @@ class _InfoSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -30,8 +31,9 @@ class _InfoSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+            gradient: ResilNetTheme.scaffoldGradientFor(context),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(18)),
           ),
           child: Column(
             children: [
@@ -40,7 +42,7 @@ class _InfoSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: onSurface.withValues(alpha: 0.24),
                   borderRadius: BorderRadius.circular(99),
                 ),
               ),
@@ -72,7 +74,7 @@ class _InfoSheet extends StatelessWidget {
                     Text(
                       l10n.infoTabSettingsHint,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.5),
+                            color: ResilNetTheme.mutedOnSurface(context),
                           ),
                     ),
                     const SizedBox(height: 14),
@@ -91,7 +93,7 @@ class _InfoSheet extends StatelessWidget {
                       l10n.infoHowToBody,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             height: 1.45,
-                            color: Colors.white.withValues(alpha: 0.82),
+                            color: onSurface.withValues(alpha: 0.88),
                           ),
                     ),
                     const SizedBox(height: 22),
@@ -187,7 +189,10 @@ class _InfoSheet extends StatelessWidget {
                     Text(
                       l10n.infoLegendNote,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.45),
+                            color: ResilNetTheme.mutedOnSurface(
+                              context,
+                              alpha: 0.5,
+                            ),
                             height: 1.35,
                           ),
                     ),
@@ -212,19 +217,20 @@ class _InfoSheet extends StatelessWidget {
   }
 
   Widget _feature(BuildContext context, IconData icon, String text) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 22, color: Colors.white70),
+          Icon(icon, size: 22, color: onSurface.withValues(alpha: 0.75)),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               text,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     height: 1.35,
-                    color: Colors.white.withValues(alpha: 0.82),
+                    color: onSurface.withValues(alpha: 0.88),
                   ),
             ),
           ),
@@ -249,7 +255,10 @@ class _InfoSheet extends StatelessWidget {
               text,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     height: 1.35,
-                    color: Colors.white.withValues(alpha: 0.75),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.8),
                   ),
             ),
           ),

@@ -15,6 +15,9 @@ Future<void> showInviteActionsSheet({
   required Future<void> Function() onAccept,
 }) async {
   final l10n = AppLocalizations.of(context);
+  // When the primary action is already "copy short link", skip the duplicate
+  // outlined copy button (identity / board QR long-press flows).
+  final copyIsPrimary = acceptLabel == l10n.inviteCopyShortLink;
   await showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
@@ -43,23 +46,29 @@ Future<void> showInviteActionsSheet({
                   Navigator.pop(ctx);
                   await onAccept();
                 },
-                icon: const Icon(Icons.check_circle_outline),
+                icon: Icon(
+                  copyIsPrimary
+                      ? Icons.link
+                      : Icons.check_circle_outline,
+                ),
                 label: Text(acceptLabel),
               ),
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: () async {
-                  await Clipboard.setData(ClipboardData(text: shortLink));
-                  if (ctx.mounted) {
-                    Navigator.pop(ctx);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.inviteLinkCopied)),
-                    );
-                  }
-                },
-                icon: const Icon(Icons.link),
-                label: Text(l10n.inviteCopyShortLink),
-              ),
+              if (!copyIsPrimary) ...[
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: shortLink));
+                    if (ctx.mounted) {
+                      Navigator.pop(ctx);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.inviteLinkCopied)),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.link),
+                  label: Text(l10n.inviteCopyShortLink),
+                ),
+              ],
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: () async {

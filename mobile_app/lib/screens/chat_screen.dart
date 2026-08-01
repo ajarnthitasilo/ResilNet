@@ -28,6 +28,7 @@ import '../models/feed_channel.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/crypto_service.dart';
 import '../services/resilnet_packet_codec.dart';
+import '../services/secure_screen.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'announcements_screen.dart';
@@ -64,6 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
   String? _loadError;
   int _boundEpoch = -1;
   bool _reloadQueued = false;
+  Timer? _markReadDebounce;
   AppState? _appState;
 
   static const _pickerBg = Color(0xFF1A2332);
@@ -107,7 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _setAlias() async {
     final s = context.read<AppState>();
     final l10n = context.l10n;
-    final existing = await s.db.getContactAlias(widget.peerId) ?? '';
+    final existing = s.contactAlias(widget.peerId) ?? '';
     final controller = TextEditingController(text: existing);
 
     if (!mounted) return;
@@ -146,16 +148,16 @@ class _ChatScreenState extends State<ChatScreen> {
       },
     );
     if (ok != true) return;
-    await s.db.setContactAlias(
+    await s.setContactAlias(
       publicKeyHash: widget.peerId,
       aliasName: controller.text,
     );
-    if (mounted) setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
+    unawaited(SecureScreen.acquire());
     _text.addListener(_onComposeChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -185,12 +187,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
+    unawaited(SecureScreen.release());
     final s = _appState;
     if (s != null && s.activeChatPeerId == widget.peerId) {
       s.setActiveChatPeerId(null);
     }
     _appState?.removeListener(_onAppState);
     _playbackSub?.cancel();
+    _markReadDebounce?.cancel();
     _text.removeListener(_onComposeChanged);
     _text.dispose();
     _focusNode.dispose();
@@ -203,9 +207,12 @@ class _ChatScreenState extends State<ChatScreen> {
     final s = context.read<AppState>();
     final epoch = s.chatDataEpoch;
     if (epoch == _boundEpoch) return;
-    // Chat is on-screen — mark newly arrived messages read so the sender
-    // receives READ receipts while the conversation stays open.
-    unawaited(s.markConversationRead(widget.peerId));
+    // Debounce READ receipts so inbound bursts don't pile mark+reload work.
+    _markReadDebounce?.cancel();
+    _markReadDebounce = Timer(const Duration(milliseconds: 450), () {
+      if (!mounted) return;
+      unawaited(context.read<AppState>().markConversationRead(widget.peerId));
+    });
     unawaited(_reloadMessages());
   }
 
@@ -221,7 +228,13 @@ class _ChatScreenState extends State<ChatScreen> {
       if (!mounted) return;
       final plains = <String, String>{};
       for (final m in items) {
-        plains[m.id] = _tryDecrypt(s, l10n, m);
+        final cached = _plainById[m.id];
+        // Reuse cached plaintext when possible — full RSA decrypt-all freezes UI.
+        if (!force && cached != null && cached.isNotEmpty) {
+          plains[m.id] = cached;
+        } else {
+          plains[m.id] = _tryDecrypt(s, l10n, m);
+        }
       }
       setState(() {
         _messages = items;
@@ -1480,27 +1493,26 @@ class _ChatScreenState extends State<ChatScreen> {
                 Identicon(id: widget.peerId, size: 30),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: FutureBuilder<String>(
-                    future: s.db.resolveDisplayName(widget.peerId),
-                    builder: (context, nameSnap) {
-                      final name =
-                          nameSnap.data ?? formatShortPeerId(widget.peerId);
-                      return Text(
-                        'Peer: $name',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.8),
-                        ),
-                      );
-                    },
+                  child: Text(
+                    'Peer: ${s.peerDisplayLabel(widget.peerId)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.85),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Text(
                   'Me: ${formatShortPeerId(myId)}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.55),
                   ),
                 ),
               ],

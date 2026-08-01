@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:encrypt/encrypt.dart' as enc;
@@ -9,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pointycastle/asn1.dart' as asn1;
 import 'package:pointycastle/export.dart' as pc;
 
+import 'desktop_identity_store.dart';
 import 'secure_storage.dart';
 
 /// Keychain temporarily unavailable — do **not** mint a new identity.
@@ -31,6 +33,7 @@ class CryptoService {
 
   final FlutterSecureStorage _storage;
   final FlutterSecureStorage _legacyStorage;
+  final DesktopIdentityStore _desktopStore;
 
   String? _publicPem;
   String? _privatePem;
@@ -42,21 +45,18 @@ class CryptoService {
   CryptoService({
     FlutterSecureStorage? storage,
     FlutterSecureStorage? legacyStorage,
+    DesktopIdentityStore? desktopStore,
   })  : _storage = storage ?? resilnetSecureStorage,
-        _legacyStorage = legacyStorage ?? resilnetLegacyGroupSecureStorage;
+        _legacyStorage = legacyStorage ?? resilnetLegacyGroupSecureStorage,
+        _desktopStore = desktopStore ?? DesktopIdentityStore.instance;
 
-  /// True when RSA keys were loaded from Keychain (not minted this session).
-  /// Used to skip onboarding after reinstall when prefs were cleared.
+  /// True when RSA keys were loaded from durable storage (not minted this session).
   bool get restoredFromKeychain => _restoredFromKeychain;
 
-  /// Load identity from Keychain with retries + legacy migration.
-  ///
-  /// Only mints a new keypair when Keychain reads succeed and both keys are
-  /// absent (true first install). Timeouts / read failures throw
-  /// [IdentityUnavailableException] instead of silently replacing identity.
-  ///
-  /// When [readExpectedUserId] or [hasLocalUserData] indicate a returning user
-  /// but Keychain is empty, init refuses to mint and throws.
+  /// macOS: never touch Keychain (avoids Allow/Deny dialogs that brick boot).
+  static bool get _macFileOnly => Platform.isMacOS;
+
+  /// Load identity. On macOS uses Application Support file only.
   Future<void> init({
     Future<String?> Function()? readExpectedUserId,
     Future<void> Function(String userId)? writeExpectedUserId,
@@ -65,9 +65,14 @@ class CryptoService {
     _readExpectedUserId = readExpectedUserId;
     _writeExpectedUserId = writeExpectedUserId;
     _hasLocalUserData = hasLocalUserData;
+
+    if (_macFileOnly) {
+      await _initMacFileOnly();
+      return;
+    }
+
     Object? lastErr;
 
-    // 1) Canonical default-group Keychain (fixes -34018 boot failure).
     for (var attempt = 1; attempt <= 4; attempt++) {
       final result = await _tryReadIdentityPair(_storage);
       if (result.readOk) {
@@ -86,7 +91,6 @@ class CryptoService {
       }
     }
 
-    // 2) Best-effort recover from legacy shared-group Keychain, then migrate.
     final legacy = await _tryReadIdentityPair(_legacyStorage);
     if (legacy.readOk) {
       final applied = await _applyReadResult(legacy, migrateFromLegacy: true);
@@ -94,11 +98,8 @@ class CryptoService {
       lastErr ??= StateError('partial identity in legacy keychain');
     } else if (legacy.error != null) {
       debugPrint('[Crypto] legacy keychain read skipped: ${legacy.error}');
-      // -34018 on legacy is expected; do not treat as fatal if primary was empty.
     }
 
-    // If primary reads succeeded as empty earlier we would have minted already.
-    // Reaching here means primary never got a clean empty/success read.
     final primaryProbe = await _tryReadIdentityPair(_storage);
     if (primaryProbe.readOk) {
       final applied =
@@ -114,8 +115,32 @@ class CryptoService {
       '(will not mint a new key). Last error: $lastErr',
       userMessage: entitlement
           ? 'ไม่สามารถเข้าถึง Keychain ได้ (สิทธิ์ระบบ) — กดลองอีกครั้ง '
-              'หากยังไม่สำเร็จ ให้ติดตั้งเวอร์ชันล่าสุดใหม่'
-          : 'ไม่สามารถโหลดตัวตนจาก Keychain ได้ — กดลองอีกครั้ง',
+              'หรือกดเริ่มตัวตนใหม่'
+          : 'ไม่สามารถโหลดตัวตนได้ — กดลองอีกครั้ง หรือเริ่มตัวตนใหม่',
+    );
+  }
+
+  Future<void> _initMacFileOnly() async {
+    debugPrint('[Crypto] macOS file-only identity (no Keychain)');
+    final desk = await _desktopStore.read();
+    if (desk.priv != null &&
+        desk.priv!.isNotEmpty &&
+        desk.pub != null &&
+        desk.pub!.isNotEmpty) {
+      _privatePem = desk.priv;
+      _publicPem = desk.pub;
+      _restoredFromKeychain = true;
+      await _persistExpectedUserId();
+      debugPrint('[Crypto] identity restored from desktop file store');
+      return;
+    }
+
+    // Always allow mint on mac when file is empty — Keychain cannot restore.
+    _restoredFromKeychain = false;
+    await _generateAndPersist(requirePersist: true);
+    await _persistExpectedUserId();
+    debugPrint(
+      '[Crypto] first-install identity minted via desktop store id=$myUserId',
     );
   }
 
@@ -150,7 +175,7 @@ class CryptoService {
       _restoredFromKeychain = false;
       await _generateAndPersist();
       await _persistExpectedUserId();
-      debugPrint('[Crypto] first-install identity minted id=${myUserId}');
+      debugPrint('[Crypto] first-install identity minted id=$myUserId');
       return true;
     }
     return false;
@@ -166,7 +191,7 @@ class CryptoService {
         'Keychain empty but expected identity $expected',
         userMessage:
             'ไม่พบกุญแจตัวตนใน Keychain แต่เครื่องนี้เคยใช้งานแล้ว — กดลองอีกครั้ง '
-            'หากยังไม่สำเร็จ ให้ติดตั้งเวอร์ชันล่าสุดใหม่',
+            'หรือกดเริ่มตัวตนใหม่',
       );
     }
     final hasData = await _hasLocalUserData?.call() ?? false;
@@ -175,7 +200,8 @@ class CryptoService {
       throw IdentityUnavailableException(
         'Keychain empty but local user data exists',
         userMessage:
-            'ไม่พบกุญแจตัวตนใน Keychain แต่มีข้อมูลแชท/เพื่อนในเครื่อง — กดลองอีกครั้ง',
+            'ไม่พบกุญแจตัวตนใน Keychain แต่มีข้อมูลแชท/เพื่อนในเครื่อง — '
+            'กดเริ่มตัวตนใหม่',
       );
     }
   }
@@ -191,30 +217,26 @@ class CryptoService {
   }
 
   Future<void> _verifyPersistedKeys() async {
-    final storedPriv = await _readKey(_kPrivatePem);
-    final storedPub = await _readKey(_kPublicPem);
-    if (storedPriv != _privatePem || storedPub != _publicPem) {
-      debugPrint('[Crypto] identity read-back verify failed');
+    if (_macFileOnly) {
+      final desk = await _desktopStore.read();
+      if (desk.priv == _privatePem && desk.pub == _publicPem) return;
       throw IdentityUnavailableException(
-        'Keychain read-back verify failed',
+        'Desktop identity read-back verify failed',
         userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
       );
     }
+    final storedPriv = await _readKey(_kPrivatePem);
+    final storedPub = await _readKey(_kPublicPem);
+    if (storedPriv == _privatePem && storedPub == _publicPem) return;
+    debugPrint('[Crypto] identity read-back verify failed');
+    throw IdentityUnavailableException(
+      'Keychain read-back verify failed',
+      userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
+    );
   }
 
   Future<void> _migrateIdentityToCanonical(String priv, String pub) async {
-    await _storage
-        .write(key: _kPrivatePem, value: priv)
-        .timeout(_wipeTimeout);
-    await _storage.write(key: _kPublicPem, value: pub).timeout(_wipeTimeout);
-    final storedPriv = await _readKey(_kPrivatePem);
-    final storedPub = await _readKey(_kPublicPem);
-    if (storedPriv != priv || storedPub != pub) {
-      throw IdentityUnavailableException(
-        'Legacy identity migrate verify failed',
-        userMessage: 'ย้ายกุญแจตัวตนไม่สำเร็จ — กดลองอีกครั้ง',
-      );
-    }
+    await _persistIdentityPair(priv, pub, requirePersist: true);
   }
 
   bool _looksLikeMissingEntitlement(Object? err) {
@@ -237,7 +259,7 @@ class CryptoService {
     }
   }
 
-  /// Panic wipe: drop RSA identity from secure storage and mint a new keypair.
+  /// Panic wipe: drop RSA identity and mint a new keypair.
   Future<String> wipeAndRegenerate() async {
     final oldId = _publicPem != null ? myUserId : null;
     await _wipeStoredIdentityKeys();
@@ -256,6 +278,10 @@ class CryptoService {
   }
 
   Future<void> _wipeStoredIdentityKeys() async {
+    if (_macFileOnly) {
+      await _desktopStore.clear();
+      return;
+    }
     for (final store in [_storage, _legacyStorage]) {
       for (var attempt = 0; attempt < 3; attempt++) {
         try {
@@ -280,11 +306,79 @@ class CryptoService {
   }
 
   Future<String?> _readKey(String key) async {
+    if (_macFileOnly) {
+      final desk = await _desktopStore.read();
+      if (key == _kPrivatePem) return desk.priv;
+      if (key == _kPublicPem) return desk.pub;
+      return null;
+    }
     try {
       return await _storage.read(key: key).timeout(_keychainTimeout);
     } catch (e) {
       debugPrint('[Crypto] read $key failed: $e');
       return null;
+    }
+  }
+
+  Future<void> _persistIdentityPair(
+    String privatePem,
+    String publicPem, {
+    required bool requirePersist,
+  }) async {
+    if (_macFileOnly) {
+      try {
+        await _desktopStore.write(
+          privatePem: privatePem,
+          publicPem: publicPem,
+        );
+      } catch (e) {
+        if (requirePersist) {
+          throw IdentityUnavailableException(
+            'Desktop identity persist failed: $e',
+            userMessage: 'บันทึกกุญแจตัวตนไม่สำเร็จ — กดลองอีกครั้ง',
+          );
+        }
+        return;
+      }
+      if (requirePersist) {
+        final desk = await _desktopStore.read();
+        if (desk.priv != privatePem || desk.pub != publicPem) {
+          throw IdentityUnavailableException(
+            'Desktop identity persist verify failed',
+            userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
+          );
+        }
+      }
+      return;
+    }
+
+    try {
+      await _storage
+          .write(key: _kPrivatePem, value: privatePem)
+          .timeout(_wipeTimeout);
+      await _storage
+          .write(key: _kPublicPem, value: publicPem)
+          .timeout(_wipeTimeout);
+    } catch (e) {
+      debugPrint('[Crypto] identity keychain write-failed: $e');
+      if (requirePersist) {
+        throw IdentityUnavailableException(
+          'Identity persist failed: $e',
+          userMessage: 'บันทึกกุญแจตัวตนไม่สำเร็จ — กดลองอีกครั้ง',
+        );
+      }
+      return;
+    }
+
+    if (requirePersist) {
+      final storedPriv = await _readKey(_kPrivatePem);
+      final storedPub = await _readKey(_kPublicPem);
+      if (storedPriv != privatePem || storedPub != publicPem) {
+        throw IdentityUnavailableException(
+          'Identity persist verify failed',
+          userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
+        );
+      }
     }
   }
 
@@ -298,38 +392,11 @@ class CryptoService {
     _privatePem = privatePem;
     _publicPem = publicPem;
 
-    try {
-      await _storage
-          .write(key: _kPrivatePem, value: privatePem)
-          .timeout(_wipeTimeout);
-      await _storage
-          .write(key: _kPublicPem, value: publicPem)
-          .timeout(_wipeTimeout);
-    } catch (e) {
-      debugPrint('[Crypto] identity write-failed: $e');
-      if (requirePersist) {
-        throw IdentityUnavailableException(
-          'Identity persist failed: $e',
-          userMessage: 'บันทึกกุญแจตัวตนไม่สำเร็จ — กดลองอีกครั้ง',
-        );
-      }
-    }
-
-    if (requirePersist) {
-      final storedPriv = await _readKey(_kPrivatePem);
-      final storedPub = await _readKey(_kPublicPem);
-      if (storedPriv != privatePem || storedPub != publicPem) {
-        debugPrint(
-          '[Crypto] identity write verify failed '
-          'privOk=${storedPriv == privatePem} pubOk=${storedPub == publicPem} '
-          'privNull=${storedPriv == null} pubNull=${storedPub == null}',
-        );
-        throw IdentityUnavailableException(
-          'Identity persist verify failed',
-          userMessage: 'บันทึกกุญแจตัวตนไม่สมบูรณ์ — กดลองอีกครั้ง',
-        );
-      }
-    }
+    await _persistIdentityPair(
+      privatePem,
+      publicPem,
+      requirePersist: requirePersist,
+    );
   }
 
   String get publicKeyPem {

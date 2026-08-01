@@ -131,9 +131,9 @@ class _MeshTopologyScreenState extends State<MeshTopologyScreen> {
               for (final p in nodes)
                 _TopoNode(
                   id: p.id,
-                  label: peerListLabel(
-                    aliasOrNick: p.displayName,
-                    id: p.id,
+                  label: s.peerDisplayLabel(
+                    p.id,
+                    fallbackNick: p.displayName,
                   ),
                   isSelf: false,
                   linked: linked?.id == p.id || nearbyIds.contains(p.id),

@@ -8,9 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../core/chat_image_codec.dart';
 import '../core/payload_kinds.dart';
 import '../core/voice_payload.dart';
-import '../core/peer_id.dart';
 import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
@@ -46,6 +46,7 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   final _peerController = TextEditingController();
   final _compose = TextEditingController();
+  final _composeFocus = FocusNode();
   NoticeExpiry _expiry = NoticeExpiry.sevenDays;
   bool _sending = false;
   int _titleTapCount = 0;
@@ -55,6 +56,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void dispose() {
     _peerController.dispose();
     _compose.dispose();
+    _composeFocus.dispose();
     super.dispose();
   }
 
@@ -84,7 +86,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Future<void> _setAlias(BuildContext context, String peerId) async {
     final s = context.read<AppState>();
     final l10n = context.l10n;
-    final existing = await s.db.getContactAlias(peerId) ?? '';
+    final existing = s.contactAlias(peerId) ?? '';
     final controller = TextEditingController(text: existing);
     if (!context.mounted) return;
     final ok = await showDialog<bool>(
@@ -120,11 +122,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
       ),
     );
     if (ok != true) return;
-    await s.db.setContactAlias(
+    await s.setContactAlias(
       publicKeyHash: peerId,
       aliasName: controller.text,
     );
-    if (mounted) setState(() {});
   }
 
   String _channelLabel(AppState s) {
@@ -192,6 +193,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         );
       }
       _compose.clear();
+      if (mounted) _composeFocus.requestFocus();
     } finally {
       if (mounted) setState(() => _sending = false);
     }
@@ -206,12 +208,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
     final file = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      maxWidth: 1280,
-      imageQuality: 75,
+      maxWidth: 1600,
+      imageQuality: 85,
     );
     if (file == null) return;
-    final bytes = await File(file.path).readAsBytes();
-    if (bytes.length > 180000) {
+    final raw = await File(file.path).readAsBytes();
+    final budget = ChatImageCodec.budgetForConnectivity(
+      online: s.isNostrOnline || s.isCloudOnline,
+    );
+    final bytes = await Future(
+      () => ChatImageCodec.compressToBudget(
+        raw,
+        maxBytes: budget,
+      ),
+    );
+    if (bytes == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chatImageTooLarge)),
@@ -327,7 +338,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final onlineCount = s.isReady ? s.onlinePresenceCount : 0;
     final unreadCount = s.isReady ? s.unreadDirectCount : 0;
 
-    return Scaffold(
+    return Container(
+      decoration: ResilNetTheme.pageDecoration(context),
+      child: Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         titleSpacing: 8,
@@ -452,9 +465,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ),
         ],
       ),
-      body: Container(
-        decoration: ResilNetTheme.pageDecoration(context),
-        child: Column(
+      body: Column(
           children: [
             const MeshStatusBar(),
             if (s.systemLines.isNotEmpty)
@@ -464,7 +475,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   '${l10n.screenshotTaken} [${TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(s.systemLines.last.timestamp)).format(context)}]',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.4),
+                        color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                         fontStyle: FontStyle.italic,
                       ),
                 ),
@@ -526,7 +537,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 child: Text(
                   l10n.geoPublicHelp(messageable),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.white38,
+                        color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                       ),
                 ),
               ),
@@ -544,29 +555,62 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   icon: const Icon(Icons.mic_none_outlined),
                 ),
                 Expanded(
-                  child: TextField(
-                    controller: _compose,
-                    enabled: !_sending,
-                    minLines: 1,
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText: l10n.homeComposePublicHint(channel),
+                  child: Focus(
+                    onKeyEvent: (node, event) {
+                      if (event is! KeyDownEvent) {
+                        return KeyEventResult.ignored;
+                      }
+                      if (event.logicalKey != LogicalKeyboardKey.enter &&
+                          event.logicalKey !=
+                              LogicalKeyboardKey.numpadEnter) {
+                        return KeyEventResult.ignored;
+                      }
+                      if (HardwareKeyboard.instance.isShiftPressed) {
+                        return KeyEventResult.ignored;
+                      }
+                      if (!_sending) {
+                        unawaited(_sendPublic(s));
+                      }
+                      return KeyEventResult.handled;
+                    },
+                    child: TextField(
+                      controller: _compose,
+                      focusNode: _composeFocus,
+                      enabled: !_sending,
+                      minLines: 1,
+                      maxLines: 4,
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) {
+                        if (!_sending) unawaited(_sendPublic(s));
+                      },
+                      decoration: InputDecoration(
+                        hintText: l10n.homeComposePublicHint(channel),
+                      ),
                     ),
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => unawaited(_sendPublic(s)),
                   ),
                 ),
                 const SizedBox(width: 6),
                 IconButton.filled(
+                  key: const ValueKey('public-send'),
                   onPressed:
                       _sending ? null : () => unawaited(_sendPublic(s)),
+                  style: IconButton.styleFrom(
+                    backgroundColor: ResilNetTheme.emerald,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor:
+                        ResilNetTheme.emerald.withValues(alpha: 0.4),
+                    disabledForegroundColor: Colors.white70,
+                  ),
                   icon: _sending
                       ? const SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
-                      : const Icon(Icons.arrow_upward),
+                      : const Icon(Icons.arrow_upward, size: 20),
                 ),
               ],
             ),
@@ -576,7 +620,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 Text(
                   l10n.messageExpiryTitle,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.white54,
+                        color: ResilNetTheme.mutedOnSurface(context),
                       ),
                 ),
                 const SizedBox(width: 10),
@@ -648,6 +692,7 @@ class _DirectsBody extends StatelessWidget {
         ),
         Expanded(
           child: FutureBuilder<List<Peer>>(
+            key: ValueKey('peers-${s.contactAliasEpoch}'),
             future: s.db.getAllPeers(),
             builder: (context, snap) {
               final peers = snap.data ?? const <Peer>[];
@@ -659,7 +704,10 @@ class _DirectsBody extends StatelessWidget {
                       l10n.directsEmpty,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white60,
+                            color: ResilNetTheme.mutedOnSurface(
+                              context,
+                              alpha: 0.65,
+                            ),
                           ),
                     ),
                   ),
@@ -673,17 +721,13 @@ class _DirectsBody extends StatelessWidget {
                   final peer = peers[i];
                   return ListTile(
                     leading: Identicon(id: peer.id),
-                    title: FutureBuilder<String>(
-                      future: s.db.resolveDisplayName(peer.id),
-                      builder: (context, nameSnap) => Text(
-                        nameSnap.data ??
-                            peerListLabel(
-                              aliasOrNick: peer.displayName,
-                              id: peer.id,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    title: Text(
+                      s.peerDisplayLabel(
+                        peer.id,
+                        fallbackNick: peer.displayName,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 18),
@@ -720,7 +764,7 @@ class _MeshListBody extends StatelessWidget {
               Text(
                 l10n.meshRetentionTitle,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Colors.white54,
+                      color: ResilNetTheme.mutedOnSurface(context),
                     ),
               ),
               const Spacer(),
@@ -749,7 +793,7 @@ class _MeshListBody extends StatelessWidget {
                     l10n.meshIntro,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white54,
+                          color: ResilNetTheme.mutedOnSurface(context),
                         ),
                   ),
                 )
@@ -762,9 +806,9 @@ class _MeshListBody extends StatelessWidget {
                     return ListTile(
                       leading: Identicon(id: peer.id),
                       title: Text(
-                        peerListLabel(
-                          aliasOrNick: peer.displayName,
-                          id: peer.id,
+                        s.peerDisplayLabel(
+                          peer.id,
+                          fallbackNick: peer.displayName,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

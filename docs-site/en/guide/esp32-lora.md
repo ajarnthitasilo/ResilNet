@@ -7,7 +7,7 @@ Gateways bridge phones to **ResilNet LoRa** and multi-hop between gateways.
 - Primary firmware band is about **920–925 MHz (AS923)**, e.g. ~923.5 MHz
 - **Attach an antenna before TX**
 - Follow local NBTC / regulatory limits for power and duty cycle
-- **Not** Meshtastic-compatible and not intended to interoperate with it
+- **Not** Meshtastic-compatible on RF and not intended to interoperate at the LoRa layer. The phone app may offer a **separate text bridge** (plaintext, not E2EE) — see [`meshtastic_bridge/README.md`](https://github.com/AjarnThitasilo/ResilNet/blob/main/meshtastic_bridge/README.md).
 
 ## Phone ↔ gateway links
 
@@ -29,4 +29,4 @@ Disable relay at build time: `-DLORA_MESH_RELAY_ENABLE=0`
 
 ## Flash
 
-Use `resilnet_esp32_lora_gateway.bin` — see [Firmware](../firmware/)
+Use `resilnet_esp32_lora_gateway.bin` — see [Firmware](../firmware/) · [Flash / BLE OTA](esp32-ota.md)

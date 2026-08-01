@@ -34,6 +34,17 @@ enum GeoPrecision {
     }
     return '~${km.toStringAsFixed(km < 10 ? 1 : 0)} km';
   }
+
+  /// Match a geohash string length to the closest ladder step.
+  static GeoPrecision forHashLength(int length) {
+    if (length <= 0) return GeoPrecision.region;
+    GeoPrecision best = GeoPrecision.region;
+    for (final p in GeoPrecision.values) {
+      if (p.length == length) return p;
+      if (p.length <= length) best = p;
+    }
+    return best;
+  }
 }
 
 /// Pure Dart geohash (base32) without third-party deps.

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:ble_peripheral/ble_peripheral.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import '../core/payload_kinds.dart';
@@ -26,6 +26,9 @@ import 'resilnet_service.dart';
 /// BLE Mesh Routing Engine (multi-hop store-and-forward)
 ///
 /// รับส่งทางกายภาพผ่าน BLE — การตัดสินใจเส้นทาง (Hybrid Router) อยู่ที่ Rust FFI
+///
+/// Phone↔phone: GATT peripheral ([ble_peripheral]) accepts writes while
+/// advertising; [flutter_reactive_ble] acts as central to fan-out.
 class BleMeshService extends ChangeNotifier {
   BleMeshService({
     required DatabaseService database,
@@ -57,16 +60,30 @@ class BleMeshService extends ChangeNotifier {
   static final characteristicUuid = Uuid.parse('ef8a0f1a-7b27-46d8-9e2a-7d66c1f1d9b1');
   static final identityCharacteristicUuid = Uuid.parse('f1c3e5aa-3fb3-4c2e-a8bc-9b0c5bd4f1b7');
 
+  static final _serviceUuidStr = serviceUuid.toString();
+  static final _meshCharUuidStr = characteristicUuid.toString();
+  static final _identityCharUuidStr = identityCharacteristicUuid.toString();
+
   final DatabaseService _db;
   final String myUserId;
   final _ble = FlutterReactiveBle();
-  final _peripheral = FlutterBlePeripheral();
   bool _advertising = false;
   bool _advertiseInFlight = false;
+  bool _gattReady = false;
   Timer? _roleTimer;
+  Timer? _holdAdvertiseTimer;
   bool _roleAdvertisePhase = true;
   static const _iosScanWindow = Duration(seconds: 5);
-  static const _iosAdvertiseWindow = Duration(seconds: 2);
+  static const _iosAdvertiseWindow = Duration(seconds: 3);
+
+  /// Community display name for identity characteristic / presence ads.
+  String localDisplayName = '';
+
+  /// Compact RSA public key for identity reads (set by AppState).
+  String localPubKeyCompact = '';
+
+  /// Truncated geohash cell for identity reads (optional).
+  String? localGeohash;
 
   StreamSubscription<DiscoveredDevice>? _scanSub;
   StreamSubscription<BleStatus>? _bleStatusSub;
@@ -99,6 +116,8 @@ class BleMeshService extends ChangeNotifier {
     debugPrint('[BLE] start scan+mesh requested');
     notifyListeners();
 
+    await _ensureGattServer();
+
     _bleStatusSub?.cancel();
     _bleStatusSub = _ble.statusStream.listen((status) {
       debugPrint('[BLE] adapter status=$status');
@@ -130,7 +149,13 @@ class BleMeshService extends ChangeNotifier {
     _running = false;
     _roleTimer?.cancel();
     _roleTimer = null;
+    _holdAdvertiseTimer?.cancel();
+    _holdAdvertiseTimer = null;
     await _stopAdvertising();
+    try {
+      await BlePeripheral.clearServices();
+    } catch (_) {}
+    _gattReady = false;
     await _scanSub?.cancel();
     await _bleStatusSub?.cancel();
     await _connSub?.cancel();
@@ -148,6 +173,26 @@ class BleMeshService extends ChangeNotifier {
     _connectedDeviceId = null;
     _nearbyPeers = const [];
     notifyListeners();
+  }
+
+  /// Stay in advertise longer so peers can connect/write (bulletins, catch-up).
+  Future<void> holdAdvertise({
+    Duration duration = const Duration(seconds: 12),
+  }) async {
+    if (!_running) return;
+    _holdAdvertiseTimer?.cancel();
+    if (PlatformCaps.usesIosStyleBle) {
+      _roleTimer?.cancel();
+      _roleTimer = null;
+      _roleAdvertisePhase = true;
+      await _applyRolePhase();
+      _holdAdvertiseTimer = Timer(duration, () {
+        if (!_running) return;
+        _scheduleIosRoleFlip();
+      });
+    } else {
+      await _startAdvertising();
+    }
   }
 
   /// iOS/macOS cannot run central+peripheral reliably at once — duty-cycle roles.
@@ -196,6 +241,7 @@ class BleMeshService extends ChangeNotifier {
       _scanSub = null;
       await _startAdvertising();
     } else {
+      // Keep GATT receivable while scanning — only pause ADV on iOS duty-cycle.
       await _stopAdvertising();
       _startScanning();
     }
@@ -207,7 +253,8 @@ class BleMeshService extends ChangeNotifier {
 
   Uint8List _fingerprintPayload() {
     final id = myUserId.trim();
-    final take = id.length < _fingerprintPrefixLen ? id : id.substring(0, _fingerprintPrefixLen);
+    final take =
+        id.length < _fingerprintPrefixLen ? id : id.substring(0, _fingerprintPrefixLen);
     return Uint8List.fromList(<int>[
       0x52, // R
       0x4E, // N
@@ -242,66 +289,155 @@ class BleMeshService extends ChangeNotifier {
     return n.contains('resil');
   }
 
-  /// Advertise ResilNet service UUID / fingerprint so nearby phones can find us.
-  ///
-  /// iOS ADV packets are tiny: UUID-only and fingerprint-only alternate so both
-  /// fit over successive advertise windows. Android can carry both at once.
+  bool _uuidEq(String a, String b) => a.toLowerCase() == b.toLowerCase();
+
+  Future<void> _ensureGattServer() async {
+    if (_gattReady) return;
+    try {
+      final supported = await BlePeripheral.isSupported();
+      if (!supported) {
+        debugPrint('[BLE] GATT peripheral unsupported on this device');
+        return;
+      }
+      await BlePeripheral.initialize();
+      BlePeripheral.setAdvertisingStatusUpdateCallback((advertising, error) {
+        _advertising = advertising;
+        if (error != null && error.isNotEmpty) {
+          debugPrint('[BLE] advertising status error: $error');
+        }
+      });
+      BlePeripheral.setWriteRequestCallback((deviceId, characteristicId, offset, value) {
+        if (!_uuidEq(characteristicId, _meshCharUuidStr)) return null;
+        if (value == null || value.isEmpty) return null;
+        final bytes = Uint8List.fromList(value);
+        _inboundChain = _inboundChain
+            .then((_) async {
+              try {
+                await _handleIncomingBytes(bytes);
+              } catch (e) {
+                debugPrint('[BleMesh] peripheral write drop: $e');
+              }
+            })
+            .catchError((Object e, StackTrace st) {
+              debugPrint('[BleMesh] peripheral inbound chain error: $e');
+            });
+        return null;
+      });
+      BlePeripheral.setReadRequestCallback((deviceId, characteristicId, offset, value) {
+        if (_uuidEq(characteristicId, _identityCharUuidStr)) {
+          final payload = utf8.encode(_identityJson());
+          if (offset >= payload.length) {
+            return ReadRequestResult(value: Uint8List(0));
+          }
+          return ReadRequestResult(
+            value: Uint8List.fromList(payload.sublist(offset)),
+          );
+        }
+        return ReadRequestResult(value: Uint8List(0));
+      });
+
+      final added = Completer<void>();
+      BlePeripheral.setServiceAddedCallback((serviceId, error) {
+        if (added.isCompleted) return;
+        if (error != null && error.isNotEmpty) {
+          added.completeError(StateError(error));
+        } else {
+          added.complete();
+        }
+      });
+
+      try {
+        await BlePeripheral.clearServices();
+      } catch (_) {}
+
+      await BlePeripheral.addService(
+        BleService(
+          uuid: _serviceUuidStr,
+          primary: true,
+          characteristics: [
+            BleCharacteristic(
+              uuid: _meshCharUuidStr,
+              properties: [
+                CharacteristicProperties.read.index,
+                CharacteristicProperties.write.index,
+                CharacteristicProperties.writeWithoutResponse.index,
+                CharacteristicProperties.notify.index,
+              ],
+              permissions: [
+                AttributePermissions.readable.index,
+                AttributePermissions.writeable.index,
+              ],
+              descriptors: [
+                BleDescriptor(
+                  uuid: '00002902-0000-1000-8000-00805F9B34FB',
+                  value: Uint8List.fromList([0, 0]),
+                  permissions: [
+                    AttributePermissions.readable.index,
+                    AttributePermissions.writeable.index,
+                  ],
+                ),
+              ],
+            ),
+            BleCharacteristic(
+              uuid: _identityCharUuidStr,
+              properties: [CharacteristicProperties.read.index],
+              permissions: [AttributePermissions.readable.index],
+            ),
+          ],
+        ),
+      );
+      await added.future.timeout(const Duration(seconds: 6));
+      _gattReady = true;
+      debugPrint('[BLE] GATT peripheral ready uuid=$_serviceUuidStr');
+    } catch (e) {
+      _gattReady = false;
+      debugPrint('[BLE] GATT peripheral setup failed: $e');
+    }
+  }
+
+  String _identityJson() {
+    final map = <String, Object?>{
+      'id': myUserId,
+      'pubKey': localPubKeyCompact.isNotEmpty
+          ? localPubKeyCompact
+          : (crypto != null
+              ? CryptoService.compactPublicKey(crypto!.publicKeyPem)
+              : ''),
+    };
+    final name = localDisplayName.trim();
+    if (name.isNotEmpty) map['name'] = name;
+    final geo = localGeohash?.trim().toLowerCase();
+    if (geo != null && geo.isNotEmpty) map['geo'] = geo;
+    return jsonEncode(map);
+  }
+
+  /// Advertise connectable ResilNet GATT so nearby phones can write bulletins.
   Future<void> _startAdvertising() async {
     if (_advertiseInFlight) return;
     _advertiseInFlight = true;
     try {
-      final supported = await _peripheral.isSupported;
-      if (!supported) {
-        debugPrint('[BLE] peripheral advertise unsupported on this device');
+      await _ensureGattServer();
+      if (!_gattReady) {
+        debugPrint('[BLE] skip advertise — GATT not ready');
         return;
       }
       final fp = _fingerprintPayload();
-      final AdvertiseData data;
-      if (PlatformCaps.usesIosStyleBle) {
-        // Alternate: UUID discovery vs fingerprint binding.
-        final useFingerprint = DateTime.now().second.isEven;
-        data = useFingerprint
-            ? AdvertiseData(
-                includeDeviceName: false,
-                manufacturerId: _mfgCompanyId,
-                manufacturerData: fp,
-              )
-            : AdvertiseData(
-                serviceUuid: serviceUuid.toString(),
-                serviceUuids: [serviceUuid.toString()],
-                localName: null,
-                includeDeviceName: false,
-              );
-      } else {
-        data = AdvertiseData(
-          serviceUuid: serviceUuid.toString(),
-          serviceUuids: [serviceUuid.toString()],
-          localName: 'ResilNet',
-          includeDeviceName: false,
-          manufacturerId: _mfgCompanyId,
-          manufacturerData: fp,
-        );
-      }
-      final state = await _peripheral.start(
-        advertiseData: data,
-        advertiseSettings: AdvertiseSettings(
-          advertiseMode: AdvertiseMode.advertiseModeLowLatency,
-          txPowerLevel: AdvertiseTxPower.advertiseTxPowerHigh,
-          connectable: true,
-          timeout: 0,
-        ),
+      final mfg = ManufacturerData(
+        manufacturerId: _mfgCompanyId,
+        data: fp,
       );
-      await Future<void>.delayed(const Duration(milliseconds: 350));
-      final ok = await _peripheral.isAdvertising;
+      await BlePeripheral.startAdvertising(
+        services: [_serviceUuidStr],
+        localName: PlatformCaps.usesIosStyleBle ? null : 'ResilNet',
+        manufacturerData: mfg,
+        addManufacturerDataInScanResponse: true,
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+      final ok = await BlePeripheral.isAdvertising() ?? false;
       _advertising = ok;
       debugPrint(
-        '[BLE] advertising start state=$state isAdvertising=$ok uuid=$serviceUuid',
+        '[BLE] advertising isAdvertising=$ok gatt=$_gattReady uuid=$_serviceUuidStr',
       );
-      if (!ok) {
-        try {
-          await _peripheral.stop();
-        } catch (_) {}
-      }
     } catch (e) {
       _advertising = false;
       debugPrint('[BLE] advertising start failed: $e');
@@ -312,7 +448,7 @@ class BleMeshService extends ChangeNotifier {
 
   Future<void> _stopAdvertising() async {
     try {
-      await _peripheral.stop();
+      await BlePeripheral.stopAdvertising();
       if (_advertising) debugPrint('[BLE] advertising stopped');
     } catch (e) {
       debugPrint('[BLE] advertising stop failed: $e');
@@ -755,12 +891,35 @@ class BleMeshService extends ChangeNotifier {
       return false;
     }
 
-    // Geohash presence — update peer cell, never surface as chat.
+    // Geohash presence — update peer cell + optional community nick.
     // Presence envelopes are intentionally unsigned (mesh UX only).
+    // Content is either a raw geohash or JSON: {"g":"…","n":"nick"}.
     if (msg.payloadKind == PayloadKinds.presence) {
-      final geo = (msg.content ?? '').trim().toLowerCase();
-      if (geo.isNotEmpty) {
+      String? geo;
+      String? nick;
+      final raw = (msg.content ?? '').trim();
+      if (raw.startsWith('{')) {
+        try {
+          final obj = jsonDecode(raw);
+          if (obj is Map) {
+            geo = (obj['g'] as String?)?.trim().toLowerCase();
+            nick = (obj['n'] as String?)?.trim();
+          }
+        } catch (_) {}
+      } else if (raw.isNotEmpty) {
+        geo = raw.toLowerCase();
+      }
+      nick ??= msg.senderName?.trim();
+      if (geo != null && geo.isNotEmpty) {
         await _db.updatePeerGeohash(msg.senderId, geo);
+      }
+      if (nick != null && nick.isNotEmpty) {
+        final existing = await _db.getPeer(msg.senderId);
+        if (existing != null) {
+          if ((existing.displayName ?? '').trim() != nick) {
+            await _db.upsertPeer(existing.copyWith(displayName: nick));
+          }
+        }
       }
       notifyListeners();
       return true;
@@ -775,7 +934,7 @@ class BleMeshService extends ChangeNotifier {
       if (!accepted) return false;
       if (msg.ttl > 0) {
         unawaited(
-          sendDirectNow(
+          fanOutNow(
             msg.copyWith(ttl: msg.ttl - 1, status: MessageStatus.relayed),
           ),
         );

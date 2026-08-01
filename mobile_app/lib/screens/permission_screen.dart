@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../core/platform_caps.dart';
 import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 
@@ -18,8 +19,18 @@ class _PermissionScreenState extends State<PermissionScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AppState>().refreshPermissions();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final s = context.read<AppState>();
+      if (PlatformCaps.isMacOS) {
+        // No permission_handler on macOS — continue into the app immediately.
+        if (s.isReady && !s.permissionsGranted) {
+          await s.requestPermissions();
+        } else {
+          await s.refreshPermissions();
+        }
+        return;
+      }
+      await s.refreshPermissions();
     });
   }
 

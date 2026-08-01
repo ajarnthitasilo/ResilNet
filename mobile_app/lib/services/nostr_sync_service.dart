@@ -1,23 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../core/resilnet_protocol.dart';
 import '../src/rust/api/dto.dart';
 import '../src/rust/api/nostr_api.dart';
-import 'secure_storage.dart';
+import 'secure_kv.dart';
 
 /// Cloud replacement — Nostr relay pool via Rust FFI (account-less secp256k1).
 class NostrSyncService extends ChangeNotifier {
-  NostrSyncService({FlutterSecureStorage? storage})
-      : _storage = storage ?? resilnetSecureStorage;
+  NostrSyncService({SecureKv? storage}) : _storage = storage ?? resilnetSecureKv;
 
   static const _kSecretHex = 'resilnet_nostr_secret_hex';
   static const _keychainTimeout = Duration(seconds: 4);
   static const _initTimeout = Duration(seconds: 25);
 
-  final FlutterSecureStorage _storage;
+  final SecureKv _storage;
 
   NostrPoolStatusDto? _status;
   bool _running = false;

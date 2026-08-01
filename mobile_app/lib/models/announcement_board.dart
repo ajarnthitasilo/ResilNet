@@ -117,7 +117,9 @@ class AnnouncementMedia {
   static const prefix = 'RNMEDIA:';
 
   static String encodeImage(String b64) => '${prefix}image:$b64';
-  static String encodeAudio(String b64) => '${prefix}audio:$b64';
+
+  /// [payload] is either raw base64 (legacy) or [VoicePayload] JSON wire.
+  static String encodeAudio(String payload) => '${prefix}audio:$payload';
 
   static bool isMedia(String? plain) =>
       plain != null && plain.startsWith(prefix);

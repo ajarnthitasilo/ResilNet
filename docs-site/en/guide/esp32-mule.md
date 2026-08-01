@@ -16,7 +16,7 @@ Typical advertisement name: `RN-MULE` / ResilNet node BLE service.
 2. Flash with a computer (PlatformIO / esptool) **or** in-app **BLE OTA** if the board already has OTA-capable firmware
 3. Power on — the phone should see the node during sync
 
-Technical OTA notes in the repo: `docs/esp32_ble_ota.md`
+Full flash / OTA guide: [Flash firmware & BLE OTA](esp32-ota.md)
 
 ## Day-to-day
 

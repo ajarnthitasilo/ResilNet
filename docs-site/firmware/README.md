@@ -33,4 +33,14 @@ curl -I http://127.0.0.1:8080/firmware/manifest.json
 curl -I http://127.0.0.1:8080/firmware/esp32_standalone/latest.bin
 ```
 
-User guides: [ไทย](../th/firmware/) · [English](../en/firmware/)
+## ดาวน์โหลด
+
+ไฟล์ `.bin` อยู่ที่โฟลเดอร์ [`firmware/`](./) ของไซต์นี้ (ไม่ใช่ Docsify hash route)
+
+| ไฟล์ | URL ตรง |
+|------|---------|
+| Manifest | https://ajarnthitasilo.github.io/ResilNet/firmware/manifest.json |
+| Standalone latest | https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_standalone/latest.bin |
+| LoRa gateway latest | https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_lora_gateway/latest.bin |
+
+User guides: [ไทย](../th/firmware/) · [English](../en/firmware/) · OTA: [ไทย](../th/guide/esp32-ota.md) · [EN](../en/guide/esp32-ota.md)

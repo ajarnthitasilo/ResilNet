@@ -2,45 +2,59 @@
 
 แอป ResilNet ใช้ระบบ **hybrid**:
 
-1. **ออนไลน์** — ดาวน์โหลดจาก CDN / เว็บเอกสาร (เมื่อตั้ง `RESILNET_FIRMWARE_BASE_URL`)
+1. **ออนไลน์** — ดาวน์โหลดจาก CDN / เว็บเอกสารนี้
 2. **แคชในเครื่อง** — ไฟล์ที่โหลดไว้ก่อนหน้า (ตรวจ checksum)
 3. **Baseline ในแอป** — สำรองเมื่อไม่มีเน็ต (เวอร์ชันที่ฝังตอน build แอป)
 
-เวอร์ชันเฟิร์มแวร์ที่สอดคล้องกับเอกสารชุดนี้: **1.9.49**  
-(ดูค่าล่าสุดใน [`firmware/manifest.json`](../../firmware/manifest.json))
+เวอร์ชันเฟิร์มแวร์ปัจจุบันบนเว็บนี้: **1.9.49**  
+(ดูค่าสดใน [manifest.json](https://ajarnthitasilo.github.io/ResilNet/firmware/manifest.json))
 
-## ดาวน์โหลดจากเว็บนี้
+> ลิงก์ดาวน์โหลดด้านล่างเป็น URL เต็มของ GitHub Pages — กดแล้วได้ไฟล์ `.bin` โดยตรง (ไม่ผ่าน hash route ของ Docsify)
 
-| ไฟล์ | ลิงก์ |
-|------|--------|
-| Manifest (SHA-256) | [`manifest.json`](../../firmware/manifest.json) |
-| Standalone mule (`latest.bin`) | [`esp32_standalone/latest.bin`](../../firmware/esp32_standalone/latest.bin) |
-| LoRa gateway (`latest.bin`) | [`esp32_lora_gateway/latest.bin`](../../firmware/esp32_lora_gateway/latest.bin) |
-| Standalone (ชื่อเดิม) | [`resilnet_esp32_standalone.bin`](../../firmware/resilnet_esp32_standalone.bin) |
-| LoRa gateway (ชื่อเดิม) | [`resilnet_esp32_lora_gateway.bin`](../../firmware/resilnet_esp32_lora_gateway.bin) |
+## ดาวน์โหลด — 1.9.49 (ล่าสุด)
+
+- [Manifest (SHA-256)](https://ajarnthitasilo.github.io/ResilNet/firmware/manifest.json) — `manifest.json`
+- [Standalone mule — latest.bin](https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_standalone/latest.bin)
+- [LoRa gateway — latest.bin](https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_lora_gateway/latest.bin)
+- [Standalone — ชื่อเดิม `resilnet_esp32_standalone.bin`](https://ajarnthitasilo.github.io/ResilNet/firmware/resilnet_esp32_standalone.bin)
+- [LoRa gateway — ชื่อเดิม `resilnet_esp32_lora_gateway.bin`](https://ajarnthitasilo.github.io/ResilNet/firmware/resilnet_esp32_lora_gateway.bin)
+
+### ประวัติเวอร์ชันบน CDN
+
+| เวอร์ชัน | อัปเดต | Standalone | LoRa gateway |
+|---------|--------|------------|--------------|
+| **1.9.49** (ปัจจุบัน) | 2026-07-31 | [latest.bin](https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_standalone/latest.bin) | [latest.bin](https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_lora_gateway/latest.bin) |
+
+เวอร์ชันเก่าจะเพิ่มแถวในตารางนี้เมื่อ sync ขึ้น CDN (ดู [สำหรับนักพัฒนา](../dev/))
+
+## วิธีแฟลช / OTA
+
+อ่านคู่มือเต็ม: **[แฟลชเฟิร์มแวร์และ BLE OTA](../guide/esp32-ota.md)**
+
+สรุปสั้นๆ:
+
+1. ดาวน์โหลด `.bin` จากลิงก์ด้านบน **หรือ** ในแอป: ตั้งค่า → ดาวน์โหลดเฟิร์มแวร์ ESP32
+2. ครั้งแรก: แฟลชผ่าน USB (PlatformIO / esptool) หรือใช้บอร์ดที่มี OTA อยู่แล้ว
+3. ครั้งถัดไป: ในแอป → แฟลชผ่าน Bluetooth (BLE OTA)
 
 ## ดาวน์โหลดจากแอป
 
-ตั้งค่า → Firmware / OTA — เลือกชนิดโหนด แล้วให้แอป resolve แหล่งที่ดีที่สุด
+ตั้งค่า → ดาวน์โหลดเฟิร์มแวร์ ESP32 — เลือกชนิดโหนด แล้วให้แอป resolve แหล่งที่ดีที่สุด (ออนไลน์ → แคช → baseline)
 
 ## สร้างแอปที่ชี้ CDN นี้
-
-หลัง GitHub Pages ขึ้นแล้ว (URL ด้านล่าง):
 
 ```bash
 flutter build apk --release \
   --dart-define=RESILNET_FIRMWARE_BASE_URL=https://ajarnthitasilo.github.io/ResilNet/firmware
 ```
 
-**Docs site:** https://ajarnthitasilo.github.io/ResilNet/  
+**Docs:** https://ajarnthitasilo.github.io/ResilNet/  
 **Firmware base:** https://ajarnthitasilo.github.io/ResilNet/firmware
 
 แอปจะเรียก:
 
 - `{base}/esp32_standalone/latest.bin`
 - `{base}/esp32_lora_gateway/latest.bin`
-
-ถ้าไม่ตั้ง URL แอปยังแฟลชจาก **baseline ในแอป** ได้เมื่อออฟไลน์
 
 ## อัปเดตไฟล์บนเว็บ (นักพัฒนา)
 

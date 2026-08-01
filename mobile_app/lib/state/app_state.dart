@@ -49,7 +49,7 @@ import '../services/notification_service.dart';
 import '../services/nostr_sync_service.dart';
 import '../services/resilnet_packet_codec.dart';
 import '../services/resilnet_service.dart';
-import '../services/secure_storage.dart';
+import '../services/secure_kv.dart';
 import '../services/screenshot_watch_service.dart';
 import '../services/udp_transport_service.dart';
 import '../src/rust/api/dto.dart';
@@ -58,7 +58,7 @@ class AppState extends ChangeNotifier {
   final crypto = CryptoService();
   final db = DatabaseService();
   final resilnet = ResilNetService();
-  final _storage = resilnetSecureStorage;
+  final _storage = resilnetSecureKv;
   final notifications = NotificationService();
   final screenshots = ScreenshotWatchService();
 
@@ -274,10 +274,10 @@ class AppState extends ChangeNotifier {
   String peerDisplayLabel(String peerId, {String? fallbackNick}) {
     final id = peerId.trim();
     final alias = contactAlias(id);
-    return peerListLabel(
-      aliasOrNick: alias ?? fallbackNick,
-      id: id,
-    );
+    if (alias != null && alias.isNotEmpty) {
+      return peerListLabel(aliasOrNick: alias, id: id);
+    }
+    return peerListLabel(aliasOrNick: fallbackNick, id: id);
   }
 
   Future<void> _loadContactAliases() async {
@@ -561,9 +561,13 @@ class AppState extends ChangeNotifier {
     debugPrint('[Init] retry requested session=$_sessionId');
     _initDone = false;
     _initError = null;
+    _initStarted = false;
     notifyListeners();
     try {
       await init(reason: 'retryInit', force: true);
+      if (_initError != null) {
+        markInitFailed(_initError!);
+      }
     } catch (e, st) {
       debugPrint('[ResilNet] retryInit failed: $e\n$st');
       markInitFailed(e.toString());
@@ -669,8 +673,13 @@ class AppState extends ChangeNotifier {
       };
       resilnet.addListener(_onResilnetFlush!);
 
-      await notifications.init();
-      unawaited(notifications.requestPermissions(reason: 'init'));
+      try {
+        await notifications.init();
+        unawaited(notifications.requestPermissions(reason: 'init'));
+      } catch (e) {
+        // Never block boot on notification plugin setup (esp. macOS).
+        debugPrint('[ResilNet] notifications init soft-fail: $e');
+      }
 
       _mesh = BleMeshService(
         database: db,
@@ -683,6 +692,7 @@ class AppState extends ChangeNotifier {
         onEphemeralMessage: _rememberSessionMessage,
         onBulletinMessage: _onBulletinMessage,
       );
+      _syncMeshIdentity();
       _esp32 = Esp32SyncService(
         database: db,
         crypto: crypto,
@@ -1171,11 +1181,14 @@ class AppState extends ChangeNotifier {
     final peer = data.toPeer(lastSeen: now);
     await db.upsertPeer(peer);
     if (data.name == null || data.name!.isEmpty) {
+      // Do not invent a contact alias from the pubkey hash — that makes the
+      // UI look like the alias "failed to save" when the user never set one.
+    } else {
       final existing = await db.getContactAlias(data.id);
       if (existing == null || existing.isEmpty) {
         await setContactAlias(
           publicKeyHash: data.id,
-          aliasName: formatShortPeerId(data.id),
+          aliasName: data.name!,
         );
       }
     }
@@ -2215,6 +2228,7 @@ class AppState extends ChangeNotifier {
       expiresAt: expiry.expiresAtMs,
       urgent: urgent,
       senderId: myUserId,
+      senderName: displayName.isEmpty ? null : displayName,
     );
     _notices.insert(0, notice);
     _noticeDeliveredTo[notice.id] = <String>{};
@@ -2288,6 +2302,8 @@ class AppState extends ChangeNotifier {
   /// Broadcast bulletin to nearby radios (fan-out) + optional UDP SoftAP.
   Future<bool> _broadcastBulletin(String bulletinId, String wire) async {
     try {
+      // Stay connectable so peers (and backgrounded phones) can accept GATT writes.
+      unawaited(_mesh?.holdAdvertise());
       final envelope = _bulletinEnvelope(bulletinId, wire);
       final bleConnected = _mesh?.connectedDeviceId != null;
       final nearbyCount = _mesh?.nearbyPeerCount ?? 0;
@@ -2315,6 +2331,8 @@ class AppState extends ChangeNotifier {
           debugPrint('[Bulletin] UDP send failed id=$bulletinId: $e');
         }
       }
+      // Push into ESP32 mule ASAP for late joiners / backgrounded phones.
+      unawaited(_esp32?.nudgeSync());
       final ok = bleSent > 0 || udpOk;
       debugPrint(
         '[Bulletin] broadcast id=$bulletinId bleSent=$bleSent '
@@ -2352,12 +2370,42 @@ class AppState extends ChangeNotifier {
       );
       return false;
     }
-    _notices.insert(0, wire.toLocalNotice());
+    final notice = wire.toLocalNotice();
+    _notices.insert(0, notice);
     _bulletinWires[wire.bulletinId] = wire.encode();
     await _persistNotices();
+
+    final nick = (wire.senderName ?? '').trim();
+    if (nick.isNotEmpty) {
+      try {
+        final existing = await db.getPeer(wire.senderId);
+        if (existing != null) {
+          if ((existing.displayName ?? '').trim() != nick) {
+            await db.upsertPeer(existing.copyWith(displayName: nick));
+          }
+        } else {
+          final pem = CryptoService.normalizePublicKey(wire.senderPk);
+          await db.upsertPeer(
+            Peer(
+              id: wire.senderId,
+              publicKey: pem,
+              displayName: nick,
+              isVerifiedIssuer: false,
+              isBlocked: false,
+              lastSeen: DateTime.now().millisecondsSinceEpoch,
+            ),
+          );
+        }
+      } catch (e) {
+        debugPrint('[Bulletin] senderName upsert failed: $e');
+      }
+    }
+
     notifyListeners();
+    final nickLabel = nick.isEmpty ? '-' : nick;
     debugPrint(
-      '[Bulletin] ingested id=${wire.bulletinId} from=${wire.senderId} via=$via',
+      '[Bulletin] ingested id=${wire.bulletinId} from=${wire.senderId} '
+      'nick=$nickLabel via=$via',
     );
     return true;
   }
@@ -2559,7 +2607,25 @@ class AppState extends ChangeNotifier {
     } else {
       await _storage.write(key: _kDisplayName, value: next);
     }
+    _syncMeshIdentity();
     notifyListeners();
+    // Broadcast community nick to nearby mesh + Nostr presence.
+    unawaited(announceGeohashPresence(force: true));
+    unawaited(_mesh?.holdAdvertise());
+  }
+
+  void _syncMeshIdentity() {
+    final m = _mesh;
+    if (m == null) return;
+    m.localDisplayName = displayName;
+    try {
+      m.localPubKeyCompact =
+          CryptoService.compactPublicKey(crypto.publicKeyPem);
+    } catch (_) {}
+    final full = _currentGeohash;
+    if (full != null && full.isNotEmpty) {
+      m.localGeohash = Geohash.atPrecision(full, _geoPrecision);
+    }
   }
 
   /// เรียกจาก `WidgetsBindingObserver` เมื่อสถานะแอปเปลี่ยน
@@ -2580,6 +2646,8 @@ class AppState extends ChangeNotifier {
           '(desktop=${PlatformCaps.isDesktop})',
         );
       }
+      // Prefer peripheral advertise so nearby phones can still deliver bulletins.
+      unawaited(_mesh?.holdAdvertise(duration: const Duration(seconds: 45)));
       debugPrint('[ACK] persist queue reason=lifecycle-$state');
       unawaited(_ackQueue?.persistToDatabase());
       if (_transportMode.usesInternet) {
@@ -3491,6 +3559,7 @@ class AppState extends ChangeNotifier {
           precision: GeoPrecision.block.length,
         );
         _geoLocationStatus = GeoLocationStatus.resolved;
+        _syncMeshIdentity();
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove(_kManualGeohash);
         await prefs.setString(_kCachedGeohash, _currentGeohash!);
@@ -3540,6 +3609,7 @@ class AppState extends ChangeNotifier {
     _currentGeohash = normalized;
     _geoLocationStatus = GeoLocationStatus.manual;
     _geoError = null;
+    _syncMeshIdentity();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kManualGeohash, normalized);
     debugPrint('[Geo] manual geohash set g=$normalized');
@@ -3757,32 +3827,38 @@ class AppState extends ChangeNotifier {
       }
     }
 
-    // Mesh: sealed presence to nearby BLE peers (existing path).
+    // Mesh: unsigned presence fan-out (geohash + community nick).
     if (!_transportMode.usesMesh) return;
-    final peers = _mesh?.nearbyPeers ?? const <Peer>[];
-    if (peers.isEmpty) return;
-
-    for (final peer in peers) {
-      if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
-      try {
-        final ts = DateTime.now().millisecondsSinceEpoch;
-        final msg = ChatMessage(
-          id: _uuid.v4(),
-          senderId: myUserId,
-          receiverId: peer.id,
-          content: channel,
-          encryptedPayload: PayloadKinds.presence,
-          encryptedKey: PayloadKinds.presence,
-          ttl: 2,
-          timestamp: ts,
-          status: MessageStatus.pending,
-          type: MessageType.direct,
-          payloadKind: PayloadKinds.presence,
-        );
-        await routeOutbound(msg);
-      } catch (e) {
-        debugPrint('[ResilNet] presence announce to ${peer.id} failed: $e');
-      }
+    final nick = displayName;
+    final presenceBody = jsonEncode({
+      'g': channel,
+      if (nick.isNotEmpty) 'n': nick,
+    });
+    try {
+      final ts = DateTime.now().millisecondsSinceEpoch;
+      final msg = ChatMessage(
+        id: _uuid.v4(),
+        senderId: myUserId,
+        receiverId: kBulletinBroadcastReceiver,
+        content: presenceBody,
+        encryptedPayload: PayloadKinds.presence,
+        encryptedKey: PayloadKinds.presence,
+        ttl: 2,
+        timestamp: ts,
+        status: MessageStatus.pending,
+        type: MessageType.direct,
+        payloadKind: PayloadKinds.presence,
+        senderName: nick.isEmpty ? null : nick,
+        senderPk: CryptoService.compactPublicKey(crypto.publicKeyPem),
+      );
+      unawaited(_mesh?.holdAdvertise());
+      final n = await _mesh?.fanOutNow(msg) ?? 0;
+      final nickLabel = nick.isEmpty ? '-' : nick;
+      debugPrint(
+        '[GeoPresence] mesh fan-out g=$channel nick=$nickLabel sent=$n',
+      );
+    } catch (e) {
+      debugPrint('[ResilNet] mesh presence announce failed: $e');
     }
   }
 
@@ -4046,6 +4122,7 @@ class AppState extends ChangeNotifier {
       onEphemeralMessage: _rememberSessionMessage,
       onBulletinMessage: _onBulletinMessage,
     );
+    _syncMeshIdentity();
     _onMeshChanged = () {
       _onMeshPeersChanged();
       _scheduleMeshUiNotify();
@@ -4112,9 +4189,13 @@ class AppState extends ChangeNotifier {
     final dto = ResilNetPacketCodec.toDto(outbound, piggybackAcks: piggyback);
     final isMedia = outbound.payloadKind == PayloadKinds.audio ||
         outbound.payloadKind == PayloadKinds.image;
+    // Board posts can embed large RNMEDIA payloads — use the same Nostr
+    // multi-part path when internet-only fan-out exceeds a single event.
+    final needsMediaParts = isMedia ||
+        (outbound.payloadKind == PayloadKinds.boardPost && internetOnly);
 
     // Large sealed media: split across multiple Nostr events (relay-safe).
-    if (isMedia &&
+    if (needsMediaParts &&
         (internetOnly || isNostrOnline || isCloudOnline) &&
         dto.payload.length > MediaPartCodec.singleMaxBytes) {
       final partsNeeded =
@@ -4148,16 +4229,11 @@ class AppState extends ChangeNotifier {
 
     if (isPresence || isBulletin) {
       // Presence/bulletin are fire-and-forget — skip chat persistence.
-      // Bulletins fan-out to every nearby radio; presence stays single-link.
+      // Fan-out to every nearby radio (GATT peripheral on peers accepts writes).
       var bleOk = false;
       try {
-        if (isBulletin) {
-          final n = await _mesh?.fanOutNow(outbound) ?? 0;
-          bleOk = n > 0;
-        } else {
-          await _mesh?.sendDirectNow(outbound);
-          bleOk = _mesh?.connectedDeviceId != null;
-        }
+        final n = await _mesh?.fanOutNow(outbound) ?? 0;
+        bleOk = n > 0;
       } catch (e) {
         debugPrint('[ResilNet] bulletin/presence BLE send failed: $e');
       }
@@ -4568,12 +4644,40 @@ class AppState extends ChangeNotifier {
 
   Future<bool> requestPermissions() async {
     if (!isReady) return false;
+
+    // macOS: permission_handler has no bluetooth/mic channel — continue and
+    // let the OS prompt via CoreBluetooth / AVFoundation when radios start.
+    if (PlatformCaps.isMacOS) {
+      debugPrint('[ResilNet] requestPermissions: macOS skip plugin — grant');
+      _permissionsGranted = true;
+      if (!_radioPaused) {
+        unawaited(_startRadios(reason: 'request-permissions-macos'));
+      }
+      notifyListeners();
+      return true;
+    }
+
     final mesh = await _meshPermissions();
     final needed = <Permission>[...mesh, Permission.microphone];
     debugPrint(
       '[ResilNet] requestPermissions: asking ${needed.map((p) => p.toString()).join(', ')}',
     );
-    final result = await needed.request();
+    Map<Permission, PermissionStatus> result;
+    try {
+      result = await needed.request();
+    } catch (e) {
+      debugPrint('[ResilNet] requestPermissions plugin failed: $e');
+      // Soft-continue on desktop-like failures so the user is not stuck.
+      if (PlatformCaps.isDesktop) {
+        _permissionsGranted = true;
+        if (!_radioPaused) {
+          unawaited(_startRadios(reason: 'request-permissions-desktop-soft'));
+        }
+        notifyListeners();
+        return true;
+      }
+      rethrow;
+    }
     for (final entry in result.entries) {
       debugPrint('[ResilNet] permission ${entry.key} => ${entry.value}');
     }
@@ -4639,6 +4743,7 @@ class AppState extends ChangeNotifier {
         );
       } else {
         try {
+          _syncMeshIdentity();
           await mesh.start();
           debugPrint('[BLE] mesh.start ok');
         } catch (e) {
@@ -4699,14 +4804,25 @@ class AppState extends ChangeNotifier {
   }
 
   Future<bool> _hasAllRequiredPermissions() async {
-    final needed = await _meshPermissions();
-    for (final p in needed) {
-      final status = await p.status;
-      debugPrint('[ResilNet] check $p => $status');
-      // iOS bluetooth บางเวอร์ชันคืน limited/restricted ตอนยังไม่เคยขอ
-      if (!(status.isGranted || status.isLimited)) return false;
+    // macOS: permission_handler often has no BT/notification channel — never
+    // block boot. Radios start best-effort; user can grant via System Settings.
+    if (PlatformCaps.isMacOS) {
+      debugPrint('[ResilNet] macOS skip permission_handler gate');
+      return true;
     }
-    return true;
+    try {
+      final needed = await _meshPermissions();
+      for (final p in needed) {
+        final status = await p.status;
+        debugPrint('[ResilNet] check $p => $status');
+        // iOS bluetooth บางเวอร์ชันคืน limited/restricted ตอนยังไม่เคยขอ
+        if (!(status.isGranted || status.isLimited)) return false;
+      }
+      return true;
+    } catch (e) {
+      debugPrint('[ResilNet] permission check failed (soft): $e');
+      return false;
+    }
   }
 
   Future<List<Permission>> _meshPermissions() async {

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
 import '../core/meshtastic_bridge_core.dart';
-import '../core/peer_id.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/local_notice.dart';
 import '../models/notice_expiry.dart';
@@ -451,12 +450,18 @@ class _NoticesSheetState extends State<_NoticesSheet> {
           channelLabel: n.channelLabel,
           text: n.text,
         );
+        final sid = n.senderId?.trim() ?? '';
         final senderLabel = isMeshtastic
             ? meshtasticNoticeSenderLabel(
                 n.senderId,
                 fallback: l10n.mtBridgeSenderFallback,
               )
-            : formatAnonSender(n.senderId);
+            : sid.isEmpty
+                ? 'anon·????'
+                : s.peerDisplayLabel(
+                    sid,
+                    fallbackNick: n.senderName,
+                  );
         final meta = expires == null
             ? '${n.channelLabel} · ${_formatWhen(created)}'
             : '${n.channelLabel} · ${_formatWhen(created)} · ${l10n.noticeExpiresIn} ${_formatWhen(expires)}';
@@ -538,7 +543,10 @@ class _NoticesSheetState extends State<_NoticesSheet> {
     final senderId = n.senderId?.trim() ?? '';
     if (senderId.isEmpty) return;
     final l10n = context.l10n;
-    final anon = formatAnonSender(senderId);
+    final anon = s.peerDisplayLabel(
+      senderId,
+      fallbackNick: n.senderName,
+    );
     final isSelf = senderId == s.myUserId;
 
     final action = await showModalBottomSheet<String>(

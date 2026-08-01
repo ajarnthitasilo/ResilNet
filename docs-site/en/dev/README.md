@@ -41,9 +41,16 @@ flutter build apk --release \
 
 ## Other technical docs in-repo
 
-- `docs/esp32_ble_ota.md` — OTA protocol
+- [Flash / BLE OTA (user guide)](../guide/esp32-ota.md) — downloads + flash steps
+- `docs/esp32_ble_ota.md` — deep OTA protocol (in the GitHub repo)
 - `releases/firmware/README.md` — hybrid baseline policy
 - `mobile_app/docs/GEO_PRESENCE_NOSTR.md` — geo presence
+
+**Firmware CDN (direct links):**
+
+- https://ajarnthitasilo.github.io/ResilNet/firmware/manifest.json
+- https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_standalone/latest.bin
+- https://ajarnthitasilo.github.io/ResilNet/firmware/esp32_lora_gateway/latest.bin
 
 ## Preview this site
 

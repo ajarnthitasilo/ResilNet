@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../app/theme.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
 import '../models/geo_discovery.dart';
@@ -63,7 +64,7 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Colors.white38,
+                      color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                       fontFamily: 'monospace',
                     ),
               ),
@@ -73,7 +74,7 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
               _message(l10n, s, reason),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white54,
+                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.72),
                     height: 1.4,
                   ),
             ),
@@ -83,7 +84,7 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
                 l10n.geoEmptyTeleportHint,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Colors.white38,
+                      color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                     ),
               ),
             ],

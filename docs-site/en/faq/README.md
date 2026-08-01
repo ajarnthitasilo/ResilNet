@@ -25,11 +25,12 @@
 - Stay near the ESP32 for the whole transfer
 - Correct binary for the board role (mule ≠ LoRa)
 - Checksum mismatches block flashing
+- Full guide + downloads: [Flash / BLE OTA](../guide/esp32-ota.md)
 
 ## No internet but I need firmware
 
-- Use the **in-app baseline** (Settings → Firmware)
-- Or copy a `.bin` from another device that already downloaded it
+- Use the **in-app baseline** (Settings → Download ESP32 firmware)
+- Or copy a `.bin` from another device / from the [firmware page](../firmware/) when online
 
 ## Board invites look like huge JSON
 
