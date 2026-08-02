@@ -53,8 +53,9 @@ class _NoticesSheetState extends State<_NoticesSheet> {
       if (_scope == 'geo') {
         unawaited(s.backfillGeoNotices());
       } else if (_scope == 'mesh' && s.isReady) {
-        // Stay connectable so nearby phones can deliver bulletins to us.
+        // Stay connectable + push/pull stored bulletins with nearby radios.
         unawaited(s.mesh.enterBulletinListenMode());
+        unawaited(s.syncMeshBulletinsWithNearby());
       }
     });
   }
@@ -246,11 +247,11 @@ class _NoticesSheetState extends State<_NoticesSheet> {
                     child: _buildNoticeList(context, s, l10n, items),
                   )
                 : RefreshIndicator(
-                    // Re-arm BLE peripheral listen — not a server fetch.
+                    // Re-arm BLE + exchange stored mesh bulletins with nearby.
                     onRefresh: () async {
-                      if (s.isReady) {
-                        await s.mesh.enterBulletinListenMode();
-                      }
+                      if (!s.isReady) return;
+                      await s.mesh.enterBulletinListenMode();
+                      await s.syncMeshBulletinsWithNearby();
                     },
                     child: _buildNoticeList(context, s, l10n, items),
                   ),
@@ -499,6 +500,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
             : '${n.channelLabel} · ${_formatWhen(created)} · ${l10n.noticeExpiresIn} ${_formatWhen(expires)}';
         return ListTile(
           contentPadding: EdgeInsets.zero,
+          onLongPress: () => _confirmDeleteNotice(context, s, n),
           title: Text(
             n.urgent ? '⚠ ${n.text}' : n.text,
             style: TextStyle(
@@ -555,6 +557,15 @@ class _NoticesSheetState extends State<_NoticesSheet> {
               ),
             ],
           ),
+          trailing: IconButton(
+            tooltip: l10n.noticeDelete,
+            icon: Icon(
+              Icons.delete_outline,
+              size: 20,
+              color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
+            ),
+            onPressed: () => _confirmDeleteNotice(context, s, n),
+          ),
         );
       },
     );
@@ -565,6 +576,47 @@ class _NoticesSheetState extends State<_NoticesSheet> {
     final h = local.hour.toString().padLeft(2, '0');
     final m = local.minute.toString().padLeft(2, '0');
     return '${local.month}/${local.day} $h:$m';
+  }
+
+  Future<void> _confirmDeleteNotice(
+    BuildContext context,
+    AppState s,
+    LocalNotice n,
+  ) async {
+    final l10n = context.l10n;
+    // Never left this device (e.g. posted while alone on mesh) — delete quietly.
+    if (!n.sharedExternally) {
+      await s.deleteLocalNotice(n.id);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.noticeDeleted)),
+      );
+      return;
+    }
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.noticeDeleteConfirmTitle),
+        content: Text(l10n.noticeDeleteLocalOnlyBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.noticeDelete),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+    await s.deleteLocalNotice(n.id);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.noticeDeleted)),
+    );
   }
 
   Future<void> _showAnonActions(

@@ -34,6 +34,7 @@ class NoticeWireData {
       expiresAt: expiresAt,
       urgent: urgent,
       senderId: senderId,
+      sharedExternally: true,
     );
   }
 }

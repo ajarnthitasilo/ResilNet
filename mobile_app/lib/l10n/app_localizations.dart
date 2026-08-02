@@ -2510,6 +2510,30 @@ abstract class AppLocalizations {
   /// **'This device’s BLE receiver is not ready. Toggle Bluetooth and reopen Notices.'**
   String get noticeMeshPublishNoGatt;
 
+  /// No description provided for @noticeDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete notice'**
+  String get noticeDelete;
+
+  /// No description provided for @noticeDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this notice?'**
+  String get noticeDeleteConfirmTitle;
+
+  /// No description provided for @noticeDeleteLocalOnlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes it only on this device. Others who already received it will still see it.'**
+  String get noticeDeleteLocalOnlyBody;
+
+  /// No description provided for @noticeDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice deleted'**
+  String get noticeDeleted;
+
   /// No description provided for @chatNoticeHidden.
   ///
   /// In en, this message translates to:

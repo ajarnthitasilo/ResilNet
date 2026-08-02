@@ -57,6 +57,8 @@ class BulletinWireData {
       urgent: urgent,
       senderId: senderId,
       senderName: senderName,
+      // Received from the mesh — deleting only affects this device.
+      sharedExternally: true,
     );
   }
 

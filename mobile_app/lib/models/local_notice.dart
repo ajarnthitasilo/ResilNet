@@ -10,6 +10,7 @@ class LocalNotice {
     this.urgent = false,
     this.senderId,
     this.senderName,
+    this.sharedExternally = false,
   });
 
   final String id;
@@ -25,6 +26,10 @@ class LocalNotice {
 
   /// Community display name carried on the wire (optional).
   final String? senderName;
+
+  /// True once this notice left the device (BLE/UDP/Nostr/ESP32 catch-up) or
+  /// was received from elsewhere. Used to decide delete UX warnings.
+  final bool sharedExternally;
 
   bool get isExpired {
     final e = expiresAt;
@@ -43,6 +48,7 @@ class LocalNotice {
         if (senderId != null) 'senderId': senderId,
         if (senderName != null && senderName!.isNotEmpty)
           'senderName': senderName,
+        'sharedExternally': sharedExternally,
       };
 
   static LocalNotice fromJson(Map<String, Object?> json) {
@@ -56,20 +62,42 @@ class LocalNotice {
       urgent: json['urgent'] as bool? ?? false,
       senderId: json['senderId'] as String?,
       senderName: (json['senderName'] as String?)?.trim(),
+      sharedExternally: json['sharedExternally'] as bool? ?? false,
+    );
+  }
+
+  LocalNotice copyWith({
+    String? id,
+    String? scope,
+    String? channelLabel,
+    String? text,
+    int? createdAt,
+    int? expiresAt,
+    bool? urgent,
+    String? senderId,
+    String? senderName,
+    bool? sharedExternally,
+  }) {
+    return LocalNotice(
+      id: id ?? this.id,
+      scope: scope ?? this.scope,
+      channelLabel: channelLabel ?? this.channelLabel,
+      text: text ?? this.text,
+      createdAt: createdAt ?? this.createdAt,
+      expiresAt: expiresAt ?? this.expiresAt,
+      urgent: urgent ?? this.urgent,
+      senderId: senderId ?? this.senderId,
+      senderName: senderName ?? this.senderName,
+      sharedExternally: sharedExternally ?? this.sharedExternally,
     );
   }
 
   LocalNotice withSender(String? sender, {String? name}) {
-    return LocalNotice(
-      id: id,
-      scope: scope,
-      channelLabel: channelLabel,
-      text: text,
-      createdAt: createdAt,
-      expiresAt: expiresAt,
-      urgent: urgent,
+    return copyWith(
       senderId: sender ?? senderId,
       senderName: name ?? senderName,
     );
   }
+
+  LocalNotice markedShared() => copyWith(sharedExternally: true);
 }

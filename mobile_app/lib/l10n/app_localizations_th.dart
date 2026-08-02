@@ -1378,6 +1378,19 @@ class AppLocalizationsTh extends AppLocalizations {
       'ตัวรับ BLE ของเครื่องนี้ยังไม่พร้อม ลองปิด/เปิด Bluetooth แล้วเปิดหน้าประกาศใหม่';
 
   @override
+  String get noticeDelete => 'ลบประกาศ';
+
+  @override
+  String get noticeDeleteConfirmTitle => 'ลบประกาศนี้?';
+
+  @override
+  String get noticeDeleteLocalOnlyBody =>
+      'ลบเฉพาะในเครื่องนี้ เครื่องอื่นที่รับไปแล้วจะยังเห็นประกาศอยู่';
+
+  @override
+  String get noticeDeleted => 'ลบประกาศแล้ว';
+
+  @override
   String get chatNoticeHidden => 'ประกาศพื้นที่ — เปิดหน้าประกาศ';
 
   @override

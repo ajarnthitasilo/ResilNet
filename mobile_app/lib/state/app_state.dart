@@ -382,12 +382,16 @@ class AppState extends ChangeNotifier {
 
   /// noticeId → peerIds already fan-out (late-join catch-up).
   final Map<String, Set<String>> _noticeDeliveredTo = {};
+  /// noticeId → BLE deviceIds already catch-up delivered.
+  final Map<String, Set<String>> _noticeDeliveredToDevice = {};
   String? _lastNoticePublishWarning;
   String? get lastNoticePublishWarning => _lastNoticePublishWarning;
 
   /// How many BLE radios accepted the last #mesh bulletin fan-out (0 = none).
   int _lastBulletinBleSent = 0;
   int get lastBulletinBleSent => _lastBulletinBleSent;
+  Timer? _bulletinCatchUpDebounce;
+  Future<void>? _bulletinCatchUpInFlight;
   int _lastPresenceSummaryMesh = -1;
   int _lastPresenceSummaryNostr = -1;
   Timer? _presenceSummaryDebounce;
@@ -695,6 +699,7 @@ class AppState extends ChangeNotifier {
         shouldPersistHistory: () => _saveMessageHistory,
         onEphemeralMessage: _rememberSessionMessage,
         onBulletinMessage: _onBulletinMessage,
+        onLinkReady: _onBleLinkReadyForBulletins,
       );
       _syncMeshIdentity();
       _esp32 = Esp32SyncService(
@@ -1824,7 +1829,6 @@ class AppState extends ChangeNotifier {
     for (final peer in nearby) {
       if (peer.id == myUserId || peer.isBlocked) continue;
       nearbyIds.add(peer.id);
-      unawaited(_catchUpNoticesForPeer(peer));
       if (_notificationsEnabled) {
         debugPrint('[Notify] enqueue peer=${peer.id} via=mesh');
         await _notifyPeerCameOnline(
@@ -1834,6 +1838,8 @@ class AppState extends ChangeNotifier {
         );
       }
     }
+    // Push stored mesh bulletins to every nearby radio (keyed or unbound).
+    _scheduleMeshBulletinCatchUp();
     _peerOnlineNotified.removeWhere(
       (id) => id.startsWith('mesh:') && !nearbyIds.contains(id.substring(5)),
     );
@@ -2266,6 +2272,7 @@ class AppState extends ChangeNotifier {
           debugPrint('[Notice] nostr-publish failed id=${notice.id} g=$hash');
         } else {
           debugPrint('[Notice] nostr-publish ok id=${notice.id} g=$hash');
+          await _markNoticeShared(notice.id);
         }
       }
     } else {
@@ -2283,6 +2290,7 @@ class AppState extends ChangeNotifier {
       _bulletinWires[notice.id] = wire;
       await _persistNotices();
       final sent = await _broadcastBulletin(notice.id, wire);
+      // sharedExternally is marked inside _broadcastBulletin on success.
       debugPrint(
         '[Bulletin] posted id=${notice.id} broadcast=${sent ? 'ok' : 'queued'}',
       );
@@ -2290,6 +2298,34 @@ class AppState extends ChangeNotifier {
 
     notifyListeners();
     return notice;
+  }
+
+  /// Mark a notice as having left this device (or arrived from outside).
+  Future<void> _markNoticeShared(String noticeId) async {
+    final i = _notices.indexWhere((n) => n.id == noticeId);
+    if (i < 0) return;
+    if (_notices[i].sharedExternally) return;
+    _notices[i] = _notices[i].markedShared();
+    await _persistNotices();
+    notifyListeners();
+  }
+
+  /// Delete a notice from this device only.
+  ///
+  /// Returns whether the notice had already left the device (BLE/Nostr/etc),
+  /// so the UI can warn that peers may still have a copy.
+  Future<bool> deleteLocalNotice(String noticeId) async {
+    final i = _notices.indexWhere((n) => n.id == noticeId);
+    if (i < 0) return false;
+    final hadLeft = _notices[i].sharedExternally;
+    _notices.removeAt(i);
+    _bulletinWires.remove(noticeId);
+    _noticeDeliveredTo.remove(noticeId);
+    _noticeDeliveredToDevice.remove(noticeId);
+    await _persistNotices();
+    notifyListeners();
+    debugPrint('[Notice] deleted local id=$noticeId sharedExternally=$hadLeft');
+    return hadLeft;
   }
 
   /// สร้าง envelope สำหรับ public bulletin (plaintext ใน content เจตนา)
@@ -2373,6 +2409,7 @@ class AppState extends ChangeNotifier {
         }
       } else {
         _lastNoticePublishWarning = null;
+        unawaited(_markNoticeShared(bulletinId));
       }
       return ok;
     } catch (e) {
@@ -2547,49 +2584,116 @@ class AppState extends ChangeNotifier {
 
   /// Re-send active notices to a newly discovered messageable peer.
   Future<void> _catchUpNoticesForPeer(Peer peer) async {
-    if (peer.id == myUserId || peer.publicKey.isEmpty) return;
+    if (peer.id == myUserId) return;
     final deviceId = (peer.deviceId ?? '').trim();
     if (deviceId.isEmpty) return;
-    final active = _notices.where((n) => !n.isExpired).toList();
-    for (final notice in active) {
-      final delivered = _noticeDeliveredTo.putIfAbsent(
-        notice.id,
-        () => <String>{},
-      );
-      if (delivered.contains(peer.id)) continue;
-      if (notice.scope == 'geo') {
-        // Geo notices use Nostr bulletin board — no P2P catch-up.
-        continue;
-      }
-      final nearbyIds = (_mesh?.nearbyPeers ?? const <Peer>[])
-          .map((p) => p.id)
-          .toSet();
-      if (!nearbyIds.contains(peer.id)) continue;
-      try {
-        // #mesh bulletins are plaintext+signed — rebroadcast the original
-        // wire (own or relayed) so late joiners get it without key exchange.
-        final wire = _bulletinWires[notice.id];
-        if (wire == null) continue;
-        debugPrint(
-          '[Bulletin] catch-up id=${notice.id} peer=${peer.id} device=$deviceId',
-        );
-        final ok = await _mesh?.sendToDevice(
-              deviceId,
-              msg: _bulletinEnvelope(notice.id, wire, ttl: 2),
-            ) ??
-            false;
-        if (ok) {
-          delivered.add(peer.id);
-        } else {
-          debugPrint(
-            '[Bulletin] catch-up not delivered id=${notice.id} peer=${peer.id}',
-          );
+    await syncMeshBulletinsWithNearby(deviceIds: {deviceId});
+  }
+
+  void _onBleLinkReadyForBulletins(String deviceId) {
+    _seedBulletinNotifyQueueFromStore();
+    unawaited(syncMeshBulletinsWithNearby(deviceIds: {deviceId}));
+  }
+
+  void _scheduleMeshBulletinCatchUp() {
+    _bulletinCatchUpDebounce?.cancel();
+    _bulletinCatchUpDebounce = Timer(const Duration(seconds: 2), () {
+      unawaited(syncMeshBulletinsWithNearby());
+    });
+  }
+
+  void _seedBulletinNotifyQueueFromStore() {
+    final mesh = _mesh;
+    if (mesh == null) return;
+    final envelopes = <ChatMessage>[];
+    for (final n in _notices) {
+      if (n.scope != 'mesh' || n.isExpired) continue;
+      final wire = _bulletinWires[n.id];
+      if (wire == null) continue;
+      envelopes.add(_bulletinEnvelope(n.id, wire, ttl: 2));
+    }
+    mesh.seedBulletinNotifyQueue(envelopes);
+  }
+
+  /// Push every active #mesh bulletin we hold to nearby BLE radios.
+  ///
+  /// This is how late joiners receive history: holders push their store when
+  /// they see / connect to a peer — there is no central board to pull from.
+  Future<int> syncMeshBulletinsWithNearby({Set<String>? deviceIds}) async {
+    final mesh = _mesh;
+    if (mesh == null || !mesh.running) return 0;
+    if (_bulletinCatchUpInFlight != null) {
+      await _bulletinCatchUpInFlight;
+      return 0;
+    }
+
+    final run = () async {
+      _seedBulletinNotifyQueueFromStore();
+      final targets = <String>{...?deviceIds};
+      if (deviceIds == null) {
+        for (final p in mesh.nearbyPeers) {
+          final d = (p.deviceId ?? '').trim();
+          if (d.isNotEmpty) targets.add(d);
         }
-      } catch (e) {
-        debugPrint(
-          '[Bulletin] catch-up failed id=${notice.id} peer=${peer.id} err=$e',
-        );
+        targets.addAll(mesh.nearbyDeviceIds);
+        final linked = mesh.connectedDeviceId?.trim();
+        if (linked != null && linked.isNotEmpty) targets.add(linked);
       }
+      if (targets.isEmpty) {
+        debugPrint('[Bulletin] catch-up skip — no nearby radios');
+        return 0;
+      }
+
+      final active = <({String id, String wire})>[];
+      for (final n in _notices) {
+        if (n.scope != 'mesh' || n.isExpired) continue;
+        final wire = _bulletinWires[n.id];
+        if (wire == null) continue;
+        active.add((id: n.id, wire: wire));
+      }
+      if (active.isEmpty) {
+        debugPrint('[Bulletin] catch-up skip — no stored mesh bulletins');
+        return 0;
+      }
+
+      debugPrint(
+        '[Bulletin] catch-up start targets=${targets.length} '
+        'bulletins=${active.length}',
+      );
+      var delivered = 0;
+      for (final deviceId in targets) {
+        for (final item in active) {
+          final seen = _noticeDeliveredToDevice.putIfAbsent(
+            item.id,
+            () => <String>{},
+          );
+          if (seen.contains(deviceId)) continue;
+          try {
+            final ok = await mesh.sendToDevice(
+              deviceId,
+              msg: _bulletinEnvelope(item.id, item.wire, ttl: 2),
+            );
+            if (ok) {
+              seen.add(deviceId);
+              delivered++;
+              unawaited(_markNoticeShared(item.id));
+            }
+          } catch (e) {
+            debugPrint(
+              '[Bulletin] catch-up failed id=${item.id} device=$deviceId: $e',
+            );
+          }
+        }
+      }
+      debugPrint('[Bulletin] catch-up done deliveredFrames=$delivered');
+      return delivered;
+    }();
+
+    _bulletinCatchUpInFlight = run.then((_) {});
+    try {
+      return await run;
+    } finally {
+      _bulletinCatchUpInFlight = null;
     }
   }
 
@@ -4086,6 +4190,7 @@ class AppState extends ChangeNotifier {
     _systemLines.clear();
     _notices.clear();
     _noticeDeliveredTo.clear();
+    _noticeDeliveredToDevice.clear();
     _nostrPresence.clear();
     _favoritePeerIds.clear();
     _favoriteNearbyNotified.clear();
@@ -4177,6 +4282,7 @@ class AppState extends ChangeNotifier {
       shouldPersistHistory: () => _saveMessageHistory,
       onEphemeralMessage: _rememberSessionMessage,
       onBulletinMessage: _onBulletinMessage,
+      onLinkReady: _onBleLinkReadyForBulletins,
     );
     _syncMeshIdentity();
     _onMeshChanged = () {

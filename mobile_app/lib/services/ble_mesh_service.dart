@@ -40,10 +40,12 @@ class BleMeshService extends ChangeNotifier {
     bool Function()? shouldPersistHistory,
     void Function(ChatMessage message)? onEphemeralMessage,
     Future<bool> Function(ChatMessage message)? onBulletinMessage,
+    void Function(String deviceId)? onLinkReady,
   })  : _db = database,
         _shouldPersistHistory = shouldPersistHistory ?? (() => true),
         _onEphemeralMessage = onEphemeralMessage,
-        _onBulletinMessage = onBulletinMessage;
+        _onBulletinMessage = onBulletinMessage,
+        _onLinkReady = onLinkReady;
 
   final CryptoService? crypto;
   final ResilNetService? resilnet;
@@ -55,6 +57,9 @@ class BleMeshService extends ChangeNotifier {
   /// Public bulletin ingest (verify + dedupe ทำใน AppState).
   /// คืน true เมื่อ bulletin ผ่านการตรวจและถูกรับเข้า.
   final Future<bool> Function(ChatMessage message)? _onBulletinMessage;
+
+  /// GATT link ready (services + MTU) — AppState uses this for bulletin catch-up.
+  final void Function(String deviceId)? _onLinkReady;
 
   static final serviceUuid = Uuid.parse('9d2f3bb2-3a5a-4f6e-a0c2-9d62c2d4d2a1');
   static final characteristicUuid = Uuid.parse('ef8a0f1a-7b27-46d8-9e2a-7d66c1f1d9b1');
@@ -109,13 +114,16 @@ class BleMeshService extends ChangeNotifier {
       _nearbyPeers.isNotEmpty ? _nearbyPeers.length : _nearby.length;
   /// Raw BLE advertisers currently in the scan window (may exceed bound peers).
   int get nearbyDeviceCount => _nearby.length;
+  /// Live radio ids (CoreBluetooth peripherals) seen in the scan window.
+  List<String> get nearbyDeviceIds =>
+      _nearby.keys.where((id) => id.trim().isNotEmpty).toList(growable: false);
   List<Peer> _nearbyPeers = const [];
   List<Peer> get nearbyPeers => _nearbyPeers;
 
-  /// Recent public bulletins to push via GATT notify when a central subscribes
-  /// (phone↔phone: peer may connect to us before we discover them).
+  /// Active public bulletins to push via GATT notify when a central subscribes
+  /// (phone↔phone catch-up when peer connects to us as central).
   final List<ChatMessage> _recentBulletinNotifyQueue = <ChatMessage>[];
-  static const int _maxBulletinNotifyQueue = 8;
+  static const int _maxBulletinNotifyQueue = 32;
   bool _centralSubscribedForNotify = false;
   Future<void>? _notifyFlushInFlight;
 
@@ -792,10 +800,19 @@ class BleMeshService extends ChangeNotifier {
     if (byDev != null && byDev.publicKey.trim().isNotEmpty) {
       await _db.upsertPeer(byDev.copyWith(lastSeen: now));
       unawaited(_recomputeNearbyPeers());
+      if (_connectedDeviceId == null) {
+        unawaited(connect(d.id));
+      }
       return;
     }
 
-    if (_identityAttempted.contains(d.id)) return;
+    if (_identityAttempted.contains(d.id)) {
+      // Identity already tried — still link for public bulletin catch-up.
+      if (_connectedDeviceId == null) {
+        unawaited(connect(d.id));
+      }
+      return;
+    }
     final since = DateTime.now().difference(_lastIdentityAttempt);
     if (since < const Duration(seconds: 8)) return;
     if (_identityAttempted.length > 12) {
@@ -813,8 +830,11 @@ class BleMeshService extends ChangeNotifier {
         unawaited(connect(d.id));
       }
     } catch (e) {
-      // Expected on iOS phone↔phone: plugin advertises but has no GATT server.
+      // Identity may fail while GATT still accepts bulletin writes.
       debugPrint('[BLE] identity read failed device=${d.id}: $e');
+      if (_connectedDeviceId == null) {
+        unawaited(connect(d.id));
+      }
     }
   }
 
@@ -1050,6 +1070,7 @@ class BleMeshService extends ChangeNotifier {
             _linkReadyDeviceId = deviceId;
             debugPrint('[BLE] link ready device=$deviceId');
             notifyListeners();
+            _onLinkReady?.call(deviceId);
           }
         } else if (u.connectionState == DeviceConnectionState.disconnected) {
           debugPrint('[BLE] disconnected device=$deviceId');
@@ -1512,6 +1533,16 @@ class BleMeshService extends ChangeNotifier {
     _recentBulletinNotifyQueue.add(msg);
     while (_recentBulletinNotifyQueue.length > _maxBulletinNotifyQueue) {
       _recentBulletinNotifyQueue.removeAt(0);
+    }
+  }
+
+  /// Replace notify catch-up queue with the full set of active mesh bulletins.
+  void seedBulletinNotifyQueue(List<ChatMessage> envelopes) {
+    _recentBulletinNotifyQueue
+      ..clear()
+      ..addAll(envelopes.take(_maxBulletinNotifyQueue));
+    if (_centralSubscribedForNotify && _recentBulletinNotifyQueue.isNotEmpty) {
+      unawaited(_flushBulletinsViaNotify());
     }
   }
 

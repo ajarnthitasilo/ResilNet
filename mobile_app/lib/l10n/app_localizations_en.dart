@@ -1387,6 +1387,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'This device’s BLE receiver is not ready. Toggle Bluetooth and reopen Notices.';
 
   @override
+  String get noticeDelete => 'Delete notice';
+
+  @override
+  String get noticeDeleteConfirmTitle => 'Delete this notice?';
+
+  @override
+  String get noticeDeleteLocalOnlyBody =>
+      'This removes it only on this device. Others who already received it will still see it.';
+
+  @override
+  String get noticeDeleted => 'Notice deleted';
+
+  @override
   String get chatNoticeHidden => 'Area notice — open Notices';
 
   @override
