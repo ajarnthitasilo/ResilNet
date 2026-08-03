@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../app/theme.dart';
+import '../core/peer_id.dart';
 import '../l10n/app_localizations.dart';
+import '../state/app_state.dart';
+import 'identicon.dart';
 
 /// Long-press / force-touch actions for board or peer invites.
 Future<void> showInviteActionsSheet({
@@ -87,6 +92,19 @@ Future<void> showInviteActionsSheet({
                 icon: const Icon(Icons.share_outlined),
                 label: Text(l10n.inviteShareLink),
               ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  Navigator.pop(ctx);
+                  if (!context.mounted) return;
+                  await showInviteSendToChatSheet(
+                    context: context,
+                    shortLink: shortLink,
+                  );
+                },
+                icon: const Icon(Icons.chat_bubble_outline),
+                label: Text(l10n.inviteSendInChat),
+              ),
               Theme(
                 data: Theme.of(ctx).copyWith(dividerColor: Colors.transparent),
                 child: ExpansionTile(
@@ -119,6 +137,107 @@ Future<void> showInviteActionsSheet({
                 ),
               ),
             ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+/// Pick a messageable peer and send [shortLink] as a sealed 1:1 text.
+Future<void> showInviteSendToChatSheet({
+  required BuildContext context,
+  required String shortLink,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final s = context.read<AppState>();
+  final peers = await s.messageablePeersForInvite();
+  if (!context.mounted) return;
+
+  await showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (ctx) {
+      final height = MediaQuery.sizeOf(ctx).height * 0.55;
+      return SafeArea(
+        child: SizedBox(
+          height: height,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.inviteSendInChat,
+                  style: Theme.of(ctx).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.inviteSendInChatHint,
+                  style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
+                        color: ResilNetTheme.mutedOnSurface(ctx),
+                      ),
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: peers.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              l10n.inviteSendInChatEmpty,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(
+                                    color: ResilNetTheme.mutedOnSurface(ctx),
+                                  ),
+                            ),
+                          ),
+                        )
+                      : ListView.separated(
+                          itemCount: peers.length,
+                          separatorBuilder: (_, _) => const Divider(height: 1),
+                          itemBuilder: (_, i) {
+                            final peer = peers[i];
+                            return FutureBuilder<String>(
+                              future: s.db.resolveDisplayName(peer.id),
+                              builder: (context, snap) {
+                                final label = peerListLabel(
+                                  aliasOrNick: snap.data ?? peer.displayName,
+                                  id: peer.id,
+                                );
+                                return ListTile(
+                                  leading: Identicon(id: peer.id, size: 36),
+                                  title: Text(label),
+                                  subtitle: Text(
+                                    formatShortPeerId(peer.id),
+                                    style: const TextStyle(fontFamily: 'monospace'),
+                                  ),
+                                  onTap: () async {
+                                    Navigator.pop(ctx);
+                                    final ok = await s.sendSealedTextToPeer(
+                                      peerId: peer.id,
+                                      text: shortLink,
+                                    );
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          ok
+                                              ? l10n.inviteSentToChat
+                                              : l10n.chatNeedPeerKey,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
       );

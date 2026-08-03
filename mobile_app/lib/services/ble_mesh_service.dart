@@ -206,6 +206,19 @@ class BleMeshService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Hard restart when scan/ADV died while [_running] stayed true.
+  /// [start] alone is a no-op in that state.
+  Future<void> restart({String reason = 'soft-refresh'}) async {
+    debugPrint('[BLE] restart begin reason=$reason wasRunning=$_running');
+    try {
+      await stop();
+    } catch (e) {
+      debugPrint('[BLE] restart stop failed: $e');
+    }
+    await start();
+    debugPrint('[BLE] restart end reason=$reason');
+  }
+
   /// Stay discoverable + receivable while Notices is open.
   ///
   /// - **macOS**: concurrent ADV+scan (desktop dual-role is usually reliable).

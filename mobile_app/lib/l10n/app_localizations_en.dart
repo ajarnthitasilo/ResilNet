@@ -15,6 +15,309 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityTitle => 'ResilNet';
 
   @override
+  String get appRefreshing => 'Refreshing ResilNet…';
+
+  @override
+  String get appRefreshed => 'Refreshed — radios and discovery restarted';
+
+  @override
+  String appRefreshFailed(String error) {
+    return 'Refresh failed: $error';
+  }
+
+  @override
+  String get appRefreshTitleHint =>
+      'Double-tap = soft refresh. Long-press = hard recover. Triple-tap = emergency wipe.';
+
+  @override
+  String get softRefreshTipTitle => 'If ResilNet feels stuck';
+
+  @override
+  String get softRefreshTipBody =>
+      'Double-tap ResilNet (top-left) for a soft radio refresh. If still stuck: long-press the title, use ⋮ → Hard recover, or Settings. Triple-tap is emergency wipe only.';
+
+  @override
+  String get softRefreshTipGotIt => 'Got it';
+
+  @override
+  String get infoSoftRefreshTitle => 'If the app feels stuck';
+
+  @override
+  String get infoSoftRefreshStepRefresh =>
+      'Double-tap ResilNet (top-left) → soft refresh radios & nearby people';
+
+  @override
+  String get infoSoftRefreshStepHard =>
+      'Still stuck? Long-press title, or ⋮ / Settings → Hard recover';
+
+  @override
+  String get infoSoftRefreshStepWait =>
+      'Wait for the result snackbar, then try again. Session reset keeps your keys.';
+
+  @override
+  String get infoSoftRefreshStepWipe =>
+      'Triple-tap = emergency wipe (deletes local data) — only if intentional';
+
+  @override
+  String get appRecoverySection => 'App recovery';
+
+  @override
+  String get appRecoverySectionSubtitle =>
+      'Use when the app feels frozen. Soft = title double-tap. Hard recover is stronger. Session reset restarts services without wiping keys.';
+
+  @override
+  String get appHardRecoverAction => 'Hard recover';
+
+  @override
+  String get appHardRecovering => 'Hard recovering…';
+
+  @override
+  String get appSessionResetAction => 'Reset session';
+
+  @override
+  String get appSessionResetRunning => 'Resetting session…';
+
+  @override
+  String get appSessionResetConfirmTitle => 'Reset session?';
+
+  @override
+  String get appSessionResetConfirmBody =>
+      'Restarts ResilNet services on this device. Your identity keys are kept.';
+
+  @override
+  String get appRecoveryBusy => 'Recovery already running…';
+
+  @override
+  String get appRecoveryOk => 'Recovery finished';
+
+  @override
+  String get appRecoveryPartial =>
+      'Recovery finished with some steps skipped — try again if still stuck';
+
+  @override
+  String get appRecoveryFailed =>
+      'Recovery failed — try Session reset, or force-quit the app from the OS';
+
+  @override
+  String get localWifiTitle => 'Local Wi‑Fi';
+
+  @override
+  String get localWifiSubtitle =>
+      'Link nearby devices without the internet — same as being on one LAN.';
+
+  @override
+  String get localWifiNotGatewayHint =>
+      'Not the ESP32 LoRa gateway SoftAP. This is phone↔phone / LAN only.';
+
+  @override
+  String get localWifiUnavailable =>
+      'Local Wi‑Fi is not ready yet — wait for app startup.';
+
+  @override
+  String get lxmfBridgeTitle => 'Home node';
+
+  @override
+  String get lxmfBridgeSubtitle =>
+      'Optional Mac or Pi on your Wi‑Fi that relays sealed chats. Off by default. Does not replace end-to-end encryption.';
+
+  @override
+  String get lxmfBridgeEnable => 'Use home node';
+
+  @override
+  String get lxmfBridgeDisabledHint =>
+      'Turn on only when the bridge app is running on a Mac or Pi on this network.';
+
+  @override
+  String lxmfBridgeOnline(String dest) {
+    return 'Online — $dest';
+  }
+
+  @override
+  String lxmfBridgeOffline(String error) {
+    return 'Can’t reach home node — $error';
+  }
+
+  @override
+  String get lxmfBridgeBaseUrl => 'Home node address';
+
+  @override
+  String get lxmfBridgeBaseUrlHelper =>
+      'IP or http://IP:port — example 192.168.1.10:8766';
+
+  @override
+  String get lxmfBridgeIdentityMap => 'Peer → LXMF dest (JSON)';
+
+  @override
+  String get lxmfBridgeRefresh => 'Save & refresh status';
+
+  @override
+  String get lxmfBridgeLabHint => 'Advanced: labs/reticulum_lxmf';
+
+  @override
+  String get lxmfBridgeOpen => 'Home node settings';
+
+  @override
+  String get lxmfBridgeCheckConnection => 'Check connection';
+
+  @override
+  String get lxmfBridgeStatusOnline => 'Connected to home node';
+
+  @override
+  String get lxmfBridgeStatusOffline => 'Home node not reachable';
+
+  @override
+  String get lxmfBridgeYourDest => 'This node’s address (share with friends)';
+
+  @override
+  String get lxmfBridgeCopyDest => 'Copy address';
+
+  @override
+  String get lxmfBridgeDestCopied => 'Address copied';
+
+  @override
+  String get lxmfBridgeLinkedPeers => 'Linked friends';
+
+  @override
+  String get lxmfBridgeLinkedPeersHint =>
+      'Each friend needs their home-node address once. Then sealed chats can use this path.';
+
+  @override
+  String get lxmfBridgeNoLinks => 'No friends linked yet.';
+
+  @override
+  String get lxmfBridgeAddLink => 'Link a friend';
+
+  @override
+  String get lxmfBridgePickPeer => 'Friend';
+
+  @override
+  String get lxmfBridgePeerDest => 'Their home-node address';
+
+  @override
+  String get lxmfBridgePeerDestHint =>
+      '32-character code from their Home node screen';
+
+  @override
+  String get lxmfBridgeInvalidDest =>
+      'That address doesn’t look valid. Paste the full code from their home node.';
+
+  @override
+  String get lxmfBridgeRemoveLink => 'Unlink';
+
+  @override
+  String get lxmfBridgeSaveLink => 'Save';
+
+  @override
+  String get lxmfBridgeLinkSaved => 'Friend linked';
+
+  @override
+  String get lxmfBridgeNoPeers =>
+      'No messageable contacts yet — add a friend first.';
+
+  @override
+  String get lxmfBridgeHelp =>
+      'Keep the bridge running on the Mac/Pi. This path stays on your LAN — it is not LoRa and does not replace internet or Bluetooth mesh.';
+
+  @override
+  String get localWifiModeHotspot => 'Nearby';
+
+  @override
+  String get localWifiModeRouter => 'Router';
+
+  @override
+  String get localWifiHotspotIntro =>
+      'One device shares a Personal Hotspot. Others join that hotspot, then ResilNet finds them on the local network.';
+
+  @override
+  String get localWifiHostAction => 'Create network (Host)';
+
+  @override
+  String get localWifiJoinAction => 'Join network';
+
+  @override
+  String get localWifiHostSteps =>
+      '1. Open iOS/Android Settings and turn on Personal Hotspot (or Internet Sharing).\n2. Tell friends the hotspot name (and password).\n3. Come back here and tap “Hotspot is on — start waiting”.';
+
+  @override
+  String get localWifiHostReady => 'Hotspot is on — start waiting';
+
+  @override
+  String get localWifiHostWaiting => 'Waiting for friends to join…';
+
+  @override
+  String get localWifiJoinSteps =>
+      '1. Open system Settings and join your friend’s Personal Hotspot.\n2. Return here and tap “I’m connected — search”.';
+
+  @override
+  String get localWifiJoinReady => 'I’m connected — search';
+
+  @override
+  String get localWifiRouterIntro =>
+      'Connect every device to the same Wi‑Fi router/AP. The router does not need internet — only a shared local network.';
+
+  @override
+  String get localWifiRouterSearch => 'Search on this Wi‑Fi';
+
+  @override
+  String get localWifiRefreshNetwork => 'Refresh Wi‑Fi info';
+
+  @override
+  String get localWifiRouterNoWifiTitle => 'Not on Wi‑Fi';
+
+  @override
+  String get localWifiRouterNoWifiBody =>
+      'Join the router’s Wi‑Fi in system Settings, then search again.';
+
+  @override
+  String get localWifiDiscovering => 'Searching on local Wi‑Fi…';
+
+  @override
+  String get localWifiPeersFound => 'Devices on this network';
+
+  @override
+  String get localWifiStop => 'Stop';
+
+  @override
+  String get localWifiSsidUnknown => 'Wi‑Fi name unavailable';
+
+  @override
+  String get localWifiStubBanner => 'Waiting for LAN socket…';
+
+  @override
+  String get localWifiLiveBanner =>
+      'LAN discovery live (UDP) — announce + sealed chat on this Wi‑Fi';
+
+  @override
+  String get localWifiEmptyHotspot =>
+      'No devices yet.\nCheck that friends joined your hotspot and allowed Local Network access.';
+
+  @override
+  String get localWifiEmptyRouter =>
+      'No devices yet.\nSame SSID? Local Network allowed? Some routers block device-to-device traffic (AP isolation).';
+
+  @override
+  String get localWifiIsolationHelp => 'Why can’t we find each other?';
+
+  @override
+  String get localWifiIsolationTitle => 'Router may isolate clients';
+
+  @override
+  String get localWifiIsolationBody =>
+      'If AP/Client isolation (or a guest network) is on, phones on the same Wi‑Fi cannot talk. Turn isolation off, use the main SSID, or switch to Nearby (Hotspot) mode.';
+
+  @override
+  String get localWifiPeerReady => 'Ready to chat (has key)';
+
+  @override
+  String get localWifiPeerNeedKey => 'Found — scan QR to exchange keys';
+
+  @override
+  String get localWifiErrorTitle => 'Local Wi‑Fi error';
+
+  @override
+  String get localWifiErrorBody => 'Something went wrong. Stop and try again.';
+
+  @override
   String get preparingSystem => 'Preparing system…';
 
   @override
@@ -67,7 +370,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageSubtitle =>
-      'Follow system language, or choose Thai / English';
+      'Follow the device language when Thai or English; other system languages use English. Or lock Thai / English here.';
 
   @override
   String get languageSystem => 'System default';
@@ -1487,6 +1790,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteLongPressHint => 'Long-press for link actions';
 
   @override
+  String get inviteSendInChat => 'Send in ResilNet chat…';
+
+  @override
+  String get inviteSendInChatHint =>
+      'Only people you already have a public key for';
+
+  @override
+  String get inviteSendInChatEmpty =>
+      'No messageable chats yet.\nScan a QR, open Area/Mesh, or share the link outside the app first.';
+
+  @override
+  String get inviteSentToChat => 'Invite sent in chat';
+
+  @override
   String get infoTabInfo => 'Info';
 
   @override
@@ -1600,7 +1917,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get panicWipeSubtitle =>
-      'Erase everything local — same as triple-tapping the home title';
+      'Erase everything local — same as triple-tapping the home title (double-tap refreshes radios)';
 
   @override
   String get panicWipeConfirmTitle => 'Wipe all local data?';

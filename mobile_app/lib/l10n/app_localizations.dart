@@ -110,6 +110,540 @@ abstract class AppLocalizations {
   /// **'ResilNet'**
   String get communityTitle;
 
+  /// No description provided for @appRefreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshing ResilNet…'**
+  String get appRefreshing;
+
+  /// No description provided for @appRefreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshed — radios and discovery restarted'**
+  String get appRefreshed;
+
+  /// No description provided for @appRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh failed: {error}'**
+  String appRefreshFailed(String error);
+
+  /// No description provided for @appRefreshTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Double-tap = soft refresh. Long-press = hard recover. Triple-tap = emergency wipe.'**
+  String get appRefreshTitleHint;
+
+  /// No description provided for @softRefreshTipTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If ResilNet feels stuck'**
+  String get softRefreshTipTitle;
+
+  /// No description provided for @softRefreshTipBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Double-tap ResilNet (top-left) for a soft radio refresh. If still stuck: long-press the title, use ⋮ → Hard recover, or Settings. Triple-tap is emergency wipe only.'**
+  String get softRefreshTipBody;
+
+  /// No description provided for @softRefreshTipGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get softRefreshTipGotIt;
+
+  /// No description provided for @infoSoftRefreshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If the app feels stuck'**
+  String get infoSoftRefreshTitle;
+
+  /// No description provided for @infoSoftRefreshStepRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Double-tap ResilNet (top-left) → soft refresh radios & nearby people'**
+  String get infoSoftRefreshStepRefresh;
+
+  /// No description provided for @infoSoftRefreshStepHard.
+  ///
+  /// In en, this message translates to:
+  /// **'Still stuck? Long-press title, or ⋮ / Settings → Hard recover'**
+  String get infoSoftRefreshStepHard;
+
+  /// No description provided for @infoSoftRefreshStepWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for the result snackbar, then try again. Session reset keeps your keys.'**
+  String get infoSoftRefreshStepWait;
+
+  /// No description provided for @infoSoftRefreshStepWipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Triple-tap = emergency wipe (deletes local data) — only if intentional'**
+  String get infoSoftRefreshStepWipe;
+
+  /// No description provided for @appRecoverySection.
+  ///
+  /// In en, this message translates to:
+  /// **'App recovery'**
+  String get appRecoverySection;
+
+  /// No description provided for @appRecoverySectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use when the app feels frozen. Soft = title double-tap. Hard recover is stronger. Session reset restarts services without wiping keys.'**
+  String get appRecoverySectionSubtitle;
+
+  /// No description provided for @appHardRecoverAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard recover'**
+  String get appHardRecoverAction;
+
+  /// No description provided for @appHardRecovering.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard recovering…'**
+  String get appHardRecovering;
+
+  /// No description provided for @appSessionResetAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset session'**
+  String get appSessionResetAction;
+
+  /// No description provided for @appSessionResetRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Resetting session…'**
+  String get appSessionResetRunning;
+
+  /// No description provided for @appSessionResetConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset session?'**
+  String get appSessionResetConfirmTitle;
+
+  /// No description provided for @appSessionResetConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarts ResilNet services on this device. Your identity keys are kept.'**
+  String get appSessionResetConfirmBody;
+
+  /// No description provided for @appRecoveryBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery already running…'**
+  String get appRecoveryBusy;
+
+  /// No description provided for @appRecoveryOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery finished'**
+  String get appRecoveryOk;
+
+  /// No description provided for @appRecoveryPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery finished with some steps skipped — try again if still stuck'**
+  String get appRecoveryPartial;
+
+  /// No description provided for @appRecoveryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery failed — try Session reset, or force-quit the app from the OS'**
+  String get appRecoveryFailed;
+
+  /// No description provided for @localWifiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Wi‑Fi'**
+  String get localWifiTitle;
+
+  /// No description provided for @localWifiSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Link nearby devices without the internet — same as being on one LAN.'**
+  String get localWifiSubtitle;
+
+  /// No description provided for @localWifiNotGatewayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Not the ESP32 LoRa gateway SoftAP. This is phone↔phone / LAN only.'**
+  String get localWifiNotGatewayHint;
+
+  /// No description provided for @localWifiUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Wi‑Fi is not ready yet — wait for app startup.'**
+  String get localWifiUnavailable;
+
+  /// No description provided for @lxmfBridgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home node'**
+  String get lxmfBridgeTitle;
+
+  /// No description provided for @lxmfBridgeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional Mac or Pi on your Wi‑Fi that relays sealed chats. Off by default. Does not replace end-to-end encryption.'**
+  String get lxmfBridgeSubtitle;
+
+  /// No description provided for @lxmfBridgeEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Use home node'**
+  String get lxmfBridgeEnable;
+
+  /// No description provided for @lxmfBridgeDisabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on only when the bridge app is running on a Mac or Pi on this network.'**
+  String get lxmfBridgeDisabledHint;
+
+  /// No description provided for @lxmfBridgeOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online — {dest}'**
+  String lxmfBridgeOnline(String dest);
+
+  /// No description provided for @lxmfBridgeOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Can’t reach home node — {error}'**
+  String lxmfBridgeOffline(String error);
+
+  /// No description provided for @lxmfBridgeBaseUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Home node address'**
+  String get lxmfBridgeBaseUrl;
+
+  /// No description provided for @lxmfBridgeBaseUrlHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'IP or http://IP:port — example 192.168.1.10:8766'**
+  String get lxmfBridgeBaseUrlHelper;
+
+  /// No description provided for @lxmfBridgeIdentityMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Peer → LXMF dest (JSON)'**
+  String get lxmfBridgeIdentityMap;
+
+  /// No description provided for @lxmfBridgeRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & refresh status'**
+  String get lxmfBridgeRefresh;
+
+  /// No description provided for @lxmfBridgeLabHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced: labs/reticulum_lxmf'**
+  String get lxmfBridgeLabHint;
+
+  /// No description provided for @lxmfBridgeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Home node settings'**
+  String get lxmfBridgeOpen;
+
+  /// No description provided for @lxmfBridgeCheckConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Check connection'**
+  String get lxmfBridgeCheckConnection;
+
+  /// No description provided for @lxmfBridgeStatusOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to home node'**
+  String get lxmfBridgeStatusOnline;
+
+  /// No description provided for @lxmfBridgeStatusOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Home node not reachable'**
+  String get lxmfBridgeStatusOffline;
+
+  /// No description provided for @lxmfBridgeYourDest.
+  ///
+  /// In en, this message translates to:
+  /// **'This node’s address (share with friends)'**
+  String get lxmfBridgeYourDest;
+
+  /// No description provided for @lxmfBridgeCopyDest.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy address'**
+  String get lxmfBridgeCopyDest;
+
+  /// No description provided for @lxmfBridgeDestCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Address copied'**
+  String get lxmfBridgeDestCopied;
+
+  /// No description provided for @lxmfBridgeLinkedPeers.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked friends'**
+  String get lxmfBridgeLinkedPeers;
+
+  /// No description provided for @lxmfBridgeLinkedPeersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each friend needs their home-node address once. Then sealed chats can use this path.'**
+  String get lxmfBridgeLinkedPeersHint;
+
+  /// No description provided for @lxmfBridgeNoLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'No friends linked yet.'**
+  String get lxmfBridgeNoLinks;
+
+  /// No description provided for @lxmfBridgeAddLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a friend'**
+  String get lxmfBridgeAddLink;
+
+  /// No description provided for @lxmfBridgePickPeer.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend'**
+  String get lxmfBridgePickPeer;
+
+  /// No description provided for @lxmfBridgePeerDest.
+  ///
+  /// In en, this message translates to:
+  /// **'Their home-node address'**
+  String get lxmfBridgePeerDest;
+
+  /// No description provided for @lxmfBridgePeerDestHint.
+  ///
+  /// In en, this message translates to:
+  /// **'32-character code from their Home node screen'**
+  String get lxmfBridgePeerDestHint;
+
+  /// No description provided for @lxmfBridgeInvalidDest.
+  ///
+  /// In en, this message translates to:
+  /// **'That address doesn’t look valid. Paste the full code from their home node.'**
+  String get lxmfBridgeInvalidDest;
+
+  /// No description provided for @lxmfBridgeRemoveLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get lxmfBridgeRemoveLink;
+
+  /// No description provided for @lxmfBridgeSaveLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get lxmfBridgeSaveLink;
+
+  /// No description provided for @lxmfBridgeLinkSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend linked'**
+  String get lxmfBridgeLinkSaved;
+
+  /// No description provided for @lxmfBridgeNoPeers.
+  ///
+  /// In en, this message translates to:
+  /// **'No messageable contacts yet — add a friend first.'**
+  String get lxmfBridgeNoPeers;
+
+  /// No description provided for @lxmfBridgeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the bridge running on the Mac/Pi. This path stays on your LAN — it is not LoRa and does not replace internet or Bluetooth mesh.'**
+  String get lxmfBridgeHelp;
+
+  /// No description provided for @localWifiModeHotspot.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby'**
+  String get localWifiModeHotspot;
+
+  /// No description provided for @localWifiModeRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'Router'**
+  String get localWifiModeRouter;
+
+  /// No description provided for @localWifiHotspotIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'One device shares a Personal Hotspot. Others join that hotspot, then ResilNet finds them on the local network.'**
+  String get localWifiHotspotIntro;
+
+  /// No description provided for @localWifiHostAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create network (Host)'**
+  String get localWifiHostAction;
+
+  /// No description provided for @localWifiJoinAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Join network'**
+  String get localWifiJoinAction;
+
+  /// No description provided for @localWifiHostSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Open iOS/Android Settings and turn on Personal Hotspot (or Internet Sharing).\n2. Tell friends the hotspot name (and password).\n3. Come back here and tap “Hotspot is on — start waiting”.'**
+  String get localWifiHostSteps;
+
+  /// No description provided for @localWifiHostReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Hotspot is on — start waiting'**
+  String get localWifiHostReady;
+
+  /// No description provided for @localWifiHostWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for friends to join…'**
+  String get localWifiHostWaiting;
+
+  /// No description provided for @localWifiJoinSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Open system Settings and join your friend’s Personal Hotspot.\n2. Return here and tap “I’m connected — search”.'**
+  String get localWifiJoinSteps;
+
+  /// No description provided for @localWifiJoinReady.
+  ///
+  /// In en, this message translates to:
+  /// **'I’m connected — search'**
+  String get localWifiJoinReady;
+
+  /// No description provided for @localWifiRouterIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect every device to the same Wi‑Fi router/AP. The router does not need internet — only a shared local network.'**
+  String get localWifiRouterIntro;
+
+  /// No description provided for @localWifiRouterSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search on this Wi‑Fi'**
+  String get localWifiRouterSearch;
+
+  /// No description provided for @localWifiRefreshNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Wi‑Fi info'**
+  String get localWifiRefreshNetwork;
+
+  /// No description provided for @localWifiRouterNoWifiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on Wi‑Fi'**
+  String get localWifiRouterNoWifiTitle;
+
+  /// No description provided for @localWifiRouterNoWifiBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the router’s Wi‑Fi in system Settings, then search again.'**
+  String get localWifiRouterNoWifiBody;
+
+  /// No description provided for @localWifiDiscovering.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching on local Wi‑Fi…'**
+  String get localWifiDiscovering;
+
+  /// No description provided for @localWifiPeersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices on this network'**
+  String get localWifiPeersFound;
+
+  /// No description provided for @localWifiStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get localWifiStop;
+
+  /// No description provided for @localWifiSsidUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi‑Fi name unavailable'**
+  String get localWifiSsidUnknown;
+
+  /// No description provided for @localWifiStubBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for LAN socket…'**
+  String get localWifiStubBanner;
+
+  /// No description provided for @localWifiLiveBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'LAN discovery live (UDP) — announce + sealed chat on this Wi‑Fi'**
+  String get localWifiLiveBanner;
+
+  /// No description provided for @localWifiEmptyHotspot.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices yet.\nCheck that friends joined your hotspot and allowed Local Network access.'**
+  String get localWifiEmptyHotspot;
+
+  /// No description provided for @localWifiEmptyRouter.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices yet.\nSame SSID? Local Network allowed? Some routers block device-to-device traffic (AP isolation).'**
+  String get localWifiEmptyRouter;
+
+  /// No description provided for @localWifiIsolationHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Why can’t we find each other?'**
+  String get localWifiIsolationHelp;
+
+  /// No description provided for @localWifiIsolationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Router may isolate clients'**
+  String get localWifiIsolationTitle;
+
+  /// No description provided for @localWifiIsolationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If AP/Client isolation (or a guest network) is on, phones on the same Wi‑Fi cannot talk. Turn isolation off, use the main SSID, or switch to Nearby (Hotspot) mode.'**
+  String get localWifiIsolationBody;
+
+  /// No description provided for @localWifiPeerReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to chat (has key)'**
+  String get localWifiPeerReady;
+
+  /// No description provided for @localWifiPeerNeedKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Found — scan QR to exchange keys'**
+  String get localWifiPeerNeedKey;
+
+  /// No description provided for @localWifiErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Wi‑Fi error'**
+  String get localWifiErrorTitle;
+
+  /// No description provided for @localWifiErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Stop and try again.'**
+  String get localWifiErrorBody;
+
   /// No description provided for @preparingSystem.
   ///
   /// In en, this message translates to:
@@ -209,7 +743,7 @@ abstract class AppLocalizations {
   /// No description provided for @languageSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Follow system language, or choose Thai / English'**
+  /// **'Follow the device language when Thai or English; other system languages use English. Or lock Thai / English here.'**
   String get languageSubtitle;
 
   /// No description provided for @languageSystem.
@@ -2696,6 +3230,30 @@ abstract class AppLocalizations {
   /// **'Long-press for link actions'**
   String get inviteLongPressHint;
 
+  /// No description provided for @inviteSendInChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Send in ResilNet chat…'**
+  String get inviteSendInChat;
+
+  /// No description provided for @inviteSendInChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only people you already have a public key for'**
+  String get inviteSendInChatHint;
+
+  /// No description provided for @inviteSendInChatEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No messageable chats yet.\nScan a QR, open Area/Mesh, or share the link outside the app first.'**
+  String get inviteSendInChatEmpty;
+
+  /// No description provided for @inviteSentToChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite sent in chat'**
+  String get inviteSentToChat;
+
   /// No description provided for @infoTabInfo.
   ///
   /// In en, this message translates to:
@@ -2897,7 +3455,7 @@ abstract class AppLocalizations {
   /// No description provided for @panicWipeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Erase everything local — same as triple-tapping the home title'**
+  /// **'Erase everything local — same as triple-tapping the home title (double-tap refreshes radios)'**
   String get panicWipeSubtitle;
 
   /// No description provided for @panicWipeConfirmTitle.

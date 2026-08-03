@@ -22,6 +22,7 @@ import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/peer_id.dart';
 import '../core/platform_caps.dart';
+import '../models/app_recovery.dart';
 import '../models/area_presence.dart';
 import '../models/ble_radio_state.dart';
 import '../models/ack_entry.dart';
@@ -31,6 +32,7 @@ import '../models/feed_channel.dart';
 import '../models/geo_discovery.dart';
 import '../models/geo_location_result.dart';
 import '../models/local_notice.dart';
+import '../models/local_wifi_link.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
@@ -44,6 +46,8 @@ import '../services/database_service.dart';
 import '../services/esp32_sync_service.dart';
 import '../services/firmware_service.dart';
 import '../services/geo_service.dart';
+import '../services/local_wifi_link_service.dart';
+import '../services/lxmf_bridge_client.dart';
 import '../services/meshtastic_bridge_service.dart';
 import '../services/notification_service.dart';
 import '../services/nostr_sync_service.dart';
@@ -65,6 +69,8 @@ class AppState extends ChangeNotifier {
   BleMeshService? _mesh;
   Esp32SyncService? _esp32;
   UdpTransportService? _udp;
+  LocalWifiLinkService? _localWifi;
+  LxmfBridgeClient? _lxmfBridge;
   NostrSyncService? _nostr;
   FirmwareService? _firmware;
   MeshtasticBridgeService? _meshtasticBridge;
@@ -89,6 +95,8 @@ class AppState extends ChangeNotifier {
   bool _reconnectingNostr = false;
   bool _startingRadios = false;
   bool _stoppingRadios = false;
+  bool _resumeAgainRequested = false;
+  Future<void>? _resumeInFlight;
   DateTime _lastResumeAt = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime? _backgroundedAt;
 
@@ -98,6 +106,8 @@ class AppState extends ChangeNotifier {
   VoidCallback? _onResilnetUi;
   VoidCallback? _onEsp32Changed;
   VoidCallback? _onUdpChanged;
+  VoidCallback? _onLocalWifiChanged;
+  VoidCallback? _onLxmfBridgeChanged;
   VoidCallback? _onNostrChanged;
   VoidCallback? _onMeshChanged;
 
@@ -162,6 +172,11 @@ class AppState extends ChangeNotifier {
   }
 
   UdpTransportService? get udp => _udp;
+  LocalWifiLinkService? get localWifi => _localWifi;
+
+  /// Optional Mac/Pi LXMF bridge (HTTP). Null until [init].
+  LxmfBridgeClient? get lxmfBridge => _lxmfBridge;
+
   bool get isGatewayWifiActive => resilnet.isGatewayWifiActive;
   ChunkTransferState? get chunkTransferState => _udp?.transferState;
 
@@ -358,6 +373,17 @@ class AppState extends ChangeNotifier {
   bool _meshBridgeEnabled = true;
   bool get meshBridgeEnabled => _meshBridgeEnabled;
 
+  /// Mac/Pi LXMF bridge via localhost HTTP (off by default).
+  static const _kLxmfBridgeEnabled = 'resilnet_lxmf_bridge_enabled';
+  static const _kLxmfBridgeBaseUrl = 'resilnet_lxmf_bridge_base_url';
+  static const _kLxmfBridgeIdentityMap = 'resilnet_lxmf_bridge_identity_map';
+  bool _lxmfBridgeEnabled = false;
+  String _lxmfBridgeBaseUrl = LxmfBridgeClient.defaultBaseUrl;
+  String _lxmfBridgeIdentityMapJson = '{}';
+  bool get lxmfBridgeEnabled => _lxmfBridgeEnabled;
+  String get lxmfBridgeBaseUrl => _lxmfBridgeBaseUrl;
+  String get lxmfBridgeIdentityMapJson => _lxmfBridgeIdentityMapJson;
+
   static const _kFavoritePeerIds = 'resilnet_favorite_peer_ids';
   final Set<String> _favoritePeerIds = <String>{};
   Set<String> get favoritePeerIds => Set.unmodifiable(_favoritePeerIds);
@@ -489,6 +515,40 @@ class AppState extends ChangeNotifier {
   static const _kLocaleOverride = 'resilnet_locale_override';
   String? _localeOverrideCode;
   String? get localeOverrideCode => _localeOverrideCode;
+
+  /// UI language for non-BuildContext strings (notifications, etc.).
+  /// Override wins; otherwise device `th` → Thai, everything else → English.
+  String get effectiveUiLanguageCode {
+    final o = _localeOverrideCode;
+    if (o == 'th') return 'th';
+    if (o == 'en') return 'en';
+    final device =
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    if (device == 'th') return 'th';
+    return 'en';
+  }
+
+  bool get effectiveUiIsThai => effectiveUiLanguageCode == 'th';
+
+  /// Rebuild MaterialApp when the OS language changes while following system.
+  void onDeviceLocalesChanged() {
+    if (_localeOverrideCode != null) return;
+    notifyListeners();
+  }
+
+  static const _kSoftRefreshTipSeen = 'resilnet_soft_refresh_tip_seen';
+  bool _softRefreshTipSeen = false;
+  bool get softRefreshTipSeen => _softRefreshTipSeen;
+
+  /// True while Soft / Hard / Session recovery is running (blocks re-entry).
+  bool _recovering = false;
+  bool get recovering => _recovering;
+
+  /// Bumped on hard recover so chat screens clear compose locks.
+  int _recoveryEpoch = 0;
+  int get recoveryEpoch => _recoveryEpoch;
+
+  static const _recoveryStepTimeout = Duration(seconds: 7);
 
   Locale? get localeOverride {
     final code = _localeOverrideCode;
@@ -710,6 +770,36 @@ class AppState extends ChangeNotifier {
       );
       _udp = UdpTransportService(database: db, resilnet: resilnet);
       resilnet.attachUdpTransport(_udp!, crypto: crypto);
+      _localWifi = LocalWifiLinkService();
+      _localWifi!.setKnownPeersProvider(() {
+        final out = <Peer>[];
+        final seen = <String>{};
+        for (final p in _mesh?.nearbyPeers ?? const <Peer>[]) {
+          if (p.publicKey.trim().isEmpty) continue;
+          if (seen.add(p.id)) out.add(p);
+        }
+        return out;
+      });
+      _localWifi!.setIdentityProvider(() {
+        final nick = displayName.trim().isNotEmpty
+            ? displayName.trim()
+            : myUserId.substring(0, myUserId.length.clamp(0, 10));
+        return (
+          peerId: myUserId,
+          compactPk: CryptoService.compactPublicKey(crypto.publicKeyPem),
+          nick: nick,
+        );
+      });
+      _localWifi!.setOnPeerDiscovered((sighting) {
+        unawaited(_upsertLocalWifiPeer(sighting));
+      });
+      _localWifi!.setInboundHandler((msg) async {
+        await _ingestLocalWifiMessage(msg);
+      });
+      _lxmfBridge = LxmfBridgeClient();
+      _lxmfBridge!.setInboundHandler((msg) async {
+        await _ingestLxmfBridgeMessage(msg);
+      });
       _firmware = FirmwareService();
       await _firmware!.refreshLocalInfo();
 
@@ -726,6 +816,14 @@ class AppState extends ChangeNotifier {
 
       _onEsp32Changed = _scheduleRadioUiNotify;
       _onUdpChanged = _scheduleRadioUiNotify;
+      _onLocalWifiChanged = () {
+        if (!_initDone) return;
+        notifyListeners();
+      };
+      _onLxmfBridgeChanged = () {
+        if (!_initDone) return;
+        notifyListeners();
+      };
       _onNostrChanged = _scheduleRadioUiNotify;
       _onMeshChanged = () {
         _onMeshPeersChanged();
@@ -733,6 +831,8 @@ class AppState extends ChangeNotifier {
       };
       _esp32!.addListener(_onEsp32Changed!);
       _udp!.addListener(_onUdpChanged!);
+      _localWifi!.addListener(_onLocalWifiChanged!);
+      _lxmfBridge!.addListener(_onLxmfBridgeChanged!);
       _nostr!.addListener(_onNostrChanged!);
       _mesh!.addListener(_onMeshChanged!);
 
@@ -775,6 +875,14 @@ class AppState extends ChangeNotifier {
       }
       _screenshotAlerts = prefs.getBool(_kScreenshotAlerts) ?? true;
       _meshBridgeEnabled = prefs.getBool(_kMeshBridgeEnabled) ?? true;
+      _lxmfBridgeEnabled = prefs.getBool(_kLxmfBridgeEnabled) ?? false;
+      _lxmfBridgeBaseUrl =
+          prefs.getString(_kLxmfBridgeBaseUrl)?.trim().isNotEmpty == true
+              ? prefs.getString(_kLxmfBridgeBaseUrl)!.trim()
+              : LxmfBridgeClient.defaultBaseUrl;
+      _lxmfBridgeIdentityMapJson =
+          prefs.getString(_kLxmfBridgeIdentityMap) ?? '{}';
+      await _applyLxmfBridgeConfig();
       _loadFavorites(prefs);
       _loadPinnedChannels(prefs);
       _nostrExpiry = NoticeExpiry.fromDays(prefs.getInt(_kNostrExpiryDays));
@@ -789,6 +897,7 @@ class AppState extends ChangeNotifier {
       _localeOverrideCode = (loc == null || loc.isEmpty || loc == 'system')
           ? null
           : loc;
+      _softRefreshTipSeen = prefs.getBool(_kSoftRefreshTipSeen) ?? false;
       _feedChannel = FeedChannel.values.firstWhere(
         (e) => e.name == prefs.getString(_kFeedChannel),
         orElse: () => FeedChannel.geo,
@@ -1625,6 +1734,99 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setLxmfBridgeEnabled(bool enabled) async {
+    if (_lxmfBridgeEnabled == enabled) return;
+    _lxmfBridgeEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kLxmfBridgeEnabled, enabled);
+    await _applyLxmfBridgeConfig();
+    notifyListeners();
+  }
+
+  Future<void> setLxmfBridgeBaseUrl(String url) async {
+    final next = LxmfBridgeClient.normalizeBaseUrl(
+      url.trim().isEmpty ? LxmfBridgeClient.defaultBaseUrl : url.trim(),
+    );
+    if (_lxmfBridgeBaseUrl == next) return;
+    _lxmfBridgeBaseUrl = next;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kLxmfBridgeBaseUrl, next);
+    await _applyLxmfBridgeConfig();
+    notifyListeners();
+  }
+
+  Future<void> setLxmfBridgeIdentityMapJson(String raw) async {
+    final next = raw.trim().isEmpty ? '{}' : raw.trim();
+    if (_lxmfBridgeIdentityMapJson == next) return;
+    _lxmfBridgeIdentityMapJson = next;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kLxmfBridgeIdentityMap, next);
+    await _applyLxmfBridgeConfig();
+    notifyListeners();
+  }
+
+  /// Link a ResilNet peer to an LXMF destination hash (32 hex).
+  /// Returns an error message, or null on success.
+  Future<String?> upsertLxmfPeerDest({
+    required String peerId,
+    required String lxmfDest,
+  }) async {
+    final id = peerId.trim();
+    if (id.isEmpty) return 'empty peer';
+    final dest = LxmfBridgeClient.normalizeDest(lxmfDest);
+    if (dest == null) return 'invalid dest';
+    final map = Map<String, String>.from(
+      LxmfBridgeClient.parseIdentityMapJson(_lxmfBridgeIdentityMapJson),
+    );
+    map[id] = dest;
+    await setLxmfBridgeIdentityMapJson(
+      LxmfBridgeClient.identityMapToJson(map),
+    );
+    return null;
+  }
+
+  Future<void> removeLxmfPeerDest(String peerId) async {
+    final id = peerId.trim();
+    if (id.isEmpty) return;
+    final map = Map<String, String>.from(
+      LxmfBridgeClient.parseIdentityMapJson(_lxmfBridgeIdentityMapJson),
+    );
+    if (map.remove(id) == null) return;
+    await setLxmfBridgeIdentityMapJson(
+      LxmfBridgeClient.identityMapToJson(map),
+    );
+  }
+
+  String lxmfDestForPeer(String peerId) {
+    final map = LxmfBridgeClient.parseIdentityMapJson(
+      _lxmfBridgeIdentityMapJson,
+    );
+    return map[peerId.trim()] ?? '';
+  }
+
+  Map<String, String> get lxmfPeerDestMap =>
+      LxmfBridgeClient.parseIdentityMapJson(_lxmfBridgeIdentityMapJson);
+
+  Future<void> refreshLxmfBridgeStatus() async {
+    await _lxmfBridge?.refreshStatus();
+    notifyListeners();
+  }
+
+  Future<void> _applyLxmfBridgeConfig() async {
+    final client = _lxmfBridge;
+    if (client == null) return;
+    if (myUserIdReady) {
+      client.setFromPeerId(myUserId);
+    }
+    await client.configure(
+      enabled: _lxmfBridgeEnabled,
+      baseUrl: _lxmfBridgeBaseUrl,
+      identityMap: LxmfBridgeClient.parseIdentityMapJson(
+        _lxmfBridgeIdentityMapJson,
+      ),
+    );
+  }
+
   bool isFavorite(String peerId) => _favoritePeerIds.contains(peerId);
 
   Future<void> toggleFavorite(String peerId) async {
@@ -1913,7 +2115,7 @@ class AppState extends ChangeNotifier {
     _lastPresenceSummaryMesh = meshCount;
     _lastPresenceSummaryNostr = nostrCount;
 
-    final th = _localeOverrideCode == 'th';
+    final th = effectiveUiIsThai;
     final title = th ? 'ResilNet — คนออนไลน์' : 'ResilNet — people online';
     final body = th
         ? 'Mesh $meshCount คน · Nostr $nostrCount คน'
@@ -1956,7 +2158,7 @@ class AppState extends ChangeNotifier {
     final name = (displayName != null && displayName.trim().isNotEmpty)
         ? displayName.trim()
         : await db.resolveDisplayName(peerId);
-    final th = _localeOverrideCode == 'th';
+    final th = effectiveUiIsThai;
     final title = isFav
         ? (viaMesh
               ? (th ? 'คนโปรดอยู่ใกล้' : 'Favorite nearby')
@@ -2814,87 +3016,467 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  /// กลับมาจาก background — reconnect BLE, Nostr และ Rust stream
-  Future<void> onAppResumed({String reason = 'manual'}) async {
+  /// กลับมาจาก background — reconnect BLE, Nostr และ Rust stream.
+  /// [force] skips the short debounce (user soft-refresh).
+  /// [awaitNostr] false = fire Nostr reconnect without blocking the UI path.
+  Future<void> onAppResumed({
+    String reason = 'manual',
+    bool force = false,
+    bool awaitNostr = true,
+  }) async {
     if (!isReady) return;
     if (_resumingLifecycle) {
-      debugPrint('[Reconnect] skip resume reason=already-running');
-      return;
-    }
-    final sinceLast = DateTime.now().difference(_lastResumeAt);
-    if (sinceLast < const Duration(seconds: 2)) {
-      debugPrint(
-        '[Reconnect] skip resume reason=debounced sinceMs=${sinceLast.inMilliseconds}',
-      );
-      return;
-    }
-    _resumingLifecycle = true;
-    _lastResumeAt = DateTime.now();
-    final op = _nextOpId('resume');
-    debugPrint('[Reconnect] begin op=$op reason=$reason session=$_sessionId');
-    final bgSince = _backgroundedAt;
-    if (bgSince != null &&
-        DateTime.now().difference(bgSince) > const Duration(seconds: 20)) {
-      _peerOnlineNotified.clear();
-      debugPrint('[Notify] reset dedupe reason=long-background');
-    }
-    unawaited(notifications.logPermissionStatus(reason: 'resume'));
-
-    await refreshPermissions(startRadiosIfGranted: false);
-
-    try {
-      try {
-        await resilnet.reconnectIncomingBridge();
-        await _attachRustIncomingHandler();
-      } catch (e, st) {
-        debugPrint('[ResilNet] Rust stream reconnect failed: $e\n$st');
+      if (force) {
+        _resumeAgainRequested = true;
+        debugPrint('[Reconnect] latch resume-again reason=$reason');
+      } else {
+        debugPrint('[Reconnect] skip resume reason=already-running');
       }
-
-      try {
-        await resilnet.refreshNetworkStatus(
-          blePeerCount: () => _mesh?.nearbyPeerCount ?? 0,
+      final inflight = _resumeInFlight;
+      if (inflight != null) await inflight;
+      return;
+    }
+    if (!force) {
+      final sinceLast = DateTime.now().difference(_lastResumeAt);
+      if (sinceLast < const Duration(seconds: 2)) {
+        debugPrint(
+          '[Reconnect] skip resume reason=debounced sinceMs=${sinceLast.inMilliseconds}',
         );
-      } catch (e) {
-        debugPrint('[ResilNet] network status refresh failed: $e');
+        return;
       }
+    }
+
+    Future<void> runOnce() async {
+      _resumingLifecycle = true;
+      _lastResumeAt = DateTime.now();
+      final op = _nextOpId('resume');
+      debugPrint('[Reconnect] begin op=$op reason=$reason session=$_sessionId');
+      final bgSince = _backgroundedAt;
+      if (bgSince != null &&
+          DateTime.now().difference(bgSince) > const Duration(seconds: 20)) {
+        _peerOnlineNotified.clear();
+        debugPrint('[Notify] reset dedupe reason=long-background');
+      }
+      unawaited(notifications.logPermissionStatus(reason: 'resume'));
+
+      await refreshPermissions(startRadiosIfGranted: false);
 
       try {
-        await _udp?.refresh();
-      } catch (e) {
-        debugPrint('[ResilNet] UDP refresh failed: $e');
-      }
-
-      try {
-        if (_permissionsGranted && !_radioPaused) {
-          await _reconnectRadios(reason: 'resume');
-        } else {
-          await _stopRadios(reason: 'resume-no-permission');
+        try {
+          await resilnet.reconnectIncomingBridge();
+          await _attachRustIncomingHandler();
+        } catch (e, st) {
+          debugPrint('[ResilNet] Rust stream reconnect failed: $e\n$st');
         }
-      } catch (e) {
-        debugPrint('[ResilNet] radio reconnect failed: $e');
-      }
 
-      try {
-        await _reconnectNostr(reason: 'resume');
-        unawaited(_nostr?.flushOfflineQueue());
-      } catch (e) {
-        debugPrint('[ResilNet] Nostr reconnect failed: $e');
-      }
-
-      unawaited(purgeExpiredMessages());
-      unawaited(refreshUnreadDirectCount());
-      if (_transportMode.usesInternet || _feedChannel == FeedChannel.geo) {
-        if (_currentGeohash == null || _currentGeohash!.isEmpty) {
-          unawaited(refreshGeohash());
-        } else {
-          unawaited(syncGeoPresence(forceAnnounce: true));
+        try {
+          await resilnet.refreshNetworkStatus(
+            blePeerCount: () => _mesh?.nearbyPeerCount ?? 0,
+          );
+        } catch (e) {
+          debugPrint('[ResilNet] network status refresh failed: $e');
         }
+
+        try {
+          await _udp?.refresh();
+        } catch (e) {
+          debugPrint('[ResilNet] UDP refresh failed: $e');
+        }
+
+        try {
+          if (_permissionsGranted && !_radioPaused) {
+            await _reconnectRadios(reason: 'resume');
+          } else {
+            await _stopRadios(reason: 'resume-no-permission');
+          }
+        } catch (e) {
+          debugPrint('[ResilNet] radio reconnect failed: $e');
+        }
+
+        try {
+          if (awaitNostr) {
+            await _reconnectNostr(reason: 'resume');
+            unawaited(_nostr?.flushOfflineQueue());
+          } else {
+            unawaited(() async {
+              try {
+                await _reconnectNostr(reason: 'resume-deferred');
+                unawaited(_nostr?.flushOfflineQueue());
+              } catch (e) {
+                debugPrint('[ResilNet] Nostr deferred reconnect failed: $e');
+              }
+            }());
+          }
+        } catch (e) {
+          debugPrint('[ResilNet] Nostr reconnect failed: $e');
+        }
+
+        unawaited(purgeExpiredMessages());
+        unawaited(refreshUnreadDirectCount());
+        if (_transportMode.usesInternet || _feedChannel == FeedChannel.geo) {
+          if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+            unawaited(refreshGeohash());
+          } else {
+            unawaited(syncGeoPresence(forceAnnounce: true));
+          }
+        }
+        notifyListeners();
+      } finally {
+        _resumingLifecycle = false;
+        debugPrint('[Reconnect] end op=$op reason=$reason');
+      }
+    }
+
+    _resumeInFlight = runOnce();
+    try {
+      await _resumeInFlight;
+      while (_resumeAgainRequested) {
+        _resumeAgainRequested = false;
+        _resumeInFlight = runOnce();
+        await _resumeInFlight;
+      }
+    } finally {
+      _resumeInFlight = null;
+    }
+  }
+
+  Future<void> _upsertLocalWifiPeer(LocalWifiPeerSighting sighting) async {
+    final pk = sighting.compactPk?.trim() ?? '';
+    if (!sighting.canMessage || pk.isEmpty) return;
+    try {
+      final pem = CryptoService.normalizePublicKey(pk);
+      if (CryptoService.publicKeyHash(pem) != sighting.id) return;
+      final existing = await db.getPeer(sighting.id);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      await db.upsertPeer(
+        Peer(
+          id: sighting.id,
+          publicKey: pem,
+          displayName: sighting.label,
+          deviceId: existing?.deviceId,
+          geohash: existing?.geohash,
+          isVerifiedIssuer: existing?.isVerifiedIssuer ?? false,
+          isBlocked: existing?.isBlocked ?? false,
+          lastSeen: now,
+        ),
+      );
+    } catch (e) {
+      debugPrint('[LocalWifi] upsert peer failed: $e');
+    }
+  }
+
+  Future<void> _ingestLocalWifiMessage(ChatMessage msg) async {
+    try {
+      final pk = msg.senderPk?.trim() ?? '';
+      if (pk.isNotEmpty) {
+        try {
+          final pem = CryptoService.normalizePublicKey(pk);
+          final id = CryptoService.publicKeyHash(pem);
+          if (id == msg.senderId) {
+            final existing = await db.getPeer(id);
+            await db.upsertPeer(
+              Peer(
+                id: id,
+                publicKey: pem,
+                displayName: msg.senderName ?? existing?.displayName,
+                deviceId: existing?.deviceId,
+                geohash: existing?.geohash,
+                isVerifiedIssuer: existing?.isVerifiedIssuer ?? false,
+                isBlocked: existing?.isBlocked ?? false,
+                lastSeen: DateTime.now().millisecondsSinceEpoch,
+              ),
+            );
+          }
+        } catch (e) {
+          debugPrint('[LocalWifi] senderPk upsert failed: $e');
+        }
+      }
+
+      final accepted = await mesh.applyIncomingFromRouter(msg);
+      if (!accepted) return;
+      if (msg.payloadKind != PayloadKinds.presence) {
+        _bumpChatData();
+      }
+      if (msg.receiverId == myUserId &&
+          msg.senderId != myUserId &&
+          PayloadKinds.isPrivateDm(msg.payloadKind)) {
+        unawaited(_maybeNotifyDirectMessage(msg));
       }
       notifyListeners();
-    } finally {
-      _resumingLifecycle = false;
-      debugPrint('[Reconnect] end op=$op reason=$reason');
+    } catch (e, st) {
+      debugPrint('[LocalWifi] ingest failed: $e\n$st');
     }
+  }
+
+  Future<void> _ingestLxmfBridgeMessage(ChatMessage msg) async {
+    try {
+      final pk = msg.senderPk?.trim() ?? '';
+      if (pk.isNotEmpty) {
+        try {
+          final pem = CryptoService.normalizePublicKey(pk);
+          final id = CryptoService.publicKeyHash(pem);
+          if (id == msg.senderId) {
+            final existing = await db.getPeer(id);
+            await db.upsertPeer(
+              Peer(
+                id: id,
+                publicKey: pem,
+                displayName: msg.senderName ?? existing?.displayName,
+                deviceId: existing?.deviceId,
+                geohash: existing?.geohash,
+                isVerifiedIssuer: existing?.isVerifiedIssuer ?? false,
+                isBlocked: existing?.isBlocked ?? false,
+                lastSeen: DateTime.now().millisecondsSinceEpoch,
+              ),
+            );
+          }
+        } catch (e) {
+          debugPrint('[LxmfBridge] senderPk upsert failed: $e');
+        }
+      }
+
+      final accepted = await mesh.applyIncomingFromRouter(msg);
+      if (!accepted) return;
+      if (msg.payloadKind != PayloadKinds.presence) {
+        _bumpChatData();
+      }
+      if (msg.receiverId == myUserId &&
+          msg.senderId != myUserId &&
+          PayloadKinds.isPrivateDm(msg.payloadKind)) {
+        unawaited(_maybeNotifyDirectMessage(msg));
+      }
+      notifyListeners();
+    } catch (e, st) {
+      debugPrint('[LxmfBridge] ingest failed: $e\n$st');
+    }
+  }
+
+  /// Soft recovery when the UI feels stuck — reconnect bridges and hard-kick
+  /// BLE mesh without wiping identity. Each step is time-bounded.
+  Future<AppRecoveryReport> softRefreshApp({
+    String reason = 'title-double-tap',
+  }) async {
+    if (_recovering) {
+      return const AppRecoveryReport(
+        outcome: AppRecoveryOutcome.partial,
+        notes: ['busy'],
+      );
+    }
+    _recovering = true;
+    notifyListeners();
+    final notes = <String>[];
+    var failures = 0;
+    try {
+      debugPrint('[Refresh] soft begin reason=$reason session=$_sessionId');
+      if (!isReady) {
+        failures += await _recoveryStep(
+          'retryInit',
+          notes,
+          () => retryInit(),
+        );
+        _bumpChatData();
+        notifyListeners();
+        return _recoveryReport(failures, notes);
+      }
+
+      failures += await _recoveryStep(
+        'resume',
+        notes,
+        () => onAppResumed(reason: reason, force: true, awaitNostr: false),
+      );
+      failures += await _recoveryStep(
+        'mesh',
+        notes,
+        () => _hardKickMesh(reason: reason),
+      );
+      failures += await _recoveryStep(
+        'nearby',
+        notes,
+        () async {
+          await _mesh?.refreshNearbyPeers();
+        },
+      );
+      if (_feedChannel == FeedChannel.mesh) {
+        unawaited(syncMeshBulletinsWithNearby());
+      }
+      _bumpChatData();
+      notifyListeners();
+      debugPrint('[Refresh] soft end reason=$reason failures=$failures');
+      return _recoveryReport(failures, notes);
+    } finally {
+      _recovering = false;
+      notifyListeners();
+    }
+  }
+
+  /// Hard recover: unlock UI epoch, re-attach streams, kick radios/Nostr.
+  /// Does not wipe identity. Prefer this when Soft refresh is not enough.
+  Future<AppRecoveryReport> hardRecoverApp({
+    String reason = 'hard-recover',
+  }) async {
+    if (_recovering) {
+      return const AppRecoveryReport(
+        outcome: AppRecoveryOutcome.partial,
+        notes: ['busy'],
+      );
+    }
+    _recovering = true;
+    _recoveryEpoch++;
+    notifyListeners();
+    final notes = <String>[];
+    var failures = 0;
+    try {
+      debugPrint('[Refresh] hard begin reason=$reason session=$_sessionId');
+      if (!isReady) {
+        failures += await _recoveryStep(
+          'retryInit',
+          notes,
+          () => retryInit(),
+        );
+        return _recoveryReport(failures, notes);
+      }
+
+      failures += await _recoveryStep('rust-stream', notes, () async {
+        await resilnet.reconnectIncomingBridge();
+        await _attachRustIncomingHandler();
+      });
+      failures += await _recoveryStep(
+        'resume',
+        notes,
+        () => onAppResumed(reason: reason, force: true, awaitNostr: false),
+      );
+      failures += await _recoveryStep(
+        'mesh',
+        notes,
+        () => _hardKickMesh(reason: reason),
+      );
+      failures += await _recoveryStep('nostr', notes, () async {
+        await _reconnectNostr(reason: reason);
+        unawaited(_nostr?.flushOfflineQueue());
+      });
+      failures += await _recoveryStep('nearby', notes, () async {
+        await _mesh?.refreshNearbyPeers();
+      });
+      if (_transportMode.usesInternet || _feedChannel == FeedChannel.geo) {
+        failures += await _recoveryStep('geo', notes, () async {
+          if (_currentGeohash == null || _currentGeohash!.isEmpty) {
+            await refreshGeohash();
+          } else {
+            await syncGeoPresence(forceAnnounce: true);
+          }
+        });
+      }
+      if (_feedChannel == FeedChannel.mesh) {
+        unawaited(syncMeshBulletinsWithNearby());
+      }
+      unawaited(refreshUnreadDirectCount());
+      _bumpChatData();
+      notifyListeners();
+      debugPrint('[Refresh] hard end reason=$reason failures=$failures');
+      return _recoveryReport(failures, notes);
+    } finally {
+      _recovering = false;
+      notifyListeners();
+    }
+  }
+
+  /// Re-init app services without panic-wiping keys / identity.
+  Future<AppRecoveryReport> resetAppSession({
+    String reason = 'session-reset',
+  }) async {
+    if (_recovering) {
+      return const AppRecoveryReport(
+        outcome: AppRecoveryOutcome.partial,
+        notes: ['busy'],
+      );
+    }
+    _recovering = true;
+    _recoveryEpoch++;
+    notifyListeners();
+    final notes = <String>[];
+    var failures = 0;
+    try {
+      debugPrint('[Refresh] session reset begin reason=$reason');
+      failures += await _recoveryStep(
+        'retryInit',
+        notes,
+        () => retryInit(),
+        timeout: const Duration(seconds: 25),
+      );
+      // Release the lock so hardRecoverApp can run its own guarded path.
+      _recovering = false;
+      final follow = await hardRecoverApp(reason: '$reason-followup');
+      notes.addAll(follow.notes.map((n) => 'follow:$n'));
+      if (follow.outcome == AppRecoveryOutcome.failed) {
+        failures += 2;
+      } else if (follow.outcome == AppRecoveryOutcome.partial) {
+        failures += 1;
+      }
+      _bumpChatData();
+      notifyListeners();
+      return _recoveryReport(failures, notes);
+    } finally {
+      _recovering = false;
+      notifyListeners();
+    }
+  }
+
+  Future<int> _recoveryStep(
+    String name,
+    List<String> notes,
+    Future<void> Function() fn, {
+    Duration timeout = _recoveryStepTimeout,
+  }) async {
+    try {
+      await fn().timeout(timeout);
+      notes.add('$name:ok');
+      return 0;
+    } on TimeoutException {
+      debugPrint('[Refresh] step timeout name=$name');
+      notes.add('$name:timeout');
+      return 1;
+    } catch (e) {
+      debugPrint('[Refresh] step failed name=$name err=$e');
+      notes.add('$name:err');
+      return 1;
+    }
+  }
+
+  AppRecoveryReport _recoveryReport(int failures, List<String> notes) {
+    if (failures <= 0) {
+      return AppRecoveryReport(outcome: AppRecoveryOutcome.ok, notes: notes);
+    }
+    final anyOk = notes.any((n) => n.contains(':ok'));
+    return AppRecoveryReport(
+      outcome: anyOk ? AppRecoveryOutcome.partial : AppRecoveryOutcome.failed,
+      notes: notes,
+    );
+  }
+
+  Future<void> _hardKickMesh({required String reason}) async {
+    if (_radioPaused || !_permissionsGranted) return;
+    final m = _mesh;
+    if (m == null || !PlatformCaps.meshBleAttempted) return;
+    try {
+      if (m.running) {
+        m.resumeRadioDutyCycle();
+        // start() is a no-op while running — stop+start revives dead scan/ADV.
+        await m.restart(reason: reason);
+      } else {
+        await _startRadios(reason: 'soft-refresh-mesh');
+      }
+    } catch (e) {
+      debugPrint('[Refresh] mesh hard kick failed: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> dismissSoftRefreshTip() async {
+    if (_softRefreshTipSeen) return;
+    _softRefreshTipSeen = true;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kSoftRefreshTipSeen, true);
   }
 
   Future<void> _attachRustIncomingHandler() async {
@@ -3227,6 +3809,21 @@ class AppState extends ChangeNotifier {
   Future<bool> retryOutbound(ChatMessage msg) async {
     final pending = msg.copyWith(status: MessageStatus.pending);
     await persistChatMessage(pending);
+    // Warm BLE toward the peer before re-routing so “sent” → delivered is likelier.
+    try {
+      await _mesh?.refreshNearbyPeers();
+      final peer = await db.getPeer(msg.receiverId);
+      final deviceId = (peer?.deviceId ?? '').trim();
+      if (deviceId.isNotEmpty) {
+        if (_mesh?.connectedDeviceId != deviceId) {
+          await _mesh?.connect(deviceId);
+        }
+      } else {
+        await _mesh?.prepareOutboundFanOut();
+      }
+    } catch (e) {
+      debugPrint('[ResilNet] retryOutbound mesh prep failed: $e');
+    }
     final isMedia = msg.payloadKind == PayloadKinds.audio ||
         msg.payloadKind == PayloadKinds.image;
     final ok = await routeOutbound(
@@ -3597,6 +4194,39 @@ class AppState extends ChangeNotifier {
       return latest;
     }
     return db.getPeer(id);
+  }
+
+  /// Peers that can receive a sealed 1:1 invite (known RSA key, not self/blocked).
+  Future<List<Peer>> messageablePeersForInvite() async {
+    final me = myUserId;
+    final byId = <String, Peer>{};
+
+    Future<void> consider(Peer p) async {
+      if (p.id.isEmpty || p.id == me || p.isBlocked) return;
+      final pub = p.publicKey.trim();
+      if (pub.isEmpty) return;
+      final normalized = CryptoService.normalizePublicKey(pub);
+      if (CryptoService.publicKeyHash(normalized) != p.id) return;
+      final prev = byId[p.id];
+      if (prev == null || p.lastSeen >= prev.lastSeen) {
+        byId[p.id] = p.copyWith(publicKey: normalized);
+      }
+    }
+
+    for (final p in await db.getAllPeers()) {
+      await consider(p);
+    }
+    for (final p in _mesh?.nearbyPeers ?? const <Peer>[]) {
+      await consider(p);
+    }
+    for (final e in areaPresenceOnline()) {
+      if (!e.canMessage || e.peer == null) continue;
+      await consider(e.peer!);
+    }
+
+    final out = byId.values.toList()
+      ..sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
+    return out;
   }
 
   /// Send a short sealed 1:1 text (hug/slap/mention follow-ups).
@@ -4411,7 +5041,41 @@ class AppState extends ChangeNotifier {
           debugPrint('[ResilNet] bulletin/presence UDP send failed: $e');
         }
       }
-      return bleOk || udpOk;
+      var lanOk = false;
+      if (_localWifi?.isActive == true) {
+        try {
+          lanOk = await _localWifi!.sendDirect(outbound);
+        } catch (e) {
+          debugPrint('[ResilNet] bulletin/presence LAN send failed: $e');
+        }
+      }
+      return bleOk || udpOk || lanOk;
+    }
+
+    // Opportunistic phone↔phone LAN when Local Wi‑Fi session is active.
+    var lanDelivered = false;
+    if (!internetOnly && _localWifi?.isActive == true) {
+      try {
+        lanDelivered = await _localWifi!.sendDirect(outbound);
+        if (lanDelivered) {
+          debugPrint('[ResilNet] LAN delivered id=${outbound.id}');
+        }
+      } catch (e) {
+        debugPrint('[ResilNet] LAN send failed: $e');
+      }
+    }
+
+    // Opportunistic Mac/Pi LXMF bridge (HTTP) — sealed bytes only.
+    var lxmfDelivered = false;
+    if (!internetOnly && _lxmfBridge?.isActive == true) {
+      try {
+        lxmfDelivered = await _lxmfBridge!.sendDirect(outbound);
+        if (lxmfDelivered) {
+          debugPrint('[ResilNet] LXMF bridge delivered id=${outbound.id}');
+        }
+      } catch (e) {
+        debugPrint('[ResilNet] LXMF bridge send failed: $e');
+      }
     }
 
     var transports = _applyBridgePolicyForMessage(
@@ -4502,11 +5166,20 @@ class AppState extends ChangeNotifier {
     }
 
     notifyListeners();
+    if ((lanDelivered || lxmfDelivered) && !markedSent) {
+      await _persistOutboundSent(
+        outbound.copyWith(
+          ttl: routed.packet.ttl,
+          status: MessageStatus.sent,
+        ),
+      );
+      markedSent = true;
+    }
     // Media must actually reach Nostr — BLE queue handoff is not delivery.
     if (isMedia || internetOnly) {
       return markedSent;
     }
-    return markedSent || handedToMesh;
+    return markedSent || handedToMesh || lanDelivered || lxmfDelivered;
   }
 
   /// Publish a large sealed media envelope as multiple Nostr parts.
@@ -5026,6 +5699,10 @@ class AppState extends ChangeNotifier {
     if (espCb != null) _esp32?.removeListener(espCb);
     final udpCb = _onUdpChanged;
     if (udpCb != null) _udp?.removeListener(udpCb);
+    final localWifiCb = _onLocalWifiChanged;
+    if (localWifiCb != null) _localWifi?.removeListener(localWifiCb);
+    final lxmfCb = _onLxmfBridgeChanged;
+    if (lxmfCb != null) _lxmfBridge?.removeListener(lxmfCb);
     final nostrCb = _onNostrChanged;
     if (nostrCb != null) _nostr?.removeListener(nostrCb);
     final ackH = _onAckHandlerChanged;
@@ -5048,6 +5725,8 @@ class AppState extends ChangeNotifier {
 
     unawaited(_stopRadios(reason: 'dispose', includeNostr: true));
     _ackQueue?.dispose();
+    _localWifi?.dispose();
+    _lxmfBridge?.dispose();
     _udp?.dispose();
     resilnet.dispose();
     super.dispose();

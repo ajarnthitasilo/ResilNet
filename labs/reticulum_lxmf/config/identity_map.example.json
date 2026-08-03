@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "notes": "Manual ResilNet peerId (pubkey hash) ↔ LXMF destination hash. Fill after bridges announce. Not synced with Flutter.",
+  "entries": [
+    {
+      "resilnet_peer_id": "alice_lab_peer_aaaaaaaa",
+      "lxmf_destination": "REPLACE_WITH_BRIDGE_A_LXMF_DEST_HEX",
+      "note": "bridge-a / config/a"
+    },
+    {
+      "resilnet_peer_id": "bob_lab_peer_bbbbbbbb",
+      "lxmf_destination": "REPLACE_WITH_BRIDGE_B_LXMF_DEST_HEX",
+      "note": "bridge-b / config/b (optional for send-only)"
+    }
+  ]
+}

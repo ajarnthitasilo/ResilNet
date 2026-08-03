@@ -1,0 +1,14 @@
+.venv/
+logs/
+inbox_*/
+**/storage/
+**/lxmf_storage/
+**/interfaces/
+*.pid
+__pycache__/
+*.pyc
+.DS_Store
+config/identity_map.json
+config/identity_map_a.json
+config/identity_map_b.json
+bridge/**/__pycache__/

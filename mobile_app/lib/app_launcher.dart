@@ -77,15 +77,29 @@ class _ResilNetAppState extends State<ResilNetApp> {
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
                 ],
+                localeListResolutionCallback: (deviceLocales, supported) {
+                  if (s.localeOverride != null) return s.localeOverride;
+                  if (deviceLocales != null) {
+                    for (final device in deviceLocales) {
+                      for (final locale in supported) {
+                        if (locale.languageCode == device.languageCode) {
+                          return locale;
+                        }
+                      }
+                    }
+                  }
+                  // Unsupported OS languages → English (only th/en shipped).
+                  return const Locale('en');
+                },
                 localeResolutionCallback: (deviceLocale, supported) {
                   if (s.localeOverride != null) return s.localeOverride;
-                  if (deviceLocale == null) return supported.first;
+                  if (deviceLocale == null) return const Locale('en');
                   for (final locale in supported) {
                     if (locale.languageCode == deviceLocale.languageCode) {
                       return locale;
                     }
                   }
-                  return supported.first;
+                  return const Locale('en');
                 },
                 home: !s.initDone
                     ? const _BootScreen()

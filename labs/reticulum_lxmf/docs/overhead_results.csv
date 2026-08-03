@@ -1,0 +1,9 @@
+sealed_len,rnlb_len,rnlb_overhead,title_len,lxmf_packed_len,lxmf_overhead_over_rnlb,total_overhead_over_sealed,fits_resilnet_radio_230,fits_resilnet_chunk_200,fits_rns_plain_mdu_464,within_lxmf_enc_max_content_295,needs_rns_resource_est,kind_rnlb,kind_lxmf_packed,kind_rns_on_air
+32,88,56,16,215,127,183,True,False,True,True,False,measured,measured,estimated_compare_only
+64,120,56,16,247,127,183,False,False,True,True,False,measured,measured,estimated_compare_only
+128,184,56,16,311,127,183,False,False,True,True,False,measured,measured,estimated_compare_only
+200,256,56,16,384,128,184,False,False,True,True,False,measured,measured,estimated_compare_only
+230,286,56,16,414,128,184,False,False,True,False,False,measured,measured,estimated_compare_only
+256,312,56,16,440,128,184,False,False,True,False,False,measured,measured,estimated_compare_only
+512,568,56,16,696,128,184,False,False,False,False,True,measured,measured,estimated_compare_only
+1024,1080,56,16,1208,128,184,False,False,False,False,True,measured,measured,estimated_compare_only

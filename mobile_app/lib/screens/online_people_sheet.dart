@@ -84,7 +84,7 @@ class _OnlinePeopleSheet extends StatelessWidget {
                 s.nostrRelayLabel,
               ),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Colors.white38,
+                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
                     fontFamily: 'monospace',
                   ),
             ),
@@ -93,7 +93,7 @@ class _OnlinePeopleSheet extends StatelessWidget {
           Text(
             l10n.onlinePeopleCount(entries.length),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white54,
+                  color: ResilNetTheme.mutedOnSurface(context, alpha: 0.6),
                 ),
           ),
           const SizedBox(height: 8),

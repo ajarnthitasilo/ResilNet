@@ -234,6 +234,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
     final fullLink = appState.identityInviteDeepLink(displayName: displayName);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(context.l10n.identityTitle),
         actions: [
@@ -244,8 +245,10 @@ class _IdentityScreenState extends State<IdentityScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: ListView(
+      body: Container(
+        decoration: ResilNetTheme.pageDecoration(context),
+        child: SafeArea(
+          child: ListView(
           padding: const EdgeInsets.all(18),
           children: [
             Text(
@@ -253,33 +256,70 @@ class _IdentityScreenState extends State<IdentityScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: SelectableText(
-                    userId,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontFamily: 'monospace',
-                      color: Colors.white.withValues(alpha: 0.9),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => _copyUserId(userId),
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
+                  decoration: ResilNetTheme.glassDecoration(
+                    context,
+                    borderRadius: BorderRadius.circular(12),
+                    blurSigma: 12,
+                  ).copyWith(
+                    border: Border.all(
+                      color: ResilNetTheme.emerald.withValues(alpha: 0.45),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 4, 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: SelectableText(
+                            userId,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontFamily: 'monospace',
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.92),
+                                ),
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: context.l10n.identityCopyHashTooltip,
+                          onPressed: () => _copyUserId(userId),
+                          icon: Icon(
+                            Icons.copy,
+                            color: ResilNetTheme.emerald.withValues(alpha: 0.95),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                IconButton(
-                  tooltip: context.l10n.identityCopyHashTooltip,
-                  onPressed: () => _copyUserId(userId),
-                  icon: const Icon(Icons.copy),
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: 16),
+            Text(
+              context.l10n.identityDisplayNameTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
             TextField(
               controller: _name,
               focusNode: _nameFocus,
               textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                labelText: context.l10n.identityDisplayNameTitle,
-              ),
+              // No floating labelText — it was clipped mid-glyph by the filled
+              // OutlineInputBorder (esp. light / liquid glass). Title stays above.
+              decoration: const InputDecoration(),
               onSubmitted: (_) => unawaited(_saveDisplayName()),
             ),
             const SizedBox(height: 10),
@@ -429,7 +469,10 @@ class _IdentityScreenState extends State<IdentityScreen> {
                     Text(
                       context.l10n.identityQrHelp,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.72),
+                        color: ResilNetTheme.mutedOnSurface(
+                          context,
+                          alpha: 0.72,
+                        ),
                         height: 1.35,
                       ),
                     ),
@@ -441,11 +484,12 @@ class _IdentityScreenState extends State<IdentityScreen> {
             Text(
               context.l10n.identityChatTip,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.6),
+                color: ResilNetTheme.mutedOnSurface(context, alpha: 0.6),
               ),
             ),
           ],
         ),
+      ),
       ),
     );
   }

@@ -78,6 +78,44 @@ class _InfoSheet extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(height: 14),
+                    ResilNetTheme.glassPanel(
+                      context: context,
+                      borderRadius: BorderRadius.circular(14),
+                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.touch_app_outlined,
+                                color: ResilNetTheme.emerald,
+                                size: 22,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  l10n.infoSoftRefreshTitle,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          _tipStep(context, '1', l10n.infoSoftRefreshStepRefresh),
+                          const SizedBox(height: 6),
+                          _tipStep(context, '2', l10n.infoSoftRefreshStepHard),
+                          const SizedBox(height: 6),
+                          _tipStep(context, '3', l10n.infoSoftRefreshStepWait),
+                          const SizedBox(height: 6),
+                          _tipStep(context, '4', l10n.infoSoftRefreshStepWipe),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.menu_book_outlined),
@@ -213,6 +251,41 @@ class _InfoSheet extends StatelessWidget {
             color: ResilNetTheme.emerald,
             fontWeight: FontWeight.w700,
           ),
+    );
+  }
+
+  Widget _tipStep(BuildContext context, String num, String text) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 22,
+          height: 22,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: ResilNetTheme.emerald.withValues(alpha: 0.18),
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Text(
+            num,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: ResilNetTheme.emerald,
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  height: 1.35,
+                  color: onSurface.withValues(alpha: 0.85),
+                ),
+          ),
+        ),
+      ],
     );
   }
 

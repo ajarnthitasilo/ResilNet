@@ -33,5 +33,10 @@ class _AppLifecycleHandlerState extends State<AppLifecycleHandler>
   }
 
   @override
+  void didChangeLocales(List<Locale>? locales) {
+    context.read<AppState>().onDeviceLocalesChanged();
+  }
+
+  @override
   Widget build(BuildContext context) => widget.child;
 }

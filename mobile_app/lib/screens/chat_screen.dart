@@ -64,6 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _loading = true;
   String? _loadError;
   int _boundEpoch = -1;
+  int _seenRecoveryEpoch = -1;
   bool _reloadQueued = false;
   Timer? _markReadDebounce;
   AppState? _appState;
@@ -205,6 +206,15 @@ class _ChatScreenState extends State<ChatScreen> {
   void _onAppState() {
     if (!mounted) return;
     final s = context.read<AppState>();
+    final recovery = s.recoveryEpoch;
+    if (_seenRecoveryEpoch < 0) {
+      _seenRecoveryEpoch = recovery;
+    } else if (recovery != _seenRecoveryEpoch) {
+      _seenRecoveryEpoch = recovery;
+      if (_sendingOutbound) {
+        setState(() => _sendingOutbound = false);
+      }
+    }
     final epoch = s.chatDataEpoch;
     if (epoch == _boundEpoch) return;
     // Debounce READ receipts so inbound bursts don't pile mark+reload work.
@@ -627,7 +637,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _statusTicks(MessageStatus s) {
-    final gray = Colors.white.withValues(alpha: 0.55);
+    final gray = ResilNetTheme.mutedOnSurface(context, alpha: 0.55);
     const blue = Color(0xFF53BDEB);
     final red = Colors.redAccent.withValues(alpha: 0.9);
 
@@ -890,8 +900,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                 .textTheme
                                 .labelSmall
                                 ?.copyWith(
-                                  color:
-                                      Colors.white.withValues(alpha: 0.45),
+                                  color: ResilNetTheme.mutedOnSurface(
+                                    context,
+                                    alpha: 0.5,
+                                  ),
                                 ),
                           ),
                           if (isMe) ...[
@@ -910,21 +922,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                       color: m.status == MessageStatus.failed
                                           ? Colors.redAccent
                                               .withValues(alpha: 0.9)
-                                          : Colors.white
-                                              .withValues(alpha: 0.65),
+                                          : ResilNetTheme.mutedOnSurface(
+                                              context,
+                                              alpha: 0.7,
+                                            ),
                                     ),
                               ),
                             ),
                           ],
                         ],
                       ),
-                      if (isMe && m.status == MessageStatus.failed) ...[
+                      if (isMe &&
+                          (m.status == MessageStatus.failed ||
+                              m.status == MessageStatus.pending ||
+                              m.status == MessageStatus.sent ||
+                              m.status == MessageStatus.relayed)) ...[
                         const SizedBox(height: 6),
-                        TextButton(
+                        TextButton.icon(
                           onPressed: _composeLocked
                               ? null
                               : () => unawaited(_retryMessage(s, l10n, m)),
-                          child: Text(l10n.chatRetry),
+                          icon: const Icon(Icons.refresh, size: 16),
+                          label: Text(l10n.chatRetry),
                         ),
                       ],
                     ],

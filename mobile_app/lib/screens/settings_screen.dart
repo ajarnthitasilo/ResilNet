@@ -16,6 +16,9 @@ import 'info_sheet.dart';
 import 'mesh_topology_screen.dart';
 import 'meshtastic_bridge_screen.dart';
 import 'panic_wipe.dart';
+import '../widgets/app_recovery_actions.dart';
+import 'local_wifi_link_sheet.dart';
+import 'home_node_bridge_sheet.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -154,6 +157,113 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   s.setLocaleOverride(Locale(next));
                 }
               },
+            ),
+            const SizedBox(height: 28),
+            _section(l10n.localWifiTitle),
+            Text(
+              l10n.localWifiSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context),
+                  ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.tonalIcon(
+              onPressed: () => unawaited(showLocalWifiLinkSheet(context)),
+              icon: const Icon(Icons.wifi_lock_outlined),
+              label: Text(l10n.localWifiTitle),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.localWifiNotGatewayHint,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
+                  ),
+            ),
+            const SizedBox(height: 28),
+            _section(l10n.lxmfBridgeTitle),
+            Text(
+              l10n.lxmfBridgeSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context),
+                  ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.tonalIcon(
+              onPressed: () => unawaited(showHomeNodeBridgeSheet(context)),
+              icon: Icon(
+                Icons.home_work_outlined,
+                color: s.lxmfBridgeEnabled && s.lxmfBridge?.online == true
+                    ? ResilNetTheme.emerald
+                    : null,
+              ),
+              label: Text(l10n.lxmfBridgeOpen),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              s.lxmfBridgeEnabled
+                  ? (s.lxmfBridge?.online == true
+                      ? l10n.lxmfBridgeStatusOnline
+                      : l10n.lxmfBridgeStatusOffline)
+                  : l10n.lxmfBridgeDisabledHint,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
+                  ),
+            ),
+            const SizedBox(height: 28),
+            _section(l10n.appRecoverySection),
+            Text(
+              l10n.appRecoverySectionSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context),
+                  ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: s.recovering
+                  ? null
+                  : () => unawaited(
+                        runAppRecoveryAction(
+                          context,
+                          busyLabel: l10n.appHardRecovering,
+                          action: (state) =>
+                              state.hardRecoverApp(reason: 'settings'),
+                        ),
+                      ),
+              icon: const Icon(Icons.healing_outlined),
+              label: Text(l10n.appHardRecoverAction),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: s.recovering
+                  ? null
+                  : () async {
+                      final ok = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text(l10n.appSessionResetConfirmTitle),
+                          content: Text(l10n.appSessionResetConfirmBody),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: Text(l10n.cancel),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: Text(l10n.appSessionResetAction),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (ok != true || !context.mounted) return;
+                      await runAppRecoveryAction(
+                        context,
+                        busyLabel: l10n.appSessionResetRunning,
+                        action: (state) =>
+                            state.resetAppSession(reason: 'settings'),
+                      );
+                    },
+              icon: const Icon(Icons.restart_alt),
+              label: Text(l10n.appSessionResetAction),
             ),
             const SizedBox(height: 28),
             _section(l10n.settingsPrivacy),

@@ -1,0 +1,20 @@
+# ResilNet lab node B — TCP client → 127.0.0.1:4242
+# Isolated shared-instance ports so two rnsd can coexist on one Mac.
+
+[reticulum]
+  enable_transport = Yes
+  share_instance = Yes
+  instance_name = resilnet-lab-b
+  shared_instance_port = 37438
+  instance_control_port = 37439
+
+[logging]
+  loglevel = 7
+
+[interfaces]
+
+  [[Lab TCP Client]]
+    type = TCPClientInterface
+    enabled = yes
+    target_host = 127.0.0.1
+    target_port = 4242

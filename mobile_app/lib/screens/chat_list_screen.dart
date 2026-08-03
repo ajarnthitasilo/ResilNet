@@ -13,6 +13,7 @@ import '../core/payload_kinds.dart';
 import '../core/voice_payload.dart';
 import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
+import '../models/app_recovery.dart';
 import '../models/feed_channel.dart';
 import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
@@ -20,6 +21,7 @@ import '../models/peer.dart';
 import '../services/mic_permission.dart';
 import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
+import '../widgets/app_recovery_actions.dart';
 import '../widgets/geo_discovery_empty.dart';
 import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
@@ -29,6 +31,7 @@ import 'feed_channel_sheet.dart';
 import 'identity_screen.dart';
 import 'info_sheet.dart';
 import 'location_channel_sheet.dart';
+import 'local_wifi_link_sheet.dart';
 import 'notices_sheet.dart';
 import 'online_people_sheet.dart';
 import 'panic_wipe.dart';
@@ -69,11 +72,126 @@ class _ChatListScreenState extends State<ChatListScreen> {
       _titleTapCount += 1;
     }
     _titleTapAt = now;
-    if (_titleTapCount >= 3) {
+    // Double-tap: soft refresh. Triple-tap (same window): emergency wipe.
+    if (_titleTapCount == 2) {
+      unawaited(_softRefreshFromTitle());
+    } else if (_titleTapCount >= 3) {
       _titleTapCount = 0;
       _titleTapAt = null;
       unawaited(confirmAndPanicWipe(context));
     }
+  }
+
+  void _onTitleLongPress() {
+    _titleTapCount = 0;
+    _titleTapAt = null;
+    HapticFeedback.heavyImpact();
+    unawaited(
+      runAppRecoveryAction(
+        context,
+        busyLabel: context.l10n.appHardRecovering,
+        action: (s) => s.hardRecoverApp(reason: 'title-long-press'),
+      ),
+    );
+  }
+
+  Future<void> _softRefreshFromTitle() async {
+    if (!mounted) return;
+    final s = context.read<AppState>();
+    final l10n = context.l10n;
+    if (s.recovering) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.appRecoveryBusy)),
+      );
+      return;
+    }
+    HapticFeedback.mediumImpact();
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(l10n.appRefreshing),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+    try {
+      final report = await s.softRefreshApp(reason: 'title-double-tap');
+      if (!mounted) return;
+      messenger.hideCurrentSnackBar();
+      final msg = switch (report.outcome) {
+        AppRecoveryOutcome.ok => l10n.appRefreshed,
+        AppRecoveryOutcome.partial => l10n.appRecoveryPartial,
+        AppRecoveryOutcome.failed => l10n.appRecoveryFailed,
+      };
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.appRefreshFailed('$e'))),
+      );
+    }
+  }
+
+  Widget _softRefreshTipBanner(AppState s) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+      child: ResilNetTheme.glassPanel(
+        context: context,
+        borderRadius: BorderRadius.circular(14),
+        padding: const EdgeInsets.fromLTRB(12, 10, 4, 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.touch_app_outlined,
+              color: ResilNetTheme.emerald,
+              size: 22,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.softRefreshTipTitle,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.softRefreshTipBody,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          height: 1.35,
+                          color: ResilNetTheme.mutedOnSurface(context, alpha: 0.75),
+                        ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => unawaited(s.dismissSoftRefreshTip()),
+                      child: Text(l10n.softRefreshTipGotIt),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              tooltip: l10n.close,
+              onPressed: () => unawaited(s.dismissSoftRefreshTip()),
+              icon: const Icon(Icons.close, size: 18),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _openPeer(BuildContext context, String peerId) async {
@@ -355,19 +473,27 @@ class _ChatListScreenState extends State<ChatListScreen> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         titleSpacing: 8,
-        title: GestureDetector(
-          onTap: _onTitleTap,
-          behavior: HitTestBehavior.opaque,
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              l10n.communityTitle,
-              maxLines: 1,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.3,
-                fontSize: 18,
+        title: Tooltip(
+          message: l10n.appRefreshTitleHint,
+          child: GestureDetector(
+            onTap: _onTitleTap,
+            onLongPress: _onTitleLongPress,
+            behavior: HitTestBehavior.opaque,
+            child: Semantics(
+              button: true,
+              label: '${l10n.communityTitle}. ${l10n.appRefreshTitleHint}',
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  l10n.communityTitle,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
+                    fontSize: 18,
+                  ),
+                ),
               ),
             ),
           ),
@@ -453,9 +579,27 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 showInfoSheet(context);
               } else if (v == 'announce') {
                 openAnnouncementsScreen(context);
+              } else if (v == 'hard_recover') {
+                unawaited(
+                  runAppRecoveryAction(
+                    context,
+                    busyLabel: l10n.appHardRecovering,
+                    action: (s) => s.hardRecoverApp(reason: 'overflow-menu'),
+                  ),
+                );
+              } else if (v == 'local_wifi') {
+                unawaited(showLocalWifiLinkSheet(context));
               }
             },
             itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'local_wifi',
+                child: Text(l10n.localWifiTitle),
+              ),
+              PopupMenuItem(
+                value: 'hard_recover',
+                child: Text(l10n.appHardRecoverAction),
+              ),
               PopupMenuItem(
                 value: 'info',
                 child: Text(l10n.infoOpen),
@@ -479,6 +623,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       body: Column(
           children: [
             const MeshStatusBar(),
+            if (s.isReady && !s.softRefreshTipSeen) _softRefreshTipBanner(s),
             if (s.systemLines.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),

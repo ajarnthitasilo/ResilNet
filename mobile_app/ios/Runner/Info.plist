@@ -21,6 +21,11 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>ResilNet</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>th</string>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -49,6 +54,17 @@
 	<string>แอปใช้ตำแหน่ง GPS เพื่อคัดกรองประกาศเตือนภัยในพื้นที่ของคุณ และเชื่อมต่อเครือข่าย BLE ชุมชน</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>แอปใช้ตำแหน่ง GPS เพื่อคัดกรองประกาศเตือนภัยในพื้นที่ของคุณ และค้นหาอุปกรณ์ BLE ใกล้เคียง</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>ResilNet uses the local network to find nearby devices on the same Wi‑Fi or hotspot and exchange sealed messages without the internet.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_resilnet-lan._udp</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>แอปใช้ไมโครโฟนเพื่อบันทึกข้อความเสียงแบบ Push-to-Talk ในแชตชุมชน</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

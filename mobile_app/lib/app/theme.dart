@@ -18,14 +18,14 @@ class ResilNetTheme {
   static const gradientTop = Color(0xFF0B1A33);
   static const gradientBottom = Color(0xFF1A1030);
 
-  /// Soft cool canvas under frosted panels (not flat white).
-  static const lightCanvas = Color(0xFFE8F0F6);
-  static const lightSurface = Color(0xF2FFFFFF);
-  static const lightGlass = Color(0xB8FFFFFF);
-  static const lightGlassBorder = Color(0x66FFFFFF);
-  static const lightGradientTop = Color(0xFFDCEEF0);
-  static const lightGradientMid = Color(0xFFE8F2F8);
-  static const lightGradientBottom = Color(0xFFF0E8F4);
+  /// Soft cool canvas under frosted panels (never flat white).
+  static const lightCanvas = Color(0xFFD4E4EC);
+  static const lightSurface = Color(0xCCEAF4F8);
+  static const lightGlass = Color(0x99E8F4F8);
+  static const lightGlassBorder = Color(0x99FFFFFF);
+  static const lightGradientTop = Color(0xFFB8D9DE);
+  static const lightGradientMid = Color(0xFFD2E4F0);
+  static const lightGradientBottom = Color(0xFFE0D4EA);
 
   static const scaffoldGradient = LinearGradient(
     begin: Alignment.topCenter,
@@ -37,7 +37,7 @@ class ResilNetTheme {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [lightGradientTop, lightGradientMid, lightGradientBottom],
-    stops: [0.0, 0.45, 1.0],
+    stops: [0.0, 0.48, 1.0],
   );
 
   static bool isDark(BuildContext context) =>
@@ -56,21 +56,21 @@ class ResilNetTheme {
   /// Soft surface fill for status chips / bars (adapts to light/dark).
   static Color barSurface(BuildContext context) => isDark(context)
       ? deepNavy
-      : Colors.white.withValues(alpha: 0.55);
+      : const Color(0xFFEFF6FA).withValues(alpha: 0.62);
 
   static Color barBorder(BuildContext context) => isDark(context)
       ? Colors.white.withValues(alpha: 0.06)
-      : Colors.white.withValues(alpha: 0.65);
+      : const Color(0xFF0F172A).withValues(alpha: 0.08);
 
   /// Panel / chip fill that reads as glass in light mode.
   static Color glassFill(BuildContext context, {double darkAlpha = 0.06}) =>
       isDark(context)
           ? Colors.white.withValues(alpha: darkAlpha)
-          : Colors.white.withValues(alpha: 0.55);
+          : const Color(0xFFEAF4F8).withValues(alpha: 0.58);
 
   static Color glassBorder(BuildContext context) => isDark(context)
       ? Colors.white.withValues(alpha: 0.08)
-      : Colors.white.withValues(alpha: 0.7);
+      : Colors.white.withValues(alpha: 0.55);
 
   /// Frosted panel decoration — blur when supported, solid fallback otherwise.
   static BoxDecoration glassDecoration(
@@ -83,19 +83,19 @@ class ResilNetTheme {
       borderRadius: borderRadius,
       color: dark
           ? surface.withValues(alpha: 0.55)
-          : Colors.white.withValues(alpha: 0.48),
+          : const Color(0xFFEAF4F8).withValues(alpha: 0.52),
       border: Border.all(
         color: dark
             ? Colors.white.withValues(alpha: 0.08)
-            : Colors.white.withValues(alpha: 0.72),
+            : Colors.white.withValues(alpha: 0.55),
       ),
       boxShadow: dark
           ? null
           : [
               BoxShadow(
-                color: const Color(0xFF0F172A).withValues(alpha: 0.06),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+                color: const Color(0xFF0F172A).withValues(alpha: 0.08),
+                blurRadius: 28,
+                offset: const Offset(0, 10),
               ),
             ],
     );
@@ -214,7 +214,7 @@ class ResilNetTheme {
     final scheme = ColorScheme.fromSeed(
       seedColor: emerald,
       brightness: Brightness.light,
-      surface: const Color(0xFFF7FBFD),
+      surface: lightSurface,
     );
 
     return ThemeData(
@@ -223,15 +223,15 @@ class ResilNetTheme {
       colorScheme: scheme.copyWith(
         primary: const Color(0xFF0D9488),
         secondary: const Color(0xFF059669),
-        surface: const Color(0xF2FFFFFF),
+        surface: lightSurface,
         onSurface: const Color(0xFF0F172A),
-        surfaceContainerHighest: Colors.white.withValues(alpha: 0.72),
+        surfaceContainerHighest: const Color(0xCCEAF4F8),
       ),
       scaffoldBackgroundColor: lightCanvas,
       dividerColor: const Color(0xFF0F172A).withValues(alpha: 0.08),
       iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
       appBarTheme: AppBarTheme(
-        backgroundColor: Colors.white.withValues(alpha: 0.35),
+        backgroundColor: const Color(0xFFEAF4F8).withValues(alpha: 0.42),
         elevation: 0,
         scrolledUnderElevation: 0,
         foregroundColor: const Color(0xFF0F172A),
@@ -241,34 +241,34 @@ class ResilNetTheme {
         centerTitle: false,
       ),
       cardTheme: CardThemeData(
-        color: Colors.white.withValues(alpha: 0.55),
+        color: const Color(0xFFEAF4F8).withValues(alpha: 0.55),
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.55)),
         ),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: Colors.white.withValues(alpha: 0.88),
+        backgroundColor: const Color(0xFFF0F7FA).withValues(alpha: 0.92),
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: Colors.white.withValues(alpha: 0.82),
-        modalBackgroundColor: Colors.white.withValues(alpha: 0.88),
+        backgroundColor: const Color(0xFFEAF4F8).withValues(alpha: 0.88),
+        modalBackgroundColor: const Color(0xFFF0F7FA).withValues(alpha: 0.92),
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: Colors.white.withValues(alpha: 0.55),
+        backgroundColor: const Color(0xFFEAF4F8).withValues(alpha: 0.55),
         selectedColor: emerald.withValues(alpha: 0.18),
         labelStyle: const TextStyle(color: Color(0xFF334155), fontSize: 13),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        side: BorderSide(color: Colors.white.withValues(alpha: 0.65)),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.5)),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
@@ -276,11 +276,11 @@ class ResilNetTheme {
             if (states.contains(WidgetState.selected)) {
               return emerald.withValues(alpha: 0.16);
             }
-            return Colors.white.withValues(alpha: 0.35);
+            return const Color(0xFFEAF4F8).withValues(alpha: 0.4);
           }),
           foregroundColor: WidgetStateProperty.all(const Color(0xFF0F172A)),
           side: WidgetStateProperty.all(
-            BorderSide(color: Colors.white.withValues(alpha: 0.65)),
+            BorderSide(color: Colors.white.withValues(alpha: 0.5)),
           ),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -289,16 +289,16 @@ class ResilNetTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.62),
+        fillColor: const Color(0xFFEAF4F8).withValues(alpha: 0.62),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.55)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.7)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.55)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),

@@ -15,6 +15,307 @@ class AppLocalizationsTh extends AppLocalizations {
   String get communityTitle => 'ResilNet';
 
   @override
+  String get appRefreshing => 'กำลังรีเฟรช ResilNet…';
+
+  @override
+  String get appRefreshed => 'รีเฟรชแล้ว — เชื่อมวิทยุและค้นหาใหม่แล้ว';
+
+  @override
+  String appRefreshFailed(String error) {
+    return 'รีเฟรชไม่สำเร็จ: $error';
+  }
+
+  @override
+  String get appRefreshTitleHint =>
+      'แตะสองครั้ง = รีเฟรชเบา · กดค้าง = กู้หนัก · แตะสามครั้ง = ล้างฉุกเฉิน';
+
+  @override
+  String get softRefreshTipTitle => 'ถ้าแอปดูนิ่งหรือค้าง';
+
+  @override
+  String get softRefreshTipBody =>
+      'แตะชื่อ ResilNet สองครั้งเพื่อรีเฟรชวิทยุ หากยังค้าง: กดค้างที่ชื่อ หรือ ⋮ / ตั้งค่า → กู้แอป แตะสามครั้ง = ล้างฉุกเฉินเมื่อตั้งใจเท่านั้น';
+
+  @override
+  String get softRefreshTipGotIt => 'เข้าใจแล้ว';
+
+  @override
+  String get infoSoftRefreshTitle => 'ถ้าแอปดูนิ่งหรือค้าง';
+
+  @override
+  String get infoSoftRefreshStepRefresh =>
+      'แตะชื่อ ResilNet มุมซ้ายบนสองครั้ง → รีเฟรชวิทยุและคนใกล้ ๆ';
+
+  @override
+  String get infoSoftRefreshStepHard =>
+      'ยังค้าง? กดค้างที่ชื่อ หรือ ⋮ / ตั้งค่า → กู้แอป';
+
+  @override
+  String get infoSoftRefreshStepWait =>
+      'รอผลแล้วลองใหม่ — รีเซ็ตเซสชันจะเก็บกุญแจไว้';
+
+  @override
+  String get infoSoftRefreshStepWipe =>
+      'แตะสามครั้ง = ล้างข้อมูลฉุกเฉิน (ลบข้อมูลในเครื่อง) — ใช้เมื่อตั้งใจเท่านั้น';
+
+  @override
+  String get appRecoverySection => 'กู้แอป';
+
+  @override
+  String get appRecoverySectionSubtitle =>
+      'ใช้เมื่อแอปค้าง รีเฟรชเบา = แตะชื่อสองครั้ง · กู้หนักแรงกว่า · รีเซ็ตเซสชันไม่ลบกุญแจ';
+
+  @override
+  String get appHardRecoverAction => 'กู้แอป (Hard recover)';
+
+  @override
+  String get appHardRecovering => 'กำลังกู้แอป…';
+
+  @override
+  String get appSessionResetAction => 'รีเซ็ตเซสชัน';
+
+  @override
+  String get appSessionResetRunning => 'กำลังรีเซ็ตเซสชัน…';
+
+  @override
+  String get appSessionResetConfirmTitle => 'รีเซ็ตเซสชัน?';
+
+  @override
+  String get appSessionResetConfirmBody =>
+      'รีสตาร์ทบริการ ResilNet บนเครื่องนี้ กุญแจตัวตนยังอยู่';
+
+  @override
+  String get appRecoveryBusy => 'กำลังกู้อยู่แล้ว…';
+
+  @override
+  String get appRecoveryOk => 'กู้เสร็จแล้ว';
+
+  @override
+  String get appRecoveryPartial => 'กู้เสร็จบางส่วน — ถ้ายังค้างให้ลองอีกครั้ง';
+
+  @override
+  String get appRecoveryFailed =>
+      'กู้ไม่สำเร็จ — ลองรีเซ็ตเซสชัน หรือบังคับปิดแอปจากระบบ';
+
+  @override
+  String get localWifiTitle => 'Wi‑Fi ท้องถิ่น';
+
+  @override
+  String get localWifiSubtitle =>
+      'เชื่อมเครื่องใกล้ ๆ โดยไม่ต้องมีอินเทอร์เน็ต — อยู่เครือข่ายท้องถิ่นเดียวกัน';
+
+  @override
+  String get localWifiNotGatewayHint =>
+      'ไม่ใช่ SoftAP ของเกตเวย์ ESP32 LoRa — นี่คือมือถือ↔มือถือ / LAN เท่านั้น';
+
+  @override
+  String get localWifiUnavailable =>
+      'Wi‑Fi ท้องถิ่นยังไม่พร้อม — รอแอปเริ่มระบบก่อน';
+
+  @override
+  String get lxmfBridgeTitle => 'โหนดบ้าน';
+
+  @override
+  String get lxmfBridgeSubtitle =>
+      'Mac หรือ Pi บน Wi‑Fi บ้านที่ช่วยส่งแชทที่เข้ารหัสแล้ว — ปิดเป็นค่าเริ่มต้น ไม่แทนที่การเข้ารหัสปลายทาง';
+
+  @override
+  String get lxmfBridgeEnable => 'ใช้โหนดบ้าน';
+
+  @override
+  String get lxmfBridgeDisabledHint =>
+      'เปิดเมื่อรันโปรแกรม bridge บน Mac/Pi ในเครือข่ายนี้แล้วเท่านั้น';
+
+  @override
+  String lxmfBridgeOnline(String dest) {
+    return 'ออนไลน์ — $dest';
+  }
+
+  @override
+  String lxmfBridgeOffline(String error) {
+    return 'ติดต่อโหนดบ้านไม่ได้ — $error';
+  }
+
+  @override
+  String get lxmfBridgeBaseUrl => 'ที่อยู่โหนดบ้าน';
+
+  @override
+  String get lxmfBridgeBaseUrlHelper =>
+      'IP หรือ http://IP:พอร์ต เช่น 192.168.1.10:8766';
+
+  @override
+  String get lxmfBridgeIdentityMap => 'Peer → LXMF dest (JSON)';
+
+  @override
+  String get lxmfBridgeRefresh => 'บันทึกและรีเฟรชสถานะ';
+
+  @override
+  String get lxmfBridgeLabHint => 'ขั้นสูง: labs/reticulum_lxmf';
+
+  @override
+  String get lxmfBridgeOpen => 'ตั้งค่าโหนดบ้าน';
+
+  @override
+  String get lxmfBridgeCheckConnection => 'ตรวจการเชื่อมต่อ';
+
+  @override
+  String get lxmfBridgeStatusOnline => 'เชื่อมต่อโหนดบ้านแล้ว';
+
+  @override
+  String get lxmfBridgeStatusOffline => 'ยังถึงโหนดบ้านไม่ได้';
+
+  @override
+  String get lxmfBridgeYourDest => 'ที่อยู่โหนดนี้ (แชร์ให้เพื่อน)';
+
+  @override
+  String get lxmfBridgeCopyDest => 'คัดลอกที่อยู่';
+
+  @override
+  String get lxmfBridgeDestCopied => 'คัดลอกแล้ว';
+
+  @override
+  String get lxmfBridgeLinkedPeers => 'เพื่อนที่ผูกแล้ว';
+
+  @override
+  String get lxmfBridgeLinkedPeersHint =>
+      'ผูกที่อยู่โหนดบ้านของเพื่อนหนึ่งครั้ง แล้วแชทที่เข้ารหัสสามารถใช้เส้นทางนี้ได้';
+
+  @override
+  String get lxmfBridgeNoLinks => 'ยังไม่ได้ผูกเพื่อน';
+
+  @override
+  String get lxmfBridgeAddLink => 'ผูกเพื่อน';
+
+  @override
+  String get lxmfBridgePickPeer => 'เพื่อน';
+
+  @override
+  String get lxmfBridgePeerDest => 'ที่อยู่โหนดบ้านของเขา';
+
+  @override
+  String get lxmfBridgePeerDestHint => 'รหัส 32 ตัวจากหน้าโหนดบ้านของเขา';
+
+  @override
+  String get lxmfBridgeInvalidDest =>
+      'ที่อยู่ไม่ถูกต้อง — วางรหัสเต็มจากหน้าโหนดบ้านของเพื่อน';
+
+  @override
+  String get lxmfBridgeRemoveLink => 'เลิกผูก';
+
+  @override
+  String get lxmfBridgeSaveLink => 'บันทึก';
+
+  @override
+  String get lxmfBridgeLinkSaved => 'ผูกเพื่อนแล้ว';
+
+  @override
+  String get lxmfBridgeNoPeers =>
+      'ยังไม่มีผู้ติดต่อที่ส่งข้อความได้ — เพิ่มเพื่อนก่อน';
+
+  @override
+  String get lxmfBridgeHelp =>
+      'ให้โปรแกรม bridge บน Mac/Pi ทำงานอยู่ เส้นทางนี้อยู่ใน LAN — ไม่ใช่ LoRa และไม่แทนที่อินเทอร์เน็ตหรือ Bluetooth mesh';
+
+  @override
+  String get localWifiModeHotspot => 'ใกล้ตัว';
+
+  @override
+  String get localWifiModeRouter => 'เราเตอร์';
+
+  @override
+  String get localWifiHotspotIntro =>
+      'เครื่องหนึ่งเปิด Personal Hotspot อีกเครื่องเข้าร่วม แล้วให้ ResilNet ค้นหาบนเครือข่ายท้องถิ่น';
+
+  @override
+  String get localWifiHostAction => 'สร้างเครือข่าย (Host)';
+
+  @override
+  String get localWifiJoinAction => 'เข้าร่วมเครือข่าย';
+
+  @override
+  String get localWifiHostSteps =>
+      '1. ไปที่ตั้งค่าเครื่อง เปิด Personal Hotspot (หรือแชร์อินเทอร์เน็ต)\n2. บอกชื่อฮอตสปอต (และรหัส) ให้เพื่อน\n3. กลับมาที่นี่แล้วแตะ “เปิดฮอตสปอตแล้ว — เริ่มรอ”';
+
+  @override
+  String get localWifiHostReady => 'เปิดฮอตสปอตแล้ว — เริ่มรอ';
+
+  @override
+  String get localWifiHostWaiting => 'รอเพื่อนเข้าร่วม…';
+
+  @override
+  String get localWifiJoinSteps =>
+      '1. ไปตั้งค่าเครื่อง แล้วเชื่อม Personal Hotspot ของเพื่อน\n2. กลับมาที่นี่แล้วแตะ “ฉันเชื่อมแล้ว — ค้นหา”';
+
+  @override
+  String get localWifiJoinReady => 'ฉันเชื่อมแล้ว — ค้นหา';
+
+  @override
+  String get localWifiRouterIntro =>
+      'ให้ทุกเครื่องเชื่อม Wi‑Fi เราเตอร์/AP เดียวกัน — เราเตอร์ไม่จำเป็นต้องมีเน็ต แค่เครือข่ายท้องถิ่นร่วมกัน';
+
+  @override
+  String get localWifiRouterSearch => 'ค้นหาบน Wi‑Fi นี้';
+
+  @override
+  String get localWifiRefreshNetwork => 'รีเฟรชข้อมูล Wi‑Fi';
+
+  @override
+  String get localWifiRouterNoWifiTitle => 'ยังไม่ได้อยู่บน Wi‑Fi';
+
+  @override
+  String get localWifiRouterNoWifiBody =>
+      'ไปเชื่อม Wi‑Fi ของเราเตอร์ในตั้งค่าระบบ แล้วค้นหาอีกครั้ง';
+
+  @override
+  String get localWifiDiscovering => 'กำลังค้นหาบน Wi‑Fi ท้องถิ่น…';
+
+  @override
+  String get localWifiPeersFound => 'เครื่องบนเครือข่ายนี้';
+
+  @override
+  String get localWifiStop => 'หยุด';
+
+  @override
+  String get localWifiSsidUnknown => 'อ่านชื่อ Wi‑Fi ไม่ได้';
+
+  @override
+  String get localWifiStubBanner => 'กำลังเปิดซ็อกเก็ต LAN…';
+
+  @override
+  String get localWifiLiveBanner =>
+      'ค้นหาบน LAN ทำงานแล้ว (UDP) — ประกาศตัวตน + แชทแบบ sealed บน Wi‑Fi นี้';
+
+  @override
+  String get localWifiEmptyHotspot =>
+      'ยังไม่พบเครื่อง\nตรวจว่าเพื่อนเข้าฮอตสปอตแล้ว และอนุญาต Local Network';
+
+  @override
+  String get localWifiEmptyRouter =>
+      'ยังไม่พบเครื่อง\nSSID เดียวกัน? อนุญาต Local Network? บางเราเตอร์ปิดการคุยระหว่างเครื่อง (AP isolation)';
+
+  @override
+  String get localWifiIsolationHelp => 'ทำไมหากันไม่เจอ?';
+
+  @override
+  String get localWifiIsolationTitle => 'เราเตอร์อาจแยกคลายเอนต์';
+
+  @override
+  String get localWifiIsolationBody =>
+      'ถ้าเปิด AP/Client isolation หรือใช้ guest network มือถือบน Wi‑Fi เดียวกันจะคุยกันไม่ได้ — ปิด isolation หรือใช้โหมดใกล้ตัว (Hotspot)';
+
+  @override
+  String get localWifiPeerReady => 'พร้อมแชท (มีกุญแจ)';
+
+  @override
+  String get localWifiPeerNeedKey => 'พบแล้ว — สแกน QR เพื่อแลกกุญแจ';
+
+  @override
+  String get localWifiErrorTitle => 'Wi‑Fi ท้องถิ่นผิดพลาด';
+
+  @override
+  String get localWifiErrorBody => 'มีปัญหา หยุดแล้วลองใหม่';
+
+  @override
   String get preparingSystem => 'กำลังเตรียมระบบ…';
 
   @override
@@ -66,7 +367,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get language => 'ภาษา';
 
   @override
-  String get languageSubtitle => 'ตามภาษาของระบบ หรือเลือกไทย / อังกฤษ';
+  String get languageSubtitle =>
+      'ตามภาษาเครื่องเมื่อเป็นไทยหรืออังกฤษ — ภาษาอื่นของระบบใช้อังกฤษ หรือล็อกเป็นไทย / อังกฤษที่นี่';
 
   @override
   String get languageSystem => 'ตามระบบ';
@@ -1478,6 +1780,19 @@ class AppLocalizationsTh extends AppLocalizations {
   String get inviteLongPressHint => 'กดค้างเพื่อจัดการลิงก์';
 
   @override
+  String get inviteSendInChat => 'ส่งในแชท ResilNet…';
+
+  @override
+  String get inviteSendInChatHint => 'เฉพาะคนที่คุณมีกุญแจสาธารณะอยู่แล้ว';
+
+  @override
+  String get inviteSendInChatEmpty =>
+      'ยังไม่มีแชทที่ส่งได้\nสแกน QR เปิด Area/Mesh หรือแชร์ลิงก์นอกแอปก่อน';
+
+  @override
+  String get inviteSentToChat => 'ส่ง invite ในแชทแล้ว';
+
+  @override
   String get infoTabInfo => 'ข้อมูล';
 
   @override
@@ -1589,7 +1904,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get panicWipeSubtitle =>
-      'ลบทุกอย่างในเครื่อง — เหมือนแตะชื่อบนหน้าหลักสามครั้ง';
+      'ลบทุกอย่างในเครื่อง — เหมือนแตะชื่อบนหน้าหลักสามครั้ง (แตะสองครั้ง = รีเฟรชวิทยุ)';
 
   @override
   String get panicWipeConfirmTitle => 'ล้างข้อมูลทั้งหมดในเครื่อง?';
