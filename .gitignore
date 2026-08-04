@@ -63,3 +63,6 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Local packaged app builds (attach to GitHub Releases instead)
+releases/app/
