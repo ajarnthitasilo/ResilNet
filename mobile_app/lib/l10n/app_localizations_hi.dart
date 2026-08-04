@@ -413,9 +413,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get feedDirectsSubtitle => 'निजी E2EE संदेश';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'आस-पास के साथी (BLE)';
-  }
+  String get feedMeshSubtitle => 'आस-पास के साथी (BLE)';
 
   @override
   String get feedGeoSubtitle => 'जियोहैश डिस्कवरी चैनल';
@@ -1502,9 +1500,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get peersBlocked => 'अवरोधित';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'आस-पास (BLE)';
-  }
+  String get peersNearbyBle => 'आस-पास (BLE)';
 
   @override
   String get peersRecentlyOnline => 'हाल ही में ऑनलाइन';

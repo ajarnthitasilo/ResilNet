@@ -418,9 +418,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get feedDirectsSubtitle => 'தனிப்பட்ட E2EE செய்திகள்';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'அருகிலுள்ள சகாக்கள் (BLE)';
-  }
+  String get feedMeshSubtitle => 'அருகிலுள்ள சகாக்கள் (BLE)';
 
   @override
   String get feedGeoSubtitle => 'ஜியோஹாஷ் கண்டுபிடிப்பு சேனல்';
@@ -1521,9 +1519,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get peersBlocked => 'தடுக்கப்பட்டது';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'அருகில் (BLE)';
-  }
+  String get peersNearbyBle => 'அருகில் (BLE)';
 
   @override
   String get peersRecentlyOnline => 'சமீபத்தில் ஆன்லைனில்';

@@ -390,9 +390,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get feedDirectsSubtitle => '私有E2EE消息';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return '附近的同行 (BLE)';
-  }
+  String get feedMeshSubtitle => '附近的同行 (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Geohash 发现通道';
@@ -1415,9 +1413,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get peersBlocked => '被阻止';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return '附近 (BLE)';
-  }
+  String get peersNearbyBle => '附近 (BLE)';
 
   @override
   String get peersRecentlyOnline => '最近上线';
@@ -2525,9 +2521,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get feedDirectsSubtitle => '私有E2EE訊息';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return '附近的同行 (BLE)';
-  }
+  String get feedMeshSubtitle => '附近的同行 (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Geohash 發現通道';
@@ -3549,9 +3543,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get peersBlocked => '被阻止';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return '附近 (BLE)';
-  }
+  String get peersNearbyBle => '附近 (BLE)';
 
   @override
   String get peersRecentlyOnline => '最近上線';

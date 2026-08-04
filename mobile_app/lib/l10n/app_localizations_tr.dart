@@ -414,9 +414,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get feedDirectsSubtitle => 'Özel E2EE mesajları';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Yakındaki eşler (BLE)';
-  }
+  String get feedMeshSubtitle => 'Yakındaki eşler (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Geohash keşif kanalı';
@@ -1505,9 +1503,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get peersBlocked => 'Engellendi';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'Yakında (BLE)';
-  }
+  String get peersNearbyBle => 'Yakında (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Son zamanlarda çevrimiçi';

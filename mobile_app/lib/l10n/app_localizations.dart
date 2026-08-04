@@ -891,7 +891,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Nearby peers (BLE)'**
-  String feedMeshSubtitle(Object ble);
+  String get feedMeshSubtitle;
 
   /// No description provided for @feedGeoSubtitle.
   ///
@@ -2769,7 +2769,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Nearby (BLE)'**
-  String peersNearbyBle(Object ble);
+  String get peersNearbyBle;
 
   /// No description provided for @peersRecentlyOnline.
   ///

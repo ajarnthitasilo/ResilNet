@@ -410,9 +410,7 @@ class AppLocalizationsKsw extends AppLocalizations {
   String get feedDirectsSubtitle => '1:1 chat';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Hser peers ($ble)';
-  }
+  String get feedMeshSubtitle => 'Hser peers (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Area geohash';
@@ -1489,9 +1487,7 @@ class AppLocalizationsKsw extends AppLocalizations {
   String get peersBlocked => 'Blocked';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'Hser ($ble)';
-  }
+  String get peersNearbyBle => 'Hser (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Online a hser';

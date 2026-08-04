@@ -423,9 +423,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get feedDirectsSubtitle => 'သီးသန့် E2EE မက်ဆေ့ဂျ်များ';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'အနီးနားရှိ ရွယ်တူများ (BLE)';
-  }
+  String get feedMeshSubtitle => 'အနီးနားရှိ ရွယ်တူများ (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Geohash ရှာဖွေတွေ့ရှိမှုချန်နယ်';
@@ -1530,9 +1528,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get peersBlocked => 'ပိတ်ဆို့ထားသည်။';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'အနီးနား (BLE)';
-  }
+  String get peersNearbyBle => 'အနီးနား (BLE)';
 
   @override
   String get peersRecentlyOnline => 'မကြာသေးမီက အွန်လိုင်း';

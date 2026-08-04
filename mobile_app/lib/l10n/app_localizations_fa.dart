@@ -411,9 +411,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get feedDirectsSubtitle => 'پیام های خصوصی E2EE';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'همتایان نزدیک (BLE)';
-  }
+  String get feedMeshSubtitle => 'همتایان نزدیک (BLE)';
 
   @override
   String get feedGeoSubtitle => 'کانال کشف Geohash';
@@ -1500,9 +1498,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get peersBlocked => 'مسدود شده است';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'نزدیک (BLE)';
-  }
+  String get peersNearbyBle => 'نزدیک (BLE)';
 
   @override
   String get peersRecentlyOnline => 'اخیرا آنلاین';

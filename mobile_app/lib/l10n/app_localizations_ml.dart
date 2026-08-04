@@ -422,9 +422,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get feedDirectsSubtitle => 'സ്വകാര്യ E2EE സന്ദേശങ്ങൾ';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'സമീപത്തുള്ള സമപ്രായക്കാർ (BLE)';
-  }
+  String get feedMeshSubtitle => 'സമീപത്തുള്ള സമപ്രായക്കാർ (BLE)';
 
   @override
   String get feedGeoSubtitle => 'ജിയോഹാഷ് കണ്ടെത്തൽ ചാനൽ';
@@ -1522,9 +1520,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get peersBlocked => 'തടഞ്ഞു';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'സമീപത്ത് (BLE)';
-  }
+  String get peersNearbyBle => 'സമീപത്ത് (BLE)';
 
   @override
   String get peersRecentlyOnline => 'അടുത്തിടെ ഓൺലൈനിൽ';

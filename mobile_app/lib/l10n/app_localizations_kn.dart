@@ -415,9 +415,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get feedDirectsSubtitle => 'ಖಾಸಗಿ E2EE ಸಂದೇಶಗಳು';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'ಹತ್ತಿರದ ಗೆಳೆಯರು (BLE)';
-  }
+  String get feedMeshSubtitle => 'ಹತ್ತಿರದ ಗೆಳೆಯರು (BLE)';
 
   @override
   String get feedGeoSubtitle => 'ಜಿಯೋಹಾಶ್ ಡಿಸ್ಕವರಿ ಚಾನೆಲ್';
@@ -1515,9 +1513,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get peersBlocked => 'ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'ಹತ್ತಿರದ (BLE)';
-  }
+  String get peersNearbyBle => 'ಹತ್ತಿರದ (BLE)';
 
   @override
   String get peersRecentlyOnline => 'ಇತ್ತೀಚೆಗೆ ಆನ್‌ಲೈನ್';

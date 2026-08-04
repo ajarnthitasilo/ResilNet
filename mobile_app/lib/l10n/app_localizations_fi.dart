@@ -413,9 +413,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get feedDirectsSubtitle => 'Yksityiset E2EE viestit';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Läheiset kumppanit (BLE)';
-  }
+  String get feedMeshSubtitle => 'Läheiset kumppanit (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Geohash-löytökanava';
@@ -1507,9 +1505,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get peersBlocked => 'Estetty';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'Lähistöllä (BLE)';
-  }
+  String get peersNearbyBle => 'Lähistöllä (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Äskettäin verkossa';

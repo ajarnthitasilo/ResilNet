@@ -414,9 +414,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get feedDirectsSubtitle => 'Частные сообщения E2EE';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Ближайшие одноранговые узлы (BLE)';
-  }
+  String get feedMeshSubtitle => 'Ближайшие одноранговые узлы (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Канал обнаружения Geohash';
@@ -1516,9 +1514,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get peersBlocked => 'Заблокировано';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'Рядом (BLE)';
-  }
+  String get peersNearbyBle => 'Рядом (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Недавно был онлайн';

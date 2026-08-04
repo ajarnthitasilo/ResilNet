@@ -412,9 +412,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get feedDirectsSubtitle => 'رسائل E2EE الخاصة';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'النظراء القريبون (BLE)';
-  }
+  String get feedMeshSubtitle => 'النظراء القريبون (BLE)';
 
   @override
   String get feedGeoSubtitle => 'قناة اكتشاف جيوهاش';
@@ -1500,9 +1498,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get peersBlocked => 'محظور';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'قريب (BLE)';
-  }
+  String get peersNearbyBle => 'قريب (BLE)';
 
   @override
   String get peersRecentlyOnline => 'مؤخرا على الانترنت';

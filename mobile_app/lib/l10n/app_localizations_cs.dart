@@ -411,9 +411,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get feedDirectsSubtitle => 'Soukromé zprávy E2EE';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Podobní uživatelé v okolí (BLE)';
-  }
+  String get feedMeshSubtitle => 'Podobní uživatelé v okolí (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Kanál pro objevování geohash';
@@ -1504,9 +1502,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get peersBlocked => 'Blokováno';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'V blízkosti (BLE)';
-  }
+  String get peersNearbyBle => 'V blízkosti (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Nedávno online';

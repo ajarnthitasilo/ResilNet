@@ -415,9 +415,7 @@ class AppLocalizationsMs extends AppLocalizations {
   String get feedDirectsSubtitle => 'Mesej E2EE peribadi';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Rakan sebaya yang berdekatan (BLE)';
-  }
+  String get feedMeshSubtitle => 'Rakan sebaya yang berdekatan (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Saluran penemuan Geohash';
@@ -1510,9 +1508,7 @@ class AppLocalizationsMs extends AppLocalizations {
   String get peersBlocked => 'Disekat';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'Berdekatan (BLE)';
-  }
+  String get peersNearbyBle => 'Berdekatan (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Baru-baru ini dalam talian';

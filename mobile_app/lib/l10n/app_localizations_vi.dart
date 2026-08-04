@@ -414,9 +414,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get feedDirectsSubtitle => 'Tin nhắn E2EE riêng tư';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Các đồng nghiệp lân cận (BLE)';
-  }
+  String get feedMeshSubtitle => 'Các đồng nghiệp lân cận (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Kênh khám phá Geohash';
@@ -1504,9 +1502,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get peersBlocked => 'Bị chặn';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'Gần đây (BLE)';
-  }
+  String get peersNearbyBle => 'Gần đây (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Gần đây trực tuyến';

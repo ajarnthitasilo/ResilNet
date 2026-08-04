@@ -402,9 +402,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get feedDirectsSubtitle => '비공개 E2EE 메시지';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return '주변 피어(BLE)';
-  }
+  String get feedMeshSubtitle => '주변 피어(BLE)';
 
   @override
   String get feedGeoSubtitle => 'Geohash 발견 채널';
@@ -1454,9 +1452,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get peersBlocked => '막힌';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return '주변(BLE)';
-  }
+  String get peersNearbyBle => '주변(BLE)';
 
   @override
   String get peersRecentlyOnline => '최근 온라인';

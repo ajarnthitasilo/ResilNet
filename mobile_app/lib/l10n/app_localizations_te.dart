@@ -416,9 +416,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get feedDirectsSubtitle => 'ప్రైవేట్ E2EE సందేశాలు';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'సమీపంలోని సహచరులు (BLE)';
-  }
+  String get feedMeshSubtitle => 'సమీపంలోని సహచరులు (BLE)';
 
   @override
   String get feedGeoSubtitle => 'జియోహాష్ డిస్కవరీ ఛానెల్';
@@ -1516,9 +1514,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get peersBlocked => 'నిరోధించబడింది';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'సమీపంలో (BLE)';
-  }
+  String get peersNearbyBle => 'సమీపంలో (BLE)';
 
   @override
   String get peersRecentlyOnline => 'ఇటీవల ఆన్‌లైన్';

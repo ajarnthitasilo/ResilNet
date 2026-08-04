@@ -410,9 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedDirectsSubtitle => 'Private E2EE messages';
 
   @override
-  String feedMeshSubtitle(Object ble) {
-    return 'Nearby peers (BLE)';
-  }
+  String get feedMeshSubtitle => 'Nearby peers (BLE)';
 
   @override
   String get feedGeoSubtitle => 'Geohash discovery channel';
@@ -1491,9 +1489,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get peersBlocked => 'Blocked';
 
   @override
-  String peersNearbyBle(Object ble) {
-    return 'Nearby (BLE)';
-  }
+  String get peersNearbyBle => 'Nearby (BLE)';
 
   @override
   String get peersRecentlyOnline => 'Recently online';
