@@ -11,6 +11,7 @@ import '../services/firmware_config.dart';
 import '../services/firmware_service.dart';
 import '../state/app_state.dart';
 import '../widgets/ota_progress_dialog.dart';
+import '../app/glass_overlays.dart';
 
 /// แฟลชเฟิร์มแวร์ ESP32 ผ่าน Bluetooth OTA
 class Esp32OtaScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
       if (!mounted) return;
       if (!resolved.isUsable) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          GlassSnackBar(
             content: Text(
               resolved.error ??
                   'ยังไม่มีไฟล์ ${_selectedKind.title} — ดาวน์โหลดจากตั้งค่าก่อน',
@@ -119,7 +120,7 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(
           result.success
               ? 'แฟลชสำเร็จ — บอร์ดกำลังรีสตาร์ท'

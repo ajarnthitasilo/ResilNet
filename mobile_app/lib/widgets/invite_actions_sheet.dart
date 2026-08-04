@@ -8,6 +8,7 @@ import '../core/peer_id.dart';
 import '../l10n/app_localizations.dart';
 import '../state/app_state.dart';
 import 'identicon.dart';
+import '../app/glass_overlays.dart';
 
 /// Long-press / force-touch actions for board or peer invites.
 Future<void> showInviteActionsSheet({
@@ -23,7 +24,7 @@ Future<void> showInviteActionsSheet({
   // When the primary action is already "copy short link", skip the duplicate
   // outlined copy button (identity / board QR long-press flows).
   final copyIsPrimary = acceptLabel == l10n.inviteCopyShortLink;
-  await showModalBottomSheet<void>(
+  await showGlassModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
     builder: (ctx) {
@@ -66,7 +67,7 @@ Future<void> showInviteActionsSheet({
                     if (ctx.mounted) {
                       Navigator.pop(ctx);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(l10n.inviteLinkCopied)),
+                        GlassSnackBar(content: Text(l10n.inviteLinkCopied)),
                       );
                     }
                   },
@@ -126,7 +127,7 @@ Future<void> showInviteActionsSheet({
                           );
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.inviteLinkCopied)),
+                              GlassSnackBar(content: Text(l10n.inviteLinkCopied)),
                             );
                           }
                         },
@@ -154,7 +155,7 @@ Future<void> showInviteSendToChatSheet({
   final peers = await s.messageablePeersForInvite();
   if (!context.mounted) return;
 
-  await showModalBottomSheet<void>(
+  await showGlassModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
@@ -221,7 +222,7 @@ Future<void> showInviteSendToChatSheet({
                                     );
                                     if (!context.mounted) return;
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
+                                      GlassSnackBar(
                                         content: Text(
                                           ok
                                               ? l10n.inviteSentToChat

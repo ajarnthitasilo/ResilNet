@@ -5,6 +5,7 @@ import '../app/theme.dart';
 import '../core/platform_caps.dart';
 import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 class PermissionScreen extends StatefulWidget {
   const PermissionScreen({super.key});
@@ -40,7 +41,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
     final l10n = context.l10n;
     if (!s.isReady) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.permissionNotReadySnack)),
+        GlassSnackBar(content: Text(l10n.permissionNotReadySnack)),
       );
       return;
     }
@@ -53,14 +54,14 @@ class _PermissionScreenState extends State<PermissionScreen> {
       if (!mounted) return;
       if (!granted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.permissionDeniedSnack)),
+          GlassSnackBar(content: Text(context.l10n.permissionDeniedSnack)),
         );
       }
     } catch (e, st) {
       debugPrint('[ResilNet] PermissionScreen: request ERROR $e\n$st');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.permissionFailedSnack('$e'))),
+        GlassSnackBar(content: Text(context.l10n.permissionFailedSnack('$e'))),
       );
     } finally {
       if (mounted) setState(() => _requesting = false);

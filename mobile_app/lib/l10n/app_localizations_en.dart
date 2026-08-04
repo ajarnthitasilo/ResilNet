@@ -370,7 +370,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageSubtitle =>
-      'Follow the device language when Thai or English; other system languages use English. Or lock Thai / English here.';
+      'By default the app follows your phone language (when supported). Other languages fall back to English. You can also lock a language here.';
 
   @override
   String get languageSystem => 'System default';
@@ -410,7 +410,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedDirectsSubtitle => 'Private E2EE messages';
 
   @override
-  String get feedMeshSubtitle => 'Nearby peers (BLE)';
+  String feedMeshSubtitle(Object ble) {
+    return 'Nearby peers (BLE)';
+  }
 
   @override
   String get feedGeoSubtitle => 'Geohash discovery channel';
@@ -1489,7 +1491,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get peersBlocked => 'Blocked';
 
   @override
-  String get peersNearbyBle => 'Nearby (BLE)';
+  String peersNearbyBle(Object ble) {
+    return 'Nearby (BLE)';
+  }
 
   @override
   String get peersRecentlyOnline => 'Recently online';

@@ -15,6 +15,7 @@ import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
 import '../widgets/invite_actions_sheet.dart';
 import 'qr_scanner_screen.dart';
+import '../app/glass_overlays.dart';
 
 class IdentityScreen extends StatefulWidget {
   const IdentityScreen({super.key});
@@ -74,14 +75,14 @@ class _IdentityScreenState extends State<IdentityScreen> {
       _nameDirty = false;
       _nameFocus.unfocus();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.identitySaveName)),
+        GlassSnackBar(content: Text(context.l10n.identitySaveName)),
       );
     } catch (e) {
       debugPrint('[ResilNet] setDisplayName failed: $e');
       if (!mounted) return;
       // Name may still be in memory / prefs — tell the user.
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${context.l10n.identitySaveName}: $e')),
+        GlassSnackBar(content: Text('${context.l10n.identitySaveName}: $e')),
       );
     }
   }
@@ -90,7 +91,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
     await Clipboard.setData(ClipboardData(text: userId));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.identityCopiedHash)),
+      GlassSnackBar(content: Text(context.l10n.identityCopiedHash)),
     );
   }
 
@@ -138,7 +139,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
     if (ok == true) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.identityPeerSaved)));
+      ).showSnackBar(GlassSnackBar(content: Text(context.l10n.identityPeerSaved)));
     }
   }
 
@@ -154,7 +155,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
         if (!granted) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.identityGalleryDenied)),
+            GlassSnackBar(content: Text(context.l10n.identityGalleryDenied)),
           );
           return;
         }
@@ -190,7 +191,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.identityQrSaved)));
+      ).showSnackBar(GlassSnackBar(content: Text(context.l10n.identityQrSaved)));
     } catch (e, st) {
       debugPrint('[ResilNet] save QR failed: $e\n$st');
       if (!mounted) return;
@@ -208,7 +209,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
       }
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.identityQrSaveFailed('$e'))));
+      ).showSnackBar(GlassSnackBar(content: Text(context.l10n.identityQrSaveFailed('$e'))));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -377,7 +378,7 @@ class _IdentityScreenState extends State<IdentityScreen> {
                               );
                               if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                GlassSnackBar(
                                   content: Text(context.l10n.inviteLinkCopied),
                                 ),
                               );

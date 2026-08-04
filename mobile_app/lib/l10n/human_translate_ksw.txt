@@ -1,0 +1,3948 @@
+ResilNet — แผ่นแปลมือเป็นภาษากะเหรี่ยงสกอว์ (S'gaw Karen / ksw)
+========================================================================
+แต่ละข้อมีคู่ภาษา:
+  อังกฤษ (EN) + ไทย (TH)  →  ให้แปลลงบรรทัด กะเหรี่ยง (KSW)
+
+กติกาสั้นๆ:
+- แปลเฉพาะบรรทัด KSW:
+- คงคำพิเศษถ้าเหมาะสม: ResilNet, LoRa, BLE, Nostr, Meshtastic, LXMF, ESP32
+- ถ้า EN/TH มี {ชื่อ} ต้องมี {ชื่อ} เหมือนกันใน KSW (เช่น {error})
+- ส่งไฟล์นี้กลับมาได้ทั้งก้อน เพื่อใส่เข้าแอป
+
+จำนวนที่ต้องแปล: ว่างเหลือ 598 / รวม 655 (เติมสำคัญแล้วบางส่วน)
+========================================================================
+
+หมายเหตุ: KSW ที่ขึ้นต้น [DRAFT] = ร่าง (agent/LLM) — ให้คนกะเหรี่ยงตรวจแล้วลบ [DRAFT]
+
+──────── 1/655 ────────
+KEY: appTitle
+EN:  ResilNet
+TH:  ResilNet
+KSW: ResilNet
+
+──────── 2/655 ────────
+KEY: communityTitle
+EN:  ResilNet
+TH:  ResilNet
+KSW: ResilNet
+
+──────── 3/655 ────────
+KEY: appRefreshing
+EN:  Refreshing ResilNet…
+TH:  กำลังรีเฟรช ResilNet…
+KSW: [DRAFT] ResilNet nê pgha k’aw…
+
+──────── 4/655 ────────
+KEY: appRefreshed
+EN:  Refreshed — radios and discovery restarted
+TH:  รีเฟรชแล้ว — เชื่อมวิทยุและค้นหาใหม่แล้ว
+KSW: [DRAFT] Pgha li — radio dơ radio hser k’aw lei
+
+──────── 5/655 ────────
+KEY: appRefreshFailed
+EN:  Refresh failed: {error}
+TH:  รีเฟรชไม่สำเร็จ: {error}
+KSW: [DRAFT] Pgha t’ra: {error}
+
+──────── 6/655 ────────
+KEY: appRefreshTitleHint
+EN:  Double-tap = soft refresh. Long-press = hard recover. Triple-tap = emergency wipe.
+TH:  แตะสองครั้ง = รีเฟรชเบา · กดค้าง = กู้หนัก · แตะสามครั้ง = ล้างฉุกเฉิน
+KSW: [DRAFT] K’aw 2 = soft refresh. Ku paw = hard recover. K’aw 3 = emergency wipe.
+
+──────── 7/655 ────────
+KEY: softRefreshTipTitle
+EN:  If ResilNet feels stuck
+TH:  ถ้าแอปดูนิ่งหรือค้าง
+KSW: [DRAFT] Lajaw ResilNet nê k’aw t’ra
+
+──────── 8/655 ────────
+KEY: softRefreshTipBody
+EN:  Double-tap ResilNet (top-left) for a soft radio refresh. If still stuck: long-press the title, use ⋮ → Hard recover, or Settings. Triple-tap is emergency wipe only.
+TH:  แตะชื่อ ResilNet สองครั้งเพื่อรีเฟรชวิทยุ หากยังค้าง: กดค้างที่ชื่อ หรือ ⋮ / ตั้งค่า → กู้แอป แตะสามครั้ง = ล้างฉุกเฉินเมื่อตั้งใจเท่านั้น
+KSW: [DRAFT] K’aw ResilNet a pghâ 2 tô — radio dơ hser k’aw. K’aw 3 tô = emergency wipe (naw thâ).
+
+──────── 9/655 ────────
+KEY: softRefreshTipGotIt
+EN:  Got it
+TH:  เข้าใจแล้ว
+KSW: [DRAFT] Ơ — na thâ li
+
+──────── 10/655 ────────
+KEY: infoSoftRefreshTitle
+EN:  If the app feels stuck
+TH:  ถ้าแอปดูนิ่งหรือค้าง
+KSW: 
+
+──────── 11/655 ────────
+KEY: infoSoftRefreshStepRefresh
+EN:  Double-tap ResilNet (top-left) → soft refresh radios & nearby people
+TH:  แตะชื่อ ResilNet มุมซ้ายบนสองครั้ง → รีเฟรชวิทยุและคนใกล้ ๆ
+KSW: 
+
+──────── 12/655 ────────
+KEY: infoSoftRefreshStepHard
+EN:  Still stuck? Long-press title, or ⋮ / Settings → Hard recover
+TH:  ยังค้าง? กดค้างที่ชื่อ หรือ ⋮ / ตั้งค่า → กู้แอป
+KSW: 
+
+──────── 13/655 ────────
+KEY: infoSoftRefreshStepWait
+EN:  Wait for the result snackbar, then try again. Session reset keeps your keys.
+TH:  รอผลแล้วลองใหม่ — รีเซ็ตเซสชันจะเก็บกุญแจไว้
+KSW: 
+
+──────── 14/655 ────────
+KEY: infoSoftRefreshStepWipe
+EN:  Triple-tap = emergency wipe (deletes local data) — only if intentional
+TH:  แตะสามครั้ง = ล้างข้อมูลฉุกเฉิน (ลบข้อมูลในเครื่อง) — ใช้เมื่อตั้งใจเท่านั้น
+KSW: 
+
+──────── 15/655 ────────
+KEY: appRecoverySection
+EN:  App recovery
+TH:  กู้แอป
+KSW: 
+
+──────── 16/655 ────────
+KEY: appRecoverySectionSubtitle
+EN:  Use when the app feels frozen. Soft = title double-tap. Hard recover is stronger. Session reset restarts services without wiping keys.
+TH:  ใช้เมื่อแอปค้าง รีเฟรชเบา = แตะชื่อสองครั้ง · กู้หนักแรงกว่า · รีเซ็ตเซสชันไม่ลบกุญแจ
+KSW: 
+
+──────── 17/655 ────────
+KEY: appHardRecoverAction
+EN:  Hard recover
+TH:  กู้แอป (Hard recover)
+KSW: 
+
+──────── 18/655 ────────
+KEY: appHardRecovering
+EN:  Hard recovering…
+TH:  กำลังกู้แอป…
+KSW: 
+
+──────── 19/655 ────────
+KEY: appSessionResetAction
+EN:  Reset session
+TH:  รีเซ็ตเซสชัน
+KSW: 
+
+──────── 20/655 ────────
+KEY: appSessionResetRunning
+EN:  Resetting session…
+TH:  กำลังรีเซ็ตเซสชัน…
+KSW: 
+
+──────── 21/655 ────────
+KEY: appSessionResetConfirmTitle
+EN:  Reset session?
+TH:  รีเซ็ตเซสชัน?
+KSW: 
+
+──────── 22/655 ────────
+KEY: appSessionResetConfirmBody
+EN:  Restarts ResilNet services on this device. Your identity keys are kept.
+TH:  รีสตาร์ทบริการ ResilNet บนเครื่องนี้ กุญแจตัวตนยังอยู่
+KSW: 
+
+──────── 23/655 ────────
+KEY: appRecoveryBusy
+EN:  Recovery already running…
+TH:  กำลังกู้อยู่แล้ว…
+KSW: 
+
+──────── 24/655 ────────
+KEY: appRecoveryOk
+EN:  Recovery finished
+TH:  กู้เสร็จแล้ว
+KSW: 
+
+──────── 25/655 ────────
+KEY: appRecoveryPartial
+EN:  Recovery finished with some steps skipped — try again if still stuck
+TH:  กู้เสร็จบางส่วน — ถ้ายังค้างให้ลองอีกครั้ง
+KSW: 
+
+──────── 26/655 ────────
+KEY: appRecoveryFailed
+EN:  Recovery failed — try Session reset, or force-quit the app from the OS
+TH:  กู้ไม่สำเร็จ — ลองรีเซ็ตเซสชัน หรือบังคับปิดแอปจากระบบ
+KSW: 
+
+──────── 27/655 ────────
+KEY: localWifiTitle
+EN:  Local Wi‑Fi
+TH:  Wi‑Fi ท้องถิ่น
+KSW: [DRAFT] Local Wi‑Fi
+
+──────── 28/655 ────────
+KEY: localWifiSubtitle
+EN:  Link nearby devices without the internet — same as being on one LAN.
+TH:  เชื่อมเครื่องใกล้ ๆ โดยไม่ต้องมีอินเทอร์เน็ต — อยู่เครือข่ายท้องถิ่นเดียวกัน
+KSW: 
+
+──────── 29/655 ────────
+KEY: localWifiNotGatewayHint
+EN:  Not the ESP32 LoRa gateway SoftAP. This is phone↔phone / LAN only.
+TH:  ไม่ใช่ SoftAP ของเกตเวย์ ESP32 LoRa — นี่คือมือถือ↔มือถือ / LAN เท่านั้น
+KSW: 
+
+──────── 30/655 ────────
+KEY: localWifiUnavailable
+EN:  Local Wi‑Fi is not ready yet — wait for app startup.
+TH:  Wi‑Fi ท้องถิ่นยังไม่พร้อม — รอแอปเริ่มระบบก่อน
+KSW: 
+
+──────── 31/655 ────────
+KEY: lxmfBridgeTitle
+EN:  Home node
+TH:  โหนดบ้าน
+KSW: [DRAFT] Home node (LXMF)
+
+──────── 32/655 ────────
+KEY: lxmfBridgeSubtitle
+EN:  Optional Mac or Pi on your Wi‑Fi that relays sealed chats. Off by default. Does not replace end-to-end encryption.
+TH:  Mac หรือ Pi บน Wi‑Fi บ้านที่ช่วยส่งแชทที่เข้ารหัสแล้ว — ปิดเป็นค่าเริ่มต้น ไม่แทนที่การเข้ารหัสปลายทาง
+KSW: 
+
+──────── 33/655 ────────
+KEY: lxmfBridgeEnable
+EN:  Use home node
+TH:  ใช้โหนดบ้าน
+KSW: 
+
+──────── 34/655 ────────
+KEY: lxmfBridgeDisabledHint
+EN:  Turn on only when the bridge app is running on a Mac or Pi on this network.
+TH:  เปิดเมื่อรันโปรแกรม bridge บน Mac/Pi ในเครือข่ายนี้แล้วเท่านั้น
+KSW: 
+
+──────── 35/655 ────────
+KEY: lxmfBridgeOnline
+EN:  Online — {dest}
+TH:  ออนไลน์ — {dest}
+KSW: 
+
+──────── 36/655 ────────
+KEY: lxmfBridgeOffline
+EN:  Can’t reach home node — {error}
+TH:  ติดต่อโหนดบ้านไม่ได้ — {error}
+KSW: 
+
+──────── 37/655 ────────
+KEY: lxmfBridgeBaseUrl
+EN:  Home node address
+TH:  ที่อยู่โหนดบ้าน
+KSW: 
+
+──────── 38/655 ────────
+KEY: lxmfBridgeBaseUrlHelper
+EN:  IP or http://IP:port — example 192.168.1.10:8766
+TH:  IP หรือ http://IP:พอร์ต เช่น 192.168.1.10:8766
+KSW: 
+
+──────── 39/655 ────────
+KEY: lxmfBridgeIdentityMap
+EN:  Peer → LXMF dest (JSON)
+TH:  เพียร์ → LXMF ปลายทาง (JSON)
+KSW: 
+
+──────── 40/655 ────────
+KEY: lxmfBridgeRefresh
+EN:  Save & refresh status
+TH:  บันทึกและรีเฟรชสถานะ
+KSW: 
+
+──────── 41/655 ────────
+KEY: lxmfBridgeLabHint
+EN:  Advanced: labs/reticulum_lxmf
+TH:  ขั้นสูง: labs/reticulum_lxmf
+KSW: 
+
+──────── 42/655 ────────
+KEY: lxmfBridgeOpen
+EN:  Home node settings
+TH:  ตั้งค่าโหนดบ้าน
+KSW: 
+
+──────── 43/655 ────────
+KEY: lxmfBridgeCheckConnection
+EN:  Check connection
+TH:  ตรวจการเชื่อมต่อ
+KSW: 
+
+──────── 44/655 ────────
+KEY: lxmfBridgeStatusOnline
+EN:  Connected to home node
+TH:  เชื่อมต่อโหนดบ้านแล้ว
+KSW: 
+
+──────── 45/655 ────────
+KEY: lxmfBridgeStatusOffline
+EN:  Home node not reachable
+TH:  ยังถึงโหนดบ้านไม่ได้
+KSW: 
+
+──────── 46/655 ────────
+KEY: lxmfBridgeYourDest
+EN:  This node’s address (share with friends)
+TH:  ที่อยู่โหนดนี้ (แชร์ให้เพื่อน)
+KSW: 
+
+──────── 47/655 ────────
+KEY: lxmfBridgeCopyDest
+EN:  Copy address
+TH:  คัดลอกที่อยู่
+KSW: 
+
+──────── 48/655 ────────
+KEY: lxmfBridgeDestCopied
+EN:  Address copied
+TH:  คัดลอกแล้ว
+KSW: 
+
+──────── 49/655 ────────
+KEY: lxmfBridgeLinkedPeers
+EN:  Linked friends
+TH:  เพื่อนที่ผูกแล้ว
+KSW: 
+
+──────── 50/655 ────────
+KEY: lxmfBridgeLinkedPeersHint
+EN:  Each friend needs their home-node address once. Then sealed chats can use this path.
+TH:  ผูกที่อยู่โหนดบ้านของเพื่อนหนึ่งครั้ง แล้วแชทที่เข้ารหัสสามารถใช้เส้นทางนี้ได้
+KSW: 
+
+──────── 51/655 ────────
+KEY: lxmfBridgeNoLinks
+EN:  No friends linked yet.
+TH:  ยังไม่ได้ผูกเพื่อน
+KSW: 
+
+──────── 52/655 ────────
+KEY: lxmfBridgeAddLink
+EN:  Link a friend
+TH:  ผูกเพื่อน
+KSW: 
+
+──────── 53/655 ────────
+KEY: lxmfBridgePickPeer
+EN:  Friend
+TH:  เพื่อน
+KSW: 
+
+──────── 54/655 ────────
+KEY: lxmfBridgePeerDest
+EN:  Their home-node address
+TH:  ที่อยู่โหนดบ้านของเขา
+KSW: 
+
+──────── 55/655 ────────
+KEY: lxmfBridgePeerDestHint
+EN:  32-character code from their Home node screen
+TH:  รหัส 32 ตัวจากหน้าโหนดบ้านของเขา
+KSW: 
+
+──────── 56/655 ────────
+KEY: lxmfBridgeInvalidDest
+EN:  That address doesn’t look valid. Paste the full code from their home node.
+TH:  ที่อยู่ไม่ถูกต้อง — วางรหัสเต็มจากหน้าโหนดบ้านของเพื่อน
+KSW: 
+
+──────── 57/655 ────────
+KEY: lxmfBridgeRemoveLink
+EN:  Unlink
+TH:  เลิกผูก
+KSW: 
+
+──────── 58/655 ────────
+KEY: lxmfBridgeSaveLink
+EN:  Save
+TH:  บันทึก
+KSW: 
+
+──────── 59/655 ────────
+KEY: lxmfBridgeLinkSaved
+EN:  Friend linked
+TH:  ผูกเพื่อนแล้ว
+KSW: 
+
+──────── 60/655 ────────
+KEY: lxmfBridgeNoPeers
+EN:  No messageable contacts yet — add a friend first.
+TH:  ยังไม่มีผู้ติดต่อที่ส่งข้อความได้ — เพิ่มเพื่อนก่อน
+KSW: 
+
+──────── 61/655 ────────
+KEY: lxmfBridgeHelp
+EN:  Keep the bridge running on the Mac/Pi. This path stays on your LAN — it is not LoRa and does not replace internet or Bluetooth mesh.
+TH:  ให้โปรแกรม bridge บน Mac/Pi ทำงานอยู่ เส้นทางนี้อยู่ใน LAN — ไม่ใช่ LoRa และไม่แทนที่อินเทอร์เน็ตหรือ Bluetooth mesh
+KSW: 
+
+──────── 62/655 ────────
+KEY: localWifiModeHotspot
+EN:  Nearby
+TH:  ใกล้ตัว
+KSW: 
+
+──────── 63/655 ────────
+KEY: localWifiModeRouter
+EN:  Router
+TH:  เราเตอร์
+KSW: 
+
+──────── 64/655 ────────
+KEY: localWifiHotspotIntro
+EN:  One device shares a Personal Hotspot. Others join that hotspot, then ResilNet finds them on the local network.
+TH:  เครื่องหนึ่งเปิด Personal Hotspot อีกเครื่องเข้าร่วม แล้วให้ ResilNet ค้นหาบนเครือข่ายท้องถิ่น
+KSW: 
+
+──────── 65/655 ────────
+KEY: localWifiHostAction
+EN:  Create network (Host)
+TH:  สร้างเครือข่าย (Host)
+KSW: 
+
+──────── 66/655 ────────
+KEY: localWifiJoinAction
+EN:  Join network
+TH:  เข้าร่วมเครือข่าย
+KSW: 
+
+──────── 67/655 ────────
+KEY: localWifiHostSteps
+EN:  1. Open iOS/Android Settings and turn on Personal Hotspot (or Internet Sharing).
+TH:  1. ไปที่ตั้งค่าเครื่อง เปิด Personal Hotspot (หรือแชร์อินเทอร์เน็ต)
+KSW: 
+
+──────── 68/655 ────────
+KEY: localWifiHostReady
+EN:  Hotspot is on — start waiting
+TH:  เปิดฮอตสปอตแล้ว — เริ่มรอ
+KSW: 
+
+──────── 69/655 ────────
+KEY: localWifiHostWaiting
+EN:  Waiting for friends to join…
+TH:  รอเพื่อนเข้าร่วม…
+KSW: 
+
+──────── 70/655 ────────
+KEY: localWifiJoinSteps
+EN:  1. Open system Settings and join your friend’s Personal Hotspot.
+TH:  1. ไปตั้งค่าเครื่อง แล้วเชื่อม Personal Hotspot ของเพื่อน
+KSW: 
+
+──────── 71/655 ────────
+KEY: localWifiJoinReady
+EN:  I’m connected — search
+TH:  ฉันเชื่อมแล้ว — ค้นหา
+KSW: 
+
+──────── 72/655 ────────
+KEY: localWifiRouterIntro
+EN:  Connect every device to the same Wi‑Fi router/AP. The router does not need internet — only a shared local network.
+TH:  ให้ทุกเครื่องเชื่อม Wi‑Fi เราเตอร์/AP เดียวกัน — เราเตอร์ไม่จำเป็นต้องมีเน็ต แค่เครือข่ายท้องถิ่นร่วมกัน
+KSW: 
+
+──────── 73/655 ────────
+KEY: localWifiRouterSearch
+EN:  Search on this Wi‑Fi
+TH:  ค้นหาบน Wi‑Fi นี้
+KSW: 
+
+──────── 74/655 ────────
+KEY: localWifiRefreshNetwork
+EN:  Refresh Wi‑Fi info
+TH:  รีเฟรชข้อมูล Wi‑Fi
+KSW: 
+
+──────── 75/655 ────────
+KEY: localWifiRouterNoWifiTitle
+EN:  Not on Wi‑Fi
+TH:  ยังไม่ได้อยู่บน Wi‑Fi
+KSW: 
+
+──────── 76/655 ────────
+KEY: localWifiRouterNoWifiBody
+EN:  Join the router’s Wi‑Fi in system Settings, then search again.
+TH:  ไปเชื่อม Wi‑Fi ของเราเตอร์ในตั้งค่าระบบ แล้วค้นหาอีกครั้ง
+KSW: 
+
+──────── 77/655 ────────
+KEY: localWifiDiscovering
+EN:  Searching on local Wi‑Fi…
+TH:  กำลังค้นหาบน Wi‑Fi ท้องถิ่น…
+KSW: 
+
+──────── 78/655 ────────
+KEY: localWifiPeersFound
+EN:  Devices on this network
+TH:  เครื่องบนเครือข่ายนี้
+KSW: 
+
+──────── 79/655 ────────
+KEY: localWifiStop
+EN:  Stop
+TH:  หยุด
+KSW: 
+
+──────── 80/655 ────────
+KEY: localWifiSsidUnknown
+EN:  Wi‑Fi name unavailable
+TH:  อ่านชื่อ Wi‑Fi ไม่ได้
+KSW: 
+
+──────── 81/655 ────────
+KEY: localWifiStubBanner
+EN:  Waiting for LAN socket…
+TH:  กำลังเปิดซ็อกเก็ต LAN…
+KSW: 
+
+──────── 82/655 ────────
+KEY: localWifiLiveBanner
+EN:  LAN discovery live (UDP) — announce + sealed chat on this Wi‑Fi
+TH:  ค้นหาบน LAN ทำงานแล้ว (UDP) — ประกาศตัวตน + แชทแบบ sealed บน Wi‑Fi นี้
+KSW: 
+
+──────── 83/655 ────────
+KEY: localWifiEmptyHotspot
+EN:  No devices yet.
+TH:  ยังไม่พบเครื่อง
+KSW: 
+
+──────── 84/655 ────────
+KEY: localWifiEmptyRouter
+EN:  No devices yet.
+TH:  ยังไม่พบเครื่อง
+KSW: 
+
+──────── 85/655 ────────
+KEY: localWifiIsolationHelp
+EN:  Why can’t we find each other?
+TH:  ทำไมหากันไม่เจอ?
+KSW: 
+
+──────── 86/655 ────────
+KEY: localWifiIsolationTitle
+EN:  Router may isolate clients
+TH:  เราเตอร์อาจแยกคลายเอนต์
+KSW: 
+
+──────── 87/655 ────────
+KEY: localWifiIsolationBody
+EN:  If AP/Client isolation (or a guest network) is on, phones on the same Wi‑Fi cannot talk. Turn isolation off, use the main SSID, or switch to Nearby (Hotspot) mode.
+TH:  ถ้าเปิด AP/Client isolation หรือใช้ guest network มือถือบน Wi‑Fi เดียวกันจะคุยกันไม่ได้ — ปิด isolation หรือใช้โหมดใกล้ตัว (Hotspot)
+KSW: 
+
+──────── 88/655 ────────
+KEY: localWifiPeerReady
+EN:  Ready to chat (has key)
+TH:  พร้อมแชท (มีกุญแจ)
+KSW: 
+
+──────── 89/655 ────────
+KEY: localWifiPeerNeedKey
+EN:  Found — scan QR to exchange keys
+TH:  พบแล้ว — สแกน QR เพื่อแลกกุญแจ
+KSW: 
+
+──────── 90/655 ────────
+KEY: localWifiErrorTitle
+EN:  Local Wi‑Fi error
+TH:  Wi‑Fi ท้องถิ่นผิดพลาด
+KSW: 
+
+──────── 91/655 ────────
+KEY: localWifiErrorBody
+EN:  Something went wrong. Stop and try again.
+TH:  มีปัญหา หยุดแล้วลองใหม่
+KSW: 
+
+──────── 92/655 ────────
+KEY: preparingSystem
+EN:  Preparing system…
+TH:  กำลังเตรียมระบบ…
+KSW: [DRAFT] System nê thâ k’aw…
+
+──────── 93/655 ────────
+KEY: bootFailedTitle
+EN:  Could not start
+TH:  เริ่มระบบไม่สำเร็จ
+KSW: [DRAFT] T’ra k’aw start
+
+──────── 94/655 ────────
+KEY: retry
+EN:  Try again
+TH:  ลองอีกครั้ง
+KSW: [DRAFT] K’aw ô
+
+──────── 95/655 ────────
+KEY: bootRecoveryAction
+EN:  Start new identity (erase local data)
+TH:  เริ่มตัวตนใหม่ (ลบข้อมูลในเครื่อง)
+KSW: 
+
+──────── 96/655 ────────
+KEY: bootRecoveryConfirmTitle
+EN:  Start new identity?
+TH:  เริ่มตัวตนใหม่?
+KSW: 
+
+──────── 97/655 ────────
+KEY: bootRecoveryConfirmBody
+EN:  This will permanently erase local chats, keys, and identity on this device.
+TH:  การกระทำนี้จะลบแชท กุญแจ และตัวตนในเครื่องนี้ถาวร
+KSW: 
+
+──────── 98/655 ────────
+KEY: bootRecoveryRunning
+EN:  Resetting local identity…
+TH:  กำลังรีเซ็ตตัวตนในเครื่อง…
+KSW: 
+
+──────── 99/655 ────────
+KEY: bootRecoverySuccess
+EN:  Local identity reset complete
+TH:  รีเซ็ตตัวตนในเครื่องแล้ว
+KSW: 
+
+──────── 100/655 ────────
+KEY: bootRecoveryFailed
+EN:  Could not reset identity: {error}
+TH:  รีเซ็ตตัวตนไม่สำเร็จ: {error}
+KSW: 
+
+──────── 101/655 ────────
+KEY: cancel
+EN:  Cancel
+TH:  ยกเลิก
+KSW: [DRAFT] Hta
+
+──────── 102/655 ────────
+KEY: save
+EN:  Save
+TH:  บันทึก
+KSW: [DRAFT] Se
+
+──────── 103/655 ────────
+KEY: close
+EN:  Close
+TH:  ปิด
+KSW: [DRAFT] Hpeh
+
+──────── 104/655 ────────
+KEY: start
+EN:  Start
+TH:  เริ่ม
+KSW: [DRAFT] Start
+
+──────── 105/655 ────────
+KEY: send
+EN:  Send
+TH:  ส่ง
+KSW: [DRAFT] P’yá
+
+──────── 106/655 ────────
+KEY: settings
+EN:  Settings
+TH:  การตั้งค่า
+KSW: [DRAFT] Settings
+
+──────── 107/655 ────────
+KEY: language
+EN:  Language
+TH:  ภาษา
+KSW: [DRAFT] Plóng
+
+──────── 108/655 ────────
+KEY: languageSubtitle
+EN:  By default the app follows your phone language (when supported). Other languages fall back to English. You can also lock a language here.
+TH:  ค่าเริ่มต้นตามภาษาเครื่อง (ถ้าแอปมีภาษานั้น) — ภาษาอื่นใช้อังกฤษ หรือล็อกภาษาที่นี่
+KSW: [DRAFT] Plóng phone a baw — ma plóng nê app a thâ. Plóng ê tô English. Nê lock plóng li.
+
+──────── 109/655 ────────
+KEY: languageSystem
+EN:  System default
+TH:  ตามระบบ
+KSW: [DRAFT] System plóng
+
+──────── 110/655 ────────
+KEY: languageThai
+EN:  Thai
+TH:  ไทย
+KSW: [DRAFT] Thai
+
+──────── 111/655 ────────
+KEY: languageEnglish
+EN:  English
+TH:  ภาษาอังกฤษ
+KSW: [DRAFT] English
+
+──────── 112/655 ────────
+KEY: notificationsTooltip
+EN:  Notification settings
+TH:  การตั้งค่าแจ้งเตือน
+KSW: [DRAFT] Notification settings
+
+──────── 113/655 ────────
+KEY: enableMessageNotifications
+EN:  Enable message notifications
+TH:  เปิดแจ้งเตือนข้อความ
+KSW: [DRAFT] Message notification a baw
+
+──────── 114/655 ────────
+KEY: settingsNotificationsSubtitle
+EN:  1:1 messages and people online (local alerts)
+TH:  ข้อความ 1:1 และคนออนไลน์ (แจ้งเตือนในเครื่อง)
+KSW: 
+
+──────── 115/655 ────────
+KEY: networkMembersTooltip
+EN:  Network members
+TH:  สมาชิกเครือข่าย
+KSW: [DRAFT] Network members
+
+──────── 116/655 ────────
+KEY: identityQrTooltip
+EN:  Identity / QR
+TH:  ตัวตน/QR
+KSW: [DRAFT] Identity / QR
+
+──────── 117/655 ────────
+KEY: feedDirects
+EN:  Chat
+TH:  แชท
+KSW: [DRAFT] Chat
+
+──────── 118/655 ────────
+KEY: feedMesh
+EN:  #mesh
+TH:  #ตาข่าย
+KSW: [DRAFT] #mesh
+
+──────── 119/655 ────────
+KEY: feedGeo
+EN:  Area
+TH:  พื้นที่
+KSW: [DRAFT] Area
+
+──────── 120/655 ────────
+KEY: feedDirectsSubtitle
+EN:  Private E2EE messages
+TH:  ข้อความส่วนตัว E2EE
+KSW: [DRAFT] 1:1 chat
+
+──────── 121/655 ────────
+KEY: feedMeshSubtitle
+EN:  Nearby peers (BLE)
+TH:  เพื่อนใกล้ตัว (BLE)
+KSW: [DRAFT] Hser peers ({ble})
+
+──────── 122/655 ────────
+KEY: feedGeoSubtitle
+EN:  Geohash discovery channel
+TH:  ช่องตาม geohash (ค้นพบ)
+KSW: [DRAFT] Area geohash
+
+──────── 123/655 ────────
+KEY: peerIdHint
+EN:  Paste Receiver ID (Public Key Hash) to start a chat
+TH:  วาง Receiver ID (Public Key Hash) เพื่อเริ่มแชต
+KSW: 
+
+──────── 124/655 ────────
+KEY: directsEmpty
+EN:  No chats yet — scan a QR or paste a Receiver ID to start
+TH:  ยังไม่มีแชต — สแกน QR หรือวาง Receiver ID เพื่อเริ่ม
+KSW: 
+
+──────── 125/655 ────────
+KEY: directsSubtitle
+EN:  E2EE • tap to open chat
+TH:  E2EE • แตะเพื่อเปิดแชต
+KSW: 
+
+──────── 126/655 ────────
+KEY: meshIntro
+EN:  Peers in BLE range — tap for a private E2EE chat (no public compose on #mesh)
+TH:  เพื่อนในรัศมี BLE — แตะเพื่อแชตส่วนตัว E2EE (ไม่มีช่องพิมพ์สาธารณะใน #mesh)
+KSW: 
+
+──────── 127/655 ────────
+KEY: meshEmptyRunning
+EN:  No nearby peers yet — open the app on another device within BLE range
+TH:  ยังไม่พบเพื่อนใกล้ตัว — เปิดแอปคู่อีกเครื่องในระยะ BLE
+KSW: 
+
+──────── 128/655 ────────
+KEY: meshEmptyStopped
+EN:  BLE is not running — grant Bluetooth / Location permission
+TH:  BLE ยังไม่ทำงาน — ขอสิทธิ์ Bluetooth / Location
+KSW: 
+
+──────── 129/655 ────────
+KEY: meshNearbyPrefix
+EN:  Nearby
+TH:  ใกล้ตัว
+KSW: 
+
+──────── 130/655 ────────
+KEY: meshRetentionTitle
+EN:  Auto-delete messages
+TH:  ลบข้อความอัตโนมัติ
+KSW: 
+
+──────── 131/655 ────────
+KEY: meshRetentionSubtitle
+EN:  Older local chat history is removed automatically
+TH:  ลบประวัติแชตในเครื่องที่เก่ากว่าช่วงที่เลือก
+KSW: 
+
+──────── 132/655 ────────
+KEY: meshRetentionKeep
+EN:  Keep
+TH:  เก็บไว้
+KSW: 
+
+──────── 133/655 ────────
+KEY: meshRetention1Day
+EN:  1 day
+TH:  1 วัน
+KSW: 
+
+──────── 134/655 ────────
+KEY: meshRetention3Days
+EN:  3 days
+TH:  3 วัน
+KSW: 
+
+──────── 135/655 ────────
+KEY: meshRetention7Days
+EN:  7 days
+TH:  7 วัน
+KSW: 
+
+──────── 136/655 ────────
+KEY: refreshLocationTooltip
+EN:  Refresh location
+TH:  รีเฟรชพิกัด
+KSW: 
+
+──────── 137/655 ────────
+KEY: geoIntro
+EN:  People online in this geohash can be messaged 1:1 or with an area public fan-out (still sealed E2EE per peer — not plaintext)
+TH:  คนที่ออนไลน์ใน geohash นี้ ส่งได้ทั้ง 1:1 และสาธารณะในพื้นที่ (ยังผนึก E2EE รายคน — ไม่ใช่ plaintext)
+KSW: 
+
+──────── 138/655 ────────
+KEY: geoEmpty
+EN:  No one online in {channel} yet
+TH:  ยังไม่มีใครออนไลน์ใน {channel}
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+Transport → Internet/Auto, Nostr, location refresh.
+
+──────── 139/655 ────────
+KEY: geoPeerSubtitle
+EN:  Online in {channel} • tap for 1:1 E2EE
+TH:  ออนไลน์ใน {channel} • แตะเพื่อแชต 1:1 E2EE
+KSW: 
+
+──────── 140/655 ────────
+KEY: geoPeerNearbySubtitle
+EN:  Nearby (awaiting area presence) • tap for 1:1 E2EE
+TH:  ใกล้ตัว (รอ presence พื้นที่) • แตะเพื่อแชต 1:1 E2EE
+KSW: 
+
+──────── 141/655 ────────
+KEY: geoPeerNostrSubtitle
+EN:  Seen on Nostr in {channel} • discovery only (legacy)
+TH:  เห็นบน Nostr ใน {channel} • ค้นพบอย่างเดียว (มรดก)
+KSW: 
+
+──────── 142/655 ────────
+KEY: geoPeerDiscoverOnlySnack
+EN:  Legacy anonymous presence — wait for a bound peer or exchange QR
+TH:  presence นิรนามแบบเก่า — รอ peer ที่ผูกกุญแจ หรือสแกน QR
+KSW: 
+
+──────── 143/655 ────────
+KEY: bleRadioNearbySubtitle
+EN:  BLE nearby — scan QR to start 1:1 E2EE
+TH:  สัญญาณ BLE ใกล้ตัว — สแกน QR เพื่อแชท 1:1
+KSW: 
+
+──────── 144/655 ────────
+KEY: geoInternetDiscoverHint
+EN:  Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)
+TH:  การค้นพบ Area ผ่านเน็ตต้องต่อ Nostr (Settings → Transport → Internet/Auto)
+KSW: 
+
+──────── 145/655 ────────
+KEY: geoEmptyNoLocation
+EN:  Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr
+TH:  ยังไม่ได้พิกัด — อนุญาต GPS แล้วกด refresh เพื่อประกาศ geohash บน Nostr
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 146/655 ────────
+KEY: geoEmptyNeedsPermission
+EN:  Location permission denied — allow ResilNet in Settings → Privacy → Location
+TH:  ไม่อนุญาตตำแหน่ง — เปิดใน Settings → Privacy → Location
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 147/655 ────────
+KEY: geoEmptyServicesDisabled
+EN:  Location Services are off — turn them on in Settings
+TH:  ปิด Location Services — เปิดใน Settings
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 148/655 ────────
+KEY: geoEmptyNoGpsFix
+EN:  Could not get a GPS fix (common on Wi‑Fi iPads) — set geohash manually below
+TH:  หาพิกัดไม่ได้ (iPad Wi‑Fi มักเจอ) — ใส่ geohash เองด้านล่าง
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 149/655 ────────
+KEY: geoEmptyTeleportHint
+EN:  Tap the place icon → enter a geohash (e.g. w5) → Teleport
+TH:  แตะไอคอนสถานที่ → ใส่ geohash (เช่น w5) → เทเลพอร์ต
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 150/655 ────────
+KEY: geoSetGeohashManually
+EN:  Set geohash
+TH:  ใส่ geohash
+KSW: 
+
+──────── 151/655 ────────
+KEY: geoTeleportHint
+EN:  No GPS? Enter geohash prefix (2–7 chars, e.g. w5) and tap Teleport
+TH:  ไม่มี GPS? ใส่ geohash 2–7 ตัว (เช่น w5) แล้วกดเทเลพอร์ต
+KSW: 
+
+──────── 152/655 ────────
+KEY: geoTeleportInvalid
+EN:  Invalid geohash — use base32 letters/numbers only (e.g. w5 or w5jt8)
+TH:  geohash ไม่ถูกต้อง — ใช้ตัวอักษร base32 เท่านั้น (เช่น w5 หรือ w5jt8)
+KSW: 
+
+──────── 153/655 ────────
+KEY: geoTeleportOk
+EN:  Area set to {channel}
+TH:  ตั้ง Area เป็น {channel} แล้ว
+KSW: 
+
+──────── 154/655 ────────
+KEY: geoManualActive
+EN:  Manual area: {channel} (GPS refresh will override)
+TH:  Area แบบ manual: {channel} (refresh GPS จะทับค่านี้)
+KSW: 
+
+──────── 155/655 ────────
+KEY: geoEmptyNoNostr
+EN:  Nostr not ready — tap Reconnect (0/0 until init succeeds)
+TH:  Nostr ยังไม่พร้อม — กด Reconnect (จะเป็น 0/0 จนกว่า init สำเร็จ)
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 156/655 ────────
+KEY: geoEmptyMeshOnly
+EN:  Transport is Mesh-only — switch to Internet or Auto to discover peers over Nostr
+TH:  Transport เป็น Mesh อย่างเดียว — เปลี่ยนเป็น Internet หรือ Auto เพื่อค้นหาผ่าน Nostr
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 157/655 ────────
+KEY: geoEmptyWaiting
+EN:  No one in {channel} yet — keep Area + Internet open on both devices and wait ~60s
+TH:  ยังไม่มีใครใน {channel} — เปิด Area + Internet ทั้งสองเครื่อง แล้วรอ ~60 วินาที
+KSW: [DRAFT] Online t’ra in {channel} ê — Transport → Internet/Auto, Nostr, location refresh
+
+──────── 158/655 ────────
+KEY: geoChannelFallback
+EN:  #area
+TH:  #พื้นที่
+KSW: 
+
+──────── 159/655 ────────
+KEY: geoRefreshLocation
+EN:  Refresh location
+TH:  Refresh ตำแหน่ง
+KSW: 
+
+──────── 160/655 ────────
+KEY: settingsClearLocationTitle
+EN:  Clear location
+TH:  ลบพิกัดตำแหน่ง
+KSW: 
+
+──────── 161/655 ────────
+KEY: settingsClearLocationSubtitle
+EN:  Remove GPS / teleport geohash (Area becomes #—)
+TH:  ลบ GPS / geohash ที่เทเลพอร์ตไว้ (Area กลับเป็น #—)
+KSW: 
+
+──────── 162/655 ────────
+KEY: settingsClearLocationConfirmTitle
+EN:  Clear location?
+TH:  ลบพิกัด?
+KSW: 
+
+──────── 163/655 ────────
+KEY: settingsClearLocationConfirmBody
+EN:  Deletes the stored geohash on this device. You can refresh GPS or teleport again afterward.
+TH:  ลบ geohash ที่เก็บในเครื่องนี้ คุณสามารถรีเฟรช GPS หรือเทเลพอร์ตใหม่ได้ภายหลัง
+KSW: 
+
+──────── 164/655 ────────
+KEY: settingsClearLocationAction
+EN:  Clear location
+TH:  ลบพิกัด
+KSW: 
+
+──────── 165/655 ────────
+KEY: settingsClearLocationSnack
+EN:  Location cleared
+TH:  ลบพิกัดแล้ว
+KSW: 
+
+──────── 166/655 ────────
+KEY: chatVoiceTooLarge
+EN:  Voice note too large — max ~30 seconds
+TH:  ข้อความเสียงใหญ่เกินไป — สูงสุด ~30 วินาที
+KSW: 
+
+──────── 167/655 ────────
+KEY: chatVoiceNeedInternet
+EN:  Voice note needs Internet (Nostr) — too large for BLE alone
+TH:  ข้อความเสียงต้องใช้ Internet (Nostr) — ใหญ่เกินสำหรับ BLE อย่างเดียว
+KSW: 
+
+──────── 168/655 ────────
+KEY: chatVoiceSentInternet
+EN:  Voice note sent via Internet
+TH:  ส่งข้อความเสียงผ่าน Internet แล้ว
+KSW: 
+
+──────── 169/655 ────────
+KEY: noticeAnonMention
+EN:  mention
+TH:  กล่าวถึง
+KSW: 
+
+──────── 170/655 ────────
+KEY: noticeAnonDm
+EN:  direct message
+TH:  ข้อความตรง
+KSW: 
+
+──────── 171/655 ────────
+KEY: noticeAnonHug
+EN:  hug
+TH:  กอด
+KSW: 
+
+──────── 172/655 ────────
+KEY: noticeAnonSlap
+EN:  slap
+TH:  ตบ
+KSW: 
+
+──────── 173/655 ────────
+KEY: noticeAnonBlock
+EN:  block
+TH:  บล็อก
+KSW: 
+
+──────── 174/655 ────────
+KEY: noticeAnonNeedKey
+EN:  No public key yet — exchange QR first for 1:1
+TH:  ยังไม่มีกุญแจสาธารณะ — แลก QR ก่อนส่ง 1:1
+KSW: 
+
+──────── 175/655 ────────
+KEY: noticeAnonActionSent
+EN:  Sent
+TH:  ส่งแล้ว
+KSW: 
+
+──────── 176/655 ────────
+KEY: noticeAnonBlocked
+EN:  Blocked {anon}
+TH:  บล็อก {anon} แล้ว
+KSW: 
+
+──────── 177/655 ────────
+KEY: noticeAnonHugMessage
+EN:  * hugs {anon} *
+TH:  * กอด {anon} *
+KSW: 
+
+──────── 178/655 ────────
+KEY: noticeAnonSlapMessage
+EN:  * slaps {anon} *
+TH:  * ตบ {anon} *
+KSW: 
+
+──────── 179/655 ────────
+KEY: geoReconnectNostr
+EN:  Reconnect Nostr
+TH:  เชื่อมต่อใหม่ Nostr
+KSW: 
+
+──────── 180/655 ────────
+KEY: nostrSectionTitle
+EN:  Nostr relays
+TH:  Nostr รีเลย์
+KSW: 
+
+──────── 181/655 ────────
+KEY: nostrSectionSubtitle
+EN:  Internet messaging and Area discovery use these relays. Tap reconnect if status stays offline.
+TH:  ข้อความผ่านอินเทอร์เน็ตและการค้นหา Area ใช้ relay เหล่านี้ หากออฟไลน์ค้าง ให้กด reconnect
+KSW: 
+
+──────── 182/655 ────────
+KEY: nostrStatusOnline
+EN:  Connected {connected}/{total}
+TH:  เชื่อมต่อแล้ว {connected}/{total}
+KSW: 
+
+──────── 183/655 ────────
+KEY: nostrStatusOffline
+EN:  Offline — relays listed but none connected
+TH:  ออฟไลน์ — มีรายการ relay แต่ยังไม่ต่อ
+KSW: 
+
+──────── 184/655 ────────
+KEY: nostrStatusNotInit
+EN:  Not started (0/0) — tap Reconnect to initialize
+TH:  ยังไม่เริ่ม (0/0) — กด Reconnect เพื่อเริ่มระบบ
+KSW: 
+
+──────── 185/655 ────────
+KEY: nostrReconnectAction
+EN:  Reconnect Nostr
+TH:  เชื่อมต่อใหม่ Nostr
+KSW: 
+
+──────── 186/655 ────────
+KEY: nostrReconnectOk
+EN:  Nostr connected ({connected}/{total})
+TH:  เชื่อม Nostr แล้ว ({connected}/{total})
+KSW: 
+
+──────── 187/655 ────────
+KEY: nostrReconnectFailed
+EN:  Still offline — check Wi‑Fi/cellular or try again
+TH:  ยังออฟไลน์ — ตรวจ Wi‑Fi/เซลลูลาร์ หรือลองใหม่
+KSW: 
+
+──────── 188/655 ────────
+KEY: nostrReconnectFailedDetail
+EN:  Failed: {error}
+TH:  ล้มเหลว: {error}
+KSW: 
+
+──────── 189/655 ────────
+KEY: nostrReconnecting
+EN:  Connecting to relays…
+TH:  กำลังเชื่อม relay…
+KSW: 
+
+──────── 190/655 ────────
+KEY: geoDiscoveryStatus
+EN:  {channel} · Nostr {relays}
+TH:  {channel} · Nostr {relays}
+KSW: 
+
+──────── 191/655 ────────
+KEY: geoPeerInternetSubtitle
+EN:  Internet (Nostr) in {channel} • sealed chat ready
+TH:  อินเทอร์เน็ต (Nostr) ใน {channel} • พร้อมแชตผนึก
+KSW: 
+
+──────── 192/655 ────────
+KEY: transportModeTitle
+EN:  Area transport
+TH:  ช่องทางพื้นที่
+KSW: 
+
+──────── 193/655 ────────
+KEY: transportModeSubtitle
+EN:  Mesh = BLE nearby (radio) when no Nostr · Internet & Auto = Nostr people list
+TH:  Mesh = BLE ใกล้ตัว (radio) เมื่อไม่มี Nostr · Internet & Auto = รายชื่อจาก Nostr
+KSW: 
+
+──────── 194/655 ────────
+KEY: transportModeMesh
+EN:  Mesh
+TH:  ตาข่าย
+KSW: 
+
+──────── 195/655 ────────
+KEY: transportModeInternet
+EN:  Internet
+TH:  อินเทอร์เน็ต
+KSW: 
+
+──────── 196/655 ────────
+KEY: transportModeAuto
+EN:  Auto
+TH:  อัตโนมัติ
+KSW: 
+
+──────── 197/655 ────────
+KEY: geoPublicHint
+EN:  Public message to everyone online in this area
+TH:  ข้อความสาธารณะถึงทุกคนที่ออนไลน์ในพื้นที่นี้
+KSW: 
+
+──────── 198/655 ────────
+KEY: geoPublicSend
+EN:  Public
+TH:  สาธารณะ
+KSW: 
+
+──────── 199/655 ────────
+KEY: geoPublicHelp
+EN:  Sealed fan-out to {count} online peer(s) — each receives a private envelope
+TH:  ส่งแบบผนึกถึง {count} คนที่ออนไลน์ — แต่ละคนได้ซองส่วนตัว
+KSW: 
+
+──────── 200/655 ────────
+KEY: geoPublicSent
+EN:  Sent to {count} peer(s) in this area
+TH:  ส่งแล้วถึง {count} คนในพื้นที่
+KSW: 
+
+──────── 201/655 ────────
+KEY: geoPublicSentNone
+EN:  No messageable peers online — open Area/Mesh with peers that have keys, or wait for BLE/Nostr
+TH:  ยังไม่มีเพื่อนที่ส่งถึงได้ — เปิด Area/Mesh ให้มีคนที่ผูกคีย์แล้ว หรือรอ BLE/Nostr
+KSW: 
+
+──────── 202/655 ────────
+KEY: areaPublicBadge
+EN:  Area public
+TH:  สาธารณะในพื้นที่
+KSW: 
+
+──────── 203/655 ────────
+KEY: geoErrorPermission
+EN:  Could not read location — check location permission
+TH:  ไม่สามารถอ่านพิกัดได้ — ตรวจสิทธิ์ตำแหน่ง
+KSW: 
+
+──────── 204/655 ────────
+KEY: geoPrecisionRegion
+EN:  Region
+TH:  ภูมิภาค
+KSW: 
+
+──────── 205/655 ────────
+KEY: geoPrecisionProvince
+EN:  Province
+TH:  จังหวัด
+KSW: 
+
+──────── 206/655 ────────
+KEY: geoPrecisionCity
+EN:  City
+TH:  เมือง
+KSW: 
+
+──────── 207/655 ────────
+KEY: geoPrecisionNeighborhood
+EN:  Neighborhood
+TH:  ย่าน
+KSW: 
+
+──────── 208/655 ────────
+KEY: geoPrecisionBlock
+EN:  Block
+TH:  บล็อก
+KSW: 
+
+──────── 209/655 ────────
+KEY: aliasTitle
+EN:  Set nickname (Contact Alias)
+TH:  ตั้งชื่อเล่น (Contact Alias)
+KSW: [DRAFT] Alias
+
+──────── 210/655 ────────
+KEY: aliasHintBody
+EN:  This alias is stored on this device only (local-only)
+TH:  Alias นี้เก็บในเครื่องเท่านั้น (Local-only)
+KSW: 
+
+──────── 211/655 ────────
+KEY: aliasLabel
+EN:  Nickname
+TH:  ชื่อเล่น
+KSW: 
+
+──────── 212/655 ────────
+KEY: aliasHint
+EN:  e.g. “village head”, “P’Somchai”…
+TH:  เช่น “ผู้ใหญ่บ้าน”, “พี่สมชาย”…
+KSW: 
+
+──────── 213/655 ────────
+KEY: settingsDevices
+EN:  Devices
+TH:  อุปกรณ์
+KSW: 
+
+──────── 214/655 ────────
+KEY: settingsFirmwareTitle
+EN:  Download / update ESP32 firmware
+TH:  ดาวน์โหลด/อัปเดตเฟิร์มแวร์ ESP32
+KSW: 
+
+──────── 215/655 ────────
+KEY: settingsFirmwareSubtitle
+EN:  Download .bin files and update the ESP32 board via OTA
+TH:  ดาวน์โหลดไฟล์ .bin และอัปเดตแอป/บอร์ด ESP32 ผ่าน OTA
+KSW: 
+
+──────── 216/655 ────────
+KEY: mtBridgeTitle
+EN:  Meshtastic bridge
+TH:  สะพาน Meshtastic
+KSW: 
+
+──────── 217/655 ────────
+KEY: mtBridgeSettingsSubtitle
+EN:  Text-only A/B bridge — not ResilNet E2EE
+TH:  สะพานข้อความสั้นโหมด A/B — ไม่ใช่ E2EE ของ ResilNet
+KSW: 
+
+──────── 218/655 ────────
+KEY: mtBridgeIntro
+EN:  Move short plaintext between Meshtastic and ResilNet. Modes A and B cannot run at the same time. This is not end-to-end encryption.
+TH:  ส่งข้อความสั้นแบบ plaintext ระหว่าง Meshtastic กับ ResilNet โหมด A กับ B ใช้พร้อมกันไม่ได้ และไม่ใช่การเข้ารหัสปลายทางถึงปลายทาง
+KSW: 
+
+──────── 219/655 ────────
+KEY: mtBridgeModeLabel
+EN:  Mode
+TH:  โหมด
+KSW: 
+
+──────── 220/655 ────────
+KEY: mtBridgeModeOff
+EN:  Off
+TH:  ปิด
+KSW: 
+
+──────── 221/655 ────────
+KEY: mtBridgeModeA
+EN:  Ingest A
+TH:  รับเข้า A
+KSW: 
+
+──────── 222/655 ────────
+KEY: mtBridgeModeB
+EN:  Egress B
+TH:  ส่งออก B
+KSW: 
+
+──────── 223/655 ────────
+KEY: mtBridgeModeOffShort
+EN:  Off
+TH:  ปิด
+KSW: 
+
+──────── 224/655 ────────
+KEY: mtBridgeModeAShort
+EN:  In A
+TH:  รับ A
+KSW: 
+
+──────── 225/655 ────────
+KEY: mtBridgeModeBShort
+EN:  Out B
+TH:  ส่ง B
+KSW: 
+
+──────── 226/655 ────────
+KEY: mtBridgeMutexHint
+EN:  Selecting a mode turns the other off automatically. Simultaneous A+B is not supported.
+TH:  เลือกโหมดหนึ่งจะปิดอีกโหมดโดยอัตโนมัติ — ไม่รองรับเปิด A และ B พร้อมกัน
+KSW: 
+
+──────── 227/655 ────────
+KEY: mtBridgeStatusLine
+EN:  {mode} · {transport}
+TH:  {mode} · {transport}
+KSW: 
+
+──────── 228/655 ────────
+KEY: mtBridgeTransportDemo
+EN:  Demo (logging)
+TH:  ทดลอง (logging)
+KSW: 
+
+──────── 229/655 ────────
+KEY: mtBridgeIngestSection
+EN:  Meshtastic → ResilNet
+TH:  Meshtastic → ResilNet
+KSW: 
+
+──────── 230/655 ────────
+KEY: mtBridgeIngestHint
+EN:  Inbound text appears under Notices as #meshtastic. Mesh relay is optional (off by default).
+TH:  ข้อความขาเข้าจะอยู่ในประกาศเป็น #meshtastic การทวนขึ้น mesh เป็นทางเลือก (ปิดเป็นค่าเริ่มต้น)
+KSW: 
+
+──────── 231/655 ────────
+KEY: mtBridgeRelayTitle
+EN:  Also relay on ResilNet mesh
+TH:  ทวนขึ้น mesh ของ ResilNet ด้วย
+KSW: 
+
+──────── 232/655 ────────
+KEY: mtBridgeRelayHint
+EN:  When on, signed public bulletins are broadcast. Off = this phone’s Notices only.
+TH:  เมื่อเปิด จะกระจายประกาศสาธารณะที่เซ็นแล้ว ปิด = เก็บในประกาศของเครื่องนี้เท่านั้น
+KSW: 
+
+──────── 233/655 ────────
+KEY: mtBridgeSimulateHint
+EN:  Demo message
+TH:  ข้อความทดลอง
+KSW: 
+
+──────── 234/655 ────────
+KEY: mtBridgeSimulate
+EN:  Simulate Meshtastic message
+TH:  จำลองข้อความจาก Meshtastic
+KSW: 
+
+──────── 235/655 ────────
+KEY: mtBridgeIngestOk
+EN:  Ingested into Notices (#meshtastic)
+TH:  รับเข้าประกาศแล้ว (#meshtastic)
+KSW: 
+
+──────── 236/655 ────────
+KEY: mtBridgeEgressWarning
+EN:  Warning: messages sent here are NOT ResilNet E2EE. Anyone on the Meshtastic path can read them.
+TH:  คำเตือน: ข้อความที่ส่งตรงนี้ไม่ใช่ E2EE ของ ResilNet ผู้ที่อยู่บนเส้นทาง Meshtastic อ่านได้
+KSW: 
+
+──────── 237/655 ────────
+KEY: mtBridgeEgressSection
+EN:  ResilNet → Meshtastic
+TH:  ResilNet → Meshtastic
+KSW: 
+
+──────── 238/655 ────────
+KEY: mtBridgeComposeHint
+EN:  Text to publish
+TH:  ข้อความที่จะส่ง
+KSW: 
+
+──────── 239/655 ────────
+KEY: mtBridgeSend
+EN:  Send to Meshtastic
+TH:  ส่งไป Meshtastic
+KSW: 
+
+──────── 240/655 ────────
+KEY: mtBridgeEgressOk
+EN:  Queued for Meshtastic (see log / history)
+TH:  จัดคิวไป Meshtastic แล้ว (ดู log / ประวัติ)
+KSW: 
+
+──────── 241/655 ────────
+KEY: mtBridgeLastEgress
+EN:  Last egress
+TH:  ข้อความส่งออกล่าสุด
+KSW: 
+
+──────── 242/655 ────────
+KEY: mtBridgeEgressHistory
+EN:  Recent egress
+TH:  ประวัติส่งออก
+KSW: 
+
+──────── 243/655 ────────
+KEY: mtBridgeOffHint
+EN:  Turn on Ingest (A) or Egress (B) to use the bridge.
+TH:  เปิดโหมดรับเข้า (A) หรือส่งออก (B) เพื่อใช้สะพาน
+KSW: 
+
+──────── 244/655 ────────
+KEY: mtBridgeNoticeBadge
+EN:  MESHTASTIC · not E2EE
+TH:  MESHTASTIC · ไม่ใช่ E2EE
+KSW: 
+
+──────── 245/655 ────────
+KEY: mtBridgeSenderFallback
+EN:  Meshtastic
+TH:  Meshtastic
+KSW: Meshtastic
+
+──────── 246/655 ────────
+KEY: mtBridgeUseMqtt
+EN:  Use MQTT transport
+TH:  ใช้ MQTT
+KSW: 
+
+──────── 247/655 ────────
+KEY: mtBridgeUseMqttHint
+EN:  Off = demo logging only (MQTT inbound ignored). On = MQTT for ingest/egress when connected.
+TH:  ปิด = ทดลองในเครื่องเท่านั้น (ไม่รับ MQTT เข้า) เปิด = ใช้ MQTT เมื่อเชื่อมต่อแล้ว
+KSW: 
+
+──────── 248/655 ────────
+KEY: mtBridgeMqttHost
+EN:  Broker host
+TH:  โฮสต์ broker
+KSW: 
+
+──────── 249/655 ────────
+KEY: mtBridgeMqttPort
+EN:  Port
+TH:  พอร์ต
+KSW: 
+
+──────── 250/655 ────────
+KEY: mtBridgeMqttTls
+EN:  Use TLS (mqtts)
+TH:  ใช้ TLS (mqtts)
+KSW: 
+
+──────── 251/655 ────────
+KEY: mtBridgeMqttTlsHint
+EN:  Typical port 8883. Uses system certificates; fails soft on handshake errors.
+TH:  พอร์ตทั่วไป 8883 ใช้ใบรับรองของระบบ — ล้มเหลวแบบชัดเจนถ้า handshake ไม่ผ่าน
+KSW: 
+
+──────── 252/655 ────────
+KEY: mtBridgeMqttAutoReconnect
+EN:  Auto-reconnect
+TH:  เชื่อมต่อใหม่อัตโนมัติ
+KSW: 
+
+──────── 253/655 ────────
+KEY: mtBridgeMqttAutoReconnectHint
+EN:  When on, the client tries to reconnect after drops. Status shows Connecting until restored.
+TH:  เมื่อเปิด ลูกค้าจะพยายามเชื่อมใหม่หลังหลุด สถานะจะเป็น Connecting จนกลับมา
+KSW: 
+
+──────── 254/655 ────────
+KEY: mtBridgeMqttTopicHelpers
+EN:  Topic helpers
+TH:  ตัวช่วยท็อปิก
+KSW: 
+
+──────── 255/655 ────────
+KEY: mtBridgeMqttRegion
+EN:  Region prefix (optional)
+TH:  คำนำหน้า region (ถ้ามี)
+KSW: 
+
+──────── 256/655 ────────
+KEY: mtBridgeMqttRegionHint
+EN:  When set, Apply rebuilds root as msh/<region>/2/json (overrides topic root).
+TH:  ถ้ามีค่า กด Apply จะสร้างราก msh/<region>/2/json (ทับ topic root)
+KSW: 
+
+──────── 257/655 ────────
+KEY: mtBridgeMqttTopicRoot
+EN:  JSON topic root
+TH:  รากท็อปิก JSON
+KSW: 
+
+──────── 258/655 ────────
+KEY: mtBridgeMqttDownlinkChannel
+EN:  Downlink channel name
+TH:  ชื่อช่อง downlink
+KSW: 
+
+──────── 259/655 ────────
+KEY: mtBridgeMqttApplyTopics
+EN:  Apply root → subscribe / publish topics
+TH:  ใช้ราก → ท็อปิก subscribe / publish
+KSW: 
+
+──────── 260/655 ────────
+KEY: mtBridgeMqttAdvanced
+EN:  Advanced MQTT
+TH:  MQTT ขั้นสูง
+KSW: 
+
+──────── 261/655 ────────
+KEY: mtBridgeMqttAdvancedHint
+EN:  TLS, reconnect, topics, credentials
+TH:  TLS, เชื่อมใหม่, ท็อปิก, รหัสผ่าน
+KSW: 
+
+──────── 262/655 ────────
+KEY: mtBridgeMqttTopicIn
+EN:  Subscribe topic
+TH:  ท็อปิก subscribe
+KSW: 
+
+──────── 263/655 ────────
+KEY: mtBridgeMqttTopicOut
+EN:  Publish topic
+TH:  ท็อปิก publish
+KSW: 
+
+──────── 264/655 ────────
+KEY: mtBridgeMqttGatewayFrom
+EN:  Gateway node id (from)
+TH:  Node id ของเกตเวย์ (from)
+KSW: 
+
+──────── 265/655 ────────
+KEY: mtBridgeMqttGatewayFromHint
+EN:  Decimal id or !hex — required for sendtext downlink
+TH:  เลขทศนิยม หรือ !hex — จำเป็นสำหรับ sendtext
+KSW: 
+
+──────── 266/655 ────────
+KEY: mtBridgeMqttChannelIndex
+EN:  Mesh channel index (optional 0–7)
+TH:  ดัชนีช่อง mesh (ถ้ามี 0–7)
+KSW: 
+
+──────── 267/655 ────────
+KEY: mtBridgeMqttUser
+EN:  Username (optional)
+TH:  ชื่อผู้ใช้ (ถ้ามี)
+KSW: 
+
+──────── 268/655 ────────
+KEY: mtBridgeMqttPass
+EN:  Password (optional)
+TH:  รหัสผ่าน (ถ้ามี)
+KSW: 
+
+──────── 269/655 ────────
+KEY: mtBridgeMqttPassStored
+EN:  A password is stored on this device (not shown).
+TH:  มีรหัสผ่านเก็บในเครื่องแล้ว (ไม่แสดงค่า)
+KSW: 
+
+──────── 270/655 ────────
+KEY: mtBridgeMqttPassReplace
+EN:  New password (leave blank to keep)
+TH:  รหัสผ่านใหม่ (ว่าง = คงของเดิม)
+KSW: 
+
+──────── 271/655 ────────
+KEY: mtBridgeMqttPassReplaceHint
+EN:  Leave empty to keep the stored password.
+TH:  เว้นว่างเพื่อคงรหัสผ่านที่เก็บไว้
+KSW: 
+
+──────── 272/655 ────────
+KEY: mtBridgeMqttPassClear
+EN:  Clear password
+TH:  ล้างรหัสผ่าน
+KSW: 
+
+──────── 273/655 ────────
+KEY: mtBridgeMqttSave
+EN:  Save MQTT settings
+TH:  บันทึก MQTT
+KSW: 
+
+──────── 274/655 ────────
+KEY: mtBridgeMqttSaved
+EN:  MQTT settings saved
+TH:  บันทึกการตั้งค่า MQTT แล้ว
+KSW: 
+
+──────── 275/655 ────────
+KEY: mtBridgeMqttConnect
+EN:  Connect
+TH:  เชื่อมต่อ
+KSW: 
+
+──────── 276/655 ────────
+KEY: mtBridgeMqttDisconnect
+EN:  Disconnect
+TH:  ตัดการเชื่อมต่อ
+KSW: 
+
+──────── 277/655 ────────
+KEY: mtBridgeMqttConnected
+EN:  MQTT connected
+TH:  MQTT เชื่อมต่อแล้ว
+KSW: 
+
+──────── 278/655 ────────
+KEY: mtBridgeMqttConnecting
+EN:  MQTT connecting…
+TH:  กำลังเชื่อม MQTT…
+KSW: 
+
+──────── 279/655 ────────
+KEY: mtBridgeMqttDisconnected
+EN:  MQTT disconnected
+TH:  MQTT ยังไม่เชื่อมต่อ
+KSW: 
+
+──────── 280/655 ────────
+KEY: mtBridgeMqttError
+EN:  MQTT error
+TH:  MQTT ผิดพลาด
+KSW: 
+
+──────── 281/655 ────────
+KEY: mtBridgeErrModeIngest
+EN:  Switch to Ingest (A) first
+TH:  สลับเป็นโหมดรับเข้า (A) ก่อน
+KSW: 
+
+──────── 282/655 ────────
+KEY: mtBridgeErrModeEgress
+EN:  Switch to Egress (B) first
+TH:  สลับเป็นโหมดส่งออก (B) ก่อน
+KSW: 
+
+──────── 283/655 ────────
+KEY: mtBridgeErrRate
+EN:  Slow down — rate limited
+TH:  ช้าลง — จำกัดอัตราการส่ง
+KSW: 
+
+──────── 284/655 ────────
+KEY: mtBridgeErrDedupe
+EN:  Duplicate message ignored
+TH:  ข้อความซ้ำ ข้ามแล้ว
+KSW: 
+
+──────── 285/655 ────────
+KEY: mtBridgeErrLoop
+EN:  Dropped to prevent a bridge loop
+TH:  ตัดทิ้งเพื่อกันลูปของสะพาน
+KSW: 
+
+──────── 286/655 ────────
+KEY: mtBridgeErrEmpty
+EN:  Message is empty
+TH:  ข้อความว่าง
+KSW: 
+
+──────── 287/655 ────────
+KEY: mtBridgeErrPublish
+EN:  Publish failed
+TH:  ส่งไม่สำเร็จ
+KSW: 
+
+──────── 288/655 ────────
+KEY: mtBridgeErrNotConnected
+EN:  MQTT not connected
+TH:  ยังไม่ได้เชื่อม MQTT
+KSW: 
+
+──────── 289/655 ────────
+KEY: mtBridgeErrMissingHost
+EN:  Enter MQTT broker host
+TH:  กรอกโฮสต์ MQTT
+KSW: 
+
+──────── 290/655 ────────
+KEY: mtBridgeErrMissingTopic
+EN:  Enter subscribe and publish topics
+TH:  กรอกท็อปิก subscribe และ publish
+KSW: 
+
+──────── 291/655 ────────
+KEY: mtBridgeErrMissingFromNode
+EN:  Enter gateway node id (from) for sendtext
+TH:  กรอก node id ของเกตเวย์ (from) สำหรับ sendtext
+KSW: 
+
+──────── 292/655 ────────
+KEY: mtBridgeErrConnect
+EN:  MQTT connect failed
+TH:  เชื่อม MQTT ไม่สำเร็จ
+KSW: 
+
+──────── 293/655 ────────
+KEY: mtBridgeErrConnectTls
+EN:  MQTT TLS connect failed
+TH:  เชื่อม MQTT แบบ TLS ไม่สำเร็จ
+KSW: 
+
+──────── 294/655 ────────
+KEY: settingsData
+EN:  Data
+TH:  จัดการข้อมูล
+KSW: 
+
+──────── 295/655 ────────
+KEY: settingsDataHint
+EN:  Delete local messages to shrink the database — identity, keys, and peers are kept
+TH:  ลบข้อความในเครื่องเพื่อลดขนาดฐานข้อมูล — ไม่กระทบตัวตน คีย์ หรือรายชื่อเพื่อน
+KSW: 
+
+──────── 296/655 ────────
+KEY: settingsSaveHistoryTitle
+EN:  Save message history
+TH:  บันทึกประวัติข้อความ
+KSW: 
+
+──────── 297/655 ────────
+KEY: settingsSaveHistorySubtitle
+EN:  When off, messages stay E2EE on the wire and are kept only for this session (not in local chat history). Your own text still shows as plaintext on this device.
+TH:  เมื่อปิด ข้อความยังถูกเข้ารหัส E2EE ตอนส่ง และเก็บเฉพาะในเซสชันนี้ (ไม่ลงประวัติแชต) — ข้อความที่คุณพิมพ์ยังอ่านได้บนเครื่องนี้
+KSW: 
+
+──────── 298/655 ────────
+KEY: settingsPrivacy
+EN:  Privacy
+TH:  ความเป็นส่วนตัว
+KSW: 
+
+──────── 299/655 ────────
+KEY: settingsE2eeTitle
+EN:  End-to-end encryption
+TH:  การเข้ารหัสปลายทางถึงปลายทาง (E2EE)
+KSW: 
+
+──────── 300/655 ────────
+KEY: settingsE2eeSubtitle
+EN:  Always on — messages are sealed with RSA-OAEP + AES-GCM before send. Relays and nearby hops cannot read contents.
+TH:  เปิดตลอด — ผนึกข้อความด้วย RSA-OAEP + AES-GCM ก่อนส่ง โหนดกลางอ่านเนื้อหาไม่ได้
+KSW: 
+
+──────── 301/655 ────────
+KEY: settingsScreenshotTitle
+EN:  Screenshot alerts
+TH:  แจ้งเตือนการแคปหน้าจอ
+KSW: 
+
+──────── 302/655 ────────
+KEY: settingsScreenshotSubtitle
+EN:  Show a system line in chat when this device captures the screen
+TH:  แสดงบรรทัดระบบในแชตเมื่ออุปกรณ์นี้แคปหน้าจอ
+KSW: 
+
+──────── 303/655 ────────
+KEY: settingsNostrExpiryTitle
+EN:  Nostr message keep time
+TH:  ระยะเวลาเก็บข้อความบน Nostr
+KSW: 
+
+──────── 304/655 ────────
+KEY: settingsNostrExpirySubtitle
+EN:  How long sealed envelopes should remain locally when online via Nostr
+TH:  ระยะที่ซองข้อความควรคงอยู่บนเครื่องเมื่อส่งผ่าน Nostr
+KSW: 
+
+──────── 305/655 ────────
+KEY: noticeExpiresIn
+EN:  expires in
+TH:  หมดอายุใน
+KSW: 
+
+──────── 306/655 ────────
+KEY: noticesTitle
+EN:  Notices
+TH:  ประกาศ
+KSW: 
+
+──────── 307/655 ────────
+KEY: noticesMeshIntro
+EN:  Public bulletin — visible to everyone in radio range, not encrypted. It hops phone-to-phone offline, and nearby ResilNet relay boxes keep a copy so people who arrive later still see it.
+TH:  ประกาศสาธารณะ — ทุกคนในรัศมีวิทยุอ่านได้ ไม่เข้ารหัส ส่งต่อจากมือถือสู่มือถือได้แม้ออฟไลน์ และกล่องทวนสัญญาณ ResilNet ใกล้เคียงจะเก็บสำเนาไว้ให้คนที่เพิ่งเข้ามาทีหลังเห็นด้วย
+KSW: 
+
+──────── 308/655 ────────
+KEY: noticesMeshPublicBadge
+EN:  PUBLIC · not encrypted
+TH:  สาธารณะ · ไม่เข้ารหัส
+KSW: 
+
+──────── 309/655 ────────
+KEY: noticesGeoIntro
+EN:  Add short notes for this place so other visitors can find them.
+TH:  เพิ่มบันทึกถาวรสั้น ๆ ให้สถานที่นี้เพื่อให้ผู้มาเยือนคนอื่นพบได้
+KSW: 
+
+──────── 310/655 ────────
+KEY: noticesEmpty
+EN:  no notices yet
+TH:  ยังไม่มีประกาศ
+KSW: 
+
+──────── 311/655 ────────
+KEY: noticesEmptyHint
+EN:  pin the first notice for people around here.
+TH:  ปักประกาศแรกให้คนรอบนี้
+KSW: 
+
+──────── 312/655 ────────
+KEY: noticesComposeHint
+EN:  post a notice...
+TH:  เขียนประกาศ...
+KSW: 
+
+──────── 313/655 ────────
+KEY: noticesUrgent
+EN:  urgent
+TH:  ด่วน
+KSW: 
+
+──────── 314/655 ────────
+KEY: noticesOpen
+EN:  Notices
+TH:  ประกาศ
+KSW: 
+
+──────── 315/655 ────────
+KEY: screenshotTaken
+EN:  * you took a screenshot *
+TH:  * คุณแคปหน้าจอ *
+KSW: 
+
+──────── 316/655 ────────
+KEY: chatAttachImage
+EN:  Attach image
+TH:  แนบรูป
+KSW: 
+
+──────── 317/655 ────────
+KEY: chatImageLabel
+EN:  Image
+TH:  รูปภาพ
+KSW: 
+
+──────── 318/655 ────────
+KEY: chatImageTooLarge
+EN:  Image too large — try another photo
+TH:  รูปใหญ่เกินไป — ลองเลือกรูปอื่น
+KSW: 
+
+──────── 319/655 ────────
+KEY: chatNostrExpiry
+EN:  Nostr keep
+TH:  เก็บบน Nostr
+KSW: 
+
+──────── 320/655 ────────
+KEY: geoPublicComposeHint
+EN:  Send to {channel} — public
+TH:  ส่งข้อความถึง {channel} — สาธารณะ
+KSW: 
+
+──────── 321/655 ────────
+KEY: settingsClearTitle
+EN:  Clear all messages
+TH:  ล้างข้อความทั้งหมด
+KSW: 
+
+──────── 322/655 ────────
+KEY: settingsClearSubtitle
+EN:  Delete all chats on this device
+TH:  ลบแชตทั้งหมดในเครื่อง
+KSW: 
+
+──────── 323/655 ────────
+KEY: settingsClearConfirmTitle
+EN:  Clear all messages?
+TH:  ล้างข้อความทั้งหมด?
+KSW: 
+
+──────── 324/655 ────────
+KEY: settingsClearConfirmBody
+EN:  This deletes all chat messages on this device.
+TH:  การดำเนินการนี้จะลบข้อความแชตทั้งหมดในเครื่องนี้
+KSW: 
+
+──────── 325/655 ────────
+KEY: settingsClearAction
+EN:  Clear data
+TH:  ล้างข้อมูล
+KSW: 
+
+──────── 326/655 ────────
+KEY: settingsClearedSnack
+EN:  Data cleared
+TH:  ล้างข้อมูลเรียบร้อยแล้ว
+KSW: 
+
+──────── 327/655 ────────
+KEY: settingsVersion
+EN:  version {version}
+TH:  เวอร์ชัน {version}
+KSW: 
+
+──────── 328/655 ────────
+KEY: meshBleScanning
+EN:  BLE: scanning for nodes
+TH:  BLE: กำลังค้นหา Node
+KSW: [DRAFT] BLE scanning…
+
+──────── 329/655 ────────
+KEY: meshBleEsp32Scanning
+EN:  ESP32: looking for a nearby node
+TH:  ESP32: กำลังหาโหนดใกล้ ๆ
+KSW: 
+
+──────── 330/655 ────────
+KEY: meshBleSyncing
+EN:  BLE: syncing with ESP32
+TH:  BLE: กำลังซิงก์กับ ESP32
+KSW: [DRAFT] Syncing…
+
+──────── 331/655 ────────
+KEY: meshNostrPublishing
+EN:  Nostr: publishing
+TH:  Nostr: กำลังเผยแพร่
+KSW: [DRAFT] Nostr publishing…
+
+──────── 332/655 ────────
+KEY: meshBleIdle
+EN:  BLE mesh on — no nearby phones yet
+TH:  BLE mesh เปิด — ยังไม่พบมือถือใกล้ ๆ
+KSW: [DRAFT] BLE idle
+
+──────── 333/655 ────────
+KEY: meshBlePeersNearby
+EN:  BLE mesh — {count} phone(s) nearby
+TH:  BLE mesh — พบมือถือใกล้ ๆ {count} เครื่อง
+KSW: 
+
+──────── 334/655 ────────
+KEY: meshBleNeedsPermission
+EN:  BLE: permission required
+TH:  BLE: ต้องขอสิทธิ์ก่อน
+KSW: [DRAFT] BLE: permission nê baw
+
+──────── 335/655 ────────
+KEY: meshBlePausedCamera
+EN:  BLE paused for camera — tap Start BLE
+TH:  BLE หยุดชั่วคราว (กล้อง) — แตะ เริ่ม BLE
+KSW: 
+
+──────── 336/655 ────────
+KEY: meshBleStopped
+EN:  BLE is off — check Bluetooth is on, then tap Start BLE
+TH:  BLE ปิดอยู่ — เปิด Bluetooth แล้วแตะ เริ่ม BLE
+KSW: 
+
+──────── 337/655 ────────
+KEY: meshBleRestart
+EN:  Start BLE
+TH:  เริ่ม BLE
+KSW: 
+
+──────── 338/655 ────────
+KEY: meshBleStatusDetail
+EN:  BT {bt} · Loc {loc} · BLE {ble}
+TH:  BT {bt} · ล็อค {loc} · BLE {ble}
+KSW: 
+
+──────── 339/655 ────────
+KEY: meshBleEnsureAction
+EN:  Check permissions & start BLE
+TH:  ตรวจสิทธิ์และเริ่ม BLE
+KSW: 
+
+──────── 340/655 ────────
+KEY: meshNostrOffline
+EN:  Nostr offline
+TH:  Nostr ออฟไลน์
+KSW: [DRAFT] Nostr offline
+
+──────── 341/655 ────────
+KEY: meshNostrOnline
+EN:  Nostr {relays}
+TH:  Nostr {relays}
+KSW: 
+
+──────── 342/655 ────────
+KEY: meshFooter
+EN:  {count} nearby peers • LoRa {lora} • sync ~{meters}m
+TH:  {count} เพื่อนใกล้เคียง • LoRa {lora} • รัศมีซิงก์ ~{meters}m
+KSW: 
+
+──────── 343/655 ────────
+KEY: meshLoraReady
+EN:  ready
+TH:  พร้อม
+KSW: 
+
+──────── 344/655 ────────
+KEY: meshLoraNotReady
+EN:  not ready
+TH:  ไม่พร้อม
+KSW: 
+
+──────── 345/655 ────────
+KEY: meshGatewayProgress
+EN:  Gateway UDP: {label}
+TH:  UDP เกตเวย์: {label}
+KSW: 
+
+──────── 346/655 ────────
+KEY: meshGatewayReady
+EN:  Gateway UDP: ready
+TH:  Gateway UDP: พร้อมส่ง
+KSW: 
+
+──────── 347/655 ────────
+KEY: permissionTitle
+EN:  Allow access to start the BLE mesh network
+TH:  ขอสิทธิ์เพื่อเริ่มใช้งานเครือข่าย BLE Mesh
+KSW: [DRAFT] ResilNet mesh a baw permission
+
+──────── 348/655 ────────
+KEY: permissionBody
+EN:  The app needs Bluetooth (scan / connect / advertise), Location (for older Android devices), and Microphone (for voice notes in chat and announcements) for community messaging.
+TH:  แอปต้องใช้ Bluetooth (สแกน/เชื่อมต่อ/โฆษณาตัวตน), Location (รองรับ Android รุ่นเก่า) และไมโครโฟน (สำหรับข้อความเสียงในแชตและประกาศ) เพื่อสื่อสารในชุมชน
+KSW: 
+
+──────── 349/655 ────────
+KEY: permissionE2ee
+EN:  End-to-End Encryption (E2EE)
+TH:  End-to-End Encryption (E2EE)
+KSW: 
+
+──────── 350/655 ────────
+KEY: permissionReady
+EN:  Permissions ready
+TH:  สิทธิ์พร้อมใช้งาน
+KSW: 
+
+──────── 351/655 ────────
+KEY: permissionRequest
+EN:  Allow and continue
+TH:  ขอสิทธิ์และเริ่มใช้งาน
+KSW: 
+
+──────── 352/655 ────────
+KEY: permissionNotReadySnack
+EN:  System not ready yet — wait a moment and try again
+TH:  ระบบยังไม่พร้อม — รอสักครู่แล้วลองใหม่
+KSW: 
+
+──────── 353/655 ────────
+KEY: permissionDeniedSnack
+EN:  Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location / Microphone
+TH:  ยังไม่ได้สิทธิ์ครบ — เปิด Settings > ResilNet แล้วอนุญาต Bluetooth/Location/ไมโครโฟน
+KSW: 
+
+──────── 354/655 ────────
+KEY: permissionMicDenied
+EN:  Microphone access denied — allow it in Settings to record voice notes
+TH:  ไม่ได้รับอนุญาตไมโครโฟน — เปิด Settings เพื่ออนุญาตการบันทึกเสียง
+KSW: 
+
+──────── 355/655 ────────
+KEY: permissionMicOpenSettings
+EN:  Settings
+TH:  การตั้งค่า
+KSW: 
+
+──────── 356/655 ────────
+KEY: permissionCameraDenied
+EN:  Camera access denied — allow it in Settings to scan QR codes
+TH:  ไม่ได้รับอนุญาตกล้อง — เปิด Settings เพื่อสแกน QR
+KSW: 
+
+──────── 357/655 ────────
+KEY: permissionCameraFailed
+EN:  Camera permission is required to scan QR codes
+TH:  ต้องอนุญาตกล้องเพื่อสแกน QR
+KSW: 
+
+──────── 358/655 ────────
+KEY: permissionCameraOpenSettings
+EN:  Settings
+TH:  การตั้งค่า
+KSW: 
+
+──────── 359/655 ────────
+KEY: permissionPhotosDenied
+EN:  Photo library access denied — allow it in Settings to save your QR code
+TH:  ไม่ได้รับสิทธิ์คลังภาพ — เปิด Settings เพื่อบันทึก QR
+KSW: 
+
+──────── 360/655 ────────
+KEY: permissionPhotosFailed
+EN:  Photo library permission is required to save your QR code
+TH:  ต้องอนุญาตคลังภาพเพื่อบันทึก QR
+KSW: 
+
+──────── 361/655 ────────
+KEY: permissionPhotosOpenSettings
+EN:  Settings
+TH:  การตั้งค่า
+KSW: 
+
+──────── 362/655 ────────
+KEY: permissionFailedSnack
+EN:  Permission request failed: {error}
+TH:  ขอสิทธิ์ล้มเหลว: {error}
+KSW: 
+
+──────── 363/655 ────────
+KEY: permissionFooter
+EN:  ResilNet Architecture • Store-and-Forward Multi-hop
+TH:  ResilNet สถาปัตยกรรม • จัดเก็บและส่งต่อมัลติฮอป
+KSW: 
+
+──────── 364/655 ────────
+KEY: onboardingSkip
+EN:  Skip
+TH:  ข้าม
+KSW: 
+
+──────── 365/655 ────────
+KEY: onboardingNext
+EN:  Next
+TH:  ถัดไป
+KSW: [DRAFT] Hser
+
+──────── 366/655 ────────
+KEY: onboardingStart
+EN:  Get started
+TH:  เริ่มใช้งาน
+KSW: 
+
+──────── 367/655 ────────
+KEY: onboardingWelcomeTitle
+EN:  Welcome to ResilNet
+TH:  ยินดีต้อนรับสู่ ResilNet
+KSW: [DRAFT] ResilNet a thâ blay
+
+──────── 368/655 ────────
+KEY: onboardingWelcomeBody
+EN:  Chat on ResilNet over a mesh network — even without the internet
+TH:  สื่อสารบน ResilNet ผ่านเครือข่าย Mesh แม้ไม่มีอินเทอร์เน็ต
+KSW: [DRAFT] Internet t’ra — mesh a chat ResilNet
+
+──────── 369/655 ────────
+KEY: onboardingFriendsTitle
+EN:  Add friends easily
+TH:  เพิ่มเพื่อนได้ง่าย
+KSW: 
+
+──────── 370/655 ────────
+KEY: onboardingFriendsBody
+EN:  Share a QR from Identity, or scan a friend’s QR to exchange public keys
+TH:  แชร์ QR จากหน้า “ตัวตน” หรือสแกน QR ของเพื่อนเพื่อแลกเปลี่ยน Public Key
+KSW: 
+
+──────── 371/655 ────────
+KEY: onboardingChannelsTitle
+EN:  Encrypted chat + nearby channels
+TH:  แชทแบบเข้ารหัส + ช่องใกล้ตัว
+KSW: 
+
+──────── 372/655 ────────
+KEY: onboardingChannelsBody
+EN:  Switch #mesh / Area (geohash) to find nearby peers — messages stay E2EE over BLE mesh and Nostr
+TH:  สลับ #mesh / พื้นที่ (geohash) เพื่อค้นหาเพื่อนใกล้ตัว — ส่งข้อความยังเป็น E2EE ผ่าน BLE Mesh และ Nostr เสมอ
+KSW: 
+
+──────── 373/655 ────────
+KEY: chatTitle
+EN:  Chat (E2EE)
+TH:  แชต (E2EE)
+KSW: [DRAFT] Chat
+
+──────── 374/655 ────────
+KEY: chatScanTooltip
+EN:  Scan QR to add a peer
+TH:  สแกน QR เพิ่มเพื่อน
+KSW: 
+
+──────── 375/655 ────────
+KEY: chatBlockTooltip
+EN:  Block this sender
+TH:  บล็อกผู้ส่งนี้
+KSW: 
+
+──────── 376/655 ────────
+KEY: chatBlockedSnack
+EN:  Blocked: no notifications / no relay
+TH:  บล็อกแล้ว: จะไม่แจ้งเตือน/ไม่ relay
+KSW: 
+
+──────── 377/655 ────────
+KEY: chatAliasTooltip
+EN:  Set nickname
+TH:  ตั้งชื่อเล่น
+KSW: 
+
+──────── 378/655 ────────
+KEY: chatReceiverPemLabel
+EN:  Recipient public key (PEM)
+TH:  Public Key (PEM) ของผู้รับ
+KSW: 
+
+──────── 379/655 ────────
+KEY: chatReceiverPemHint
+EN:  Paste your friend’s public key (from QR / shared file)
+TH:  วาง Public Key ของเพื่อนที่นี่ (ได้จาก QR/แชร์ไฟล์)
+KSW: 
+
+──────── 380/655 ────────
+KEY: chatNeedPeerKey
+EN:  Scan this peer's QR first (verified public key required)
+TH:  สแกน QR ของเพื่อนนี้ก่อน (ต้องมีกุญแจที่ยืนยันแล้ว)
+KSW: [DRAFT] Peer public key nê se ê — E2EE a
+
+──────── 381/655 ────────
+KEY: chatPeerKeyMismatch
+EN:  Stored public key does not match this peer id
+TH:  กุญแจสาธารณะที่เก็บไว้ไม่ตรงกับรหัสเพื่อนนี้
+KSW: 
+
+──────── 382/655 ────────
+KEY: chatVoiceFailed
+EN:  Could not record audio: {error}
+TH:  ไม่สามารถอัดเสียงได้: {error}
+KSW: 
+
+──────── 383/655 ────────
+KEY: chatPlayVoiceFailed
+EN:  Could not play voice note: {error}
+TH:  เล่นเสียงไม่สำเร็จ: {error}
+KSW: 
+
+──────── 384/655 ────────
+KEY: chatPlayVoice
+EN:  Play voice note
+TH:  เล่นข้อความเสียง
+KSW: 
+
+──────── 385/655 ────────
+KEY: chatPauseVoice
+EN:  Pause
+TH:  หยุดชั่วคราว
+KSW: 
+
+──────── 386/655 ────────
+KEY: chatVoiceLabelSent
+EN:  🎤 Voice note (sealed)
+TH:  🎤 ข้อความเสียง (ผนึกแล้ว)
+KSW: 
+
+──────── 387/655 ────────
+KEY: chatVoiceLabel
+EN:  🎤 Voice note
+TH:  🎤 ข้อความเสียง
+KSW: 
+
+──────── 388/655 ────────
+KEY: chatDecryptFailed
+EN:  [decryption failed]
+TH:  [ถอดรหัสไม่สำเร็จ]
+KSW: 
+
+──────── 389/655 ────────
+KEY: chatSentSealed
+EN:  [sealed • ct={preview}]
+TH:  [ผนึกแล้ว • ct={preview}]
+KSW: 
+
+──────── 390/655 ────────
+KEY: chatSentSealedShort
+EN:  [sealed]
+TH:  [ผนึกแล้ว]
+KSW: 
+
+──────── 391/655 ────────
+KEY: chatComposeHint
+EN:  Type a message… (sealed on send)
+TH:  พิมพ์ข้อความ… (เข้ารหัสทันทีเมื่อกดส่ง)
+KSW: 
+
+──────── 392/655 ────────
+KEY: chatEmptyThread
+EN:  No messages yet
+TH:  ยังไม่มีข้อความ
+KSW: 
+
+──────── 393/655 ────────
+KEY: chatLoadFailed
+EN:  Could not load conversation: {error}
+TH:  โหลดบทสนทนาไม่สำเร็จ: {error}
+KSW: 
+
+──────── 394/655 ────────
+KEY: chatEmojiTooltip
+EN:  Emoji
+TH:  อิโมจิ
+KSW: 
+
+──────── 395/655 ────────
+KEY: statusPending
+EN:  Pending
+TH:  รอส่ง
+KSW: 
+
+──────── 396/655 ────────
+KEY: statusSent
+EN:  Sent
+TH:  ส่งแล้ว
+KSW: 
+
+──────── 397/655 ────────
+KEY: statusRelayed
+EN:  Relayed
+TH:  ส่งต่อแล้ว
+KSW: 
+
+──────── 398/655 ────────
+KEY: statusDelivered
+EN:  Delivered
+TH:  ส่งถึงแล้ว
+KSW: 
+
+──────── 399/655 ────────
+KEY: statusRead
+EN:  Read
+TH:  อ่านแล้ว
+KSW: 
+
+──────── 400/655 ────────
+KEY: statusFailed
+EN:  Failed
+TH:  ส่งไม่สำเร็จ
+KSW: 
+
+──────── 401/655 ────────
+KEY: chatCopy
+EN:  Copy
+TH:  คัดลอก
+KSW: 
+
+──────── 402/655 ────────
+KEY: chatDeleteLocal
+EN:  Delete on this device
+TH:  ลบในเครื่องนี้
+KSW: 
+
+──────── 403/655 ────────
+KEY: chatDeletedLocalSnack
+EN:  Deleted on this device
+TH:  ลบในเครื่องนี้แล้ว
+KSW: 
+
+──────── 404/655 ────────
+KEY: chatRetry
+EN:  Retry
+TH:  ส่งซ้ำ
+KSW: 
+
+──────── 405/655 ────────
+KEY: chatSendFailed
+EN:  Not delivered — tap Retry
+TH:  ส่งไม่สำเร็จ — แตะส่งซ้ำ
+KSW: 
+
+──────── 406/655 ────────
+KEY: chatImageNeedInternet
+EN:  Connect to the internet to send images
+TH:  ต้องมีเน็ตถึงจะส่งรูปได้
+KSW: 
+
+──────── 407/655 ────────
+KEY: chatImageTooLargeOnline
+EN:  Could not compress image enough to send
+TH:  บีบรูปไม่เล็กพอสำหรับส่ง
+KSW: 
+
+──────── 408/655 ────────
+KEY: chatOpenLinkFailed
+EN:  Could not open link
+TH:  เปิดลิงก์ไม่สำเร็จ
+KSW: 
+
+──────── 409/655 ────────
+KEY: identityTitle
+EN:  Identity
+TH:  ตัวตน (Identity)
+KSW: 
+
+──────── 410/655 ────────
+KEY: identityScanTooltip
+EN:  Scan QR with camera
+TH:  สแกน QR ด้วยกล้อง
+KSW: 
+
+──────── 411/655 ────────
+KEY: identityCopiedHash
+EN:  Public key hash copied
+TH:  คัดลอก Public Key Hash เรียบร้อยแล้ว
+KSW: 
+
+──────── 412/655 ────────
+KEY: identityPeerSaved
+EN:  Peer saved from QR
+TH:  บันทึกเพื่อนจาก QR แล้ว
+KSW: 
+
+──────── 413/655 ────────
+KEY: identityGalleryDenied
+EN:  Photo library permission denied
+TH:  ไม่ได้รับสิทธิ์บันทึกลงคลังภาพ
+KSW: 
+
+──────── 414/655 ────────
+KEY: identityQrSaved
+EN:  QR saved to photo library
+TH:  บันทึก QR ลงคลังภาพแล้ว
+KSW: 
+
+──────── 415/655 ────────
+KEY: identityQrSaveFailed
+EN:  Could not save QR: {error}
+TH:  บันทึก QR ไม่สำเร็จ: {error}
+KSW: 
+
+──────── 416/655 ────────
+KEY: peersTitle
+EN:  Network members
+TH:  สมาชิกเครือข่าย
+KSW: 
+
+──────── 417/655 ────────
+KEY: qrScanTitle
+EN:  Scan QR to add a friend
+TH:  สแกน QR เพิ่มเพื่อน
+KSW: 
+
+──────── 418/655 ────────
+KEY: qrInvalid
+EN:  Scan failed: invalid QR
+TH:  สแกนไม่สำเร็จ: QR ไม่ถูกต้อง
+KSW: 
+
+──────── 419/655 ────────
+KEY: qrIdKeyMismatch
+EN:  QR rejected: id does not match public key
+TH:  ปฏิเสธ QR: id ไม่ตรงกับกุญแจสาธารณะ
+KSW: 
+
+──────── 420/655 ────────
+KEY: qrCameraNotReady
+EN:  Camera not ready
+TH:  กล้องยังไม่พร้อม
+KSW: 
+
+──────── 421/655 ────────
+KEY: qrRetrySettings
+EN:  Try again / open Settings
+TH:  ลองอีกครั้ง / เปิด Settings
+KSW: 
+
+──────── 422/655 ────────
+KEY: qrCameraOpenFailed
+EN:  Could not open camera: {error}
+TH:  เปิดกล้องไม่สำเร็จ: {error}
+KSW: 
+
+──────── 423/655 ────────
+KEY: qrScanAlignHint
+EN:  Align the QR code inside the frame
+TH:  จัด QR ให้อยู่ในกรอบตรงกลาง
+KSW: 
+
+──────── 424/655 ────────
+KEY: firmwareDownloadTitle
+EN:  Download ESP32 firmware
+TH:  ดาวน์โหลดเฟิร์มแวร์ ESP32
+KSW: 
+
+──────── 425/655 ────────
+KEY: firmwareSourceOnline
+EN:  Latest (online)
+TH:  ล่าสุด (ออนไลน์)
+KSW: 
+
+──────── 426/655 ────────
+KEY: firmwareSourceCached
+EN:  Saved copy (offline)
+TH:  สำเนาในเครื่อง (ออฟไลน์)
+KSW: 
+
+──────── 427/655 ────────
+KEY: firmwareSourceBaseline
+EN:  Bundled baseline (offline)
+TH:  ตัวสำรองในแอป (ออฟไลน์)
+KSW: 
+
+──────── 428/655 ────────
+KEY: firmwareSourceUnavailable
+EN:  No firmware available
+TH:  ไม่มีเฟิร์มแวร์พร้อมใช้
+KSW: 
+
+──────── 429/655 ────────
+KEY: firmwareBaselineIncompatible
+EN:  Bundled firmware is too old — connect to the internet to download a newer version
+TH:  เฟิร์มแวร์ที่ฝังในแอปเก่าเกินไป — ต้องต่ออินเทอร์เน็ตเพื่อดาวน์โหลดเวอร์ชันใหม่
+KSW: 
+
+──────── 430/655 ────────
+KEY: firmwareChecksumFailed
+EN:  Firmware failed integrity check — flashing blocked
+TH:  ไฟล์เฟิร์มแวร์ไม่ผ่านการตรวจสอบ — ห้ามแฟลช
+KSW: 
+
+──────── 431/655 ────────
+KEY: firmwareReadyFromSource
+EN:  Firmware ready: {source}
+TH:  เฟิร์มแวร์พร้อมใช้: {source}
+KSW: 
+
+──────── 432/655 ────────
+KEY: peersRefreshTooltip
+EN:  Refresh
+TH:  รีเฟรช
+KSW: [DRAFT] Refresh
+
+──────── 433/655 ────────
+KEY: peersBlocked
+EN:  Blocked
+TH:  บล็อกแล้ว
+KSW: [DRAFT] Blocked
+
+──────── 434/655 ────────
+KEY: peersNearbyBle
+EN:  Nearby (BLE)
+TH:  ใกล้เคียง (BLE)
+KSW: [DRAFT] Hser ({ble})
+
+──────── 435/655 ────────
+KEY: peersRecentlyOnline
+EN:  Recently online
+TH:  ออนไลน์ล่าสุด
+KSW: [DRAFT] Online a hser
+
+──────── 436/655 ────────
+KEY: peersOnlineInArea
+EN:  Online in area
+TH:  ออนไลน์ในพื้นที่
+KSW: 
+
+──────── 437/655 ────────
+KEY: peersSeenMinutesAgo
+EN:  Seen {minutes} min ago
+TH:  เห็นเมื่อ {minutes} นาทีที่แล้ว
+KSW: 
+
+──────── 438/655 ────────
+KEY: peersOffline
+EN:  Offline
+TH:  ออฟไลน์
+KSW: [DRAFT] Offline
+
+──────── 439/655 ────────
+KEY: peersBlockedSnack
+EN:  Blocked {id}
+TH:  บล็อก {id} แล้ว
+KSW: 
+
+──────── 440/655 ────────
+KEY: peersUnblockedSnack
+EN:  Unblocked
+TH:  ปลดบล็อกแล้ว
+KSW: 
+
+──────── 441/655 ────────
+KEY: peersEmpty
+EN:  No members in the database yet
+TH:  ยังไม่มีสมาชิกในฐานข้อมูล
+KSW: [DRAFT] Members t’ra ê.
+QR scan — ma ResilNet mesh hser.
+
+──────── 442/655 ────────
+KEY: peersOpenChat
+EN:  Open chat
+TH:  เปิดแชต
+KSW: 
+
+──────── 443/655 ────────
+KEY: peersBlockAction
+EN:  Block
+TH:  บล็อก
+KSW: 
+
+──────── 444/655 ────────
+KEY: peersUnblockAction
+EN:  Unblock
+TH:  ปลดบล็อก
+KSW: 
+
+──────── 445/655 ────────
+KEY: channelPickerTooltip
+EN:  Chat / #mesh / Area
+TH:  แชท / #mesh / พื้นที่
+KSW: 
+
+──────── 446/655 ────────
+KEY: locationPickerTooltip
+EN:  Location channel
+TH:  ช่องตามตำแหน่ง
+KSW: 
+
+──────── 447/655 ────────
+KEY: transportPickerTooltip
+EN:  Mesh / Internet / Auto
+TH:  ตาข่าย/อินเตอร์เน็ต/ออโต้
+KSW: 
+
+──────── 448/655 ────────
+KEY: onlinePeopleTooltip
+EN:  People online
+TH:  คนออนไลน์
+KSW: 
+
+──────── 449/655 ────────
+KEY: unreadDirectsTooltipEmpty
+EN:  Private messages
+TH:  ข้อความส่วนตัว
+KSW: 
+
+──────── 450/655 ────────
+KEY: unreadDirectsTooltip
+EN:  {count} unread private messages
+TH:  ข้อความส่วนตัวที่ยังไม่ได้อ่าน {count} ข้อความ
+KSW: 
+
+──────── 451/655 ────────
+KEY: onlinePeopleTitle
+EN:  people
+TH:  คนออนไลน์
+KSW: 
+
+──────── 452/655 ────────
+KEY: onlinePeopleEmpty
+EN:  No one online here yet
+TH:  ยังไม่มีใครออนไลน์ที่นี่
+KSW: 
+
+──────── 453/655 ────────
+KEY: onlinePeopleCount
+EN:  {count} online
+TH:  ออนไลน์ {count} คน
+KSW: 
+
+──────── 454/655 ────────
+KEY: onlinePeopleDirectsChannel
+EN:  1:1 · nearby + area
+TH:  1:1 · ใกล้ตัว + พื้นที่
+KSW: 
+
+──────── 455/655 ────────
+KEY: peerOnlineMeshTitle
+EN:  Someone nearby on mesh
+TH:  มีคนออนไลน์บน mesh
+KSW: 
+
+──────── 456/655 ────────
+KEY: peerOnlineMeshBody
+EN:  {name} is nearby on mesh
+TH:  {name} อยู่ใกล้บน mesh
+KSW: 
+
+──────── 457/655 ────────
+KEY: peerOnlineAreaTitle
+EN:  Someone online in area
+TH:  มีคนออนไลน์ในพื้นที่
+KSW: 
+
+──────── 458/655 ────────
+KEY: peerOnlineAreaBody
+EN:  {name} is online via Nostr
+TH:  {name} ออนไลน์ผ่าน Nostr
+KSW: 
+
+──────── 459/655 ────────
+KEY: locationSheetTitle
+EN:  #location channels
+TH:  #ช่องตามตำแหน่ง
+KSW: 
+
+──────── 460/655 ────────
+KEY: channelPinsTitle
+EN:  Pinned
+TH:  ปักหมุดไว้
+KSW: 
+
+──────── 461/655 ────────
+KEY: channelPinsHint
+EN:  Pin channels you use often — they stay at the top
+TH:  ปักหมุดช่องที่ใช้บ่อย — จะโชว์ด้านบนของรายการ
+KSW: 
+
+──────── 462/655 ────────
+KEY: channelPinTooltip
+EN:  Pin this channel
+TH:  ปักหมุดช่องนี้
+KSW: 
+
+──────── 463/655 ────────
+KEY: channelUnpinTooltip
+EN:  Unpin
+TH:  เอาหมุดออก
+KSW: 
+
+──────── 464/655 ────────
+KEY: locationSheetIntro
+EN:  Chat with people nearby using coarse geohash — not precise GPS. Presence on Internet uses anonymous Nostr keys.
+TH:  คุยกับคนใกล้ตัวผ่าน geohash แบบหยาบ — ไม่ใช่ GPS แม่นยำ Presence บน Internet ใช้นามแฝง Nostr
+KSW: 
+
+──────── 465/655 ────────
+KEY: locationMeshSubtitle
+EN:  #bluetooth • ~10–50 m
+TH:  #bluetooth • ~10–50 ม.
+KSW: 
+
+──────── 466/655 ────────
+KEY: locationTeleportHint
+EN:  #geohash
+TH:  #จีโอฮาช
+KSW: 
+
+──────── 467/655 ────────
+KEY: locationTeleport
+EN:  Teleport
+TH:  เทเลพอร์ต
+KSW: 
+
+──────── 468/655 ────────
+KEY: homeComposeHint
+EN:  Message {channel}
+TH:  ข้อความถึง {channel}
+KSW: 
+
+──────── 469/655 ────────
+KEY: homeComposePublicHint
+EN:  Send to {channel} — public
+TH:  ส่งข้อความถึง {channel} — สาธารณะ
+KSW: 
+
+──────── 470/655 ────────
+KEY: messageExpiryTitle
+EN:  expires in
+TH:  หมดอายุใน
+KSW: 
+
+──────── 471/655 ────────
+KEY: voiceRecordTapToStart
+EN:  Tap to record voice message
+TH:  แตะเพื่อบันทึกข้อความเสียง
+KSW: 
+
+──────── 472/655 ────────
+KEY: voiceRecordTooShort
+EN:  Recording too short — try again
+TH:  อัดสั้นเกินไป — ลองใหม่
+KSW: 
+
+──────── 473/655 ────────
+KEY: voiceRecordFailed
+EN:  Could not save recording — try again
+TH:  บันทึกเสียงไม่สำเร็จ — ลองใหม่
+KSW: 
+
+──────── 474/655 ────────
+KEY: voicePttHold
+EN:  Hold to record
+TH:  กดค้างเพื่ออัด
+KSW: 
+
+──────── 475/655 ────────
+KEY: voicePttRelease
+EN:  Release to preview
+TH:  ปล่อยเพื่อดูตัวอย่าง
+KSW: 
+
+──────── 476/655 ────────
+KEY: voicePttRecording
+EN:  Recording…
+TH:  กำลังบันทึก…
+KSW: 
+
+──────── 477/655 ────────
+KEY: voicePttDraftReady
+EN:  Voice note ready
+TH:  พร้อมส่งข้อความเสียง
+KSW: 
+
+──────── 478/655 ────────
+KEY: voicePttDiscard
+EN:  Discard
+TH:  ลบ
+KSW: 
+
+──────── 479/655 ────────
+KEY: voicePttReRecord
+EN:  Record again
+TH:  อัดใหม่
+KSW: 
+
+──────── 480/655 ────────
+KEY: voicePttSend
+EN:  Send voice note
+TH:  ส่งข้อความเสียง
+KSW: 
+
+──────── 481/655 ────────
+KEY: voicePttPlayPreview
+EN:  Play preview
+TH:  ฟังตัวอย่าง
+KSW: 
+
+──────── 482/655 ────────
+KEY: voicePttStopPreview
+EN:  Stop preview
+TH:  หยุดฟัง
+KSW: 
+
+──────── 483/655 ────────
+KEY: noticesBackfilling
+EN:  Loading notices…
+TH:  กำลังโหลดประกาศ…
+KSW: 
+
+──────── 484/655 ────────
+KEY: noticesNostrOnline
+EN:  Nostr online
+TH:  Nostr ออนไลน์
+KSW: 
+
+──────── 485/655 ────────
+KEY: noticesNostrOffline
+EN:  Nostr offline — bulletin needs Internet
+TH:  Nostr ออฟไลน์ — กระดานประกาศต้องใช้อินเทอร์เน็ต
+KSW: 
+
+──────── 486/655 ────────
+KEY: noticesBackfillLoaded
+EN:  Loaded {count} notices
+TH:  ดึงประกาศแล้ว {count} รายการ
+KSW: 
+
+──────── 487/655 ────────
+KEY: noticePublishFailed
+EN:  Could not publish notice to the area board. Check Nostr connection.
+TH:  โพสต์ประกาศไปกระดานพื้นที่ไม่สำเร็จ ตรวจการเชื่อมต่อ Nostr
+KSW: 
+
+──────── 488/655 ────────
+KEY: noticeMeshPublishNoLink
+EN:  Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.
+TH:  บันทึกในเครื่องแล้ว เชื่อมต่อวิทยุ mesh ใกล้เคียง (หรือ Wi‑Fi gateway) เพื่อให้เครื่องอื่นรับได้
+KSW: 
+
+──────── 489/655 ────────
+KEY: noticeMeshPublishSent
+EN:  Bulletin sent to {count} nearby device(s) over BLE.
+TH:  ส่งประกาศไปยังอุปกรณ์ใกล้เคียง {count} เครื่องผ่าน BLE แล้ว
+KSW: 
+
+──────── 490/655 ────────
+KEY: noticeMeshPublishBleFailed
+EN:  Nearby radios seen, but BLE write failed. Keep both apps open on the Notices screen and try again (or use an ESP32 relay).
+TH:  เห็นวิทยุใกล้ ๆ แต่ส่ง BLE ไม่สำเร็จ เปิดหน้าประกาศทั้งสองเครื่องแล้วลองใหม่ (หรือใช้ ESP32 เป็นตัวกลาง)
+KSW: 
+
+──────── 491/655 ────────
+KEY: noticeMeshPublishNoGatt
+EN:  This device’s BLE receiver is not ready. Toggle Bluetooth and reopen Notices.
+TH:  ตัวรับ BLE ของเครื่องนี้ยังไม่พร้อม ลองปิด/เปิด Bluetooth แล้วเปิดหน้าประกาศใหม่
+KSW: 
+
+──────── 492/655 ────────
+KEY: noticeDelete
+EN:  Delete notice
+TH:  ลบประกาศ
+KSW: 
+
+──────── 493/655 ────────
+KEY: noticeDeleteConfirmTitle
+EN:  Delete this notice?
+TH:  ลบประกาศนี้?
+KSW: 
+
+──────── 494/655 ────────
+KEY: noticeDeleteLocalOnlyBody
+EN:  This removes it only on this device. Others who already received it will still see it.
+TH:  ลบเฉพาะในเครื่องนี้ เครื่องอื่นที่รับไปแล้วจะยังเห็นประกาศอยู่
+KSW: 
+
+──────── 495/655 ────────
+KEY: noticeDeleted
+EN:  Notice deleted
+TH:  ลบประกาศแล้ว
+KSW: 
+
+──────── 496/655 ────────
+KEY: chatNoticeHidden
+EN:  Area notice — open Notices
+TH:  ประกาศพื้นที่ — เปิดหน้าประกาศ
+KSW: 
+
+──────── 497/655 ────────
+KEY: identityDisplayNameTitle
+EN:  Display name
+TH:  ชื่อที่แสดง
+KSW: 
+
+──────── 498/655 ────────
+KEY: identitySaveName
+EN:  Save name
+TH:  บันทึกชื่อ
+KSW: 
+
+──────── 499/655 ────────
+KEY: identityUserIdLabel
+EN:  User ID (Public Key Hash)
+TH:  รหัสผู้ใช้ (Public Key Hash)
+KSW: 
+
+──────── 500/655 ────────
+KEY: identityCopyHashTooltip
+EN:  Copy public key hash
+TH:  คัดลอก Public Key Hash
+KSW: 
+
+──────── 501/655 ────────
+KEY: identityMyQrTitle
+EN:  My QR (id + pubKey + name)
+TH:  QR ของฉัน (id + pubKey + ชื่อ)
+KSW: 
+
+──────── 502/655 ────────
+KEY: identityQrFailed
+EN:  Could not create QR
+TH:  สร้าง QR ไม่สำเร็จ
+KSW: 
+
+──────── 503/655 ────────
+KEY: identitySaving
+EN:  Saving…
+TH:  กำลังบันทึก...
+KSW: 
+
+──────── 504/655 ────────
+KEY: identitySaveQr
+EN:  Save QR to photo library
+TH:  บันทึก QR ลงคลังภาพ
+KSW: 
+
+──────── 505/655 ────────
+KEY: identityOpenScanner
+EN:  Open camera to scan QR
+TH:  เปิดกล้องสแกน QR
+KSW: 
+
+──────── 506/655 ────────
+KEY: identityQrHelp
+EN:  Have a friend scan this to save your public key and (if needed) set you as a Verified Issuer
+TH:  ให้เพื่อนสแกนเพื่อบันทึก public key และ (ถ้าจำเป็น) ตั้งเป็น Verified Issuer
+KSW: 
+
+──────── 507/655 ────────
+KEY: identityChatTip
+EN:  Tip: you can also scan a QR in chat to add a public key for E2EE
+TH:  ทิป: สามารถสแกน QR ในหน้าแชตเพื่อเติม Public Key ให้พร้อมส่ง E2EE
+KSW: 
+
+──────── 508/655 ────────
+KEY: infoOpen
+EN:  About / Info
+TH:  เกี่ยวกับ / ข้อมูล
+KSW: 
+
+──────── 509/655 ────────
+KEY: docsGuideTitle
+EN:  User guide
+TH:  คู่มือการใช้งาน
+KSW: 
+
+──────── 510/655 ────────
+KEY: docsGuideSubtitle
+EN:  Opens in browser
+TH:  เปิดในเบราว์เซอร์
+KSW: 
+
+──────── 511/655 ────────
+KEY: docsOpenAction
+EN:  Open guide
+TH:  เปิดคู่มือ
+KSW: 
+
+──────── 512/655 ────────
+KEY: docsOpenFailed
+EN:  Could not open the user guide
+TH:  เปิดคู่มือไม่สำเร็จ
+KSW: 
+
+──────── 513/655 ────────
+KEY: firmwareOtaGuideTitle
+EN:  Flash guide & OTA protocol
+TH:  วิธีแฟลชและโปรโตคอล OTA
+KSW: 
+
+──────── 514/655 ────────
+KEY: firmwareOtaGuideSubtitle
+EN:  Opens the web guide — .bin downloads and full steps
+TH:  เปิดคู่มือบนเว็บ — ดาวน์โหลด .bin และขั้นตอนละเอียด
+KSW: 
+
+──────── 515/655 ────────
+KEY: firmwareWebDownloadsTitle
+EN:  Firmware downloads on the web
+TH:  ดาวน์โหลดเฟิร์มแวร์บนเว็บ
+KSW: 
+
+──────── 516/655 ────────
+KEY: firmwareWebDownloadsSubtitle
+EN:  Per-version links and checksums on the docs site
+TH:  ลิงก์แต่ละเวอร์ชัน / checksum บนหน้าเอกสาร
+KSW: 
+
+──────── 517/655 ────────
+KEY: inviteCopyShortLink
+EN:  Copy short link
+TH:  คัดลอกลิงก์สั้น
+KSW: 
+
+──────── 518/655 ────────
+KEY: inviteShareLink
+EN:  Share link
+TH:  แชร์ลิงก์
+KSW: 
+
+──────── 519/655 ────────
+KEY: inviteShowFullLink
+EN:  Full link
+TH:  ลิงก์เต็ม
+KSW: 
+
+──────── 520/655 ────────
+KEY: inviteCopyFullLink
+EN:  Copy full link
+TH:  คัดลอกลิงก์เต็ม
+KSW: 
+
+──────── 521/655 ────────
+KEY: inviteLinkCopied
+EN:  Link copied
+TH:  คัดลอกลิงก์แล้ว
+KSW: 
+
+──────── 522/655 ────────
+KEY: inviteLongPressHint
+EN:  Long-press for link actions
+TH:  กดค้างเพื่อจัดการลิงก์
+KSW: 
+
+──────── 523/655 ────────
+KEY: inviteSendInChat
+EN:  Send in ResilNet chat…
+TH:  ส่งในแชท ResilNet…
+KSW: 
+
+──────── 524/655 ────────
+KEY: inviteSendInChatHint
+EN:  Only people you already have a public key for
+TH:  เฉพาะคนที่คุณมีกุญแจสาธารณะอยู่แล้ว
+KSW: 
+
+──────── 525/655 ────────
+KEY: inviteSendInChatEmpty
+EN:  No messageable chats yet.
+TH:  ยังไม่มีแชทที่ส่งได้
+KSW: 
+
+──────── 526/655 ────────
+KEY: inviteSentToChat
+EN:  Invite sent in chat
+TH:  ส่ง invite ในแชทแล้ว
+KSW: 
+
+──────── 527/655 ────────
+KEY: infoTabInfo
+EN:  Info
+TH:  ข้อมูล
+KSW: 
+
+──────── 528/655 ────────
+KEY: infoTabSettingsHint
+EN:  Open Settings from the menu for language, E2EE, and data tools
+TH:  เปิดตั้งค่าจากเมนู ⋮ สำหรับภาษา, E2EE และข้อมูล
+KSW: 
+
+──────── 529/655 ────────
+KEY: infoHowToTitle
+EN:  How to use
+TH:  วิธีใช้งาน
+KSW: 
+
+──────── 530/655 ────────
+KEY: infoHowToBody
+EN:  • Tap the channel icon to switch Chat / #mesh / Area
+TH:  • แตะไอคอนช่องเพื่อสลับ Chat / #mesh / Area
+KSW: 
+
+──────── 531/655 ────────
+KEY: infoFeaturesTitle
+EN:  Features
+TH:  ฟีเจอร์
+KSW: 
+
+──────── 532/655 ────────
+KEY: infoFeatureOffline
+EN:  Offline messaging via Bluetooth Low Energy
+TH:  สื่อสารออฟไลน์ด้วย Bluetooth Low Energy
+KSW: 
+
+──────── 533/655 ────────
+KEY: infoFeatureE2ee
+EN:  End-to-end encryption with RSA-OAEP + AES-GCM (not Noise)
+TH:  เข้ารหัสปลายทางด้วย RSA-OAEP + AES-GCM (ไม่ใช่ Noise)
+KSW: 
+
+──────── 534/655 ────────
+KEY: infoFeatureMultihop
+EN:  Messages can hop through nearby peers to go farther
+TH:  ข้อความส่งต่อผ่านเพียร์เพื่อไปได้ไกลขึ้น
+KSW: 
+
+──────── 535/655 ────────
+KEY: infoFeatureBridge
+EN:  Hybrid mesh ↔ internet (Nostr) for sealed envelopes
+TH:  เชื่อม mesh ↔ อินเทอร์เน็ต (Nostr) สำหรับซองที่เข้ารหัสแล้ว
+KSW: 
+
+──────── 536/655 ────────
+KEY: infoFeatureGeo
+EN:  Local geohash channels for people nearby (discovery UX)
+TH:  ช่อง geohash สำหรับคนใกล้ตัว (ใช้ค้นหา ไม่ใช่ห้องเปิด)
+KSW: 
+
+──────── 537/655 ────────
+KEY: infoFeatureNotices
+EN:  Notices with expiry for #mesh and Area
+TH:  ประกาศ/โน้ตพร้อมวันหมดอายุใน #mesh และ Area
+KSW: 
+
+──────── 538/655 ────────
+KEY: infoPrivacyTitle
+EN:  Privacy
+TH:  ความเป็นส่วนตัว
+KSW: 
+
+──────── 539/655 ────────
+KEY: infoPrivacyNoRoom
+EN:  No plaintext village / public chat room on the wire
+TH:  ไม่มีห้องแชทหมู่บ้านแบบ plaintext บนสาย
+KSW: 
+
+──────── 540/655 ────────
+KEY: infoPrivacyFanout
+EN:  Area send = sealed 1:1 fan-out to peers with known public keys
+TH:  ส่งใน Area = sealed fan-out 1:1 ไปยังเพียร์ที่มี public key
+KSW: 
+
+──────── 541/655 ────────
+KEY: infoPrivacyPresence
+EN:  Internet area presence uses ephemeral Nostr keys
+TH:  Presence บน Internet ใช้นามแฝง Nostr ชั่วคราว
+KSW: 
+
+──────── 542/655 ────────
+KEY: infoSymbolsTitle
+EN:  Symbols
+TH:  สัญลักษณ์
+KSW: 
+
+──────── 543/655 ────────
+KEY: infoSymBle
+EN:  Direct Bluetooth link
+TH:  เชื่อมต่อโดยตรงผ่าน Bluetooth
+KSW: 
+
+──────── 544/655 ────────
+KEY: infoSymMesh
+EN:  Reachable via mesh (others forward)
+TH:  เข้าถึงได้ผ่าน mesh โดยมีผู้อื่นส่งต่อ
+KSW: 
+
+──────── 545/655 ────────
+KEY: infoSymInternet
+EN:  Via internet (Nostr) — sealed envelopes
+TH:  ผ่านอินเทอร์เน็ต (Nostr) — ซองที่เข้ารหัสแล้ว
+KSW: 
+
+──────── 546/655 ────────
+KEY: infoSymBridge
+EN:  Arrived via mesh↔internet bridge path
+TH:  มาถึงผ่านเส้นทางบริดจ์ mesh↔internet
+KSW: 
+
+──────── 547/655 ────────
+KEY: infoSymOffline
+EN:  Offline — not reachable right now
+TH:  ออฟไลน์ — เข้าถึงไม่ได้ตอนนี้
+KSW: 
+
+──────── 548/655 ────────
+KEY: infoSymInArea
+EN:  In this location channel’s area
+TH:  อยู่ในพื้นที่ของช่องตำแหน่งนี้
+KSW: 
+
+──────── 549/655 ────────
+KEY: infoSymE2eeOk
+EN:  End-to-end encrypted session
+TH:  เซสชันที่เข้ารหัสแบบครบวงจร
+KSW: 
+
+──────── 550/655 ────────
+KEY: infoSymE2eeFail
+EN:  Encryption unavailable — do not send sensitive text
+TH:  เข้ารหัสไม่ได้ — อย่าส่งข้อความอ่อนไหว
+KSW: 
+
+──────── 551/655 ────────
+KEY: infoSymVerified
+EN:  Identity verified / known key
+TH:  ยืนยันตัวตน / มีกุญแจแล้ว
+KSW: 
+
+──────── 552/655 ────────
+KEY: infoSymBlocked
+EN:  Blocked
+TH:  ถูกบล็อก
+KSW: 
+
+──────── 553/655 ────────
+KEY: infoSymUnread
+EN:  Unread private message
+TH:  ข้อความส่วนตัวที่ยังไม่ได้อ่าน
+KSW: 
+
+──────── 554/655 ────────
+KEY: infoEmergencyTitle
+EN:  Emergency mode
+TH:  โหมดฉุกเฉิน
+KSW: 
+
+──────── 555/655 ────────
+KEY: infoEmergencyBody
+EN:  Triple-tap the ResilNet title on the home screen to wipe messages, keys, and identity on this device.
+TH:  แตะชื่อ ResilNet บนหน้าหลักสามครั้งเพื่อลบข้อความ กุญแจ และตัวตนบนเครื่องนี้ทันที
+KSW: 
+
+──────── 556/655 ────────
+KEY: infoLegendNote
+EN:  Some path icons are documented here for clarity; delivery ticks in chat remain the primary send status.
+TH:  ไอคอนเส้นทางบางรายการอธิบายไว้เพื่อความชัดเจน — สถานะส่งหลักในแชทยังเป็นเครื่องหมายส่ง/อ่าน
+KSW: 
+
+──────── 557/655 ────────
+KEY: dangerZoneTitle
+EN:  Danger zone
+TH:  โซนอันตราย
+KSW: [DRAFT] Danger zone
+
+──────── 558/655 ────────
+KEY: dangerZoneSubtitle
+EN:  Deletes messages, encryption keys, Nostr identity, peers, and nicknames on this device. You will set up again.
+TH:  ลบข้อความ กุญแจเข้ารหัส ตัวตน Nostr เพียร์ และชื่อเล่นบนเครื่องนี้ คุณจะต้องตั้งค่าใหม่
+KSW: 
+
+──────── 559/655 ────────
+KEY: panicWipeTitle
+EN:  Emergency wipe
+TH:  ล้างข้อมูลฉุกเฉิน
+KSW: 
+
+──────── 560/655 ────────
+KEY: panicWipeSubtitle
+EN:  Erase everything local — same as triple-tapping the home title (double-tap refreshes radios)
+TH:  ลบทุกอย่างในเครื่อง — เหมือนแตะชื่อบนหน้าหลักสามครั้ง (แตะสองครั้ง = รีเฟรชวิทยุ)
+KSW: 
+
+──────── 561/655 ────────
+KEY: panicWipeConfirmTitle
+EN:  Wipe all local data?
+TH:  ล้างข้อมูลทั้งหมดในเครื่อง?
+KSW: 
+
+──────── 562/655 ────────
+KEY: panicWipeConfirmBody
+EN:  This permanently deletes chats, keys, and identity on this phone.
+TH:  จะลบแชท กุญแจ และตัวตนบนโทรศัพท์นี้ถาวร
+KSW: 
+
+──────── 563/655 ────────
+KEY: panicWipeAction
+EN:  Wipe everything
+TH:  ล้างทั้งหมด
+KSW: 
+
+──────── 564/655 ────────
+KEY: panicWipeSnack
+EN:  Local identity wiped — set up again
+TH:  ล้างตัวตนในเครื่องแล้ว — ตั้งค่าใหม่ได้
+KSW: 
+
+──────── 565/655 ────────
+KEY: panicWipeFailed
+EN:  Wipe failed: {error}
+TH:  ล้างข้อมูลล้มเหลว: {error}
+KSW: 
+
+──────── 566/655 ────────
+KEY: meshBridgeTitle
+EN:  Mesh bridge
+TH:  บริดจ์ mesh
+KSW: 
+
+──────── 567/655 ────────
+KEY: meshBridgeSubtitle
+EN:  When on (default), sealed envelopes may use both BLE mesh and internet (Nostr) together so nearby mesh islands can connect. When off, sends use one path only — never puts plaintext on the wire.
+TH:  เมื่อเปิด (ค่าเริ่มต้น) ซองที่เข้ารหัสแล้วอาจใช้ทั้ง BLE mesh และอินเทอร์เน็ต (Nostr) พร้อมกัน เพื่อเชื่อมเกาะ mesh ใกล้กัน เมื่อปิดจะส่งทางเดียว — ไม่ใส่ข้อความ plaintext บนสาย
+KSW: 
+
+──────── 568/655 ────────
+KEY: favoritesTitle
+EN:  Favorites
+TH:  รายการโปรด
+KSW: 
+
+──────── 569/655 ────────
+KEY: favoritesAdd
+EN:  Add to favorites
+TH:  เพิ่มเป็นคนโปรด
+KSW: 
+
+──────── 570/655 ────────
+KEY: favoritesRemove
+EN:  Remove from favorites
+TH:  เอาออกจากคนโปรด
+KSW: 
+
+──────── 571/655 ────────
+KEY: favoritesEmpty
+EN:  No favorites yet — star a peer from the member list
+TH:  ยังไม่มีคนโปรด — กดดาวจากรายชื่อสมาชิก
+KSW: 
+
+──────── 572/655 ────────
+KEY: favoritesNearbyTitle
+EN:  Favorite nearby
+TH:  คนโปรดอยู่ใกล้
+KSW: 
+
+──────── 573/655 ────────
+KEY: favoritesNearbyBody
+EN:  {name} is nearby on mesh
+TH:  {name} อยู่ใกล้บน mesh
+KSW: 
+
+──────── 574/655 ────────
+KEY: favoritesInAreaTitle
+EN:  Favorite in area
+TH:  คนโปรดในพื้นที่
+KSW: 
+
+──────── 575/655 ────────
+KEY: favoritesInAreaBody
+EN:  {name} is online in this area
+TH:  {name} ออนไลน์ในพื้นที่นี้
+KSW: 
+
+──────── 576/655 ────────
+KEY: topologyTitle
+EN:  Mesh topology
+TH:  โทโพโลยี mesh
+KSW: 
+
+──────── 577/655 ────────
+KEY: topologySubtitle
+EN:  Peers and connection hints from mesh announce (read-only)
+TH:  เพียร์และสถานะการเชื่อมต่อจาก mesh announce (อ่านอย่างเดียว)
+KSW: 
+
+──────── 578/655 ────────
+KEY: topologyConnectedNow
+EN:  Connected now (BLE)
+TH:  เชื่อมต่ออยู่ตอนนี้ (BLE)
+KSW: 
+
+──────── 579/655 ────────
+KEY: topologyNearby
+EN:  Nearby (BLE)
+TH:  ใกล้ตัว (BLE)
+KSW: 
+
+──────── 580/655 ────────
+KEY: topologyKnown
+EN:  Known peers
+TH:  เพียร์ที่รู้จัก
+KSW: 
+
+──────── 581/655 ────────
+KEY: topologyEmpty
+EN:  No peers learned yet — stay nearby with BLE on
+TH:  ยังไม่มีเพียร์ — เปิด BLE แล้วอยู่ใกล้เครื่องอื่น
+KSW: 
+
+──────── 582/655 ────────
+KEY: topologyYou
+EN:  you
+TH:  คุณ
+KSW: 
+
+──────── 583/655 ────────
+KEY: topologyStats
+EN:  {peers} peers · {links} links
+TH:  {peers} เพียร์ · {links} ลิงก์
+KSW: 
+
+──────── 584/655 ────────
+KEY: topologyGraphHint
+EN:  Estimated from nearby mesh discovery — your device is highlighted. Tap a peer to open chat.
+TH:  ประมาณจาก discovery ใกล้เคียง — เครื่องของคุณถูกไฮไลต์ แตะเพียร์เพื่อเปิดแชท
+KSW: 
+
+──────── 585/655 ────────
+KEY: topologyOpen
+EN:  Mesh topology
+TH:  โทโพโลยี mesh
+KSW: 
+
+──────── 586/655 ────────
+KEY: slashHelpTitle
+EN:  Commands
+TH:  คำสั่ง
+KSW: 
+
+──────── 587/655 ────────
+KEY: slashHelpBody
+EN:  /help — this list
+TH:  /help — รายการนี้
+KSW: 
+
+──────── 588/655 ────────
+KEY: slashWhoEmpty
+EN:  No one online in this channel right now
+TH:  ยังไม่มีใครออนไลน์ในช่องนี้
+KSW: 
+
+──────── 589/655 ────────
+KEY: slashWhoTitle
+EN:  Online ({count})
+TH:  ออนไลน์ ({count})
+KSW: 
+
+──────── 590/655 ────────
+KEY: slashDropNeedText
+EN:  Usage: /drop your note text
+TH:  ใช้แบบ: /drop ข้อความของคุณ
+KSW: 
+
+──────── 591/655 ────────
+KEY: slashDropDone
+EN:  Dropped notice on {channel}
+TH:  ปักโน้ตที่ {channel} แล้ว
+KSW: 
+
+──────── 592/655 ────────
+KEY: slashUnknown
+EN:  Unknown command — try /help
+TH:  ไม่รู้จักคำสั่ง — ลอง /help
+KSW: 
+
+──────── 593/655 ────────
+KEY: announceOpen
+EN:  Announcements
+TH:  ประกาศ
+KSW: 
+
+──────── 594/655 ────────
+KEY: announceTitle
+EN:  Announcements
+TH:  ประกาศ
+KSW: 
+
+──────── 595/655 ────────
+KEY: announceEmpty
+EN:  No boards yet — create one to post locked or open notices
+TH:  ยังไม่มีกระดาน — สร้างเพื่อโพสต์แบบล็อกหรือแบบเปิด
+KSW: 
+
+──────── 596/655 ────────
+KEY: announceCreate
+EN:  Create board
+TH:  สร้างกระดาน
+KSW: 
+
+──────── 597/655 ────────
+KEY: announceCreateHint
+EN:  Board name
+TH:  ชื่อกระดาน
+KSW: 
+
+──────── 598/655 ────────
+KEY: announceDefaultTitle
+EN:  Community board
+TH:  กระดานชุมชน
+KSW: 
+
+──────── 599/655 ────────
+KEY: announceSettings
+EN:  Board settings
+TH:  ตั้งค่ากระดาน
+KSW: 
+
+──────── 600/655 ────────
+KEY: announceAllowLocked
+EN:  Allow locked (encrypted) posts
+TH:  อนุญาตโพสต์แบบล็อก (เข้ารหัส)
+KSW: 
+
+──────── 601/655 ────────
+KEY: announceAllowLockedSub
+EN:  Encrypted to the board key — readers need access
+TH:  เข้ารหัสด้วยกุญแจกระดาน — ผู้อ่านต้องได้รับสิทธิ์
+KSW: 
+
+──────── 602/655 ────────
+KEY: announceAllowOpen
+EN:  Allow open (plaintext) posts
+TH:  อนุญาตโพสต์แบบเปิด (plaintext)
+KSW: 
+
+──────── 603/655 ────────
+KEY: announceAllowOpenSub
+EN:  Not E2EE — readable on mesh/relays. Off by default.
+TH:  ไม่ใช่ E2EE — อ่านได้บน mesh/รีเลย์ (ปิดเป็นค่าเริ่มต้น)
+KSW: 
+
+──────── 604/655 ────────
+KEY: announceComposeHint
+EN:  Write an announcement…
+TH:  เขียนประกาศ…
+KSW: 
+
+──────── 605/655 ────────
+KEY: announceMediaInternetOnly
+EN:  Photo/voice announcements send over the internet (not BLE)
+TH:  รูป/เสียงในประกาศส่งผ่านเน็ตเท่านั้น (ไม่ใช้ BLE)
+KSW: 
+
+──────── 606/655 ────────
+KEY: announceNeedInternet
+EN:  Connect to the internet to send photo or voice announcements
+TH:  ต้องเชื่อมต่ออินเทอร์เน็ตเพื่อส่งรูปหรือเสียงในประกาศ
+KSW: 
+
+──────── 607/655 ────────
+KEY: announceVoiceFailed
+EN:  Could not record voice: {error}
+TH:  อัดเสียงไม่สำเร็จ: {error}
+KSW: 
+
+──────── 608/655 ────────
+KEY: announceImageTooLarge
+EN:  Image is too large (max ~180 KB)
+TH:  รูปใหญ่เกินไป (สูงสุด ~180 KB)
+KSW: 
+
+──────── 609/655 ────────
+KEY: announcePlayVoice
+EN:  Play voice note
+TH:  เล่นข้อความเสียง
+KSW: 
+
+──────── 610/655 ────────
+KEY: announceImageLabel
+EN:  📷 Image
+TH:  📷 รูปภาพ
+KSW: 
+
+──────── 611/655 ────────
+KEY: announceAudioLabel
+EN:  🎤 Voice note
+TH:  🎤 ข้อความเสียง
+KSW: 
+
+──────── 612/655 ────────
+KEY: announceModeLocked
+EN:  Locked
+TH:  ล็อก
+KSW: 
+
+──────── 613/655 ────────
+KEY: announceModeOpen
+EN:  Open
+TH:  เปิด
+KSW: 
+
+──────── 614/655 ────────
+KEY: announceOpenBadge
+EN:  OPEN · not encrypted
+TH:  เปิด · ไม่เข้ารหัส
+KSW: 
+
+──────── 615/655 ────────
+KEY: announceLockedBadge
+EN:  Locked
+TH:  ล็อก
+KSW: 
+
+──────── 616/655 ────────
+KEY: announceLockedPlaceholder
+EN:  Encrypted — request access to read
+TH:  เข้ารหัสแล้ว — ขอสิทธิ์เพื่ออ่าน
+KSW: 
+
+──────── 617/655 ────────
+KEY: announceRequestAccess
+EN:  Request access
+TH:  ขอสิทธิ์อ่าน
+KSW: 
+
+──────── 618/655 ────────
+KEY: announceRequestSent
+EN:  Access request sent to the board owner
+TH:  ส่งคำขอไปยังเจ้าของกระดานแล้ว
+KSW: 
+
+──────── 619/655 ────────
+KEY: announceRequestFailed
+EN:  Could not request access (need owner’s public key)
+TH:  ขอสิทธิ์ไม่ได้ (ต้องมี public key ของเจ้าของ)
+KSW: 
+
+──────── 620/655 ────────
+KEY: announceOpenConfirmTitle
+EN:  Post without encryption?
+TH:  โพสต์โดยไม่เข้ารหัส?
+KSW: 
+
+──────── 621/655 ────────
+KEY: announceOpenConfirmBody
+EN:  Open posts are not E2EE. Anyone on the path (mesh / relays) may read them. Continue?
+TH:  โพสต์แบบเปิดไม่ใช่ E2EE ผู้ที่อยู่บนเส้นทาง (mesh / รีเลย์) อาจอ่านได้ ดำเนินการต่อ?
+KSW: 
+
+──────── 622/655 ────────
+KEY: announcePostAction
+EN:  Post
+TH:  โพสต์
+KSW: 
+
+──────── 623/655 ────────
+KEY: announcePendingRequests
+EN:  Access requests
+TH:  คำขอเข้าถึง
+KSW: 
+
+──────── 624/655 ────────
+KEY: announceApprove
+EN:  Approve
+TH:  อนุมัติ
+KSW: 
+
+──────── 625/655 ────────
+KEY: announceDeny
+EN:  Deny
+TH:  ปฏิเสธ
+KSW: 
+
+──────── 626/655 ────────
+KEY: announceGranted
+EN:  You can read locked posts on this board
+TH:  อ่านโพสต์ล็อกบนกระดานนี้ได้แล้ว
+KSW: 
+
+──────── 627/655 ────────
+KEY: announceOwner
+EN:  You own this board
+TH:  คุณเป็นเจ้าของกระดานนี้
+KSW: 
+
+──────── 628/655 ────────
+KEY: announceCopyInvite
+EN:  Copy invite text
+TH:  คัดลอกข้อความเชิญ
+KSW: 
+
+──────── 629/655 ────────
+KEY: announceShowInviteQr
+EN:  Show invite QR
+TH:  แสดง QR คำเชิญ
+KSW: 
+
+──────── 630/655 ────────
+KEY: announceScanInviteQr
+EN:  Scan board invite QR
+TH:  สแกน QR คำเชิญกระดาน
+KSW: 
+
+──────── 631/655 ────────
+KEY: announceFollow
+EN:  Follow board from invite
+TH:  ติดตามกระดานจากคำเชิญ
+KSW: 
+
+──────── 632/655 ────────
+KEY: announceFollowHint
+EN:  Paste the invite text or ResilNet link from the owner
+TH:  วางข้อความเชิญหรือลิงก์ ResilNet จากเจ้าของกระดาน
+KSW: 
+
+──────── 633/655 ────────
+KEY: announceFollowOk
+EN:  Following board
+TH:  ติดตามกระดานแล้ว
+KSW: 
+
+──────── 634/655 ────────
+KEY: announceFollowOkNamed
+EN:  Now following “{title}”
+TH:  ติดตามกระดาน “{title}” แล้ว
+KSW: 
+
+──────── 635/655 ────────
+KEY: announceFollowFail
+EN:  Invite is invalid or damaged
+TH:  คำเชิญไม่ถูกต้องหรือเสียหาย
+KSW: 
+
+──────── 636/655 ────────
+KEY: announceInviteCopied
+EN:  Invite text copied
+TH:  คัดลอกข้อความเชิญแล้ว
+KSW: 
+
+──────── 637/655 ────────
+KEY: announceInviteSaveQr
+EN:  Save QR
+TH:  บันทึก QR
+KSW: 
+
+──────── 638/655 ────────
+KEY: announceInviteShare
+EN:  Share invite
+TH:  แชร์คำเชิญ
+KSW: 
+
+──────── 639/655 ────────
+KEY: announceFollowFromCompose
+EN:  Board invite detected in the message box
+TH:  พบคำเชิญกระดานในกล่องข้อความ
+KSW: 
+
+──────── 640/655 ────────
+KEY: peerConfirmAddTitle
+EN:  Add network member?
+TH:  เพิ่มสมาชิกเครือข่าย?
+KSW: 
+
+──────── 641/655 ────────
+KEY: peerConfirmAddBody
+EN:  Add “{name}” with their public key so you can message them privately?
+TH:  เพิ่ม “{name}” พร้อมกุญแจสาธารณะ เพื่อส่งข้อความส่วนตัวได้?
+KSW: 
+
+──────── 642/655 ────────
+KEY: peerConfirmAdd
+EN:  Add member
+TH:  เพิ่มสมาชิก
+KSW: 
+
+──────── 643/655 ────────
+KEY: peerAddedOk
+EN:  Added {name} to network members
+TH:  เพิ่ม {name} ในสมาชิกเครือข่ายแล้ว
+KSW: 
+
+──────── 644/655 ────────
+KEY: peerAddFromCompose
+EN:  Identity / public key detected in the message box
+TH:  พบตัวตน / กุญแจสาธารณะในกล่องข้อความ
+KSW: 
+
+──────── 645/655 ────────
+KEY: peerHashCopied
+EN:  Public key hash copied
+TH:  คัดลอก Public key hash แล้ว
+KSW: 
+
+──────── 646/655 ────────
+KEY: peerHashOpenChat
+EN:  Open chat
+TH:  เปิดแชต
+KSW: 
+
+──────── 647/655 ────────
+KEY: peerHashAddHint
+EN:  Hash copied. Ask them to share their identity link or QR so you can add the full public key for E2EE.
+TH:  คัดลอก hash แล้ว ให้เพื่อนแชร์ลิงก์ตัวตนหรือ QR เพื่อเพิ่มกุญแจเต็มสำหรับ E2EE
+KSW: 
+
+──────── 648/655 ────────
+KEY: peerQrNoCode
+EN:  No ResilNet QR found in this image
+TH:  ไม่พบ QR ของ ResilNet ในรูปนี้
+KSW: 
+
+──────── 649/655 ────────
+KEY: identityInviteSharePreamble
+EN:  ResilNet identity: “{name}”
+TH:  ตัวตน ResilNet: “{name}”
+KSW: 
+
+──────── 650/655 ────────
+KEY: identityShareInvite
+EN:  Share identity link
+TH:  แชร์ลิงก์ตัวตน
+KSW: 
+
+──────── 651/655 ────────
+KEY: identityInviteCopied
+EN:  Identity link copied
+TH:  คัดลอกลิงก์ตัวตนแล้ว
+KSW: 
+
+──────── 652/655 ────────
+KEY: announceInviteSharePreamble
+EN:  Board invite: “{title}”
+TH:  คำเชิญเข้ากระดานชุมชน “{title}”
+KSW: 
+
+──────── 653/655 ────────
+KEY: announceConfirmFollowTitle
+EN:  Follow this board?
+TH:  ติดตามกระดานนี้?
+KSW: 
+
+──────── 654/655 ────────
+KEY: announceConfirmFollowBody
+EN:  Follow “{title}” from this invite?
+TH:  ติดตาม “{title}” จากคำเชิญนี้หรือไม่?
+KSW: 
+
+──────── 655/655 ────────
+KEY: announceConfirmFollow
+EN:  Follow
+TH:  ติดตาม
+KSW: 
+

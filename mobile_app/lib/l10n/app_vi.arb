@@ -1,0 +1,1105 @@
+{
+  "@@locale": "vi",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "Đang làm mới ResilNet…",
+  "appRefreshed": "Đã làm mới - radio và tính năng khám phá đã được khởi động lại",
+  "appRefreshFailed": "Làm mới không thành công: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "Nhấn đúp = làm mới nhẹ nhàng. Nhấn và giữ = khôi phục cứng. Nhấn ba lần = xóa khẩn cấp.",
+  "softRefreshTipTitle": "Nếu ResilNet cảm thấy bế tắc",
+  "softRefreshTipBody": "Nhấn đúp ResilNet (trên cùng bên trái) để làm mới đài phát thanh nhẹ. Nếu vẫn bị kẹt: nhấn và giữ tiêu đề, sử dụng ⋮ → Khôi phục cứng hoặc Cài đặt. Nhấn ba lần chỉ là thao tác xóa khẩn cấp.",
+  "softRefreshTipGotIt": "Hiểu rồi",
+  "infoSoftRefreshTitle": "Nếu ứng dụng cảm thấy bị kẹt",
+  "infoSoftRefreshStepRefresh": "Nhấn đúp ResilNet (trên cùng bên trái) → radio làm mới nhẹ nhàng và những người ở gần",
+  "infoSoftRefreshStepHard": "Vẫn bị mắc kẹt? Nhấn và giữ tiêu đề hoặc ⋮ / Cài đặt → Khôi phục cứng",
+  "infoSoftRefreshStepWait": "Đợi thanh thông báo kết quả, sau đó thử lại. Đặt lại phiên sẽ giữ lại chìa khóa của bạn.",
+  "infoSoftRefreshStepWipe": "Nhấn ba lần = xóa khẩn cấp (xóa dữ liệu cục bộ) - chỉ khi có chủ ý",
+  "appRecoverySection": "Khôi phục ứng dụng",
+  "appRecoverySectionSubtitle": "Sử dụng khi ứng dụng có cảm giác bị treo. Mềm = nhấn đúp vào tiêu đề. Phục hồi cứng mạnh hơn. Đặt lại phiên khởi động lại dịch vụ mà không xóa phím.",
+  "appHardRecoverAction": "Phục hồi khó khăn",
+  "appHardRecovering": "Khó phục hồi…",
+  "appSessionResetAction": "Đặt lại phiên",
+  "appSessionResetRunning": "Đang đặt lại phiên…",
+  "appSessionResetConfirmTitle": "Đặt lại phiên?",
+  "appSessionResetConfirmBody": "Khởi động lại các dịch vụ ResilNet trên thiết bị này. Khóa nhận dạng của bạn được lưu giữ.",
+  "appRecoveryBusy": "Quá trình khôi phục đang chạy…",
+  "appRecoveryOk": "Quá trình khôi phục đã hoàn tất",
+  "appRecoveryPartial": "Quá trình khôi phục đã hoàn tất với một số bước bị bỏ qua — hãy thử lại nếu vẫn bị kẹt",
+  "appRecoveryFailed": "Khôi phục không thành công - hãy thử Đặt lại phiên hoặc buộc thoát ứng dụng khỏi HĐH",
+  "localWifiTitle": "Địa phương Wi‑Fi",
+  "localWifiSubtitle": "Liên kết các thiết bị lân cận mà không cần internet — giống như trên một mạng LAN.",
+  "localWifiNotGatewayHint": "Không phải cổng ESP32 LoRa SoftAP. Đây chỉ là điện thoại↔điện thoại/mạng LAN.",
+  "localWifiUnavailable": "Wi‑Fi cục bộ chưa sẵn sàng - hãy đợi khởi động ứng dụng.",
+  "lxmfBridgeTitle": "Nút nhà",
+  "lxmfBridgeSubtitle": "Máy Mac hoặc Pi tùy chọn trên Wi‑Fi của bạn sẽ chuyển tiếp các cuộc trò chuyện kín. Tắt theo mặc định. Không thay thế mã hóa đầu cuối.",
+  "lxmfBridgeEnable": "Sử dụng nút nhà",
+  "lxmfBridgeDisabledHint": "Chỉ bật khi ứng dụng bridge đang chạy trên máy Mac hoặc Pi trên mạng này.",
+  "lxmfBridgeOnline": "Trực tuyến — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "Không thể truy cập nút nhà — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Địa chỉ nút nhà",
+  "lxmfBridgeBaseUrlHelper": "IP hoặc http://IP:port — ví dụ 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "Ngang hàng → LXMF đích (JSON)",
+  "lxmfBridgeRefresh": "Lưu và làm mới trạng thái",
+  "lxmfBridgeLabHint": "Nâng cao: phòng thí nghiệm/reticulum_lxmf",
+  "lxmfBridgeOpen": "Cài đặt nút chủ",
+  "lxmfBridgeCheckConnection": "Kiểm tra kết nối",
+  "lxmfBridgeStatusOnline": "Đã kết nối với nút nhà",
+  "lxmfBridgeStatusOffline": "Nút nhà không thể truy cập được",
+  "lxmfBridgeYourDest": "Địa chỉ của nút này (chia sẻ với bạn bè)",
+  "lxmfBridgeCopyDest": "Sao chép địa chỉ",
+  "lxmfBridgeDestCopied": "Đã sao chép địa chỉ",
+  "lxmfBridgeLinkedPeers": "Bạn bè được liên kết",
+  "lxmfBridgeLinkedPeersHint": "Mỗi người bạn cần địa chỉ nút nhà của họ một lần. Sau đó, các cuộc trò chuyện kín có thể sử dụng đường dẫn này.",
+  "lxmfBridgeNoLinks": "Chưa có bạn bè nào được liên kết.",
+  "lxmfBridgeAddLink": "Liên kết một người bạn",
+  "lxmfBridgePickPeer": "Bạn bè",
+  "lxmfBridgePeerDest": "Địa chỉ nút nhà của họ",
+  "lxmfBridgePeerDestHint": "Mã 32 ký tự từ màn hình nút Trang chủ của họ",
+  "lxmfBridgeInvalidDest": "Địa chỉ đó có vẻ không hợp lệ. Dán mã đầy đủ từ nút nhà của họ.",
+  "lxmfBridgeRemoveLink": "Hủy liên kết",
+  "lxmfBridgeSaveLink": "Cứu",
+  "lxmfBridgeLinkSaved": "Đã liên kết bạn bè",
+  "lxmfBridgeNoPeers": "Chưa có địa chỉ liên hệ nào có thể nhắn tin — trước tiên hãy thêm một người bạn.",
+  "lxmfBridgeHelp": "Giữ bridge chạy trên Mac/Pi. Đường dẫn này vẫn nằm trên mạng LAN của bạn — nó không phải là LoRa và không thay thế mạng Internet hoặc Bluetooth.",
+  "localWifiModeHotspot": "lân cận",
+  "localWifiModeRouter": "Bộ định tuyến",
+  "localWifiHotspotIntro": "Một thiết bị chia sẻ Điểm truy cập cá nhân. Những người khác tham gia điểm phát sóng đó, sau đó ResilNet tìm thấy họ trên mạng cục bộ.",
+  "localWifiHostAction": "Tạo mạng (Máy chủ)",
+  "localWifiJoinAction": "Tham gia mạng",
+  "localWifiHostSteps": "1. Mở Cài đặt iOS/Android và bật Điểm truy cập cá nhân (hoặc Chia sẻ Internet).\n2. Cho bạn bè biết tên điểm phát sóng (và mật khẩu).\n3. Quay lại đây và nhấn vào “Điểm phát sóng đang bật - bắt đầu chờ”.",
+  "localWifiHostReady": "Điểm phát sóng đang bật - bắt đầu chờ",
+  "localWifiHostWaiting": "Đang chờ bạn bè tham gia…",
+  "localWifiJoinSteps": "1. Mở Cài đặt hệ thống và tham gia Điểm truy cập cá nhân của bạn bè bạn.\n2. Quay lại đây và nhấn vào “Tôi đã kết nối - tìm kiếm”.",
+  "localWifiJoinReady": "Tôi đã kết nối - tìm kiếm",
+  "localWifiRouterIntro": "Kết nối mọi thiết bị với cùng một bộ định tuyến/AP Wi‑Fi. Bộ định tuyến không cần internet - chỉ có mạng cục bộ được chia sẻ.",
+  "localWifiRouterSearch": "Tìm kiếm trên Wi‑Fi này",
+  "localWifiRefreshNetwork": "Làm mới thông tin Wi‑Fi",
+  "localWifiRouterNoWifiTitle": "Không có trên Wi‑Fi",
+  "localWifiRouterNoWifiBody": "Tham gia Wi‑Fi của bộ định tuyến trong Cài đặt hệ thống, sau đó tìm kiếm lại.",
+  "localWifiDiscovering": "Đang tìm kiếm trên địa phương Wi‑Fi…",
+  "localWifiPeersFound": "Các thiết bị trên mạng này",
+  "localWifiStop": "Dừng lại",
+  "localWifiSsidUnknown": "Tên Wi‑Fi không có sẵn",
+  "localWifiStubBanner": "Đang chờ ổ cắm mạng LAN…",
+  "localWifiLiveBanner": "Phát hiện mạng LAN trực tiếp (UDP) — thông báo + trò chuyện kín trên Wi‑Fi này",
+  "localWifiEmptyHotspot": "Chưa có thiết bị nào.\nKiểm tra xem bạn bè đã tham gia điểm phát sóng của bạn và cho phép truy cập Mạng cục bộ hay chưa.",
+  "localWifiEmptyRouter": "Chưa có thiết bị nào.\nSSID giống nhau? Mạng cục bộ được phép? Một số bộ định tuyến chặn lưu lượng truy cập từ thiết bị này đến thiết bị khác (cách ly AP).",
+  "localWifiIsolationHelp": "Tại sao chúng ta không thể tìm thấy nhau?",
+  "localWifiIsolationTitle": "Bộ định tuyến có thể cô lập khách hàng",
+  "localWifiIsolationBody": "Nếu cách ly AP/Máy khách (hoặc mạng khách) được bật, các điện thoại trên cùng Wi‑Fi không thể đàm thoại. Tắt tính năng cách ly, sử dụng SSID chính hoặc chuyển sang chế độ Lân cận (Điểm phát sóng).",
+  "localWifiPeerReady": "Sẵn sàng trò chuyện (có key)",
+  "localWifiPeerNeedKey": "Đã tìm thấy - quét QR để trao đổi khóa",
+  "localWifiErrorTitle": "Lỗi Wi‑Fi cục bộ",
+  "localWifiErrorBody": "Đã xảy ra lỗi. Hãy dừng lại và thử lại.",
+  "preparingSystem": "Hệ thống chuẩn bị…",
+  "bootFailedTitle": "Không thể bắt đầu",
+  "retry": "Thử lại",
+  "bootRecoveryAction": "Bắt đầu danh tính mới (xóa dữ liệu cục bộ)",
+  "bootRecoveryConfirmTitle": "Bắt đầu danh tính mới?",
+  "bootRecoveryConfirmBody": "Thao tác này sẽ xóa vĩnh viễn các cuộc trò chuyện, khóa và danh tính cục bộ trên thiết bị này.\nĐồng nghiệp phải quét lại mã QR của bạn để xác định danh tính mới của bạn.\nĐiều này không thể hoàn tác được.",
+  "bootRecoveryRunning": "Đang đặt lại danh tính cục bộ…",
+  "bootRecoverySuccess": "Đã hoàn tất thiết lập lại danh tính cục bộ",
+  "bootRecoveryFailed": "Không thể đặt lại danh tính: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Hủy bỏ",
+  "save": "Cứu",
+  "close": "Đóng",
+  "start": "Bắt đầu",
+  "send": "Gửi",
+  "settings": "Cài đặt",
+  "language": "Ngôn ngữ",
+  "languageSubtitle": "Theo mặc định, ứng dụng tuân theo ngôn ngữ điện thoại của bạn (khi được hỗ trợ). Các ngôn ngữ khác quay trở lại tiếng Anh. Bạn cũng có thể khóa một ngôn ngữ ở đây.",
+  "languageSystem": "Mặc định hệ thống",
+  "languageThai": "tiếng Thái",
+  "languageEnglish": "Tiếng Anh",
+  "notificationsTooltip": "Cài đặt thông báo",
+  "enableMessageNotifications": "Bật thông báo tin nhắn",
+  "settingsNotificationsSubtitle": "Tin nhắn 1:1 và những người trực tuyến (cảnh báo cục bộ)",
+  "networkMembersTooltip": "Thành viên mạng",
+  "identityQrTooltip": "Danh tính / QR",
+  "feedDirects": "Trò chuyện",
+  "feedMesh": "#lưới",
+  "feedGeo": "Khu vực",
+  "feedDirectsSubtitle": "Tin nhắn E2EE riêng tư",
+  "feedMeshSubtitle": "Các đồng nghiệp lân cận (BLE)",
+  "feedGeoSubtitle": "Kênh khám phá Geohash",
+  "peerIdHint": "Dán ID người nhận (Băm khóa công khai) để bắt đầu trò chuyện",
+  "directsEmpty": "Chưa có cuộc trò chuyện nào - quét QR hoặc dán ID người nhận để bắt đầu\nTin nhắn được niêm phong bằng E2EE trước khi gửi (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • nhấn để mở trò chuyện",
+  "meshIntro": "Các đồng nghiệp trong phạm vi BLE — nhấn để trò chuyện E2EE riêng tư (không soạn thư công khai trên #mesh)\nGửi qua bộ định tuyến kết hợp (BLE + LoRa + Nostr khi trực tuyến)",
+  "meshEmptyRunning": "Chưa có thiết bị ngang hàng nào ở gần — hãy mở ứng dụng trên một thiết bị khác trong phạm vi BLE",
+  "meshEmptyStopped": "BLE không chạy — cấp quyền Bluetooth / Vị trí",
+  "meshNearbyPrefix": "lân cận",
+  "meshRetentionTitle": "Tự động xóa tin nhắn",
+  "meshRetentionSubtitle": "Lịch sử trò chuyện cục bộ cũ hơn sẽ tự động bị xóa",
+  "meshRetentionKeep": "Giữ",
+  "meshRetention1Day": "1 ngày",
+  "meshRetention3Days": "3 ngày",
+  "meshRetention7Days": "7 ngày",
+  "refreshLocationTooltip": "Làm mới vị trí",
+  "geoIntro": "Những người trực tuyến trong geohash này có thể được nhắn tin 1:1 hoặc với một khu vực phân phát công khai (vẫn được niêm phong E2EE cho mỗi ngang hàng - không phải văn bản thuần túy)",
+  "geoEmpty": "Chưa có ai trực tuyến trong {channel}\nSử dụng Transport → Internet/Auto, đợi Nostr, làm mới vị trí",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "Trực tuyến trong {channel} • nhấn để có E2EE 1:1",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "Lân cận (khu vực chờ hiện diện) • nhấn để có 1:1 E2EE",
+  "geoPeerNostrSubtitle": "Đã thấy trên Nostr trong {channel} • chỉ khám phá (cũ)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "Sự hiện diện ẩn danh kế thừa - chờ QR ngang hàng hoặc trao đổi bị ràng buộc",
+  "bleRadioNearbySubtitle": "BLE lân cận — quét QR để bắt đầu 1:1 E2EE",
+  "geoInternetDiscoverHint": "Khu vực cần khám phá Internet Nostr được kết nối (Cài đặt → Truyền tải → Internet/Tự động)",
+  "geoEmptyNoLocation": "Vị trí chưa được giải quyết — cho phép GPS và làm mới để xuất bản geohash của bạn trên Nostr",
+  "geoEmptyNeedsPermission": "Quyền vị trí bị từ chối — cho phép ResilNet trong Cài đặt → Quyền riêng tư → Vị trí",
+  "geoEmptyServicesDisabled": "Dịch vụ định vị đang tắt — hãy bật chúng trong Cài đặt",
+  "geoEmptyNoGpsFix": "Không thể sửa lỗi GPS (phổ biến trên Wi‑Fi iPad) — đặt geohash theo cách thủ công bên dưới",
+  "geoEmptyTeleportHint": "Nhấn vào biểu tượng địa điểm → nhập geohash (ví dụ: w5) → Dịch chuyển tức thời",
+  "geoSetGeohashManually": "Đặt geohash",
+  "geoTeleportHint": "Không có GPS? Nhập tiền tố geohash (2–7 ký tự, ví dụ: w5) và nhấn Dịch chuyển tức thời",
+  "geoTeleportInvalid": "Geohash không hợp lệ - chỉ sử dụng các chữ cái/số base32 (ví dụ: w5 hoặc w5jt8)",
+  "geoTeleportOk": "Khu vực được đặt thành {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "Vùng thủ công: {channel} (làm mới GPS sẽ ghi đè)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr chưa sẵn sàng — nhấn Kết nối lại (0/0 cho đến khi init thành công)",
+  "geoEmptyMeshOnly": "Truyền tải chỉ ở dạng Lưới — chuyển sang Internet hoặc Tự động để khám phá các thiết bị ngang hàng trên Nostr",
+  "geoEmptyWaiting": "Chưa có ai trong {channel} — giữ Khu vực + Internet mở trên cả hai thiết bị và đợi ~60 giây",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#khu vực",
+  "geoRefreshLocation": "Làm mới vị trí",
+  "settingsClearLocationTitle": "Xóa vị trí",
+  "settingsClearLocationSubtitle": "Xóa GPS / dịch chuyển geohash (Khu vực trở thành #-)",
+  "settingsClearLocationConfirmTitle": "Xóa vị trí?",
+  "settingsClearLocationConfirmBody": "Xóa geohash được lưu trữ trên thiết bị này. Bạn có thể làm mới GPS hoặc dịch chuyển lại sau đó.",
+  "settingsClearLocationAction": "Xóa vị trí",
+  "settingsClearLocationSnack": "Đã xóa vị trí",
+  "chatVoiceTooLarge": "Ghi chú thoại quá lớn — tối đa ~30 giây",
+  "chatVoiceNeedInternet": "Ghi chú thoại cần có Internet (Nostr) — quá lớn cho riêng BLE",
+  "chatVoiceSentInternet": "Ghi chú bằng giọng nói được gửi qua Internet",
+  "noticeAnonMention": "đề cập đến",
+  "noticeAnonDm": "tin nhắn trực tiếp",
+  "noticeAnonHug": "ôm",
+  "noticeAnonSlap": "cái tát",
+  "noticeAnonBlock": "khối",
+  "noticeAnonNeedKey": "Chưa có khóa công khai - trước tiên hãy đổi QR lấy 1:1",
+  "noticeAnonActionSent": "Đã gửi",
+  "noticeAnonBlocked": "Bị chặn {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "*ôm {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* tát {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Kết nối lại Nostr",
+  "nostrSectionTitle": "Nostr rơle",
+  "nostrSectionSubtitle": "Nhắn tin Internet và khám phá khu vực sử dụng các rơle này. Nhấn vào kết nối lại nếu trạng thái vẫn ngoại tuyến.",
+  "nostrStatusOnline": "Đã kết nối {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "Ngoại tuyến - rơle được liệt kê nhưng không có kết nối nào",
+  "nostrStatusNotInit": "Chưa bắt đầu (0/0) - nhấn Kết nối lại để khởi tạo",
+  "nostrReconnectAction": "Kết nối lại Nostr",
+  "nostrReconnectOk": "Nostr đã kết nối ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "Vẫn ngoại tuyến — hãy kiểm tra Wi‑Fi/mobile hoặc thử lại",
+  "nostrReconnectFailedDetail": "Thất bại: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Đang kết nối với rơle…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "Internet (Nostr) trong {channel} • sẵn sàng trò chuyện kín",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "Vận tải khu vực",
+  "transportModeSubtitle": "Lưới = BLE lân cận (radio) khi không có Nostr · Internet & Auto = Nostr danh sách người",
+  "transportModeMesh": "Lưới",
+  "transportModeInternet": "internet",
+  "transportModeAuto": "Tự động",
+  "geoPublicHint": "Thông báo công khai tới mọi người trực tuyến trong khu vực này",
+  "geoPublicSend": "Công cộng",
+  "geoPublicHelp": "Phân phát kín tới {count} đồng nghiệp trực tuyến — mỗi người nhận được một phong bì riêng",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Đã gửi tới {count} đồng nghiệp trong khu vực này",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "Không có đồng nghiệp nào có thể nhắn tin trực tuyến — mở Khu vực/Lưới với các đồng nghiệp có khóa hoặc đợi BLE/Nostr",
+  "areaPublicBadge": "Khu vực công cộng",
+  "geoErrorPermission": "Không thể đọc vị trí - hãy kiểm tra quyền truy cập vị trí",
+  "geoPrecisionRegion": "Vùng đất",
+  "geoPrecisionProvince": "Tỉnh",
+  "geoPrecisionCity": "Thành phố",
+  "geoPrecisionNeighborhood": "Hàng xóm",
+  "geoPrecisionBlock": "Khối",
+  "aliasTitle": "Đặt biệt danh (Bí danh liên hệ)",
+  "aliasHintBody": "Bí danh này chỉ được lưu trữ trên thiết bị này (chỉ cục bộ)\nNó không bao giờ được gửi với lưu lượng E2EE",
+  "aliasLabel": "Biệt hiệu",
+  "aliasHint": "ví dụ. “trưởng thôn”, “P’Somchai”…",
+  "settingsDevices": "Thiết bị",
+  "settingsFirmwareTitle": "Tải xuống/cập nhật chương trình cơ sở ESP32",
+  "settingsFirmwareSubtitle": "Tải xuống tệp .bin và cập nhật bảng ESP32 qua OTA",
+  "mtBridgeTitle": "cầu Meshtastic",
+  "mtBridgeSettingsSubtitle": "Cầu nối A/B chỉ có văn bản — không phải ResilNet E2EE",
+  "mtBridgeIntro": "Di chuyển bản rõ ngắn giữa Meshtastic và ResilNet. Chế độ A và B không thể chạy cùng lúc. Đây không phải là mã hóa đầu cuối.",
+  "mtBridgeModeLabel": "Cách thức",
+  "mtBridgeModeOff": "Tắt",
+  "mtBridgeModeA": "Ăn A",
+  "mtBridgeModeB": "Lối ra B",
+  "mtBridgeModeOffShort": "Tắt",
+  "mtBridgeModeAShort": "ở A",
+  "mtBridgeModeBShort": "Ra B",
+  "mtBridgeMutexHint": "Chọn một chế độ sẽ tự động tắt chế độ khác. A+B đồng thời không được hỗ trợ.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "Bản trình diễn (ghi nhật ký)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "Văn bản gửi đến xuất hiện bên dưới Thông báo dưới dạng #meshtastic. Rơle lưới là tùy chọn (tắt theo mặc định).",
+  "mtBridgeRelayTitle": "Đồng thời chuyển tiếp trên lưới ResilNet",
+  "mtBridgeRelayHint": "Khi bật, các bản tin công khai có chữ ký sẽ được phát sóng. Tắt = chỉ Thông báo của điện thoại này.",
+  "mtBridgeSimulateHint": "Tin nhắn demo",
+  "mtBridgeSimulate": "Mô phỏng tin nhắn Meshtastic",
+  "mtBridgeIngestOk": "Đã nhập vào Thông báo (#meshtastic)",
+  "mtBridgeEgressWarning": "Cảnh báo: tin nhắn được gửi ở đây KHÔNG phải là ResilNet E2EE. Bất kỳ ai trên đường dẫn Meshtastic đều có thể đọc chúng.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "Văn bản để xuất bản",
+  "mtBridgeSend": "Gửi tới Meshtastic",
+  "mtBridgeEgressOk": "Xếp hàng cho Meshtastic (xem nhật ký / lịch sử)",
+  "mtBridgeLastEgress": "Lần ra cuối cùng",
+  "mtBridgeEgressHistory": "Đi ra gần đây",
+  "mtBridgeOffHint": "Bật Ingest (A) hoặc Egress (B) để sử dụng bridge.",
+  "mtBridgeNoticeBadge": "MESHASTIC · không phải E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "Sử dụng phương tiện di chuyển MQTT",
+  "mtBridgeUseMqttHint": "Tắt = chỉ ghi nhật ký demo (MQTT lượt gửi đến bị bỏ qua). Bật = MQTT để nhập/xuất khi được kết nối.",
+  "mtBridgeMqttHost": "Máy chủ môi giới",
+  "mtBridgeMqttPort": "Cảng",
+  "mtBridgeMqttTls": "Sử dụng TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "Cổng điển hình 8883. Sử dụng chứng chỉ hệ thống; không thành công trong các lỗi bắt tay.",
+  "mtBridgeMqttAutoReconnect": "Tự động kết nối lại",
+  "mtBridgeMqttAutoReconnectHint": "Khi bật, máy khách sẽ cố gắng kết nối lại sau khi bị rớt. Trạng thái hiển thị Đang kết nối cho đến khi được khôi phục.",
+  "mtBridgeMqttTopicHelpers": "Người trợ giúp chủ đề",
+  "mtBridgeMqttRegion": "Tiền tố vùng (tùy chọn)",
+  "mtBridgeMqttRegionHint": "Khi được đặt, Áp dụng sẽ xây dựng lại gốc dưới dạng msh/<khu vực>/2/json (ghi đè gốc chủ đề).",
+  "mtBridgeMqttTopicRoot": "Gốc chủ đề JSON",
+  "mtBridgeMqttDownlinkChannel": "Tên kênh đường xuống",
+  "mtBridgeMqttApplyTopics": "Áp dụng root → đăng ký / xuất bản chủ đề",
+  "mtBridgeMqttAdvanced": "Nâng cao MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, kết nối lại, chủ đề, thông tin xác thực",
+  "mtBridgeMqttTopicIn": "Đăng ký chủ đề",
+  "mtBridgeMqttTopicOut": "Xuất bản chủ đề",
+  "mtBridgeMqttGatewayFrom": "Id nút cổng (từ)",
+  "mtBridgeMqttGatewayFromHint": "Id thập phân hoặc !hex — bắt buộc đối với đường dẫn gửi văn bản xuống",
+  "mtBridgeMqttChannelIndex": "Chỉ số kênh lưới (tùy chọn 0–7)",
+  "mtBridgeMqttUser": "Tên người dùng (tùy chọn)",
+  "mtBridgeMqttPass": "Mật khẩu (tùy chọn)",
+  "mtBridgeMqttPassStored": "Mật khẩu được lưu trữ trên thiết bị này (không hiển thị).",
+  "mtBridgeMqttPassReplace": "Mật khẩu mới (để trống để giữ)",
+  "mtBridgeMqttPassReplaceHint": "Để trống để giữ mật khẩu đã lưu.",
+  "mtBridgeMqttPassClear": "Xóa mật khẩu",
+  "mtBridgeMqttSave": "Lưu cài đặt MQTT",
+  "mtBridgeMqttSaved": "Đã lưu MQTT cài đặt",
+  "mtBridgeMqttConnect": "Kết nối",
+  "mtBridgeMqttDisconnect": "Ngắt kết nối",
+  "mtBridgeMqttConnected": "MQTT đã kết nối",
+  "mtBridgeMqttConnecting": "MQTT đang kết nối…",
+  "mtBridgeMqttDisconnected": "MQTT bị ngắt kết nối",
+  "mtBridgeMqttError": "lỗi MQTT",
+  "mtBridgeErrModeIngest": "Chuyển sang Ingest (A) trước",
+  "mtBridgeErrModeEgress": "Chuyển sang Đi ra (B) trước",
+  "mtBridgeErrRate": "Chậm lại - tốc độ giới hạn",
+  "mtBridgeErrDedupe": "Tin nhắn trùng lặp bị bỏ qua",
+  "mtBridgeErrLoop": "Giảm để tránh vòng lặp cầu",
+  "mtBridgeErrEmpty": "Tin nhắn trống",
+  "mtBridgeErrPublish": "Xuất bản không thành công",
+  "mtBridgeErrNotConnected": "MQTT không được kết nối",
+  "mtBridgeErrMissingHost": "Nhập máy chủ môi giới MQTT",
+  "mtBridgeErrMissingTopic": "Nhập chủ đề đăng ký và xuất bản",
+  "mtBridgeErrMissingFromNode": "Nhập id nút cổng (từ) cho sendtext",
+  "mtBridgeErrConnect": "MQTT kết nối không thành công",
+  "mtBridgeErrConnectTls": "MQTT Kết nối TLS không thành công",
+  "settingsData": "dữ liệu",
+  "settingsDataHint": "Xóa tin nhắn cục bộ để thu nhỏ cơ sở dữ liệu - danh tính, khóa và ngang hàng được giữ lại",
+  "settingsSaveHistoryTitle": "Lưu lịch sử tin nhắn",
+  "settingsSaveHistorySubtitle": "Khi tắt, tin nhắn vẫn ở dạng E2EE trên mạng và chỉ được lưu giữ trong phiên này (không có trong lịch sử trò chuyện cục bộ). Văn bản của bạn vẫn hiển thị dưới dạng văn bản gốc trên thiết bị này.",
+  "settingsPrivacy": "Sự riêng tư",
+  "settingsE2eeTitle": "Mã hóa đầu cuối",
+  "settingsE2eeSubtitle": "Luôn bật - tin nhắn được niêm phong bằng RSA-OAEP + AES-GCM trước khi gửi. Rơle và các bước nhảy gần đó không thể đọc được nội dung.",
+  "settingsScreenshotTitle": "Cảnh báo ảnh chụp màn hình",
+  "settingsScreenshotSubtitle": "Hiển thị dòng hệ thống trong cuộc trò chuyện khi thiết bị này chụp màn hình",
+  "settingsNostrExpiryTitle": "Nostr thời gian lưu tin nhắn",
+  "settingsNostrExpirySubtitle": "Phong bì niêm phong sẽ được giữ nguyên trong bao lâu khi trực tuyến qua Nostr",
+  "noticeExpiresIn": "hết hạn vào",
+  "noticesTitle": "Thông báo",
+  "noticesMeshIntro": "Bản tin công khai - hiển thị cho mọi người trong phạm vi radio, không được mã hóa. Nó kết nối ngoại tuyến giữa điện thoại với điện thoại và các hộp chuyển tiếp ResilNet gần đó giữ một bản sao để những người đến sau vẫn nhìn thấy nó.",
+  "noticesMeshPublicBadge": "CÔNG CỘNG · không được mã hóa",
+  "noticesGeoIntro": "Thêm ghi chú ngắn cho địa điểm này để những khách truy cập khác có thể tìm thấy chúng.",
+  "noticesEmpty": "chưa có thông báo nào",
+  "noticesEmptyHint": "ghim thông báo đầu tiên cho mọi người quanh đây.",
+  "noticesComposeHint": "đăng thông báo...",
+  "noticesUrgent": "cấp bách",
+  "noticesOpen": "Thông báo",
+  "screenshotTaken": "*bạn đã chụp ảnh màn hình*",
+  "chatAttachImage": "Đính kèm hình ảnh",
+  "chatImageLabel": "Hình ảnh",
+  "chatImageTooLarge": "Hình ảnh quá lớn — hãy thử một ảnh khác",
+  "chatNostrExpiry": "Nostr giữ lại",
+  "geoPublicComposeHint": "Gửi tới {channel} — công khai",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "Xóa tất cả tin nhắn",
+  "settingsClearSubtitle": "Xóa tất cả cuộc trò chuyện trên thiết bị này",
+  "settingsClearConfirmTitle": "Xóa tất cả tin nhắn?",
+  "settingsClearConfirmBody": "Thao tác này sẽ xóa tất cả tin nhắn trò chuyện trên thiết bị này.\nĐồng nghiệp và biệt danh không bị xóa.",
+  "settingsClearAction": "Xóa dữ liệu",
+  "settingsClearedSnack": "Đã xóa dữ liệu",
+  "settingsVersion": "phiên bản {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: quét tìm nút",
+  "meshBleEsp32Scanning": "ESP32: tìm kiếm nút lân cận",
+  "meshBleSyncing": "BLE: đồng bộ với ESP32",
+  "meshNostrPublishing": "Nostr: xuất bản",
+  "meshBleIdle": "BLE bật lưới — chưa có điện thoại nào ở gần",
+  "meshBlePeersNearby": "BLE lưới — {count} điện thoại ở gần",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: cần có sự cho phép",
+  "meshBlePausedCamera": "BLE đã tạm dừng đối với máy ảnh — nhấn vào Bắt đầu BLE",
+  "meshBleStopped": "BLE tắt — kiểm tra xem Bluetooth đã bật rồi nhấn vào Bắt đầu BLE",
+  "meshBleRestart": "Bắt đầu BLE",
+  "meshBleStatusDetail": "BT {bt} · Lộc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "Kiểm tra quyền và bắt đầu BLE",
+  "meshNostrOffline": "Nostr ngoại tuyến",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} các đồng nghiệp lân cận • LoRa {lora} • đồng bộ hóa ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "sẵn sàng",
+  "meshLoraNotReady": "chưa sẵn sàng",
+  "meshGatewayProgress": "Cổng UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Cổng UDP: sẵn sàng",
+  "permissionTitle": "Cho phép truy cập để khởi động mạng lưới BLE",
+  "permissionBody": "Ứng dụng cần có Bluetooth (quét/kết nối/quảng cáo), Vị trí (dành cho thiết bị Android cũ hơn) và Micrô (để ghi chú thoại trong trò chuyện và thông báo) để nhắn tin cộng đồng.",
+  "permissionE2ee": "Mã hóa đầu cuối (E2EE)\nCác nút chuyển tiếp không thể đọc nội dung tin nhắn",
+  "permissionReady": "Quyền đã sẵn sàng",
+  "permissionRequest": "Cho phép và tiếp tục",
+  "permissionNotReadySnack": "Hệ thống chưa sẵn sàng - hãy đợi một lát và thử lại",
+  "permissionDeniedSnack": "Quyền chưa đầy đủ — mở Cài đặt > ResilNet và cho phép Bluetooth / Vị trí / Micrô",
+  "permissionMicDenied": "Quyền truy cập micrô bị từ chối - cho phép micrô trong Cài đặt ghi lại ghi chú giọng nói",
+  "permissionMicOpenSettings": "Cài đặt",
+  "permissionCameraDenied": "Quyền truy cập máy ảnh bị từ chối - cho phép máy ảnh trong Cài đặt quét mã QR",
+  "permissionCameraFailed": "Cần có sự cho phép của máy ảnh để quét mã QR",
+  "permissionCameraOpenSettings": "Cài đặt",
+  "permissionPhotosDenied": "Quyền truy cập thư viện ảnh bị từ chối - cho phép nó trong Cài đặt để lưu mã QR của bạn",
+  "permissionPhotosFailed": "Cần có sự cho phép của thư viện ảnh để lưu mã QR của bạn",
+  "permissionPhotosOpenSettings": "Cài đặt",
+  "permissionFailedSnack": "Yêu cầu cấp phép không thành công: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "Kiến trúc ResilNet • Lưu trữ và chuyển tiếp đa bước nhảy",
+  "onboardingSkip": "Nhảy",
+  "onboardingNext": "Kế tiếp",
+  "onboardingStart": "Bắt đầu",
+  "onboardingWelcomeTitle": "Chào mừng đến với ResilNet",
+  "onboardingWelcomeBody": "Trò chuyện trên ResilNet qua mạng lưới — ngay cả khi không có internet",
+  "onboardingFriendsTitle": "Thêm bạn bè dễ dàng",
+  "onboardingFriendsBody": "Chia sẻ mã QR từ Danh tính hoặc quét mã QR của bạn bè để trao đổi khóa công khai",
+  "onboardingChannelsTitle": "Trò chuyện được mã hóa + các kênh lân cận",
+  "onboardingChannelsBody": "Chuyển đổi #mesh / Area (geohash) để tìm các đồng nghiệp lân cận — các tin nhắn vẫn ở dạng E2EE trên BLE lưới và Nostr",
+  "chatTitle": "Trò chuyện (E2EE)",
+  "chatScanTooltip": "Quét QR để thêm bạn bè",
+  "chatBlockTooltip": "Chặn người gửi này",
+  "chatBlockedSnack": "Bị chặn: không có thông báo / không chuyển tiếp",
+  "chatAliasTooltip": "Đặt biệt hiệu",
+  "chatReceiverPemLabel": "Khóa công khai của người nhận (PEM)",
+  "chatReceiverPemHint": "Dán khóa công khai của bạn bè bạn (từ QR/file chia sẻ)",
+  "chatNeedPeerKey": "Trước tiên hãy quét QR của người ngang hàng này (yêu cầu khóa công khai đã được xác minh)",
+  "chatPeerKeyMismatch": "Khóa công khai được lưu trữ không khớp với id ngang hàng này",
+  "chatVoiceFailed": "Không thể ghi âm: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Không thể phát ghi chú thoại: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Phát ghi chú bằng giọng nói",
+  "chatPauseVoice": "Tạm dừng",
+  "chatVoiceLabelSent": "🎤 Ghi chú bằng giọng nói (đã niêm phong)",
+  "chatVoiceLabel": "🎤 Ghi chú bằng giọng nói",
+  "chatDecryptFailed": "[giải mã không thành công]",
+  "chatSentSealed": "[đã niêm phong • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[niêm phong]",
+  "chatComposeHint": "Gõ tin nhắn… (đóng dấu khi gửi)",
+  "chatEmptyThread": "Chưa có tin nhắn nào\nNhập bên dưới để gửi qua lưới",
+  "chatLoadFailed": "Không thể tải cuộc trò chuyện: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "Biểu tượng cảm xúc",
+  "statusPending": "Chưa giải quyết",
+  "statusSent": "Đã gửi",
+  "statusRelayed": "Đã chuyển tiếp",
+  "statusDelivered": "Đã giao hàng",
+  "statusRead": "Đọc",
+  "statusFailed": "Thất bại",
+  "chatCopy": "Sao chép",
+  "chatDeleteLocal": "Xóa trên thiết bị này",
+  "chatDeletedLocalSnack": "Đã xóa trên thiết bị này",
+  "chatRetry": "Thử lại",
+  "chatSendFailed": "Chưa gửi được — nhấn vào Thử lại",
+  "chatImageNeedInternet": "Kết nối Internet để gửi hình ảnh",
+  "chatImageTooLargeOnline": "Không thể nén hình ảnh đủ để gửi",
+  "chatOpenLinkFailed": "Không thể mở liên kết",
+  "identityTitle": "Danh tính",
+  "identityScanTooltip": "Quét QR bằng máy ảnh",
+  "identityCopiedHash": "Đã sao chép hàm băm khóa công khai",
+  "identityPeerSaved": "Đã lưu ngang hàng từ QR",
+  "identityGalleryDenied": "Quyền thư viện ảnh bị từ chối",
+  "identityQrSaved": "Đã lưu QR vào thư viện ảnh",
+  "identityQrSaveFailed": "Không lưu được QR: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Thành viên mạng",
+  "qrScanTitle": "Quét QR để thêm bạn bè",
+  "qrInvalid": "Quét không thành công: QR không hợp lệ",
+  "qrIdKeyMismatch": "QR bị từ chối: id không khớp với khóa chung",
+  "qrCameraNotReady": "Máy ảnh chưa sẵn sàng",
+  "qrRetrySettings": "Thử lại/mở Cài đặt",
+  "qrCameraOpenFailed": "Không mở được camera: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "Căn chỉnh mã QR bên trong khung",
+  "firmwareDownloadTitle": "Tải xuống chương trình cơ sở ESP32",
+  "firmwareSourceOnline": "Mới nhất (trực tuyến)",
+  "firmwareSourceCached": "Bản sao đã lưu (ngoại tuyến)",
+  "firmwareSourceBaseline": "Đường cơ sở đi kèm (ngoại tuyến)",
+  "firmwareSourceUnavailable": "Không có phần mềm cơ sở",
+  "firmwareBaselineIncompatible": "Chương trình cơ sở đi kèm quá cũ - hãy kết nối Internet để tải xuống phiên bản mới hơn",
+  "firmwareChecksumFailed": "Kiểm tra tính toàn vẹn của chương trình cơ sở không thành công - nhấp nháy bị chặn",
+  "firmwareReadyFromSource": "Phần sụn đã sẵn sàng: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "Làm cho khỏe lại",
+  "peersBlocked": "Bị chặn",
+  "peersNearbyBle": "Gần đây (BLE)",
+  "peersRecentlyOnline": "Gần đây trực tuyến",
+  "peersOnlineInArea": "Trực tuyến trong khu vực",
+  "peersSeenMinutesAgo": "Đã xem {minutes} phút trước",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Ngoại tuyến",
+  "peersBlockedSnack": "Bị chặn {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Đã bỏ chặn",
+  "peersEmpty": "Chưa có thành viên nào trong cơ sở dữ liệu\nQuét QR hoặc chờ BLE khám phá lưới",
+  "peersOpenChat": "Mở trò chuyện",
+  "peersBlockAction": "Khối",
+  "peersUnblockAction": "Bỏ chặn",
+  "channelPickerTooltip": "Trò chuyện / #mesh / Khu vực",
+  "locationPickerTooltip": "Kênh vị trí",
+  "transportPickerTooltip": "Lưới / Internet / Tự động",
+  "onlinePeopleTooltip": "Mọi người trực tuyến",
+  "unreadDirectsTooltipEmpty": "Tin nhắn riêng tư",
+  "unreadDirectsTooltip": "{count} tin nhắn riêng tư chưa đọc",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "mọi người",
+  "onlinePeopleEmpty": "Chưa có ai trực tuyến ở đây",
+  "onlinePeopleCount": "{count} trực tuyến",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · lân cận + khu vực",
+  "peerOnlineMeshTitle": "Ai đó ở gần trên lưới",
+  "peerOnlineMeshBody": "{name} ở gần trên lưới",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "Ai đó trực tuyến trong khu vực",
+  "peerOnlineAreaBody": "{name} đang trực tuyến qua Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#kênh vị trí",
+  "channelPinsTitle": "Đã ghim",
+  "channelPinsHint": "Ghim các kênh bạn sử dụng thường xuyên — chúng luôn ở trên cùng",
+  "channelPinTooltip": "Ghim kênh này",
+  "channelUnpinTooltip": "Bỏ ghim",
+  "locationSheetIntro": "Trò chuyện với những người ở gần bằng cách sử dụng geohash thô — không phải GPS chính xác. Sự hiện diện trên Internet sử dụng khóa Nostr ẩn danh.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "Dịch chuyển tức thời",
+  "homeComposeHint": "Tin nhắn {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "Gửi tới {channel} — công khai",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "hết hạn vào",
+  "voiceRecordTapToStart": "Nhấn để ghi tin nhắn thoại",
+  "voiceRecordTooShort": "Ghi quá ngắn - thử lại",
+  "voiceRecordFailed": "Không thể lưu bản ghi - hãy thử lại",
+  "voicePttHold": "Giữ để ghi lại",
+  "voicePttRelease": "Phát hành để xem trước",
+  "voicePttRecording": "Đang ghi…",
+  "voicePttDraftReady": "Ghi chú thoại đã sẵn sàng",
+  "voicePttDiscard": "Loại bỏ",
+  "voicePttReRecord": "Ghi lại",
+  "voicePttSend": "Gửi ghi chú bằng giọng nói",
+  "voicePttPlayPreview": "Phát bản xem trước",
+  "voicePttStopPreview": "Dừng xem trước",
+  "noticesBackfilling": "Đang tải thông báo…",
+  "noticesNostrOnline": "Nostr trực tuyến",
+  "noticesNostrOffline": "Nostr ngoại tuyến — bản tin cần có Internet",
+  "noticesBackfillLoaded": "Đã tải {count} thông báo",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "Không thể xuất bản thông báo cho hội đồng quản trị khu vực. Kiểm tra kết nối Nostr.",
+  "noticeMeshPublishNoLink": "Đã lưu cục bộ. Kết nối với đài lưới gần đó (hoặc cổng Wi‑Fi) để người khác có thể nhận được.",
+  "noticeMeshPublishSent": "Bản tin được gửi tới {count} (các) thiết bị lân cận trên BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Đã nhìn thấy các đài gần đó nhưng BLE ghi không thành công. Giữ cả hai ứng dụng mở trên màn hình Thông báo và thử lại (hoặc sử dụng rơle ESP32).",
+  "noticeMeshPublishNoGatt": "Bộ thu BLE của thiết bị này chưa sẵn sàng. Chuyển đổi Bluetooth và mở lại Thông báo.",
+  "noticeDelete": "Xóa thông báo",
+  "noticeDeleteConfirmTitle": "Xóa thông báo này?",
+  "noticeDeleteLocalOnlyBody": "Thao tác này chỉ xóa nó trên thiết bị này. Những người khác đã nhận được nó vẫn sẽ nhìn thấy nó.",
+  "noticeDeleted": "Đã xóa thông báo",
+  "chatNoticeHidden": "Thông báo khu vực — mở Thông báo",
+  "identityDisplayNameTitle": "Tên hiển thị",
+  "identitySaveName": "Lưu tên",
+  "identityUserIdLabel": "ID người dùng (Băm khóa công khai)",
+  "identityCopyHashTooltip": "Sao chép hàm băm khóa công khai",
+  "identityMyQrTitle": "QR của tôi (id + pubKey + tên)",
+  "identityQrFailed": "Không thể tạo QR\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "Đang lưu…",
+  "identitySaveQr": "Lưu QR vào thư viện ảnh",
+  "identityOpenScanner": "Mở camera để quét QR",
+  "identityQrHelp": "Nhờ một người bạn quét cái này để lưu khóa chung của bạn và (nếu cần) đặt bạn làm Nhà phát hành đã được xác minh",
+  "identityChatTip": "Mẹo: bạn cũng có thể quét mã QR trong cuộc trò chuyện để thêm khóa chung cho E2EE",
+  "infoOpen": "Giới thiệu / Thông tin",
+  "docsGuideTitle": "Hướng dẫn sử dụng",
+  "docsGuideSubtitle": "Mở trong trình duyệt",
+  "docsOpenAction": "Mở hướng dẫn",
+  "docsOpenFailed": "Không thể mở hướng dẫn sử dụng",
+  "firmwareOtaGuideTitle": "Hướng dẫn flash & giao thức OTA",
+  "firmwareOtaGuideSubtitle": "Mở hướng dẫn web — tải xuống .bin và các bước đầy đủ",
+  "firmwareWebDownloadsTitle": "Tải xuống chương trình cơ sở trên web",
+  "firmwareWebDownloadsSubtitle": "Liên kết mỗi phiên bản và tổng kiểm tra trên trang tài liệu",
+  "inviteCopyShortLink": "Sao chép liên kết ngắn",
+  "inviteShareLink": "Chia sẻ liên kết",
+  "inviteShowFullLink": "Liên kết đầy đủ",
+  "inviteCopyFullLink": "Sao chép liên kết đầy đủ",
+  "inviteLinkCopied": "Đã sao chép liên kết",
+  "inviteLongPressHint": "Nhấn và giữ để thực hiện các thao tác liên kết",
+  "inviteSendInChat": "Gửi cuộc trò chuyện ResilNet…",
+  "inviteSendInChatHint": "Chỉ những người mà bạn đã có khóa công khai",
+  "inviteSendInChatEmpty": "Chưa có cuộc trò chuyện có thể nhắn tin nào.\nTrước tiên, hãy quét QR, mở Khu vực/Lưới hoặc chia sẻ liên kết bên ngoài ứng dụng.",
+  "inviteSentToChat": "Lời mời đã được gửi trong cuộc trò chuyện",
+  "infoTabInfo": "Thông tin",
+  "infoTabSettingsHint": "Mở Cài đặt từ menu cho các công cụ ngôn ngữ, E2EE và dữ liệu",
+  "infoHowToTitle": "Cách sử dụng",
+  "infoHowToBody": "• Nhấn vào biểu tượng kênh để chuyển Trò chuyện / #mesh / Khu vực\n• Nhấn vào vị trí để chọn kích thước geohash\n• Nhấn vào mọi người để tìm thành viên hoặc những người đang trực tuyến\n• Mở Danh tính/QR từ ⋮ để trao đổi chìa khóa trực tiếp\n• Khu vực “công cộng” gửi E2EE đã được niêm phong tới từng thiết bị ngang hàng trực tuyến — không phải phòng văn bản gốc",
+  "infoFeaturesTitle": "Đặc trưng",
+  "infoFeatureOffline": "Nhắn tin ngoại tuyến qua Bluetooth Low Energy",
+  "infoFeatureE2ee": "Mã hóa đầu cuối với RSA-OAEP + AES-GCM (không phải tiếng ồn)",
+  "infoFeatureMultihop": "Tin nhắn có thể nhảy qua các đồng nghiệp ở gần để đi xa hơn",
+  "infoFeatureBridge": "Lưới lai ↔ internet (Nostr) cho phong bì kín",
+  "infoFeatureGeo": "Các kênh geohash cục bộ dành cho những người ở gần (khám phá UX)",
+  "infoFeatureNotices": "Thông báo hết hạn cho #mesh và Area",
+  "infoPrivacyTitle": "Sự riêng tư",
+  "infoPrivacyNoRoom": "Không có làng bản rõ/phòng trò chuyện công cộng trên mạng",
+  "infoPrivacyFanout": "Gửi khu vực = phân bổ theo tỷ lệ 1:1 kín cho các đồng nghiệp có khóa chung đã biết",
+  "infoPrivacyPresence": "Sự hiện diện của khu vực Internet sử dụng các khóa Nostr tạm thời",
+  "infoSymbolsTitle": "Biểu tượng",
+  "infoSymBle": "Liên kết Bluetooth trực tiếp",
+  "infoSymMesh": "Có thể truy cập thông qua lưới (những người khác chuyển tiếp)",
+  "infoSymInternet": "Qua internet (Nostr) — phong bì dán kín",
+  "infoSymBridge": "Đến qua đường dẫn cầu nối lưới↔internet",
+  "infoSymOffline": "Ngoại tuyến - không thể truy cập ngay bây giờ",
+  "infoSymInArea": "Trong khu vực kênh vị trí này",
+  "infoSymE2eeOk": "Phiên được mã hóa hai đầu",
+  "infoSymE2eeFail": "Không có mã hóa - không gửi văn bản nhạy cảm",
+  "infoSymVerified": "Khóa đã được xác minh/đã biết danh tính",
+  "infoSymBlocked": "Bị chặn",
+  "infoSymUnread": "Tin nhắn riêng tư chưa đọc",
+  "infoEmergencyTitle": "Chế độ khẩn cấp",
+  "infoEmergencyBody": "Nhấn ba lần vào tiêu đề ResilNet trên màn hình chính để xóa tin nhắn, khóa và danh tính trên thiết bị này.",
+  "infoLegendNote": "Một số biểu tượng đường dẫn được ghi lại ở đây để làm rõ; dấu tích gửi trong trò chuyện vẫn là trạng thái gửi chính.",
+  "dangerZoneTitle": "Vùng nguy hiểm",
+  "dangerZoneSubtitle": "Xóa tin nhắn, khóa mã hóa, danh tính Nostr, ngang hàng và biệt hiệu trên thiết bị này. Bạn sẽ thiết lập lại.",
+  "panicWipeTitle": "Xóa khẩn cấp",
+  "panicWipeSubtitle": "Xóa mọi thứ cục bộ - giống như nhấn ba lần vào tiêu đề nhà (nhấn đúp làm mới radio)",
+  "panicWipeConfirmTitle": "Xóa tất cả dữ liệu cục bộ?",
+  "panicWipeConfirmBody": "Thao tác này sẽ xóa vĩnh viễn các cuộc trò chuyện, khóa và danh tính trên điện thoại này.\nCác đồng nghiệp phải trao đổi lại khóa QR với danh tính mới của bạn.\nĐiều này không thể hoàn tác được.",
+  "panicWipeAction": "Xóa sạch mọi thứ",
+  "panicWipeSnack": "Danh tính cục bộ bị xóa - thiết lập lại",
+  "panicWipeFailed": "Xóa không thành công: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "Cầu lưới",
+  "meshBridgeSubtitle": "Khi bật (mặc định), các phong bì kín có thể sử dụng cả lưới BLE và internet (Nostr) cùng nhau để các đảo lưới gần đó có thể kết nối. Khi tắt, việc gửi chỉ sử dụng một đường dẫn - không bao giờ đưa văn bản gốc lên dây.",
+  "favoritesTitle": "Yêu thích",
+  "favoritesAdd": "Thêm vào mục yêu thích",
+  "favoritesRemove": "Xóa khỏi mục yêu thích",
+  "favoritesEmpty": "Chưa có mục yêu thích nào - gắn dấu sao cho một người ngang hàng trong danh sách thành viên",
+  "favoritesNearbyTitle": "Yêu thích lân cận",
+  "favoritesNearbyBody": "{name} ở gần trên lưới",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "Yêu thích trong khu vực",
+  "favoritesInAreaBody": "{name} đang trực tuyến ở khu vực này",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Cấu trúc liên kết lưới",
+  "topologySubtitle": "Gợi ý kết nối và ngang hàng từ thông báo lưới (chỉ đọc)",
+  "topologyConnectedNow": "Đã kết nối ngay bây giờ (BLE)",
+  "topologyNearby": "Gần đây (BLE)",
+  "topologyKnown": "Đồng nghiệp đã biết",
+  "topologyEmpty": "Chưa có đồng nghiệp nào học được — hãy ở gần khi bật BLE",
+  "topologyYou": "Bạn",
+  "topologyStats": "{peers} ngang hàng · {links} liên kết",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "Được ước tính từ khám phá lưới lân cận — thiết bị của bạn được đánh dấu. Nhấn vào một người ngang hàng để mở trò chuyện.",
+  "topologyOpen": "Cấu trúc liên kết lưới",
+  "slashHelpTitle": "Lệnh",
+  "slashHelpBody": "/trợ giúp - danh sách này\n/who - những người trực tuyến trong kênh hiện tại\n/drop <text> - ghim một thông báo được niêm phong ở đây (phân xuất E2EE)\n\nHướng dẫn đầy đủ: sử dụng Hướng dẫn mở bên dưới hoặc Cài đặt → Hướng dẫn sử dụng.",
+  "slashWhoEmpty": "Hiện tại không có ai trực tuyến trên kênh này",
+  "slashWhoTitle": "Trực tuyến ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "Cách sử dụng: /thả văn bản ghi chú của bạn",
+  "slashDropDone": "Đã bỏ thông báo vào {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "Lệnh không xác định - thử /help",
+  "announceOpen": "Thông báo",
+  "announceTitle": "Thông báo",
+  "announceEmpty": "Chưa có bảng nào - tạo một bảng để đăng thông báo bị khóa hoặc mở",
+  "announceCreate": "Tạo bảng",
+  "announceCreateHint": "Tên bảng",
+  "announceDefaultTitle": "Ban cộng đồng",
+  "announceSettings": "Cài đặt bảng",
+  "announceAllowLocked": "Cho phép bài viết bị khóa (mã hóa)",
+  "announceAllowLockedSub": "Được mã hóa vào khóa bảng - người đọc cần quyền truy cập",
+  "announceAllowOpen": "Cho phép bài viết mở (bản rõ)",
+  "announceAllowOpenSub": "Không phải E2EE - có thể đọc được trên lưới/rơle. Tắt theo mặc định.",
+  "announceComposeHint": "Viết thông báo…",
+  "announceMediaInternetOnly": "Thông báo bằng hình ảnh/giọng nói gửi qua internet (không phải BLE)",
+  "announceNeedInternet": "Kết nối Internet để gửi thông báo bằng hình ảnh hoặc giọng nói",
+  "announceVoiceFailed": "Không thể ghi âm giọng nói: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "Hình ảnh quá lớn (tối đa ~180 KB)",
+  "announcePlayVoice": "Phát ghi chú bằng giọng nói",
+  "announceImageLabel": "📷 Hình ảnh",
+  "announceAudioLabel": "🎤 Ghi chú bằng giọng nói",
+  "announceModeLocked": "Đã khóa",
+  "announceModeOpen": "Mở",
+  "announceOpenBadge": "MỞ · không được mã hóa",
+  "announceLockedBadge": "Đã khóa",
+  "announceLockedPlaceholder": "Đã mã hóa - yêu cầu quyền truy cập để đọc",
+  "announceRequestAccess": "Yêu cầu quyền truy cập",
+  "announceRequestSent": "Yêu cầu truy cập được gửi đến chủ sở hữu bảng",
+  "announceRequestFailed": "Không thể yêu cầu quyền truy cập (cần khóa chung của chủ sở hữu)",
+  "announceOpenConfirmTitle": "Đăng mà không cần mã hóa?",
+  "announceOpenConfirmBody": "Mở bài viết không phải là E2EE. Bất kỳ ai trên đường dẫn (lưới/rơle) đều có thể đọc chúng. Tiếp tục?",
+  "announcePostAction": "Bưu kiện",
+  "announcePendingRequests": "Yêu cầu truy cập",
+  "announceApprove": "Chấp thuận",
+  "announceDeny": "Từ chối",
+  "announceGranted": "Bạn có thể đọc các bài viết bị khóa trên diễn đàn này",
+  "announceOwner": "Bạn sở hữu bảng này",
+  "announceCopyInvite": "Sao chép văn bản mời",
+  "announceShowInviteQr": "Hiển thị QR lời mời",
+  "announceScanInviteQr": "Quét bảng mời QR",
+  "announceFollow": "Theo dõi bảng từ lời mời",
+  "announceFollowHint": "Dán văn bản mời hoặc liên kết ResilNet từ chủ sở hữu",
+  "announceFollowOk": "Bảng theo dõi",
+  "announceFollowOkNamed": "Đang theo dõi “{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "Lời mời không hợp lệ hoặc bị hỏng",
+  "announceInviteCopied": "Đã sao chép văn bản mời",
+  "announceInviteSaveQr": "Lưu mã QR",
+  "announceInviteShare": "Chia sẻ lời mời",
+  "announceFollowFromCompose": "Đã phát hiện thấy lời mời tham gia hội đồng trong hộp thông báo",
+  "peerConfirmAddTitle": "Thêm thành viên mạng?",
+  "peerConfirmAddBody": "Thêm “{name}” bằng khóa chung của họ để bạn có thể nhắn tin riêng cho họ?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "Thêm thành viên",
+  "peerAddedOk": "Đã thêm {name} vào thành viên mạng",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "Nhận dạng/khóa công khai được phát hiện trong hộp thông báo",
+  "peerHashCopied": "Đã sao chép hàm băm khóa công khai",
+  "peerHashOpenChat": "Mở trò chuyện",
+  "peerHashAddHint": "Đã sao chép băm. Yêu cầu họ chia sẻ liên kết nhận dạng hoặc QR để bạn có thể thêm khóa công khai đầy đủ cho E2EE.",
+  "peerQrNoCode": "Không tìm thấy ResilNet QR trong hình ảnh này",
+  "identityInviteSharePreamble": "ResilNet danh tính: “{name}”\nMở liên kết hoặc dán vào phần trò chuyện → Thêm thành viên\nHoặc quét mã QR nhận dạng.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "Chia sẻ liên kết nhận dạng",
+  "identityInviteCopied": "Đã sao chép liên kết nhận dạng",
+  "announceInviteSharePreamble": "Giấy mời vào hội đồng quản trị: “{title}”\nMở ResilNet → Bảng cộng đồng → Theo dõi từ lời mời\nHoặc quét QR / nhấn vào liên kết bên dưới.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "Theo dõi bảng này?",
+  "announceConfirmFollowBody": "Theo dõi “{title}” từ lời mời này?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "Theo"
+}

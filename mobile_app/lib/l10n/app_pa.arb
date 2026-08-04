@@ -1,0 +1,1105 @@
+{
+  "@@locale": "pa",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "ਤਾਜ਼ਾ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ ResilNet…",
+  "appRefreshed": "ਤਾਜ਼ਾ — ਰੇਡੀਓ ਅਤੇ ਖੋਜ ਮੁੜ-ਚਾਲੂ",
+  "appRefreshFailed": "ਤਾਜ਼ਾ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "ਡਬਲ-ਟੈਪ = ਨਰਮ ਤਾਜ਼ਗੀ। ਦੇਰ ਦਬਾਉ = ਔਖਾ ਮੁੜ। ਟ੍ਰਿਪਲ-ਟੈਪ = ਸੰਕਟ ਪੂੰਝਣਾ।",
+  "softRefreshTipTitle": "ਜੇਕਰ ResilNet ਫਸਿਆ ਮਹਿਸੂਸ ਕਰਦਾ ਹੈ",
+  "softRefreshTipBody": "ਸੌਫਟ ਰੇਡੀਓ ਰਿਫਰੈਸ਼ ਲਈ ResilNet (ਉੱਪਰ-ਖੱਬੇ) ਡਬਲ-ਟੈਪ ਕਰੋ। ਜੇਕਰ ਅਜੇ ਵੀ ਫਸਿਆ ਹੋਇਆ ਹੈ: ਸਿਰਲੇਖ ਨੂੰ ਦੇਰ ਤੱਕ ਦਬਾਓ, ⋮ → ਹਾਰਡ ਰਿਕਵਰ, ਜਾਂ ਸੈਟਿੰਗਾਂ ਦੀ ਵਰਤੋਂ ਕਰੋ। ਟ੍ਰਿਪਲ-ਟੈਪ ਸਿਰਫ ਐਮਰਜੈਂਸੀ ਵਾਈਪ ਹੈ।",
+  "softRefreshTipGotIt": "ਮਿਲ ਗਿਆ",
+  "infoSoftRefreshTitle": "ਜੇਕਰ ਐਪ ਫਸਿਆ ਮਹਿਸੂਸ ਕਰਦਾ ਹੈ",
+  "infoSoftRefreshStepRefresh": "ਡਬਲ-ਟੈਪ ResilNet (ਉੱਪਰ-ਖੱਬੇ) → ਸਾਫਟ ਰਿਫਰੈਸ਼ ਰੇਡੀਓ ਅਤੇ ਨੇੜਲੇ ਲੋਕ",
+  "infoSoftRefreshStepHard": "ਅਜੇ ਵੀ ਫਸਿਆ ਹੋਇਆ ਹੈ? ਸਿਰਲੇਖ ਨੂੰ ਲੰਬੇ ਸਮੇਂ ਤੱਕ ਦਬਾਓ, ਜਾਂ ⋮ / ਸੈਟਿੰਗਾਂ → ਹਾਰਡ ਰਿਕਵਰੀ",
+  "infoSoftRefreshStepWait": "ਨਤੀਜੇ ਸਨੈਕਬਾਰ ਦੀ ਉਡੀਕ ਕਰੋ, ਫਿਰ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਸੈਸ਼ਨ ਰੀਸੈਟ ਤੁਹਾਡੀਆਂ ਕੁੰਜੀਆਂ ਨੂੰ ਰੱਖਦਾ ਹੈ।",
+  "infoSoftRefreshStepWipe": "ਟ੍ਰਿਪਲ-ਟੈਪ = ਐਮਰਜੈਂਸੀ ਵਾਈਪ (ਸਥਾਨਕ ਡੇਟਾ ਨੂੰ ਮਿਟਾਉਂਦਾ ਹੈ) — ਤਾਂ ਹੀ ਜੇ ਜਾਣਬੁੱਝ ਕੇ",
+  "appRecoverySection": "ਐਪ ਰਿਕਵਰੀ",
+  "appRecoverySectionSubtitle": "ਜਦੋਂ ਐਪ ਫ੍ਰੀਜ਼ ਮਹਿਸੂਸ ਹੋਵੇ ਤਾਂ ਵਰਤੋਂ। ਕੋਮਲ = ਸਿਰਲੇਖ ਡਬਲ-ਟੈਪ। ਹਾਰਡ ਰਿਕਵਰੀ ਮਜ਼ਬੂਤ ​​ਹੁੰਦੀ ਹੈ। ਸੈਸ਼ਨ ਰੀਸੈਟ ਕੁੰਜੀਆਂ ਨੂੰ ਪੂੰਝੇ ਬਿਨਾਂ ਸੇਵਾਵਾਂ ਨੂੰ ਮੁੜ ਚਾਲੂ ਕਰਦਾ ਹੈ।",
+  "appHardRecoverAction": "ਸਖ਼ਤ ਰਿਕਵਰੀ",
+  "appHardRecovering": "ਔਖਾ ਠੀਕ ਹੋ ਰਿਹਾ ਹੈ...",
+  "appSessionResetAction": "ਸੈਸ਼ਨ ਰੀਸੈਟ ਕਰੋ",
+  "appSessionResetRunning": "ਸੈਸ਼ਨ ਰੀਸੈੱਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+  "appSessionResetConfirmTitle": "ਕੀ ਸੈਸ਼ਨ ਰੀਸੈੱਟ ਕਰਨਾ ਹੈ?",
+  "appSessionResetConfirmBody": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ResilNet ਸੇਵਾਵਾਂ ਨੂੰ ਰੀਸਟਾਰਟ ਕਰਦਾ ਹੈ। ਤੁਹਾਡੀਆਂ ਪਛਾਣ ਕੁੰਜੀਆਂ ਰੱਖੀਆਂ ਜਾਂਦੀਆਂ ਹਨ।",
+  "appRecoveryBusy": "ਰਿਕਵਰੀ ਪਹਿਲਾਂ ਹੀ ਚੱਲ ਰਹੀ ਹੈ...",
+  "appRecoveryOk": "ਰਿਕਵਰੀ ਸਮਾਪਤ ਹੋਈ",
+  "appRecoveryPartial": "ਕੁਝ ਕਦਮ ਛੱਡੇ ਜਾਣ ਨਾਲ ਰਿਕਵਰੀ ਸਮਾਪਤ ਹੋਈ — ਜੇਕਰ ਅਜੇ ਵੀ ਫਸਿਆ ਹੋਇਆ ਹੈ ਤਾਂ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "appRecoveryFailed": "ਰਿਕਵਰੀ ਅਸਫਲ ਰਹੀ — ਸੈਸ਼ਨ ਰੀਸੈੱਟ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ, ਜਾਂ OS ਤੋਂ ਐਪ ਨੂੰ ਜ਼ਬਰਦਸਤੀ ਬੰਦ ਕਰੋ",
+  "localWifiTitle": "ਸਥਾਨਕ Wi‑Fi",
+  "localWifiSubtitle": "ਇੰਟਰਨੈਟ ਤੋਂ ਬਿਨਾਂ ਨੇੜਲੀਆਂ ਡਿਵਾਈਸਾਂ ਨੂੰ ਲਿੰਕ ਕਰੋ — ਇੱਕ LAN 'ਤੇ ਹੋਣ ਵਾਂਗ ਹੀ।",
+  "localWifiNotGatewayHint": "ESP32 LoRa ਗੇਟਵੇ SoftAP ਨਹੀਂ। ਇਹ ਸਿਰਫ਼ ਫ਼ੋਨ↔phone/LAN ਹੈ।",
+  "localWifiUnavailable": "ਸਥਾਨਕ Wi‑Fi ਅਜੇ ਤਿਆਰ ਨਹੀਂ ਹੈ — ਐਪ ਸਟਾਰਟਅਪ ਦੀ ਉਡੀਕ ਕਰੋ।",
+  "lxmfBridgeTitle": "ਹੋਮ ਨੋਡ",
+  "lxmfBridgeSubtitle": "ਤੁਹਾਡੇ Wi‑Fi 'ਤੇ ਵਿਕਲਪਿਕ Mac ਜਾਂ Pi ਜੋ ਸੀਲਬੰਦ ਚੈਟਾਂ ਨੂੰ ਰੀਲੇਅ ਕਰਦਾ ਹੈ। ਮੂਲ ਰੂਪ ਵਿੱਚ ਬੰਦ। ਐਂਡ-ਟੂ-ਐਂਡ ਇਨਕ੍ਰਿਪਸ਼ਨ ਨੂੰ ਨਹੀਂ ਬਦਲਦਾ।",
+  "lxmfBridgeEnable": "ਹੋਮ ਨੋਡ ਦੀ ਵਰਤੋਂ ਕਰੋ",
+  "lxmfBridgeDisabledHint": "ਸਿਰਫ਼ ਉਦੋਂ ਹੀ ਚਾਲੂ ਕਰੋ ਜਦੋਂ ਬ੍ਰਿਜ ਐਪ ਇਸ ਨੈੱਟਵਰਕ 'ਤੇ Mac ਜਾਂ Pi 'ਤੇ ਚੱਲ ਰਹੀ ਹੋਵੇ।",
+  "lxmfBridgeOnline": "ਔਨਲਾਈਨ — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "ਹੋਮ ਨੋਡ ਤੱਕ ਨਹੀਂ ਪਹੁੰਚਿਆ ਜਾ ਸਕਦਾ — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "ਹੋਮ ਨੋਡ ਪਤਾ",
+  "lxmfBridgeBaseUrlHelper": "IP ਜਾਂ http://IP:port — ਉਦਾਹਰਨ 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "ਪੀਅਰ → LXMF ਮੰਜ਼ਿਲ (JSON)",
+  "lxmfBridgeRefresh": "ਸਥਿਤੀ ਨੂੰ ਸੰਭਾਲੋ ਅਤੇ ਤਾਜ਼ਾ ਕਰੋ",
+  "lxmfBridgeLabHint": "ਉੱਨਤ: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "ਹੋਮ ਨੋਡ ਸੈਟਿੰਗਾਂ",
+  "lxmfBridgeCheckConnection": "ਕਨੈਕਸ਼ਨ ਦੀ ਜਾਂਚ ਕਰੋ",
+  "lxmfBridgeStatusOnline": "ਹੋਮ ਨੋਡ ਨਾਲ ਕਨੈਕਟ ਕੀਤਾ ਗਿਆ",
+  "lxmfBridgeStatusOffline": "ਹੋਮ ਨੋਡ ਪਹੁੰਚਯੋਗ ਨਹੀਂ ਹੈ",
+  "lxmfBridgeYourDest": "ਇਸ ਨੋਡ ਦਾ ਪਤਾ (ਦੋਸਤਾਂ ਨਾਲ ਸਾਂਝਾ ਕਰੋ)",
+  "lxmfBridgeCopyDest": "ਪਤਾ ਕਾਪੀ ਕਰੋ",
+  "lxmfBridgeDestCopied": "ਪਤਾ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+  "lxmfBridgeLinkedPeers": "ਲਿੰਕ ਕੀਤੇ ਦੋਸਤ",
+  "lxmfBridgeLinkedPeersHint": "ਹਰੇਕ ਦੋਸਤ ਨੂੰ ਇੱਕ ਵਾਰ ਆਪਣੇ ਘਰ-ਨੋਡ ਪਤੇ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਫਿਰ ਸੀਲਬੰਦ ਚੈਟ ਇਸ ਮਾਰਗ ਦੀ ਵਰਤੋਂ ਕਰ ਸਕਦੇ ਹਨ।",
+  "lxmfBridgeNoLinks": "ਅਜੇ ਤੱਕ ਕੋਈ ਦੋਸਤ ਲਿੰਕ ਨਹੀਂ ਹੋਏ।",
+  "lxmfBridgeAddLink": "ਇੱਕ ਦੋਸਤ ਨੂੰ ਲਿੰਕ ਕਰੋ",
+  "lxmfBridgePickPeer": "ਦੋਸਤ",
+  "lxmfBridgePeerDest": "ਉਹਨਾਂ ਦੇ ਘਰ-ਨੋਡ ਦਾ ਪਤਾ",
+  "lxmfBridgePeerDestHint": "ਉਹਨਾਂ ਦੀ ਹੋਮ ਨੋਡ ਸਕ੍ਰੀਨ ਤੋਂ 32-ਅੱਖਰਾਂ ਦਾ ਕੋਡ",
+  "lxmfBridgeInvalidDest": "ਉਹ ਪਤਾ ਵੈਧ ਨਹੀਂ ਜਾਪਦਾ ਹੈ। ਉਹਨਾਂ ਦੇ ਹੋਮ ਨੋਡ ਤੋਂ ਪੂਰਾ ਕੋਡ ਪੇਸਟ ਕਰੋ।",
+  "lxmfBridgeRemoveLink": "ਅਣਲਿੰਕ ਕਰੋ",
+  "lxmfBridgeSaveLink": "ਸੇਵ ਕਰੋ",
+  "lxmfBridgeLinkSaved": "ਦੋਸਤ ਲਿੰਕ ਕੀਤਾ",
+  "lxmfBridgeNoPeers": "ਅਜੇ ਤੱਕ ਕੋਈ ਸੁਨੇਹਾ ਦੇਣ ਯੋਗ ਸੰਪਰਕ ਨਹੀਂ - ਪਹਿਲਾਂ ਇੱਕ ਦੋਸਤ ਸ਼ਾਮਲ ਕਰੋ।",
+  "lxmfBridgeHelp": "ਬ੍ਰਿਜ ਨੂੰ Mac/Pi 'ਤੇ ਚੱਲਦਾ ਰੱਖੋ। ਇਹ ਮਾਰਗ ਤੁਹਾਡੇ LAN 'ਤੇ ਰਹਿੰਦਾ ਹੈ — ਇਹ LoRa ਨਹੀਂ ਹੈ ਅਤੇ ਇੰਟਰਨੈੱਟ ਜਾਂ ਬਲੂਟੁੱਥ ਜਾਲ ਨੂੰ ਨਹੀਂ ਬਦਲਦਾ ਹੈ।",
+  "localWifiModeHotspot": "ਨੇੜੇ",
+  "localWifiModeRouter": "ਰਾਊਟਰ",
+  "localWifiHotspotIntro": "ਇੱਕ ਡਿਵਾਈਸ ਇੱਕ ਨਿੱਜੀ ਹੌਟਸਪੌਟ ਨੂੰ ਸਾਂਝਾ ਕਰਦੀ ਹੈ। ਦੂਸਰੇ ਉਸ ਹੌਟਸਪੌਟ ਵਿੱਚ ਸ਼ਾਮਲ ਹੁੰਦੇ ਹਨ, ਫਿਰ ResilNet ਉਹਨਾਂ ਨੂੰ ਸਥਾਨਕ ਨੈੱਟਵਰਕ 'ਤੇ ਲੱਭਦਾ ਹੈ।",
+  "localWifiHostAction": "ਨੈੱਟਵਰਕ (ਹੋਸਟ) ਬਣਾਓ",
+  "localWifiJoinAction": "ਨੈੱਟਵਰਕ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
+  "localWifiHostSteps": "1. ਆਈਓਐਸ/ਐਂਡਰਾਇਡ ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ ਅਤੇ ਨਿੱਜੀ ਹੌਟਸਪੌਟ (ਜਾਂ ਇੰਟਰਨੈਟ ਸ਼ੇਅਰਿੰਗ) ਚਾਲੂ ਕਰੋ.\n2. ਦੋਸਤਾਂ ਨੂੰ ਹੌਟਸਪੌਟ ਨਾਮ (ਅਤੇ ਪਾਸਵਰਡ) ਦੱਸੋ.\n3. ਇੱਥੇ ਵਾਪਸ ਆਓ ਅਤੇ \"ਹੌਟਸਪੌਟ ਚਾਲੂ ਹੈ — ਉਡੀਕ ਸ਼ੁਰੂ ਕਰੋ\" ਤੇ ਟੈਪ ਕਰੋ ।",
+  "localWifiHostReady": "ਹੌਟਸਪੌਟ ਚਾਲੂ ਹੈ — ਉਡੀਕ ਸ਼ੁਰੂ ਕਰੋ",
+  "localWifiHostWaiting": "ਦੋਸਤਾਂ ਦੇ ਸ਼ਾਮਲ ਹੋਣ ਦੀ ਉਡੀਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+  "localWifiJoinSteps": "1. ਸਿਸਟਮ ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ ਅਤੇ ਆਪਣੇ ਦੋਸਤ ਦੇ ਨਿੱਜੀ ਹੌਟਸਪੌਟ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ।\n2. ਇੱਥੇ ਵਾਪਸ ਜਾਓ ਅਤੇ \"ਮੈਂ ਜੁੜਿਆ ਹੋਇਆ ਹਾਂ - ਖੋਜ\" 'ਤੇ ਟੈਪ ਕਰੋ।",
+  "localWifiJoinReady": "ਮੈਂ ਜੁੜਿਆ ਹੋਇਆ ਹਾਂ — ਖੋਜ",
+  "localWifiRouterIntro": "ਹਰੇਕ ਡਿਵਾਈਸ ਨੂੰ ਉਸੇ Wi‑Fi ਰਾਊਟਰ/AP ਨਾਲ ਕਨੈਕਟ ਕਰੋ। ਰਾਊਟਰ ਨੂੰ ਇੰਟਰਨੈੱਟ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ — ਸਿਰਫ਼ ਇੱਕ ਸਾਂਝਾ ਸਥਾਨਕ ਨੈੱਟਵਰਕ।",
+  "localWifiRouterSearch": "ਇਸ Wi‑Fi 'ਤੇ ਖੋਜ ਕਰੋ",
+  "localWifiRefreshNetwork": "Wi‑Fi ਜਾਣਕਾਰੀ ਨੂੰ ਤਾਜ਼ਾ ਕਰੋ",
+  "localWifiRouterNoWifiTitle": "'ਤੇ ਨਹੀਂ Wi‑Fi",
+  "localWifiRouterNoWifiBody": "ਸਿਸਟਮ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਰਾਊਟਰ ਦੇ Wi‑Fi ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ, ਫਿਰ ਦੁਬਾਰਾ ਖੋਜ ਕਰੋ।",
+  "localWifiDiscovering": "ਸਥਾਨਕ Wi‑Fi 'ਤੇ ਖੋਜ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+  "localWifiPeersFound": "ਇਸ ਨੈੱਟਵਰਕ 'ਤੇ ਡਿਵਾਈਸਾਂ",
+  "localWifiStop": "ਰੂਕੋ",
+  "localWifiSsidUnknown": "Wi‑Fi ਨਾਂ ਉਪਲੱਬਧ ਨਹੀਂ",
+  "localWifiStubBanner": "LAN ਸਾਕਟ ਦੀ ਉਡੀਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+  "localWifiLiveBanner": "LAN ਖੋਜ ਲਾਈਵ (UDP) — ਇਸ Wi‑Fi 'ਤੇ + ​​ਸੀਲਬੰਦ ਚੈਟ ਦੀ ਘੋਸ਼ਣਾ ਕਰੋ",
+  "localWifiEmptyHotspot": "ਅਜੇ ਤੱਕ ਕੋਈ ਡਿਵਾਈਸ ਨਹੀਂ ਹੈ।\nਜਾਂਚ ਕਰੋ ਕਿ ਦੋਸਤ ਤੁਹਾਡੇ ਹੌਟਸਪੌਟ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਏ ਹਨ ਅਤੇ ਸਥਾਨਕ ਨੈੱਟਵਰਕ ਤੱਕ ਪਹੁੰਚ ਦੀ ਇਜਾਜ਼ਤ ਦਿੱਤੀ ਹੈ।",
+  "localWifiEmptyRouter": "ਅਜੇ ਤੱਕ ਕੋਈ ਡਿਵਾਈਸ ਨਹੀਂ ਹੈ।\nਉਹੀ SSID? ਕੀ ਸਥਾਨਕ ਨੈੱਟਵਰਕ ਦੀ ਇਜਾਜ਼ਤ ਹੈ? ਕੁਝ ਰਾਊਟਰ ਡਿਵਾਈਸ-ਟੂ-ਡਿਵਾਈਸ ਟ੍ਰੈਫਿਕ (AP ਆਈਸੋਲੇਸ਼ਨ) ਨੂੰ ਬਲੌਕ ਕਰਦੇ ਹਨ।",
+  "localWifiIsolationHelp": "ਅਸੀਂ ਇੱਕ ਦੂਜੇ ਨੂੰ ਕਿਉਂ ਨਹੀਂ ਲੱਭ ਸਕਦੇ?",
+  "localWifiIsolationTitle": "ਰਾਊਟਰ ਗਾਹਕਾਂ ਨੂੰ ਅਲੱਗ ਕਰ ਸਕਦਾ ਹੈ",
+  "localWifiIsolationBody": "ਜੇਕਰ AP/ਕਲਾਇੰਟ ਆਈਸੋਲੇਸ਼ਨ (ਜਾਂ ਇੱਕ ਗੈਸਟ ਨੈੱਟਵਰਕ) ਚਾਲੂ ਹੈ, ਤਾਂ ਉਸੇ Wi‑Fi 'ਤੇ ਫ਼ੋਨ ਗੱਲ ਨਹੀਂ ਕਰ ਸਕਦੇ। ਆਈਸੋਲੇਸ਼ਨ ਬੰਦ ਕਰੋ, ਮੁੱਖ SSID ਦੀ ਵਰਤੋਂ ਕਰੋ, ਜਾਂ ਨੇੜਲੇ (ਹੌਟਸਪੌਟ) ਮੋਡ 'ਤੇ ਸਵਿਚ ਕਰੋ।",
+  "localWifiPeerReady": "ਗੱਲਬਾਤ ਕਰਨ ਲਈ ਤਿਆਰ (ਕੁੰਜੀ ਹੈ)",
+  "localWifiPeerNeedKey": "ਲੱਭਿਆ — ਕੁੰਜੀਆਂ ਨੂੰ ਬਦਲਣ ਲਈ QR ਸਕੈਨ ਕਰੋ",
+  "localWifiErrorTitle": "ਸਥਾਨਕ Wi‑Fi ਤਰੁੱਟੀ",
+  "localWifiErrorBody": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਰੁਕੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+  "preparingSystem": "ਸਿਸਟਮ ਤਿਆਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+  "bootFailedTitle": "ਸ਼ੁਰੂ ਨਹੀਂ ਹੋ ਸਕਿਆ",
+  "retry": "ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "bootRecoveryAction": "ਨਵੀਂ ਪਛਾਣ ਸ਼ੁਰੂ ਕਰੋ (ਸਥਾਨਕ ਡੇਟਾ ਮਿਟਾਓ)",
+  "bootRecoveryConfirmTitle": "ਨਵੀਂ ਪਛਾਣ ਸ਼ੁਰੂ ਕਰੀਏ?",
+  "bootRecoveryConfirmBody": "ਇਹ ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਸਥਾਨਕ ਚੈਟਾਂ, ਕੁੰਜੀਆਂ ਅਤੇ ਪਛਾਣ ਨੂੰ ਸਥਾਈ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦੇਵੇਗਾ।\nਸਾਥੀਆਂ ਨੂੰ ਤੁਹਾਡੀ ਨਵੀਂ ਪਛਾਣ ਦੇ ਨਾਲ ਤੁਹਾਡੇ QR ਨੂੰ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ।\nਇਸਨੂੰ ਅਣਕੀਤਾ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।",
+  "bootRecoveryRunning": "ਸਥਾਨਕ ਪਛਾਣ ਰੀਸੈੱਟ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+  "bootRecoverySuccess": "ਸਥਾਨਕ ਪਛਾਣ ਰੀਸੈਟ ਪੂਰਾ ਹੋਇਆ",
+  "bootRecoveryFailed": "ਪਛਾਣ ਰੀਸੈਟ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "ਰੱਦ ਕਰੋ",
+  "save": "ਸੇਵ ਕਰੋ",
+  "close": "ਬੰਦ ਕਰੋ",
+  "start": "ਸ਼ੁਰੂ ਕਰੋ",
+  "send": "ਭੇਜੋ",
+  "settings": "ਸੈਟਿੰਗਾਂ",
+  "language": "ਭਾਸ਼ਾ",
+  "languageSubtitle": "ਪੂਰਵ-ਨਿਰਧਾਰਤ ਤੌਰ 'ਤੇ ਐਪ ਤੁਹਾਡੀ ਫ਼ੋਨ ਭਾਸ਼ਾ ਦੀ ਪਾਲਣਾ ਕਰਦੀ ਹੈ (ਜਦੋਂ ਸਮਰਥਿਤ ਹੋਵੇ)। ਹੋਰ ਭਾਸ਼ਾਵਾਂ ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਵਾਪਸ ਆਉਂਦੀਆਂ ਹਨ। ਤੁਸੀਂ ਇੱਥੇ ਇੱਕ ਭਾਸ਼ਾ ਨੂੰ ਲਾਕ ਵੀ ਕਰ ਸਕਦੇ ਹੋ।",
+  "languageSystem": "ਸਿਸਟਮ ਪੂਰਵ-ਨਿਰਧਾਰਤ",
+  "languageThai": "ਥਾਈ",
+  "languageEnglish": "ਅੰਗਰੇਜ਼ੀ",
+  "notificationsTooltip": "ਸੂਚਨਾ ਸੈਟਿੰਗਾਂ",
+  "enableMessageNotifications": "ਸੁਨੇਹਾ ਸੂਚਨਾਵਾਂ ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ",
+  "settingsNotificationsSubtitle": "1:1 ਸੁਨੇਹੇ ਅਤੇ ਲੋਕ ਔਨਲਾਈਨ (ਸਥਾਨਕ ਚੇਤਾਵਨੀਆਂ)",
+  "networkMembersTooltip": "ਨੈੱਟਵਰਕ ਸਦੱਸ",
+  "identityQrTooltip": "ਪਛਾਣ / QR",
+  "feedDirects": "ਚੈਟ",
+  "feedMesh": "ਕੇ- ਸਰੁੰਗDescription",
+  "feedGeo": "ਖੇਤਰ",
+  "feedDirectsSubtitle": "ਪ੍ਰਾਈਵੇਟ E2EE ਸੁਨੇਹੇ",
+  "feedMeshSubtitle": "ਨੇੜਲੇ ਸਾਥੀ (BLE)",
+  "feedGeoSubtitle": "ਜਿਓਹਸ਼ ਖੋਜ ਚੈਨਲ",
+  "peerIdHint": "ਚੈਟ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਰਿਸੀਵਰ ਆਈਡੀ (ਪਬਲਿਕ ਕੀ ਹੈਸ਼) ਪੇਸਟ ਕਰੋ",
+  "directsEmpty": "ਅਜੇ ਤੱਕ ਕੋਈ ਚੈਟ ਨਹੀਂ — ਇੱਕ QR ਸਕੈਨ ਕਰੋ ਜਾਂ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਇੱਕ ਪ੍ਰਾਪਤਕਰਤਾ ਆਈਡੀ ਪੇਸਟ ਕਰੋ\nਸੁਨੇਹੇ ਭੇਜਣ ਤੋਂ ਪਹਿਲਾਂ E2EE ਨਾਲ ਸੀਲ ਕੀਤੇ ਜਾਂਦੇ ਹਨ (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • ਚੈਟ ਖੋਲ੍ਹਣ ਲਈ ਟੈਪ ਕਰੋ",
+  "meshIntro": "BLE ਰੇਂਜ ਵਿੱਚ ਸਾਥੀ — ਇੱਕ ਨਿੱਜੀ E2EE ਚੈਟ ਲਈ ਟੈਪ ਕਰੋ (#mesh 'ਤੇ ਕੋਈ ਜਨਤਕ ਰਚਨਾ ਨਹੀਂ)\nਹਾਈਬ੍ਰਿਡ ਰਾਊਟਰ ਰਾਹੀਂ ਭੇਜਦਾ ਹੈ (BLE + LoRa + Nostr ਜਦੋਂ ਔਨਲਾਈਨ)",
+  "meshEmptyRunning": "ਅਜੇ ਤੱਕ ਕੋਈ ਨਜ਼ਦੀਕੀ ਸਾਥੀ ਨਹੀਂ — BLE ਰੇਂਜ ਦੇ ਅੰਦਰ ਕਿਸੇ ਹੋਰ ਡਿਵਾਈਸ 'ਤੇ ਐਪ ਖੋਲ੍ਹੋ",
+  "meshEmptyStopped": "BLE ਨਹੀਂ ਚੱਲ ਰਿਹਾ ਹੈ — ਬਲੂਟੁੱਥ / ਟਿਕਾਣਾ ਇਜਾਜ਼ਤ ਦਿਓ",
+  "meshNearbyPrefix": "ਨੇੜੇ",
+  "meshRetentionTitle": "ਸੁਨੇਹੇ ਆਟੋ-ਮਿਟਾਓ",
+  "meshRetentionSubtitle": "ਪੁਰਾਣਾ ਸਥਾਨਕ ਚੈਟ ਇਤਿਹਾਸ ਆਪਣੇ ਆਪ ਹਟਾ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ",
+  "meshRetentionKeep": "ਰੱਖੋ",
+  "meshRetention1Day": "1 ਦਿਨ",
+  "meshRetention3Days": "3 ਦਿਨ",
+  "meshRetention7Days": "7 ਦਿਨ",
+  "refreshLocationTooltip": "ਟਿਕਾਣਾ ਤਾਜ਼ਾ ਕਰੋ",
+  "geoIntro": "ਇਸ ਜਿਓਹਸ਼ ਵਿੱਚ ਔਨਲਾਈਨ ਲੋਕਾਂ ਨੂੰ 1:1 ਜਾਂ ਇੱਕ ਖੇਤਰ ਜਨਤਕ ਫੈਨ-ਆਊਟ ਨਾਲ ਸੁਨੇਹਾ ਭੇਜਿਆ ਜਾ ਸਕਦਾ ਹੈ (ਅਜੇ ਵੀ ਪ੍ਰਤੀ ਪੀਅਰ E2EE ਸੀਲ ਕੀਤਾ ਗਿਆ ਹੈ - ਸਾਦਾ ਟੈਕਸਟ ਨਹੀਂ)",
+  "geoEmpty": "ਹਾਲੇ ਤੱਕ {channel} ਵਿੱਚ ਕੋਈ ਵੀ ਔਨਲਾਈਨ ਨਹੀਂ ਹੈ\nਟਰਾਂਸਪੋਰਟ → ਇੰਟਰਨੈੱਟ/ਆਟੋ ਦੀ ਵਰਤੋਂ ਕਰੋ, Nostr ਦੀ ਉਡੀਕ ਕਰੋ, ਟਿਕਾਣਾ ਤਾਜ਼ਾ ਕਰੋ",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "{channel} ਵਿੱਚ ਔਨਲਾਈਨ • 1:1 E2EE ਲਈ ਟੈਪ ਕਰੋ",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "ਨੇੜੇ (ਇਲਾਕੇ ਦੀ ਮੌਜੂਦਗੀ ਦੀ ਉਡੀਕ) • 1:1 E2EE ਲਈ ਟੈਪ ਕਰੋ",
+  "geoPeerNostrSubtitle": "{channel} ਵਿੱਚ Nostr 'ਤੇ ਦੇਖਿਆ ਗਿਆ • ਸਿਰਫ਼ ਖੋਜ (ਵਿਰਾਸਤੀ)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "ਪੁਰਾਤਨ ਅਗਿਆਤ ਮੌਜੂਦਗੀ — ਇੱਕ ਬੰਨ੍ਹੇ ਹੋਏ ਪੀਅਰ ਦੀ ਉਡੀਕ ਕਰੋ ਜਾਂ QR ਦਾ ਵਟਾਂਦਰਾ ਕਰੋ",
+  "bleRadioNearbySubtitle": "BLE ਨੇੜੇ — 1:1 E2EE ਸ਼ੁਰੂ ਕਰਨ ਲਈ QR ਸਕੈਨ ਕਰੋ",
+  "geoInternetDiscoverHint": "ਖੇਤਰ ਇੰਟਰਨੈੱਟ ਖੋਜ ਲਈ Nostr ਕਨੈਕਟ ਕੀਤੇ ਜਾਣ ਦੀ ਲੋੜ ਹੈ (ਸੈਟਿੰਗਾਂ → ਟ੍ਰਾਂਸਪੋਰਟ → ਇੰਟਰਨੈੱਟ/ਆਟੋ)",
+  "geoEmptyNoLocation": "ਟਿਕਾਣਾ ਹਾਲੇ ਹੱਲ ਨਹੀਂ ਹੋਇਆ — GPS ਨੂੰ ਇਜਾਜ਼ਤ ਦਿਓ ਅਤੇ ਆਪਣੇ ਜੀਓਹਸ਼ ਨੂੰ Nostr 'ਤੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਲਈ ਰਿਫ੍ਰੈਸ਼ ਕਰੋ",
+  "geoEmptyNeedsPermission": "ਟਿਕਾਣਾ ਇਜਾਜ਼ਤ ਅਸਵੀਕਾਰ ਕੀਤੀ ਗਈ — ਸੈਟਿੰਗਾਂ → ਗੋਪਨੀਯਤਾ → ਸਥਾਨ ਵਿੱਚ ResilNet ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ",
+  "geoEmptyServicesDisabled": "ਟਿਕਾਣਾ ਸੇਵਾਵਾਂ ਬੰਦ ਹਨ — ਉਹਨਾਂ ਨੂੰ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਚਾਲੂ ਕਰੋ",
+  "geoEmptyNoGpsFix": "ਇੱਕ GPS ਫਿਕਸ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ (Wi‑Fi iPads 'ਤੇ ਆਮ) — ਹੇਠਾਂ geohash ਨੂੰ ਹੱਥੀਂ ਸੈੱਟ ਕਰੋ",
+  "geoEmptyTeleportHint": "ਸਥਾਨ ਆਈਕਨ 'ਤੇ ਟੈਪ ਕਰੋ → ਇੱਕ ਜੀਓਹਸ਼ ਦਾਖਲ ਕਰੋ (ਜਿਵੇਂ ਕਿ w5) → ਟੈਲੀਪੋਰਟ",
+  "geoSetGeohashManually": "geohash ਸੈੱਟ ਕਰੋ",
+  "geoTeleportHint": "ਕੋਈ GPS ਨਹੀਂ? geohash ਅਗੇਤਰ ਦਰਜ ਕਰੋ (2–7 ਅੱਖਰ, ਜਿਵੇਂ ਕਿ w5) ਅਤੇ ਟੈਲੀਪੋਰਟ 'ਤੇ ਟੈਪ ਕਰੋ",
+  "geoTeleportInvalid": "ਅਵੈਧ geohash — ਸਿਰਫ਼ ਅਧਾਰ 32 ਅੱਖਰ/ਨੰਬਰ ਵਰਤੋ (ਉਦਾਹਰਨ ਲਈ w5 ਜਾਂ w5jt8)",
+  "geoTeleportOk": "ਖੇਤਰ {channel} 'ਤੇ ਸੈੱਟ ਕੀਤਾ ਗਿਆ",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "ਮੈਨੁਅਲ ਖੇਤਰ: {channel} (GPS ਰਿਫਰੈਸ਼ ਓਵਰਰਾਈਡ ਹੋ ਜਾਵੇਗਾ)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr ਤਿਆਰ ਨਹੀਂ — ਦੁਬਾਰਾ ਕਨੈਕਟ ਕਰੋ 'ਤੇ ਟੈਪ ਕਰੋ (0/0 ਜਦੋਂ ਤੱਕ ਸ਼ੁਰੂ ਨਹੀਂ ਹੁੰਦਾ)",
+  "geoEmptyMeshOnly": "ਟਰਾਂਸਪੋਰਟ ਸਿਰਫ਼-ਮੇਸ਼ ਹੈ — Nostr ਤੋਂ ਵੱਧ ਸਾਥੀਆਂ ਨੂੰ ਖੋਜਣ ਲਈ ਇੰਟਰਨੈੱਟ ਜਾਂ ਆਟੋ 'ਤੇ ਸਵਿਚ ਕਰੋ",
+  "geoEmptyWaiting": "ਅਜੇ ਤੱਕ {channel} ਵਿੱਚ ਕੋਈ ਨਹੀਂ — ਖੇਤਰ + ਇੰਟਰਨੈੱਟ ਦੋਵਾਂ ਡਿਵਾਈਸਾਂ 'ਤੇ ਖੁੱਲ੍ਹਾ ਰੱਖੋ ਅਤੇ ~60s ਉਡੀਕ ਕਰੋ",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#ਖੇਤਰ",
+  "geoRefreshLocation": "ਟਿਕਾਣਾ ਤਾਜ਼ਾ ਕਰੋ",
+  "settingsClearLocationTitle": "ਟਿਕਾਣਾ ਸਾਫ਼ ਕਰੋ",
+  "settingsClearLocationSubtitle": "GPS / ਟੈਲੀਪੋਰਟ ਜਿਓਹਸ਼ ਹਟਾਓ (ਖੇਤਰ #— ਬਣ ਜਾਂਦਾ ਹੈ)",
+  "settingsClearLocationConfirmTitle": "ਕੀ ਟਿਕਾਣਾ ਸਾਫ਼ ਕਰਨਾ ਹੈ?",
+  "settingsClearLocationConfirmBody": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਸਟੋਰ ਕੀਤੇ ਜੀਓਸ਼ੈਸ਼ ਨੂੰ ਮਿਟਾਉਂਦਾ ਹੈ। ਤੁਸੀਂ ਬਾਅਦ ਵਿੱਚ ਦੁਬਾਰਾ GPS ਜਾਂ ਟੈਲੀਪੋਰਟ ਨੂੰ ਤਾਜ਼ਾ ਕਰ ਸਕਦੇ ਹੋ।",
+  "settingsClearLocationAction": "ਟਿਕਾਣਾ ਸਾਫ਼ ਕਰੋ",
+  "settingsClearLocationSnack": "ਟਿਕਾਣਾ ਸਾਫ਼ ਕੀਤਾ ਗਿਆ",
+  "chatVoiceTooLarge": "ਵੌਇਸ ਨੋਟ ਬਹੁਤ ਵੱਡਾ ਹੈ — ਅਧਿਕਤਮ ~30 ਸਕਿੰਟ",
+  "chatVoiceNeedInternet": "ਵੌਇਸ ਨੋਟ ਨੂੰ ਇੰਟਰਨੈੱਟ (Nostr) ਦੀ ਲੋੜ ਹੈ — ਇਕੱਲੇ BLE ਲਈ ਬਹੁਤ ਵੱਡਾ ਹੈ",
+  "chatVoiceSentInternet": "ਇੰਟਰਨੈੱਟ ਰਾਹੀਂ ਵੌਇਸ ਨੋਟ ਭੇਜਿਆ ਗਿਆ",
+  "noticeAnonMention": "ਜ਼ਿਕਰ",
+  "noticeAnonDm": "ਸਿੱਧਾ ਸੁਨੇਹਾ",
+  "noticeAnonHug": "ਜੱਫੀ",
+  "noticeAnonSlap": "ਥੱਪੜ",
+  "noticeAnonBlock": "ਬਲਾਕ",
+  "noticeAnonNeedKey": "ਅਜੇ ਤੱਕ ਕੋਈ ਜਨਤਕ ਕੁੰਜੀ ਨਹੀਂ — 1:1 ਲਈ ਪਹਿਲਾਂ QR ਦਾ ਵਟਾਂਦਰਾ ਕਰੋ",
+  "noticeAnonActionSent": "ਭੇਜਿਆ",
+  "noticeAnonBlocked": "ਬਲੌਕ ਕੀਤਾ {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* ਜੱਫੀ ਪਾਓ {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* ਥੱਪੜ {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Nostr ਨੂੰ ਮੁੜ-ਕਨੈਕਟ ਕਰੋ",
+  "nostrSectionTitle": "Nostr ਰੀਲੇਅ",
+  "nostrSectionSubtitle": "ਇੰਟਰਨੈੱਟ ਮੈਸੇਜਿੰਗ ਅਤੇ ਖੇਤਰ ਖੋਜ ਇਹਨਾਂ ਰੀਲੇਅ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ। ਜੇਕਰ ਸਥਿਤੀ ਆਫ਼ਲਾਈਨ ਰਹਿੰਦੀ ਹੈ ਤਾਂ ਮੁੜ-ਕਨੈਕਟ ਕਰੋ 'ਤੇ ਟੈਪ ਕਰੋ।",
+  "nostrStatusOnline": "ਕਨੈਕਟ ਕੀਤਾ {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "ਔਫਲਾਈਨ — ਰੀਲੇ ਸੂਚੀਬੱਧ ਹਨ ਪਰ ਕੋਈ ਵੀ ਕਨੈਕਟ ਨਹੀਂ ਹੈ",
+  "nostrStatusNotInit": "ਸ਼ੁਰੂ ਨਹੀਂ ਹੋਇਆ (0/0) — ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਦੁਬਾਰਾ ਕਨੈਕਟ ਕਰੋ 'ਤੇ ਟੈਪ ਕਰੋ",
+  "nostrReconnectAction": "Nostr ਨੂੰ ਮੁੜ-ਕਨੈਕਟ ਕਰੋ",
+  "nostrReconnectOk": "Nostr ਜੁੜਿਆ ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "ਅਜੇ ਵੀ ਔਫਲਾਈਨ — Wi‑Fi/ਸੈਲੂਲਰ ਦੀ ਜਾਂਚ ਕਰੋ ਜਾਂ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "nostrReconnectFailedDetail": "ਅਸਫਲ: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "ਰੀਲੇਅ ਨਾਲ ਕਨੈਕਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "{channel} ਵਿੱਚ ਇੰਟਰਨੈੱਟ (Nostr) • ਸੀਲਬੰਦ ਚੈਟ ਤਿਆਰ ਹੈ",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "ਖੇਤਰ ਆਵਾਜਾਈ",
+  "transportModeSubtitle": "ਜਾਲ = BLE ਨੇੜਲੇ (ਰੇਡੀਓ) ਜਦੋਂ ਨਹੀਂ Nostr · ਇੰਟਰਨੈਟ ਅਤੇ ਆਟੋ = Nostr ਲੋਕਾਂ ਦੀ ਸੂਚੀ",
+  "transportModeMesh": "ਜਾਲ",
+  "transportModeInternet": "ਇੰਟਰਨੈੱਟ",
+  "transportModeAuto": "ਆਟੋ",
+  "geoPublicHint": "ਇਸ ਖੇਤਰ ਵਿੱਚ ਔਨਲਾਈਨ ਹਰ ਕਿਸੇ ਲਈ ਜਨਤਕ ਸੰਦੇਸ਼",
+  "geoPublicSend": "ਜਨਤਕ",
+  "geoPublicHelp": "{count} ਔਨਲਾਈਨ ਸਾਥੀ(ਆਂ) ਨੂੰ ਸੀਲਬੰਦ ਫੈਨ-ਆਊਟ — ਹਰੇਕ ਨੂੰ ਇੱਕ ਨਿੱਜੀ ਲਿਫਾਫਾ ਪ੍ਰਾਪਤ ਹੁੰਦਾ ਹੈ",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "ਇਸ ਖੇਤਰ ਵਿੱਚ {count} ਸਾਥੀਆਂ ਨੂੰ ਭੇਜਿਆ ਗਿਆ",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "ਕੋਈ ਸੁਨੇਹਾ ਦੇਣ ਯੋਗ ਸਾਥੀ ਔਨਲਾਈਨ ਨਹੀਂ — ਕੁੰਜੀਆਂ ਵਾਲੇ ਸਾਥੀਆਂ ਨਾਲ ਖੇਤਰ/ਜਾਲ ਖੋਲ੍ਹੋ, ਜਾਂ BLE/Nostr ਦੀ ਉਡੀਕ ਕਰੋ",
+  "areaPublicBadge": "ਖੇਤਰ ਜਨਤਕ",
+  "geoErrorPermission": "ਟਿਕਾਣਾ ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ — ਟਿਕਾਣਾ ਇਜਾਜ਼ਤ ਦੀ ਜਾਂਚ ਕਰੋ",
+  "geoPrecisionRegion": "ਖੇਤਰ",
+  "geoPrecisionProvince": "ਸੂਬਾ",
+  "geoPrecisionCity": "ਸ਼ਹਿਰ",
+  "geoPrecisionNeighborhood": "ਆਂਢ-ਗੁਆਂਢ",
+  "geoPrecisionBlock": "ਬਲਾਕ",
+  "aliasTitle": "ਉਪਨਾਮ ਸੈੱਟ ਕਰੋ (ਸੰਪਰਕ ਉਪਨਾਮ)",
+  "aliasHintBody": "ਇਹ ਉਪਨਾਮ ਸਿਰਫ਼ ਇਸ ਡੀਵਾਈਸ 'ਤੇ ਸਟੋਰ ਕੀਤਾ ਜਾਂਦਾ ਹੈ (ਸਿਰਫ਼-ਸਥਾਨਕ)\nਇਹ ਕਦੇ ਵੀ E2EE ਟ੍ਰੈਫਿਕ ਨਾਲ ਨਹੀਂ ਭੇਜਿਆ ਜਾਂਦਾ ਹੈ",
+  "aliasLabel": "ਉਪਨਾਮ",
+  "aliasHint": "ਜਿਵੇਂ ਕਿ “ਪਿੰਡ ਦਾ ਮੁਖੀ”, “ਪ’ਸੋਮਚਾਈ”…",
+  "settingsDevices": "ਡਿਵਾਈਸਾਂ",
+  "settingsFirmwareTitle": "ESP32 ਫਰਮਵੇਅਰ ਨੂੰ ਡਾਊਨਲੋਡ / ਅੱਪਡੇਟ ਕਰੋ",
+  "settingsFirmwareSubtitle": ".bin ਫਾਈਲਾਂ ਨੂੰ ਡਾਊਨਲੋਡ ਕਰੋ ਅਤੇ OTA ਰਾਹੀਂ ESP32 ਬੋਰਡ ਨੂੰ ਅੱਪਡੇਟ ਕਰੋ",
+  "mtBridgeTitle": "Meshtastic ਪੁਲ",
+  "mtBridgeSettingsSubtitle": "ਸਿਰਫ਼-ਟੈਕਸਟ A/B ਬ੍ਰਿਜ — ResilNet E2EE ਨਹੀਂ",
+  "mtBridgeIntro": "ਛੋਟੇ ਪਲੇਨ ਟੈਕਸਟ ਨੂੰ Meshtastic ਅਤੇ ResilNet ਵਿਚਕਾਰ ਲੈ ਜਾਓ। ਮੋਡ A ਅਤੇ B ਇੱਕੋ ਸਮੇਂ 'ਤੇ ਨਹੀਂ ਚੱਲ ਸਕਦੇ ਹਨ। ਇਹ ਐਂਡ-ਟੂ-ਐਂਡ ਐਨਕ੍ਰਿਪਸ਼ਨ ਨਹੀਂ ਹੈ।",
+  "mtBridgeModeLabel": "ਮੋਡ",
+  "mtBridgeModeOff": "ਬੰਦ",
+  "mtBridgeModeA": "ਇੰਜੈਸਟ ਏ",
+  "mtBridgeModeB": "ਈਗ੍ਰੇਸ ਬੀ",
+  "mtBridgeModeOffShort": "ਬੰਦ",
+  "mtBridgeModeAShort": "ਵਿਚ ਏ",
+  "mtBridgeModeBShort": "ਆਊਟ ਬੀ",
+  "mtBridgeMutexHint": "ਇੱਕ ਮੋਡ ਨੂੰ ਚੁਣਨ ਨਾਲ ਦੂਜੇ ਨੂੰ ਆਪਣੇ ਆਪ ਬੰਦ ਹੋ ਜਾਂਦਾ ਹੈ। ਸਮਕਾਲੀ A+B ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ।",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "ਡੈਮੋ (ਲੌਗਿੰਗ)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "ਇਨਬਾਊਂਡ ਟੈਕਸਟ ਨੋਟਿਸ ਦੇ ਹੇਠਾਂ #meshtastic ਦੇ ਰੂਪ ਵਿੱਚ ਦਿਖਾਈ ਦਿੰਦਾ ਹੈ। ਜਾਲ ਰੀਲੇਅ ਵਿਕਲਪਿਕ ਹੈ (ਮੂਲ ਰੂਪ ਵਿੱਚ ਬੰਦ)।",
+  "mtBridgeRelayTitle": "ResilNet ਜਾਲ 'ਤੇ ਵੀ ਰੀਲੇਅ ਕਰੋ",
+  "mtBridgeRelayHint": "ਚਾਲੂ ਹੋਣ 'ਤੇ, ਦਸਤਖਤ ਕੀਤੇ ਜਨਤਕ ਬੁਲੇਟਿਨ ਪ੍ਰਸਾਰਿਤ ਕੀਤੇ ਜਾਂਦੇ ਹਨ। ਬੰਦ = ਸਿਰਫ਼ ਇਸ ਫ਼ੋਨ ਦੇ ਨੋਟਿਸ।",
+  "mtBridgeSimulateHint": "ਡੈਮੋ ਸੁਨੇਹਾ",
+  "mtBridgeSimulate": "Meshtastic ਸੁਨੇਹਾ ਸਿਮੂਲੇਟ ਕਰੋ",
+  "mtBridgeIngestOk": "ਨੋਟਿਸਾਂ ਵਿੱਚ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ (#meshtastic)",
+  "mtBridgeEgressWarning": "ਚੇਤਾਵਨੀ: ਇੱਥੇ ਭੇਜੇ ਗਏ ਸੁਨੇਹੇ ResilNet E2EE ਨਹੀਂ ਹਨ। Meshtastic ਮਾਰਗ 'ਤੇ ਕੋਈ ਵੀ ਇਹਨਾਂ ਨੂੰ ਪੜ੍ਹ ਸਕਦਾ ਹੈ।",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਲਈ ਲਿਖਤ",
+  "mtBridgeSend": "Meshtastic ਨੂੰ ਭੇਜੋ",
+  "mtBridgeEgressOk": "Meshtastic ਲਈ ਕਤਾਰਬੱਧ (ਦੇਖੋ ਲੌਗ / ਇਤਿਹਾਸ)",
+  "mtBridgeLastEgress": "ਆਖਰੀ ਨਿਕਾਸੀ",
+  "mtBridgeEgressHistory": "ਤਾਜ਼ਾ ਨਿਕਾਸੀ",
+  "mtBridgeOffHint": "ਬ੍ਰਿਜ ਦੀ ਵਰਤੋਂ ਕਰਨ ਲਈ ਇੰਜੈਸਟ (ਏ) ਜਾਂ ਈਗ੍ਰੇਸ (ਬੀ) ਨੂੰ ਚਾਲੂ ਕਰੋ।",
+  "mtBridgeNoticeBadge": "MESHTASTIC · E2EE ਨਹੀਂ",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "MQTT ਟ੍ਰਾਂਸਪੋਰਟ ਦੀ ਵਰਤੋਂ ਕਰੋ",
+  "mtBridgeUseMqttHint": "ਬੰਦ = ਸਿਰਫ਼ ਡੈਮੋ ਲੌਗਿੰਗ (MQTT ਅੰਦਰ ਵੱਲ ਅਣਡਿੱਠ ਕੀਤਾ ਗਿਆ)। ਕਨੈਕਟ ਹੋਣ 'ਤੇ ਇੰਜੈਸਟ/ਨਿਗਸਣ ਲਈ = MQTT ਚਾਲੂ।",
+  "mtBridgeMqttHost": "ਬ੍ਰੋਕਰ ਹੋਸਟ",
+  "mtBridgeMqttPort": "ਪੋਰਟ",
+  "mtBridgeMqttTls": "TLS (mqtts) ਦੀ ਵਰਤੋਂ ਕਰੋ",
+  "mtBridgeMqttTlsHint": "ਆਮ ਪੋਰਟ 8883. ਸਿਸਟਮ ਸਰਟੀਫਿਕੇਟ ਵਰਤਦਾ ਹੈ; ਹੈਂਡਸ਼ੇਕ ਗਲਤੀਆਂ 'ਤੇ ਨਰਮ ਫੇਲ ਹੁੰਦਾ ਹੈ।",
+  "mtBridgeMqttAutoReconnect": "ਆਟੋ-ਕੁਨੈਕਟ ਕਰੋ",
+  "mtBridgeMqttAutoReconnectHint": "ਚਾਲੂ ਹੋਣ 'ਤੇ, ਗਾਹਕ ਡ੍ਰੌਪ ਤੋਂ ਬਾਅਦ ਦੁਬਾਰਾ ਕਨੈਕਟ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰਦਾ ਹੈ। ਸਥਿਤੀ ਨੂੰ ਬਹਾਲ ਹੋਣ ਤੱਕ ਕਨੈਕਟ ਕਰਨਾ ਦਿਖਾਉਂਦਾ ਹੈ।",
+  "mtBridgeMqttTopicHelpers": "ਵਿਸ਼ਾ ਸਹਾਇਕ",
+  "mtBridgeMqttRegion": "ਖੇਤਰ ਅਗੇਤਰ (ਵਿਕਲਪਿਕ)",
+  "mtBridgeMqttRegionHint": "ਸੈੱਟ ਕੀਤੇ ਜਾਣ 'ਤੇ, msh/<region>/2/json (ਵਿਸ਼ਾ ਰੂਟ ਨੂੰ ਓਵਰਰਾਈਡ ਕਰਦਾ ਹੈ) ਵਜੋਂ ਰੀਬਿਲਡ ਰੂਟ ਨੂੰ ਲਾਗੂ ਕਰੋ।",
+  "mtBridgeMqttTopicRoot": "JSON ਵਿਸ਼ਾ ਰੂਟ",
+  "mtBridgeMqttDownlinkChannel": "ਡਾਊਨਲਿੰਕ ਚੈਨਲ ਦਾ ਨਾਮ",
+  "mtBridgeMqttApplyTopics": "ਰੂਟ ਲਾਗੂ ਕਰੋ → ਸਬਸਕ੍ਰਾਈਬ / ਪ੍ਰਕਾਸ਼ਿਤ ਵਿਸ਼ੇ",
+  "mtBridgeMqttAdvanced": "ਉੱਨਤ MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, ਮੁੜ-ਕਨੈਕਟ, ਵਿਸ਼ੇ, ਪ੍ਰਮਾਣ ਪੱਤਰ",
+  "mtBridgeMqttTopicIn": "ਵਿਸ਼ਾ ਮੈਂਬਰ ਬਣੋ",
+  "mtBridgeMqttTopicOut": "ਵਿਸ਼ਾ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ",
+  "mtBridgeMqttGatewayFrom": "ਗੇਟਵੇ ਨੋਡ ਆਈਡੀ (ਤੋਂ)",
+  "mtBridgeMqttGatewayFromHint": "ਦਸ਼ਮਲਵ id ਜਾਂ !hex — sendtext ਡਾਊਨਲਿੰਕ ਲਈ ਲੋੜੀਂਦਾ ਹੈ",
+  "mtBridgeMqttChannelIndex": "ਮੈਸ਼ ਚੈਨਲ ਇੰਡੈਕਸ (ਵਿਕਲਪਿਕ 0–7)",
+  "mtBridgeMqttUser": "ਉਪਭੋਗਤਾ ਨਾਮ (ਵਿਕਲਪਿਕ)",
+  "mtBridgeMqttPass": "ਪਾਸਵਰਡ (ਵਿਕਲਪਿਕ)",
+  "mtBridgeMqttPassStored": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਇੱਕ ਪਾਸਵਰਡ ਸਟੋਰ ਕੀਤਾ ਗਿਆ ਹੈ (ਨਹੀਂ ਦਿਖਾਇਆ ਗਿਆ)।",
+  "mtBridgeMqttPassReplace": "ਨਵਾਂ ਪਾਸਵਰਡ (ਰੱਖਣ ਲਈ ਖਾਲੀ ਛੱਡੋ)",
+  "mtBridgeMqttPassReplaceHint": "ਸਟੋਰ ਕੀਤੇ ਪਾਸਵਰਡ ਨੂੰ ਰੱਖਣ ਲਈ ਖਾਲੀ ਛੱਡੋ।",
+  "mtBridgeMqttPassClear": "ਪਾਸਵਰਡ ਸਾਫ਼ ਕਰੋ",
+  "mtBridgeMqttSave": "MQTT ਸੈਟਿੰਗਾਂ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+  "mtBridgeMqttSaved": "MQTT ਸੈਟਿੰਗਾਂ ਸੁਰੱਖਿਅਤ ਕੀਤੀਆਂ ਗਈਆਂ",
+  "mtBridgeMqttConnect": "ਜੁੜੋ",
+  "mtBridgeMqttDisconnect": "ਡਿਸਕਨੈਕਟ ਕਰੋ",
+  "mtBridgeMqttConnected": "MQTT ਕਨੈਕਟ ਕੀਤਾ ਗਿਆ",
+  "mtBridgeMqttConnecting": "MQTT ਕਨੈਕਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+  "mtBridgeMqttDisconnected": "MQTT ਡਿਸਕਨੈਕਟ ਕੀਤਾ ਗਿਆ",
+  "mtBridgeMqttError": "MQTT ਗਲਤੀ",
+  "mtBridgeErrModeIngest": "ਪਹਿਲਾਂ Ingest (A) 'ਤੇ ਜਾਓ",
+  "mtBridgeErrModeEgress": "ਪਹਿਲਾਂ Egress (B) 'ਤੇ ਜਾਓ",
+  "mtBridgeErrRate": "ਹੌਲੀ - ਸੀਮਤ ਦਰ",
+  "mtBridgeErrDedupe": "ਡੁਪਲੀਕੇਟ ਸੁਨੇਹਾ ਅਣਡਿੱਠ ਕੀਤਾ ਗਿਆ",
+  "mtBridgeErrLoop": "ਇੱਕ ਪੁਲ ਲੂਪ ਨੂੰ ਰੋਕਣ ਲਈ ਸੁੱਟਿਆ",
+  "mtBridgeErrEmpty": "ਸੁਨੇਹਾ ਖਾਲੀ ਹੈ",
+  "mtBridgeErrPublish": "ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ",
+  "mtBridgeErrNotConnected": "MQTT ਕਨੈਕਟ ਨਹੀਂ ਹੈ",
+  "mtBridgeErrMissingHost": "MQTT ਬ੍ਰੋਕਰ ਹੋਸਟ ਦਾਖਲ ਕਰੋ",
+  "mtBridgeErrMissingTopic": "ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ ਅਤੇ ਵਿਸ਼ੇ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ",
+  "mtBridgeErrMissingFromNode": "ਸੇਂਡਟੈਕਸਟ ਲਈ ਗੇਟਵੇ ਨੋਡ ਆਈਡੀ (ਤੋਂ) ਦਰਜ ਕਰੋ",
+  "mtBridgeErrConnect": "MQTT ਕਨੈਕਟ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ",
+  "mtBridgeErrConnectTls": "MQTT TLS ਕਨੈਕਟ ਅਸਫਲ",
+  "settingsData": "ਡਾਟਾ",
+  "settingsDataHint": "ਡਾਟਾਬੇਸ ਨੂੰ ਸੁੰਗੜਨ ਲਈ ਸਥਾਨਕ ਸੁਨੇਹਿਆਂ ਨੂੰ ਮਿਟਾਓ — ਪਛਾਣ, ਕੁੰਜੀਆਂ ਅਤੇ ਸਾਥੀਆਂ ਨੂੰ ਰੱਖਿਆ ਜਾਂਦਾ ਹੈ",
+  "settingsSaveHistoryTitle": "ਸੁਨੇਹਾ ਇਤਿਹਾਸ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+  "settingsSaveHistorySubtitle": "ਬੰਦ ਹੋਣ 'ਤੇ, ਸੁਨੇਹੇ ਤਾਰ 'ਤੇ E2EE ਰਹਿੰਦੇ ਹਨ ਅਤੇ ਸਿਰਫ਼ ਇਸ ਸੈਸ਼ਨ ਲਈ ਰੱਖੇ ਜਾਂਦੇ ਹਨ (ਸਥਾਨਕ ਚੈਟ ਇਤਿਹਾਸ ਵਿੱਚ ਨਹੀਂ)। ਤੁਹਾਡਾ ਆਪਣਾ ਟੈਕਸਟ ਅਜੇ ਵੀ ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਪਲੇਨ ਟੈਕਸਟ ਦੇ ਰੂਪ ਵਿੱਚ ਦਿਖਾਈ ਦਿੰਦਾ ਹੈ।",
+  "settingsPrivacy": "ਗੋਪਨੀਯਤਾ",
+  "settingsE2eeTitle": "ਐਂਡ-ਟੂ-ਐਂਡ ਐਨਕ੍ਰਿਪਸ਼ਨ",
+  "settingsE2eeSubtitle": "ਹਮੇਸ਼ਾ ਚਾਲੂ — ਸੁਨੇਹੇ ਭੇਜਣ ਤੋਂ ਪਹਿਲਾਂ RSA-OAEP + AES-GCM ਨਾਲ ਸੀਲ ਕੀਤੇ ਜਾਂਦੇ ਹਨ। ਰੀਲੇਅ ਅਤੇ ਨੇੜਲੇ ਹੌਪਸ ਸਮੱਗਰੀ ਨੂੰ ਨਹੀਂ ਪੜ੍ਹ ਸਕਦੇ।",
+  "settingsScreenshotTitle": "ਸਕ੍ਰੀਨਸ਼ਾਟ ਚੇਤਾਵਨੀਆਂ",
+  "settingsScreenshotSubtitle": "ਜਦੋਂ ਇਹ ਡਿਵਾਈਸ ਸਕ੍ਰੀਨ ਨੂੰ ਕੈਪਚਰ ਕਰਦੀ ਹੈ ਤਾਂ ਚੈਟ ਵਿੱਚ ਇੱਕ ਸਿਸਟਮ ਲਾਈਨ ਦਿਖਾਓ",
+  "settingsNostrExpiryTitle": "Nostr ਸੁਨੇਹਾ ਸਮਾਂ ਰੱਖੋ",
+  "settingsNostrExpirySubtitle": "Nostr ਰਾਹੀਂ ਔਨਲਾਈਨ ਹੋਣ 'ਤੇ ਸੀਲਬੰਦ ਲਿਫ਼ਾਫ਼ੇ ਸਥਾਨਕ ਤੌਰ 'ਤੇ ਕਿੰਨੀ ਦੇਰ ਤੱਕ ਰਹਿਣੇ ਚਾਹੀਦੇ ਹਨ",
+  "noticeExpiresIn": "ਵਿੱਚ ਮਿਆਦ ਪੁੱਗ ਜਾਂਦੀ ਹੈ",
+  "noticesTitle": "ਨੋਟਿਸ",
+  "noticesMeshIntro": "ਜਨਤਕ ਬੁਲੇਟਿਨ — ਰੇਡੀਓ ਰੇਂਜ ਵਿੱਚ ਹਰ ਕਿਸੇ ਨੂੰ ਦਿਖਾਈ ਦਿੰਦਾ ਹੈ, ਐਨਕ੍ਰਿਪਟਡ ਨਹੀਂ। ਇਹ ਫ਼ੋਨ-ਟੂ-ਫ਼ੋਨ ਔਫਲਾਈਨ ਹੋਪ ਕਰਦਾ ਹੈ, ਅਤੇ ਨੇੜਲੇ ResilNet ਰੀਲੇਅ ਬਾਕਸ ਇੱਕ ਕਾਪੀ ਰੱਖਦੇ ਹਨ ਤਾਂ ਜੋ ਬਾਅਦ ਵਿੱਚ ਆਉਣ ਵਾਲੇ ਲੋਕ ਇਸਨੂੰ ਦੇਖ ਸਕਣ।",
+  "noticesMeshPublicBadge": "ਜਨਤਕ · ਐਨਕ੍ਰਿਪਟਡ ਨਹੀਂ",
+  "noticesGeoIntro": "ਇਸ ਸਥਾਨ ਲਈ ਛੋਟੇ ਨੋਟ ਸ਼ਾਮਲ ਕਰੋ ਤਾਂ ਜੋ ਹੋਰ ਸੈਲਾਨੀ ਉਹਨਾਂ ਨੂੰ ਲੱਭ ਸਕਣ।",
+  "noticesEmpty": "ਅਜੇ ਤੱਕ ਕੋਈ ਨੋਟਿਸ ਨਹੀਂ",
+  "noticesEmptyHint": "ਇੱਥੇ ਆਲੇ-ਦੁਆਲੇ ਦੇ ਲੋਕਾਂ ਲਈ ਪਹਿਲਾ ਨੋਟਿਸ ਪਿੰਨ ਕਰੋ।",
+  "noticesComposeHint": "ਇੱਕ ਨੋਟਿਸ ਪੋਸਟ ਕਰੋ...",
+  "noticesUrgent": "ਜ਼ਰੂਰੀ",
+  "noticesOpen": "ਨੋਟਿਸ",
+  "screenshotTaken": "* ਤੁਸੀਂ ਇੱਕ ਸਕ੍ਰੀਨਸ਼ੌਟ ਲਿਆ ਹੈ *",
+  "chatAttachImage": "ਚਿੱਤਰ ਨੱਥੀ ਕਰੋ",
+  "chatImageLabel": "ਚਿੱਤਰ",
+  "chatImageTooLarge": "ਚਿੱਤਰ ਬਹੁਤ ਵੱਡਾ ਹੈ — ਕੋਈ ਹੋਰ ਫ਼ੋਟੋ ਅਜ਼ਮਾਓ",
+  "chatNostrExpiry": "Nostr ਰੱਖੋ",
+  "geoPublicComposeHint": "{channel} ਨੂੰ ਭੇਜੋ — ਜਨਤਕ",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "ਸਾਰੇ ਸੁਨੇਹੇ ਸਾਫ਼ ਕਰੋ",
+  "settingsClearSubtitle": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਸਾਰੀਆਂ ਚੈਟਾਂ ਨੂੰ ਮਿਟਾਓ",
+  "settingsClearConfirmTitle": "ਕੀ ਸਾਰੇ ਸੁਨੇਹੇ ਸਾਫ਼ ਕਰਨੇ ਹਨ?",
+  "settingsClearConfirmBody": "ਇਹ ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਸਾਰੇ ਚੈਟ ਸੁਨੇਹਿਆਂ ਨੂੰ ਮਿਟਾ ਦਿੰਦਾ ਹੈ।\nਹਾਣੀ ਅਤੇ ਉਪਨਾਮ ਹਟਾਏ ਨਹੀਂ ਜਾਂਦੇ.",
+  "settingsClearAction": "ਡਾਟਾ ਸਾਫ਼ ਕਰੋ",
+  "settingsClearedSnack": "ਡਾਟਾ ਕਲੀਅਰ ਕੀਤਾ ਗਿਆ",
+  "settingsVersion": "ਵਰਜਨ {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: ਨੋਡਸ ਲਈ ਸਕੈਨਿੰਗ",
+  "meshBleEsp32Scanning": "ESP32: ਨੇੜਲੇ ਨੋਡ ਦੀ ਭਾਲ ਕਰ ਰਿਹਾ ਹੈ",
+  "meshBleSyncing": "BLE: ESP32 ਨਾਲ ਸਮਕਾਲੀਕਰਨ",
+  "meshNostrPublishing": "Nostr: ਪ੍ਰਕਾਸ਼ਨ",
+  "meshBleIdle": "BLE ਜਾਲ ਚਾਲੂ — ਅਜੇ ਤੱਕ ਕੋਈ ਨਜ਼ਦੀਕੀ ਫ਼ੋਨ ਨਹੀਂ ਹਨ",
+  "meshBlePeersNearby": "BLE ਜਾਲ — {count} ਨੇੜੇ ਦੇ ਫ਼ੋਨ",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ",
+  "meshBlePausedCamera": "BLE ਕੈਮਰੇ ਲਈ ਰੋਕਿਆ ਗਿਆ — ਸਟਾਰਟ BLE 'ਤੇ ਟੈਪ ਕਰੋ",
+  "meshBleStopped": "BLE ਬੰਦ ਹੈ — ਚੈੱਕ ਕਰੋ ਕਿ ਬਲੂਟੁੱਥ ਚਾਲੂ ਹੈ, ਫਿਰ ਸਟਾਰਟ BLE 'ਤੇ ਟੈਪ ਕਰੋ",
+  "meshBleRestart": "BLE ਸ਼ੁਰੂ ਕਰੋ",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "ਇਜਾਜ਼ਤਾਂ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ BLE ਸ਼ੁਰੂ ਕਰੋ",
+  "meshNostrOffline": "Nostr ਔਫਲਾਈਨ",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} ਨੇੜਲੇ ਸਾਥੀ • LoRa {lora} • ਸਮਕਾਲੀਕਰਨ ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "ਤਿਆਰ",
+  "meshLoraNotReady": "ਤਿਆਰ ਨਹੀਂ",
+  "meshGatewayProgress": "ਗੇਟਵੇ UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "ਗੇਟਵੇ UDP: ਤਿਆਰ",
+  "permissionTitle": "BLE ਜਾਲ ਨੈੱਟਵਰਕ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਪਹੁੰਚ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ",
+  "permissionBody": "ਐਪ ਨੂੰ ਕਮਿਊਨਿਟੀ ਮੈਸੇਜਿੰਗ ਲਈ ਬਲੂਟੁੱਥ (ਸਕੈਨ / ਕਨੈਕਟ / ਇਸ਼ਤਿਹਾਰ), ਸਥਾਨ (ਪੁਰਾਣੇ Android ਡਿਵਾਈਸਾਂ ਲਈ), ਅਤੇ ਮਾਈਕ੍ਰੋਫੋਨ (ਚੈਟ ਅਤੇ ਘੋਸ਼ਣਾਵਾਂ ਵਿੱਚ ਵੌਇਸ ਨੋਟਸ ਲਈ) ਦੀ ਲੋੜ ਹੈ।",
+  "permissionE2ee": "ਐਂਡ-ਟੂ-ਐਂਡ ਐਨਕ੍ਰਿਪਸ਼ਨ (E2EE)\nਰੀਲੇਅ ਨੋਡ ਸੰਦੇਸ਼ ਸਮੱਗਰੀ ਨਹੀਂ ਪੜ੍ਹ ਸਕਦੇ ਹਨ",
+  "permissionReady": "ਇਜਾਜ਼ਤਾਂ ਤਿਆਰ ਹਨ",
+  "permissionRequest": "ਆਗਿਆ ਦਿਓ ਅਤੇ ਜਾਰੀ ਰੱਖੋ",
+  "permissionNotReadySnack": "ਸਿਸਟਮ ਅਜੇ ਤਿਆਰ ਨਹੀਂ ਹੈ — ਇੱਕ ਪਲ ਉਡੀਕ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "permissionDeniedSnack": "ਇਜਾਜ਼ਤਾਂ ਅਧੂਰੀਆਂ — ਸੈਟਿੰਗਾਂ > ResilNet ਖੋਲ੍ਹੋ ਅਤੇ ਬਲੂਟੁੱਥ / ਟਿਕਾਣਾ / ਮਾਈਕ੍ਰੋਫ਼ੋਨ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ",
+  "permissionMicDenied": "ਮਾਈਕ੍ਰੋਫੋਨ ਪਹੁੰਚ ਅਸਵੀਕਾਰ ਕੀਤੀ ਗਈ — ਇਸਨੂੰ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਵੌਇਸ ਨੋਟਸ ਰਿਕਾਰਡ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿਓ",
+  "permissionMicOpenSettings": "ਸੈਟਿੰਗਾਂ",
+  "permissionCameraDenied": "ਕੈਮਰੇ ਦੀ ਪਹੁੰਚ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ ਗਿਆ — ਇਸਨੂੰ ਸੈਟਿੰਗਾਂ ਵਿੱਚ QR ਕੋਡਾਂ ਨੂੰ ਸਕੈਨ ਕਰਨ ਦਿਓ",
+  "permissionCameraFailed": "QR ਕੋਡਾਂ ਨੂੰ ਸਕੈਨ ਕਰਨ ਲਈ ਕੈਮਰੇ ਦੀ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ",
+  "permissionCameraOpenSettings": "ਸੈਟਿੰਗਾਂ",
+  "permissionPhotosDenied": "ਫੋਟੋ ਲਾਇਬ੍ਰੇਰੀ ਪਹੁੰਚ ਅਸਵੀਕਾਰ ਕੀਤੀ ਗਈ — ਇਸਨੂੰ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਆਪਣੇ QR ਕੋਡ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿਓ",
+  "permissionPhotosFailed": "ਤੁਹਾਡੇ QR ਕੋਡ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਲਈ ਫੋਟੋ ਲਾਇਬ੍ਰੇਰੀ ਦੀ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ",
+  "permissionPhotosOpenSettings": "ਸੈਟਿੰਗਾਂ",
+  "permissionFailedSnack": "ਇਜਾਜ਼ਤ ਬੇਨਤੀ ਅਸਫਲ: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet ਆਰਕੀਟੈਕਚਰ • ਸਟੋਰ-ਐਂਡ-ਫਾਰਵਰਡ ਮਲਟੀ-ਹੌਪ",
+  "onboardingSkip": "ਛੱਡੋ",
+  "onboardingNext": "ਅਗਲਾ",
+  "onboardingStart": "ਸ਼ੁਰੂ ਕਰੋ",
+  "onboardingWelcomeTitle": "ResilNet ਵਿੱਚ ਸੁਆਗਤ ਹੈ",
+  "onboardingWelcomeBody": "ਇੱਕ ਜਾਲ ਨੈੱਟਵਰਕ ਉੱਤੇ ResilNet 'ਤੇ ਚੈਟ ਕਰੋ — ਭਾਵੇਂ ਇੰਟਰਨੈੱਟ ਤੋਂ ਬਿਨਾਂ",
+  "onboardingFriendsTitle": "ਆਸਾਨੀ ਨਾਲ ਦੋਸਤਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰੋ",
+  "onboardingFriendsBody": "ਪਛਾਣ ਤੋਂ ਇੱਕ QR ਸਾਂਝਾ ਕਰੋ, ਜਾਂ ਜਨਤਕ ਕੁੰਜੀਆਂ ਦਾ ਆਦਾਨ-ਪ੍ਰਦਾਨ ਕਰਨ ਲਈ ਕਿਸੇ ਦੋਸਤ ਦੇ QR ਨੂੰ ਸਕੈਨ ਕਰੋ",
+  "onboardingChannelsTitle": "ਐਨਕ੍ਰਿਪਟਡ ਚੈਟ + ਨੇੜਲੇ ਚੈਨਲ",
+  "onboardingChannelsBody": "ਨੇੜਲੇ ਸਾਥੀਆਂ ਨੂੰ ਲੱਭਣ ਲਈ #mesh / ਖੇਤਰ (geohash) ਨੂੰ ਬਦਲੋ — ਸੁਨੇਹੇ BLE ਜਾਲ ਅਤੇ Nostr ਉੱਤੇ E2EE ਰਹਿੰਦੇ ਹਨ",
+  "chatTitle": "ਚੈਟ (E2EE)",
+  "chatScanTooltip": "ਕਿਸੇ ਪੀਅਰ ਨੂੰ ਸ਼ਾਮਲ ਕਰਨ ਲਈ QR ਸਕੈਨ ਕਰੋ",
+  "chatBlockTooltip": "ਇਸ ਭੇਜਣ ਵਾਲੇ ਨੂੰ ਬਲੌਕ ਕਰੋ",
+  "chatBlockedSnack": "ਬਲੌਕ ਕੀਤਾ: ਕੋਈ ਸੂਚਨਾਵਾਂ ਨਹੀਂ / ਕੋਈ ਰੀਲੇਅ ਨਹੀਂ",
+  "chatAliasTooltip": "ਉਪਨਾਮ ਸੈੱਟ ਕਰੋ",
+  "chatReceiverPemLabel": "ਪ੍ਰਾਪਤਕਰਤਾ ਜਨਤਕ ਕੁੰਜੀ (PEM)",
+  "chatReceiverPemHint": "ਆਪਣੇ ਦੋਸਤ ਦੀ ਜਨਤਕ ਕੁੰਜੀ ਨੂੰ ਪੇਸਟ ਕਰੋ (QR / ਸਾਂਝੀ ਕੀਤੀ ਫਾਈਲ ਤੋਂ)",
+  "chatNeedPeerKey": "ਪਹਿਲਾਂ ਇਸ ਪੀਅਰ ਦੇ QR ਨੂੰ ਸਕੈਨ ਕਰੋ (ਪ੍ਰਮਾਣਿਤ ਜਨਤਕ ਕੁੰਜੀ ਦੀ ਲੋੜ ਹੈ)",
+  "chatPeerKeyMismatch": "ਸਟੋਰ ਕੀਤੀ ਜਨਤਕ ਕੁੰਜੀ ਇਸ ਪੀਅਰ ਆਈ.ਡੀ. ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ",
+  "chatVoiceFailed": "ਆਡੀਓ ਰਿਕਾਰਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "ਵੌਇਸ ਨੋਟ ਚਲਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "ਵੌਇਸ ਨੋਟ ਚਲਾਓ",
+  "chatPauseVoice": "ਵਿਰਾਮ",
+  "chatVoiceLabelSent": "🎤 ਵੌਇਸ ਨੋਟ (ਸੀਲਬੰਦ)",
+  "chatVoiceLabel": "🎤 ਵੌਇਸ ਨੋਟ",
+  "chatDecryptFailed": "[ਡਿਕ੍ਰਿਪਸ਼ਨ ਅਸਫਲ]",
+  "chatSentSealed": "[ਸੀਲਬੰਦ • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[ਸੀਲ]",
+  "chatComposeHint": "ਇੱਕ ਸੁਨੇਹਾ ਟਾਈਪ ਕਰੋ... (ਭੇਜਣ 'ਤੇ ਸੀਲ)",
+  "chatEmptyThread": "ਹਾਲੇ ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ\nਜਾਲ 'ਤੇ ਭੇਜਣ ਲਈ ਹੇਠਾਂ ਟਾਈਪ ਕਰੋ",
+  "chatLoadFailed": "ਗੱਲਬਾਤ ਲੋਡ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "ਇਮੋਜੀ",
+  "statusPending": "ਬਕਾਇਆ",
+  "statusSent": "ਭੇਜਿਆ",
+  "statusRelayed": "ਰੀਲੇਅ ਕੀਤਾ",
+  "statusDelivered": "ਡਿਲੀਵਰ ਕੀਤਾ ਗਿਆ",
+  "statusRead": "ਪੜ੍ਹੋ",
+  "statusFailed": "ਅਸਫਲ ਰਿਹਾ",
+  "chatCopy": "ਕਾਪੀ ਕਰੋ",
+  "chatDeleteLocal": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਮਿਟਾਓ",
+  "chatDeletedLocalSnack": "ਇਸ ਡਿਵਾਈਸ ਤੋਂ ਮਿਟਾਇਆ ਗਿਆ",
+  "chatRetry": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "chatSendFailed": "ਡਿਲੀਵਰ ਨਹੀਂ ਕੀਤਾ ਗਿਆ — ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ 'ਤੇ ਟੈਪ ਕਰੋ",
+  "chatImageNeedInternet": "ਚਿੱਤਰ ਭੇਜਣ ਲਈ ਇੰਟਰਨੈੱਟ ਨਾਲ ਕਨੈਕਟ ਕਰੋ",
+  "chatImageTooLargeOnline": "ਚਿੱਤਰ ਨੂੰ ਭੇਜਣ ਲਈ ਕਾਫੀ ਸੰਕੁਚਿਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ",
+  "chatOpenLinkFailed": "ਲਿੰਕ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+  "identityTitle": "ਪਛਾਣ",
+  "identityScanTooltip": "ਕੈਮਰੇ ਨਾਲ QR ਸਕੈਨ ਕਰੋ",
+  "identityCopiedHash": "ਜਨਤਕ ਕੁੰਜੀ ਹੈਸ਼ ਨੂੰ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+  "identityPeerSaved": "ਪੀਅਰ ਨੂੰ QR ਤੋਂ ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਗਿਆ",
+  "identityGalleryDenied": "ਫ਼ੋਟੋ ਲਾਇਬ੍ਰੇਰੀ ਦੀ ਇਜਾਜ਼ਤ ਅਸਵੀਕਾਰ ਕੀਤੀ ਗਈ",
+  "identityQrSaved": "QR ਫੋਟੋ ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਗਿਆ",
+  "identityQrSaveFailed": "QR ਨੂੰ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "ਨੈੱਟਵਰਕ ਦੇ ਮੈਂਬਰ",
+  "qrScanTitle": "ਕਿਸੇ ਦੋਸਤ ਨੂੰ ਸ਼ਾਮਲ ਕਰਨ ਲਈ QR ਸਕੈਨ ਕਰੋ",
+  "qrInvalid": "ਸਕੈਨ ਅਸਫਲ: ਅਵੈਧ QR",
+  "qrIdKeyMismatch": "QR ਅਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ: ਆਈਡੀ ਜਨਤਕ ਕੁੰਜੀ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ",
+  "qrCameraNotReady": "ਕੈਮਰਾ ਤਿਆਰ ਨਹੀਂ ਹੈ",
+  "qrRetrySettings": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ / ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ",
+  "qrCameraOpenFailed": "ਕੈਮਰਾ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "QR ਕੋਡ ਨੂੰ ਫਰੇਮ ਦੇ ਅੰਦਰ ਅਲਾਈਨ ਕਰੋ",
+  "firmwareDownloadTitle": "ESP32 ਫਰਮਵੇਅਰ ਡਾਊਨਲੋਡ ਕਰੋ",
+  "firmwareSourceOnline": "ਨਵੀਨਤਮ (ਆਨਲਾਈਨ)",
+  "firmwareSourceCached": "ਸੁਰੱਖਿਅਤ ਕੀਤੀ ਕਾਪੀ (ਆਫਲਾਈਨ)",
+  "firmwareSourceBaseline": "ਬੰਡਲ ਬੇਸਲਾਈਨ (ਆਫਲਾਈਨ)",
+  "firmwareSourceUnavailable": "ਕੋਈ ਫਰਮਵੇਅਰ ਉਪਲਬਧ ਨਹੀਂ ਹੈ",
+  "firmwareBaselineIncompatible": "ਬੰਡਲ ਕੀਤਾ ਫਰਮਵੇਅਰ ਬਹੁਤ ਪੁਰਾਣਾ ਹੈ — ਇੱਕ ਨਵਾਂ ਸੰਸਕਰਣ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਇੰਟਰਨੈੱਟ ਨਾਲ ਕਨੈਕਟ ਕਰੋ",
+  "firmwareChecksumFailed": "ਫਰਮਵੇਅਰ ਅਖੰਡਤਾ ਜਾਂਚ ਵਿੱਚ ਅਸਫਲ ਰਿਹਾ — ਫਲੈਸ਼ਿੰਗ ਬਲੌਕ ਕੀਤੀ ਗਈ",
+  "firmwareReadyFromSource": "ਫਰਮਵੇਅਰ ਤਿਆਰ: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "ਤਾਜ਼ਾ ਕਰੋ",
+  "peersBlocked": "ਬਲੌਕ ਕੀਤਾ",
+  "peersNearbyBle": "ਨੇੜੇ (BLE)",
+  "peersRecentlyOnline": "ਹਾਲ ਹੀ ਵਿੱਚ ਔਨਲਾਈਨ",
+  "peersOnlineInArea": "ਖੇਤਰ ਵਿੱਚ ਆਨਲਾਈਨ",
+  "peersSeenMinutesAgo": "{minutes} ਮਿੰਟ ਪਹਿਲਾਂ ਦੇਖਿਆ ਗਿਆ",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "ਔਫਲਾਈਨ",
+  "peersBlockedSnack": "ਬਲੌਕ ਕੀਤਾ {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "ਅਨਬਲੌਕ ਕੀਤਾ ਗਿਆ",
+  "peersEmpty": "ਡਾਟਾਬੇਸ ਵਿੱਚ ਅਜੇ ਕੋਈ ਮੈਂਬਰ ਨਹੀਂ ਹੈ\nਇੱਕ QR ਸਕੈਨ ਕਰੋ ਜਾਂ BLE ਜਾਲ ਖੋਜ ਦੀ ਉਡੀਕ ਕਰੋ",
+  "peersOpenChat": "ਚੈਟ ਖੋਲ੍ਹੋ",
+  "peersBlockAction": "ਬਲਾਕ",
+  "peersUnblockAction": "ਅਨਬਲੌਕ ਕਰੋ",
+  "channelPickerTooltip": "ਚੈਟ / #mesh / ਖੇਤਰ",
+  "locationPickerTooltip": "ਟਿਕਾਣਾ ਚੈਨਲ",
+  "transportPickerTooltip": "ਜਾਲ / ਇੰਟਰਨੈੱਟ / ਆਟੋ",
+  "onlinePeopleTooltip": "ਲੋਕ ਆਨਲਾਈਨ",
+  "unreadDirectsTooltipEmpty": "ਨਿੱਜੀ ਸੁਨੇਹੇ",
+  "unreadDirectsTooltip": "{count} ਨਾ-ਪੜ੍ਹੇ ਨਿੱਜੀ ਸੁਨੇਹੇ",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "ਲੋਕ",
+  "onlinePeopleEmpty": "ਇੱਥੇ ਅਜੇ ਤੱਕ ਕੋਈ ਵੀ ਔਨਲਾਈਨ ਨਹੀਂ ਹੈ",
+  "onlinePeopleCount": "{count} ਔਨਲਾਈਨ",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · ਨੇੜਲੇ + ਖੇਤਰ",
+  "peerOnlineMeshTitle": "ਜਾਲ 'ਤੇ ਕੋਈ ਨੇੜੇ ਹੈ",
+  "peerOnlineMeshBody": "{name} ਜਾਲ ਦੇ ਨੇੜੇ ਹੈ",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "ਖੇਤਰ ਵਿੱਚ ਕੋਈ ਆਨਲਾਈਨ",
+  "peerOnlineAreaBody": "{name} Nostr ਰਾਹੀਂ ਔਨਲਾਈਨ ਹੈ",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#location ਚੈਨਲ",
+  "channelPinsTitle": "ਪਿੰਨ ਕੀਤਾ",
+  "channelPinsHint": "ਚੈਨਲਾਂ ਨੂੰ ਪਿੰਨ ਕਰੋ ਜੋ ਤੁਸੀਂ ਅਕਸਰ ਵਰਤਦੇ ਹੋ — ਉਹ ਸਿਖਰ 'ਤੇ ਰਹਿੰਦੇ ਹਨ",
+  "channelPinTooltip": "ਇਸ ਚੈਨਲ ਨੂੰ ਪਿੰਨ ਕਰੋ",
+  "channelUnpinTooltip": "ਅਨਪਿੰਨ ਕਰੋ",
+  "locationSheetIntro": "ਮੋਟੇ ਜਿਓਹਸ਼ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹੋਏ ਨੇੜਲੇ ਲੋਕਾਂ ਨਾਲ ਚੈਟ ਕਰੋ — ਸਟੀਕ GPS ਦੀ ਨਹੀਂ। ਇੰਟਰਨੈੱਟ 'ਤੇ ਮੌਜੂਦਗੀ ਅਗਿਆਤ Nostr ਕੁੰਜੀਆਂ ਦੀ ਵਰਤੋਂ ਕਰਦੀ ਹੈ।",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 ਮੀ",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "ਟੈਲੀਪੋਰਟ",
+  "homeComposeHint": "ਸੁਨੇਹਾ {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "{channel} ਨੂੰ ਭੇਜੋ — ਜਨਤਕ",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "ਵਿੱਚ ਮਿਆਦ ਪੁੱਗ ਜਾਂਦੀ ਹੈ",
+  "voiceRecordTapToStart": "ਵੌਇਸ ਸੁਨੇਹਾ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ",
+  "voiceRecordTooShort": "ਰਿਕਾਰਡਿੰਗ ਬਹੁਤ ਛੋਟੀ ਹੈ — ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "voiceRecordFailed": "ਰਿਕਾਰਡਿੰਗ ਨੂੰ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ — ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "voicePttHold": "ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਹੋਲਡ ਕਰੋ",
+  "voicePttRelease": "ਪੂਰਵਦਰਸ਼ਨ ਲਈ ਰਿਲੀਜ਼ ਕਰੋ",
+  "voicePttRecording": "ਰਿਕਾਰਡਿੰਗ…",
+  "voicePttDraftReady": "ਵੌਇਸ ਨੋਟ ਤਿਆਰ ਹੈ",
+  "voicePttDiscard": "ਰੱਦ ਕਰੋ",
+  "voicePttReRecord": "ਦੁਬਾਰਾ ਰਿਕਾਰਡ ਕਰੋ",
+  "voicePttSend": "ਵੌਇਸ ਨੋਟ ਭੇਜੋ",
+  "voicePttPlayPreview": "ਪੂਰਵਦਰਸ਼ਨ ਚਲਾਓ",
+  "voicePttStopPreview": "ਝਲਕ ਬੰਦ ਕਰੋ",
+  "noticesBackfilling": "ਸੂਚਨਾਵਾਂ ਲੋਡ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ...",
+  "noticesNostrOnline": "Nostr ਔਨਲਾਈਨ",
+  "noticesNostrOffline": "Nostr ਔਫਲਾਈਨ — ਬੁਲੇਟਿਨ ਨੂੰ ਇੰਟਰਨੈੱਟ ਦੀ ਲੋੜ ਹੈ",
+  "noticesBackfillLoaded": "{count} ਨੋਟਿਸ ਲੋਡ ਕੀਤੇ ਗਏ",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "ਏਰੀਆ ਬੋਰਡ ਨੂੰ ਨੋਟਿਸ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ। Nostr ਕਨੈਕਸ਼ਨ ਦੀ ਜਾਂਚ ਕਰੋ।",
+  "noticeMeshPublishNoLink": "ਸਥਾਨਕ ਤੌਰ 'ਤੇ ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਗਿਆ। ਨੇੜਲੇ ਜਾਲ ਰੇਡੀਓ (ਜਾਂ Wi‑Fi ਗੇਟਵੇ) ਨਾਲ ਕਨੈਕਟ ਕਰੋ ਤਾਂ ਜੋ ਹੋਰ ਲੋਕ ਇਸਨੂੰ ਪ੍ਰਾਪਤ ਕਰ ਸਕਣ।",
+  "noticeMeshPublishSent": "ਬੁਲੇਟਿਨ {count} ਨਜ਼ਦੀਕੀ ਡਿਵਾਈਸਾਂ ਨੂੰ BLE ਉੱਤੇ ਭੇਜਿਆ ਗਿਆ।",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "ਨੇੜਲੇ ਰੇਡੀਓ ਦੇਖੇ ਗਏ, ਪਰ BLE ਲਿਖਣਾ ਅਸਫਲ ਰਿਹਾ। ਨੋਟਿਸ ਸਕ੍ਰੀਨ 'ਤੇ ਦੋਵੇਂ ਐਪਾਂ ਨੂੰ ਖੁੱਲ੍ਹਾ ਰੱਖੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ (ਜਾਂ ਇੱਕ ESP32 ਰੀਲੇਅ ਦੀ ਵਰਤੋਂ ਕਰੋ)।",
+  "noticeMeshPublishNoGatt": "ਇਸ ਡਿਵਾਈਸ ਦਾ BLE ਰਿਸੀਵਰ ਤਿਆਰ ਨਹੀਂ ਹੈ। ਬਲੂਟੁੱਥ ਨੂੰ ਟੌਗਲ ਕਰੋ ਅਤੇ ਨੋਟਿਸਾਂ ਨੂੰ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।",
+  "noticeDelete": "ਨੋਟਿਸ ਮਿਟਾਓ",
+  "noticeDeleteConfirmTitle": "ਕੀ ਇਸ ਨੋਟਿਸ ਨੂੰ ਮਿਟਾਉਣਾ ਹੈ?",
+  "noticeDeleteLocalOnlyBody": "ਇਹ ਇਸਨੂੰ ਸਿਰਫ਼ ਇਸ ਡੀਵਾਈਸ 'ਤੇ ਹੀ ਹਟਾਉਂਦਾ ਹੈ। ਹੋਰ ਜੋ ਪਹਿਲਾਂ ਹੀ ਇਸਨੂੰ ਪ੍ਰਾਪਤ ਕਰ ਚੁੱਕੇ ਹਨ ਉਹ ਅਜੇ ਵੀ ਇਸਨੂੰ ਦੇਖਣਗੇ।",
+  "noticeDeleted": "ਨੋਟਿਸ ਮਿਟਾਇਆ ਗਿਆ",
+  "chatNoticeHidden": "ਖੇਤਰ ਨੋਟਿਸ - ਖੁੱਲੇ ਨੋਟਿਸ",
+  "identityDisplayNameTitle": "ਦਿਖਾਇਆ ਹੋਇਆ ਨਾਮ",
+  "identitySaveName": "ਨਾਮ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+  "identityUserIdLabel": "ਯੂਜ਼ਰ ਆਈਡੀ (ਜਨਤਕ ਕੁੰਜੀ ਹੈਸ਼)",
+  "identityCopyHashTooltip": "ਜਨਤਕ ਕੁੰਜੀ ਹੈਸ਼ ਨੂੰ ਕਾਪੀ ਕਰੋ",
+  "identityMyQrTitle": "ਮੇਰਾ QR (id + pubKey + ਨਾਮ)",
+  "identityQrFailed": "QR ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਿਆ\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "ਰੱਖਿਅਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+  "identitySaveQr": "QR ਨੂੰ ਫੋਟੋ ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+  "identityOpenScanner": "QR ਸਕੈਨ ਕਰਨ ਲਈ ਕੈਮਰਾ ਖੋਲ੍ਹੋ",
+  "identityQrHelp": "ਆਪਣੀ ਜਨਤਕ ਕੁੰਜੀ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਲਈ ਕਿਸੇ ਦੋਸਤ ਨੂੰ ਇਸ ਨੂੰ ਸਕੈਨ ਕਰਨ ਲਈ ਕਹੋ ਅਤੇ (ਜੇ ਲੋੜ ਹੋਵੇ) ਤੁਹਾਨੂੰ ਪ੍ਰਮਾਣਿਤ ਜਾਰੀਕਰਤਾ ਵਜੋਂ ਸੈੱਟ ਕਰੋ",
+  "identityChatTip": "ਸੁਝਾਅ: ਤੁਸੀਂ E2EE ਲਈ ਇੱਕ ਜਨਤਕ ਕੁੰਜੀ ਜੋੜਨ ਲਈ ਚੈਟ ਵਿੱਚ ਇੱਕ QR ਵੀ ਸਕੈਨ ਕਰ ਸਕਦੇ ਹੋ",
+  "infoOpen": "ਬਾਰੇ / ਜਾਣਕਾਰੀ",
+  "docsGuideTitle": "ਉਪਭੋਗਤਾ ਗਾਈਡ",
+  "docsGuideSubtitle": "ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਖੁੱਲ੍ਹਦਾ ਹੈ",
+  "docsOpenAction": "ਗਾਈਡ ਖੋਲ੍ਹੋ",
+  "docsOpenFailed": "ਯੂਜ਼ਰ ਗਾਈਡ ਨੂੰ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+  "firmwareOtaGuideTitle": "ਫਲੈਸ਼ ਗਾਈਡ ਅਤੇ OTA ਪ੍ਰੋਟੋਕੋਲ",
+  "firmwareOtaGuideSubtitle": "ਵੈੱਬ ਗਾਈਡ ਖੋਲ੍ਹਦਾ ਹੈ — .bin ਡਾਉਨਲੋਡਸ ਅਤੇ ਪੂਰੇ ਕਦਮ",
+  "firmwareWebDownloadsTitle": "ਵੈੱਬ 'ਤੇ ਫਰਮਵੇਅਰ ਡਾਊਨਲੋਡ",
+  "firmwareWebDownloadsSubtitle": "ਡੌਕਸ ਸਾਈਟ 'ਤੇ ਪ੍ਰਤੀ-ਵਰਜਨ ਲਿੰਕ ਅਤੇ ਚੈੱਕਸਮ",
+  "inviteCopyShortLink": "ਛੋਟਾ ਲਿੰਕ ਕਾਪੀ ਕਰੋ",
+  "inviteShareLink": "ਲਿੰਕ ਸਾਂਝਾ ਕਰੋ",
+  "inviteShowFullLink": "ਪੂਰਾ ਲਿੰਕ",
+  "inviteCopyFullLink": "ਪੂਰਾ ਲਿੰਕ ਕਾਪੀ ਕਰੋ",
+  "inviteLinkCopied": "ਲਿੰਕ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+  "inviteLongPressHint": "ਲਿੰਕ ਕਾਰਵਾਈਆਂ ਲਈ ਲੰਬੇ ਸਮੇਂ ਤੱਕ ਦਬਾਓ",
+  "inviteSendInChat": "ResilNet ਚੈਟ ਵਿੱਚ ਭੇਜੋ...",
+  "inviteSendInChatHint": "ਸਿਰਫ਼ ਉਹਨਾਂ ਲੋਕਾਂ ਲਈ ਜੋ ਤੁਹਾਡੇ ਕੋਲ ਪਹਿਲਾਂ ਹੀ ਜਨਤਕ ਕੁੰਜੀ ਹੈ",
+  "inviteSendInChatEmpty": "ਅਜੇ ਤੱਕ ਕੋਈ ਸੁਨੇਹਾ ਦੇਣ ਯੋਗ ਗੱਲਬਾਤ ਨਹੀਂ ਹੈ।\nਇੱਕ QR ਸਕੈਨ ਕਰੋ, ਖੇਤਰ/ਜਾਲ ਖੋਲ੍ਹੋ, ਜਾਂ ਪਹਿਲਾਂ ਐਪ ਤੋਂ ਬਾਹਰ ਲਿੰਕ ਸਾਂਝਾ ਕਰੋ।",
+  "inviteSentToChat": "ਗੱਲਬਾਤ ਵਿੱਚ ਸੱਦਾ ਭੇਜਿਆ ਗਿਆ",
+  "infoTabInfo": "ਜਾਣਕਾਰੀ",
+  "infoTabSettingsHint": "ਭਾਸ਼ਾ, E2EE, ਅਤੇ ਡਾਟਾ ਟੂਲਸ ਲਈ ਮੀਨੂ ਤੋਂ ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ",
+  "infoHowToTitle": "ਕਿਵੇਂ ਵਰਤਣਾ ਹੈ",
+  "infoHowToBody": "• ਚੈਟ / #mesh / ਖੇਤਰ ਨੂੰ ਬਦਲਣ ਲਈ ਚੈਨਲ ਆਈਕਨ 'ਤੇ ਟੈਪ ਕਰੋ\n• ਜਿਓਹਸ਼ ਆਕਾਰ ਚੁਣਨ ਲਈ ਥਾਂ 'ਤੇ ਟੈਪ ਕਰੋ\n• ਮੈਂਬਰਾਂ ਜਾਂ ਔਨਲਾਈਨ ਹੋਣ ਵਾਲੇ ਲੋਕਾਂ ਲਈ ਟੈਪ ਕਰੋ\n• ਵਿਅਕਤੀਗਤ ਤੌਰ 'ਤੇ ਕੁੰਜੀਆਂ ਦਾ ਆਦਾਨ-ਪ੍ਰਦਾਨ ਕਰਨ ਲਈ ⋮ ਤੋਂ ਪਛਾਣ/QR ਖੋਲ੍ਹੋ\n• ਖੇਤਰ \"ਜਨਤਕ\" ਹਰੇਕ ਔਨਲਾਈਨ ਪੀਅਰ ਨੂੰ ਸੀਲਬੰਦ E2EE ਭੇਜਦਾ ਹੈ - ਇੱਕ ਪਲੇਨ ਟੈਕਸਟ ਰੂਮ ਨੂੰ ਨਹੀਂ",
+  "infoFeaturesTitle": "ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ",
+  "infoFeatureOffline": "ਬਲੂਟੁੱਥ ਲੋ ਐਨਰਜੀ ਰਾਹੀਂ ਔਫਲਾਈਨ ਮੈਸੇਜਿੰਗ",
+  "infoFeatureE2ee": "RSA-OAEP + AES-GCM ਦੇ ਨਾਲ ਐਂਡ-ਟੂ-ਐਂਡ ਏਨਕ੍ਰਿਪਸ਼ਨ (ਸ਼ੋਰ ਨਹੀਂ)",
+  "infoFeatureMultihop": "ਸੁਨੇਹੇ ਦੂਰ ਜਾਣ ਲਈ ਨੇੜਲੇ ਸਾਥੀਆਂ ਦੁਆਰਾ ਭੇਜ ਸਕਦੇ ਹਨ",
+  "infoFeatureBridge": "ਸੀਲਬੰਦ ਲਿਫ਼ਾਫ਼ਿਆਂ ਲਈ ਹਾਈਬ੍ਰਿਡ ਜਾਲ ↔ ਇੰਟਰਨੈਟ (Nostr)",
+  "infoFeatureGeo": "ਨੇੜਲੇ ਲੋਕਾਂ ਲਈ ਸਥਾਨਕ ਜਿਓਹਸ਼ ਚੈਨਲ (ਡਿਸਕਵਰੀ UX)",
+  "infoFeatureNotices": "#mesh ਅਤੇ ਖੇਤਰ ਲਈ ਮਿਆਦ ਪੁੱਗਣ ਵਾਲੇ ਨੋਟਿਸ",
+  "infoPrivacyTitle": "ਗੋਪਨੀਯਤਾ",
+  "infoPrivacyNoRoom": "ਤਾਰ 'ਤੇ ਕੋਈ ਸਾਦਾ ਲਿਖਤ ਪਿੰਡ/ਜਨਤਕ ਚੈਟ ਰੂਮ ਨਹੀਂ",
+  "infoPrivacyFanout": "ਖੇਤਰ ਭੇਜੋ = ਸੀਲਬੰਦ 1:1 ਜਾਣੀਆਂ ਜਨਤਕ ਕੁੰਜੀਆਂ ਵਾਲੇ ਸਾਥੀਆਂ ਨੂੰ ਫੈਨ-ਆਊਟ",
+  "infoPrivacyPresence": "ਇੰਟਰਨੈੱਟ ਖੇਤਰ ਦੀ ਮੌਜੂਦਗੀ ਥੋੜ੍ਹੇ ਸਮੇਂ ਲਈ Nostr ਕੁੰਜੀਆਂ ਦੀ ਵਰਤੋਂ ਕਰਦੀ ਹੈ",
+  "infoSymbolsTitle": "ਚਿੰਨ੍ਹ",
+  "infoSymBle": "ਸਿੱਧਾ ਬਲੂਟੁੱਥ ਲਿੰਕ",
+  "infoSymMesh": "ਜਾਲ ਰਾਹੀਂ ਪਹੁੰਚਯੋਗ (ਹੋਰ ਅੱਗੇ)",
+  "infoSymInternet": "ਇੰਟਰਨੈੱਟ ਰਾਹੀਂ (Nostr) — ਸੀਲਬੰਦ ਲਿਫ਼ਾਫ਼ੇ",
+  "infoSymBridge": "ਮੈਸ਼↔ਇੰਟਰਨੈੱਟ ਬ੍ਰਿਜ ਮਾਰਗ ਰਾਹੀਂ ਪਹੁੰਚਿਆ",
+  "infoSymOffline": "ਔਫਲਾਈਨ — ਇਸ ਸਮੇਂ ਪਹੁੰਚਯੋਗ ਨਹੀਂ ਹੈ",
+  "infoSymInArea": "ਇਸ ਟਿਕਾਣਾ ਚੈਨਲ ਦੇ ਖੇਤਰ ਵਿੱਚ",
+  "infoSymE2eeOk": "ਐਂਡ-ਟੂ-ਐਂਡ ਐਨਕ੍ਰਿਪਟਡ ਸੈਸ਼ਨ",
+  "infoSymE2eeFail": "ਏਨਕ੍ਰਿਪਸ਼ਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ — ਸੰਵੇਦਨਸ਼ੀਲ ਟੈਕਸਟ ਨਾ ਭੇਜੋ",
+  "infoSymVerified": "ਪਛਾਣ ਪ੍ਰਮਾਣਿਤ/ਜਾਣਿਆ ਕੁੰਜੀ",
+  "infoSymBlocked": "ਬਲੌਕ ਕੀਤਾ",
+  "infoSymUnread": "ਨਾ-ਪੜ੍ਹਿਆ ਨਿੱਜੀ ਸੁਨੇਹਾ",
+  "infoEmergencyTitle": "ਐਮਰਜੈਂਸੀ ਮੋਡ",
+  "infoEmergencyBody": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਸੁਨੇਹਿਆਂ, ਕੁੰਜੀਆਂ ਅਤੇ ਪਛਾਣ ਨੂੰ ਮਿਟਾਉਣ ਲਈ ਹੋਮ ਸਕ੍ਰੀਨ 'ਤੇ ResilNet ਸਿਰਲੇਖ ਨੂੰ ਤਿੰਨ ਵਾਰ ਟੈਪ ਕਰੋ।",
+  "infoLegendNote": "ਕੁਝ ਪਾਥ ਆਈਕਨ ਸਪਸ਼ਟਤਾ ਲਈ ਇੱਥੇ ਦਸਤਾਵੇਜ਼ ਹਨ; ਚੈਟ ਵਿੱਚ ਡਿਲੀਵਰੀ ਟਿੱਕ ਪ੍ਰਾਇਮਰੀ ਭੇਜਣ ਦੀ ਸਥਿਤੀ ਬਣੇ ਰਹਿੰਦੇ ਹਨ।",
+  "dangerZoneTitle": "ਖ਼ਤਰਾ ਜ਼ੋਨ",
+  "dangerZoneSubtitle": "ਇਸ ਡਿਵਾਈਸ ਤੋਂ ਸੁਨੇਹਿਆਂ, ਏਨਕ੍ਰਿਪਸ਼ਨ ਕੁੰਜੀਆਂ, Nostr ਪਛਾਣ, ਸਾਥੀਆਂ ਅਤੇ ਉਪਨਾਮਾਂ ਨੂੰ ਮਿਟਾਉਂਦਾ ਹੈ। ਤੁਸੀਂ ਦੁਬਾਰਾ ਸੈੱਟਅੱਪ ਕਰੋਗੇ।",
+  "panicWipeTitle": "ਸੰਕਟਕਾਲੀਨ ਪੂੰਝ",
+  "panicWipeSubtitle": "ਸਥਾਨਕ ਹਰ ਚੀਜ਼ ਨੂੰ ਮਿਟਾਓ — ਘਰ ਦੇ ਸਿਰਲੇਖ ਨੂੰ ਟ੍ਰਿਪਲ-ਟੈਪ ਕਰਨ ਦੇ ਸਮਾਨ (ਡਬਲ-ਟੈਪ ਰੇਡੀਓ ਨੂੰ ਤਾਜ਼ਾ ਕਰਦਾ ਹੈ)",
+  "panicWipeConfirmTitle": "ਕੀ ਸਾਰਾ ਸਥਾਨਕ ਡਾਟਾ ਮਿਟਾਉਣਾ ਹੈ?",
+  "panicWipeConfirmBody": "ਇਹ ਇਸ ਫ਼ੋਨ 'ਤੇ ਚੈਟਾਂ, ਕੁੰਜੀਆਂ ਅਤੇ ਪਛਾਣ ਨੂੰ ਸਥਾਈ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦਿੰਦਾ ਹੈ।\nਸਾਥੀਆਂ ਨੂੰ ਤੁਹਾਡੀ ਨਵੀਂ ਪਛਾਣ ਨਾਲ QR ਕੁੰਜੀਆਂ ਦਾ ਮੁੜ-ਵਟਾਂਦਰਾ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ।\nਇਸਨੂੰ ਅਣਕੀਤਾ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।",
+  "panicWipeAction": "ਸਭ ਕੁਝ ਪੂੰਝੋ",
+  "panicWipeSnack": "ਸਥਾਨਕ ਪਛਾਣ ਮਿਟ ਗਈ — ਦੁਬਾਰਾ ਸੈੱਟਅੱਪ ਕਰੋ",
+  "panicWipeFailed": "ਮਿਟਾਉਣਾ ਅਸਫਲ ਰਿਹਾ: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "ਜਾਲ ਪੁਲ",
+  "meshBridgeSubtitle": "ਚਾਲੂ ਹੋਣ 'ਤੇ (ਡਿਫੌਲਟ), ਸੀਲਬੰਦ ਲਿਫ਼ਾਫ਼ੇ BLE ਜਾਲ ਅਤੇ ਇੰਟਰਨੈੱਟ (Nostr) ਦੋਵਾਂ ਦੀ ਵਰਤੋਂ ਕਰ ਸਕਦੇ ਹਨ ਤਾਂ ਜੋ ਨੇੜਲੇ ਜਾਲ ਟਾਪੂ ਜੁੜ ਸਕਣ। ਬੰਦ ਹੋਣ 'ਤੇ, ਭੇਜਦਾ ਹੈ ਸਿਰਫ਼ ਇੱਕ ਮਾਰਗ ਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ — ਕਦੇ ਵੀ ਤਾਰ 'ਤੇ ਪਲੇਨਟੈਕਸਟ ਨਹੀਂ ਰੱਖਦਾ।",
+  "favoritesTitle": "ਮਨਪਸੰਦ",
+  "favoritesAdd": "ਮਨਪਸੰਦ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ",
+  "favoritesRemove": "ਮਨਪਸੰਦ ਵਿੱਚੋਂ ਹਟਾਓ",
+  "favoritesEmpty": "ਅਜੇ ਤੱਕ ਕੋਈ ਮਨਪਸੰਦ ਨਹੀਂ - ਮੈਂਬਰ ਸੂਚੀ ਵਿੱਚੋਂ ਇੱਕ ਪੀਅਰ ਨੂੰ ਸਟਾਰ ਕਰੋ",
+  "favoritesNearbyTitle": "ਨਜ਼ਦੀਕੀ ਪਸੰਦੀਦਾ",
+  "favoritesNearbyBody": "{name} ਜਾਲ ਦੇ ਨੇੜੇ ਹੈ",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "ਖੇਤਰ ਵਿੱਚ ਪਸੰਦੀਦਾ",
+  "favoritesInAreaBody": "{name} ਇਸ ਖੇਤਰ ਵਿੱਚ ਔਨਲਾਈਨ ਹੈ",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "ਜਾਲ ਟੌਪੋਲੋਜੀ",
+  "topologySubtitle": "ਜਾਲ ਘੋਸ਼ਣਾ ਤੋਂ ਸਾਥੀ ਅਤੇ ਕੁਨੈਕਸ਼ਨ ਸੰਕੇਤ (ਸਿਰਫ਼ ਪੜ੍ਹਨ ਲਈ)",
+  "topologyConnectedNow": "ਹੁਣ ਕਨੈਕਟ ਕੀਤਾ ਗਿਆ (BLE)",
+  "topologyNearby": "ਨੇੜੇ (BLE)",
+  "topologyKnown": "ਜਾਣੇ-ਪਛਾਣੇ ਸਾਥੀ",
+  "topologyEmpty": "ਅਜੇ ਤੱਕ ਕੋਈ ਸਾਥੀ ਨਹੀਂ ਸਿੱਖਿਆ — BLE ਚਾਲੂ ਨਾਲ ਨੇੜੇ ਰਹੋ",
+  "topologyYou": "ਤੁਸੀਂ",
+  "topologyStats": "{peers} ਸਾਥੀ · {links} ਲਿੰਕ",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "ਨੇੜਲੇ ਜਾਲ ਖੋਜ ਤੋਂ ਅਨੁਮਾਨਿਤ — ਤੁਹਾਡੀ ਡਿਵਾਈਸ ਉਜਾਗਰ ਕੀਤੀ ਗਈ ਹੈ। ਚੈਟ ਖੋਲ੍ਹਣ ਲਈ ਕਿਸੇ ਪੀਅਰ 'ਤੇ ਟੈਪ ਕਰੋ।",
+  "topologyOpen": "ਜਾਲ ਟੌਪੋਲੋਜੀ",
+  "slashHelpTitle": "ਹੁਕਮ",
+  "slashHelpBody": "/help — ਇਹ ਸੂਚੀ\n/who — ਮੌਜੂਦਾ ਚੈਨਲ ਵਿੱਚ ਲੋਕ ਆਨਲਾਈਨ\n/ਡ੍ਰੌਪ <text> — ਇੱਥੇ ਇੱਕ ਸੀਲਬੰਦ ਨੋਟਿਸ ਪਿੰਨ ਕਰੋ (E2EE ਫੈਨ-ਆਊਟ)\n\nਪੂਰੀ ਗਾਈਡ: ਹੇਠਾਂ ਖੋਲ੍ਹੋ ਗਾਈਡ, ਜਾਂ ਸੈਟਿੰਗਾਂ → ਉਪਭੋਗਤਾ ਗਾਈਡ ਦੀ ਵਰਤੋਂ ਕਰੋ।",
+  "slashWhoEmpty": "ਇਸ ਸਮੇਂ ਇਸ ਚੈਨਲ ਵਿੱਚ ਕੋਈ ਵੀ ਔਨਲਾਈਨ ਨਹੀਂ ਹੈ",
+  "slashWhoTitle": "ਔਨਲਾਈਨ ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "ਵਰਤੋਂ: / ਆਪਣੇ ਨੋਟ ਟੈਕਸਟ ਨੂੰ ਛੱਡੋ",
+  "slashDropDone": "{channel} 'ਤੇ ਨੋਟਿਸ ਛੱਡਿਆ ਗਿਆ",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "ਅਣਜਾਣ ਕਮਾਂਡ — ਕੋਸ਼ਿਸ਼ ਕਰੋ/help",
+  "announceOpen": "ਘੋਸ਼ਣਾਵਾਂ",
+  "announceTitle": "ਘੋਸ਼ਣਾਵਾਂ",
+  "announceEmpty": "ਅਜੇ ਤੱਕ ਕੋਈ ਬੋਰਡ ਨਹੀਂ - ਲੌਕ ਕੀਤੇ ਜਾਂ ਖੁੱਲ੍ਹੇ ਨੋਟਿਸਾਂ ਨੂੰ ਪੋਸਟ ਕਰਨ ਲਈ ਇੱਕ ਬਣਾਓ",
+  "announceCreate": "ਬੋਰਡ ਬਣਾਓ",
+  "announceCreateHint": "ਬੋਰਡ ਦਾ ਨਾਮ",
+  "announceDefaultTitle": "ਕਮਿਊਨਿਟੀ ਬੋਰਡ",
+  "announceSettings": "ਬੋਰਡ ਸੈਟਿੰਗ",
+  "announceAllowLocked": "ਲੌਕ ਕੀਤੀਆਂ (ਇਨਕ੍ਰਿਪਟਡ) ਪੋਸਟਾਂ ਦੀ ਆਗਿਆ ਦਿਓ",
+  "announceAllowLockedSub": "ਬੋਰਡ ਕੁੰਜੀ ਲਈ ਏਨਕ੍ਰਿਪਟਡ — ਪਾਠਕਾਂ ਨੂੰ ਪਹੁੰਚ ਦੀ ਲੋੜ ਹੈ",
+  "announceAllowOpen": "ਖੁੱਲ੍ਹੀਆਂ (ਸਾਦਾ ਲਿਖਤ) ਪੋਸਟਾਂ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ",
+  "announceAllowOpenSub": "E2EE ਨਹੀਂ — ਜਾਲ/ਰੀਲੇ 'ਤੇ ਪੜ੍ਹਨਯੋਗ। ਮੂਲ ਰੂਪ ਵਿੱਚ ਬੰਦ।",
+  "announceComposeHint": "ਇੱਕ ਘੋਸ਼ਣਾ ਲਿਖੋ...",
+  "announceMediaInternetOnly": "ਫੋਟੋ/ਆਵਾਜ਼ ਘੋਸ਼ਣਾਵਾਂ ਇੰਟਰਨੈੱਟ 'ਤੇ ਭੇਜੀਆਂ ਜਾਂਦੀਆਂ ਹਨ (BLE ਨਹੀਂ)",
+  "announceNeedInternet": "ਫੋਟੋ ਜਾਂ ਵੌਇਸ ਘੋਸ਼ਣਾਵਾਂ ਭੇਜਣ ਲਈ ਇੰਟਰਨੈਟ ਨਾਲ ਕਨੈਕਟ ਕਰੋ",
+  "announceVoiceFailed": "ਅਵਾਜ਼ ਰਿਕਾਰਡ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "ਚਿੱਤਰ ਬਹੁਤ ਵੱਡਾ ਹੈ (ਅਧਿਕਤਮ ~180 KB)",
+  "announcePlayVoice": "ਵੌਇਸ ਨੋਟ ਚਲਾਓ",
+  "announceImageLabel": "📷 ਚਿੱਤਰ",
+  "announceAudioLabel": "🎤 ਵੌਇਸ ਨੋਟ",
+  "announceModeLocked": "ਤਾਲਾਬੰਦ",
+  "announceModeOpen": "ਖੋਲ੍ਹੋ",
+  "announceOpenBadge": "OPEN · ਇਨਕ੍ਰਿਪਟਡ ਨਹੀਂ",
+  "announceLockedBadge": "ਤਾਲਾਬੰਦ",
+  "announceLockedPlaceholder": "ਐਨਕ੍ਰਿਪਟਡ — ਪੜ੍ਹਨ ਲਈ ਪਹੁੰਚ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+  "announceRequestAccess": "ਪਹੁੰਚ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+  "announceRequestSent": "ਬੋਰਡ ਮਾਲਕ ਨੂੰ ਪਹੁੰਚ ਦੀ ਬੇਨਤੀ ਭੇਜੀ ਗਈ",
+  "announceRequestFailed": "ਪਹੁੰਚ ਲਈ ਬੇਨਤੀ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ (ਮਾਲਕ ਦੀ ਜਨਤਕ ਕੁੰਜੀ ਦੀ ਲੋੜ ਹੈ)",
+  "announceOpenConfirmTitle": "ਐਨਕ੍ਰਿਪਸ਼ਨ ਤੋਂ ਬਿਨਾਂ ਪੋਸਟ ਕਰਨਾ ਹੈ?",
+  "announceOpenConfirmBody": "ਖੁੱਲ੍ਹੀਆਂ ਪੋਸਟਾਂ E2EE ਨਹੀਂ ਹਨ। ਮਾਰਗ 'ਤੇ ਕੋਈ ਵੀ ਵਿਅਕਤੀ (ਜਾਲ / ਰੀਲੇਅ) ਇਹਨਾਂ ਨੂੰ ਪੜ੍ਹ ਸਕਦਾ ਹੈ। ਜਾਰੀ ਰੱਖਣਾ ਹੈ?",
+  "announcePostAction": "ਪੋਸਟ",
+  "announcePendingRequests": "ਪਹੁੰਚ ਬੇਨਤੀਆਂ",
+  "announceApprove": "ਮਨਜ਼ੂਰ ਕਰੋ",
+  "announceDeny": "ਇਨਕਾਰ",
+  "announceGranted": "ਤੁਸੀਂ ਇਸ ਬੋਰਡ 'ਤੇ ਲੌਕ ਕੀਤੀਆਂ ਪੋਸਟਾਂ ਨੂੰ ਪੜ੍ਹ ਸਕਦੇ ਹੋ",
+  "announceOwner": "ਤੁਸੀਂ ਇਸ ਬੋਰਡ ਦੇ ਮਾਲਕ ਹੋ",
+  "announceCopyInvite": "ਸੱਦਾ ਲਿਖਤ ਨੂੰ ਕਾਪੀ ਕਰੋ",
+  "announceShowInviteQr": "ਸੱਦਾ QR ਦਿਖਾਓ",
+  "announceScanInviteQr": "ਸਕੈਨ ਬੋਰਡ ਸੱਦਾ QR",
+  "announceFollow": "ਸੱਦੇ ਤੋਂ ਬੋਰਡ ਦੀ ਪਾਲਣਾ ਕਰੋ",
+  "announceFollowHint": "ਸੱਦਾ ਲਿਖਤ ਜਾਂ ਮਾਲਕ ਵੱਲੋਂ ResilNet ਲਿੰਕ ਪੇਸਟ ਕਰੋ",
+  "announceFollowOk": "ਬੋਰਡ ਦੀ ਪਾਲਣਾ",
+  "announceFollowOkNamed": "ਹੁਣ “{title}” ਦਾ ਅਨੁਸਰਣ ਕਰ ਰਹੇ ਹੋ",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "ਸੱਦਾ ਅਵੈਧ ਜਾਂ ਖਰਾਬ ਹੈ",
+  "announceInviteCopied": "ਸੱਦਾ ਲਿਖਤ ਕਾਪੀ ਕੀਤੀ ਗਈ",
+  "announceInviteSaveQr": "QR ਸੁਰੱਖਿਅਤ ਕਰੋ",
+  "announceInviteShare": "ਸੱਦਾ ਸਾਂਝਾ ਕਰੋ",
+  "announceFollowFromCompose": "ਸੁਨੇਹਾ ਬਾਕਸ ਵਿੱਚ ਬੋਰਡ ਸੱਦਾ ਮਿਲਿਆ",
+  "peerConfirmAddTitle": "ਕੀ ਨੈੱਟਵਰਕ ਮੈਂਬਰ ਸ਼ਾਮਲ ਕਰਨਾ ਹੈ?",
+  "peerConfirmAddBody": "ਉਹਨਾਂ ਦੀ ਜਨਤਕ ਕੁੰਜੀ ਨਾਲ “{name}” ਜੋੜੋ ਤਾਂ ਜੋ ਤੁਸੀਂ ਉਹਨਾਂ ਨੂੰ ਨਿੱਜੀ ਤੌਰ 'ਤੇ ਸੁਨੇਹਾ ਦੇ ਸਕੋ?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "ਮੈਂਬਰ ਸ਼ਾਮਲ ਕਰੋ",
+  "peerAddedOk": "{name} ਨੂੰ ਨੈੱਟਵਰਕ ਮੈਂਬਰਾਂ ਵਿੱਚ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "ਸੁਨੇਹਾ ਬਾਕਸ ਵਿੱਚ ਪਛਾਣ / ਜਨਤਕ ਕੁੰਜੀ ਦਾ ਪਤਾ ਲਗਾਇਆ ਗਿਆ ਹੈ",
+  "peerHashCopied": "ਜਨਤਕ ਕੁੰਜੀ ਹੈਸ਼ ਨੂੰ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+  "peerHashOpenChat": "ਚੈਟ ਖੋਲ੍ਹੋ",
+  "peerHashAddHint": "ਹੈਸ਼ ਕਾਪੀ ਕੀਤਾ। ਉਹਨਾਂ ਨੂੰ ਆਪਣਾ ਪਛਾਣ ਲਿੰਕ ਜਾਂ QR ਸਾਂਝਾ ਕਰਨ ਲਈ ਕਹੋ ਤਾਂ ਜੋ ਤੁਸੀਂ E2EE ਲਈ ਪੂਰੀ ਜਨਤਕ ਕੁੰਜੀ ਜੋੜ ਸਕੋ।",
+  "peerQrNoCode": "ਇਸ ਚਿੱਤਰ ਵਿੱਚ ਕੋਈ ResilNet QR ਨਹੀਂ ਮਿਲਿਆ",
+  "identityInviteSharePreamble": "ResilNet ਪਛਾਣ: “{name}”\nਲਿੰਕ ਖੋਲ੍ਹੋ ਜਾਂ ਇਸਨੂੰ ਚੈਟ ਵਿੱਚ ਪੇਸਟ ਕਰੋ → ਮੈਂਬਰ ਸ਼ਾਮਲ ਕਰੋ\nਜਾਂ ਪਛਾਣ QR ਨੂੰ ਸਕੈਨ ਕਰੋ।",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "ਪਛਾਣ ਲਿੰਕ ਸਾਂਝਾ ਕਰੋ",
+  "identityInviteCopied": "ਪਛਾਣ ਲਿੰਕ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+  "announceInviteSharePreamble": "ਬੋਰਡ ਸੱਦਾ: “{title}”\nResilNet → ਕਮਿਊਨਿਟੀ ਬੋਰਡ ਖੋਲ੍ਹੋ → ਸੱਦੇ ਤੋਂ ਅਨੁਸਰਣ ਕਰੋ\nਜਾਂ QR ਸਕੈਨ ਕਰੋ / ਹੇਠਾਂ ਦਿੱਤੇ ਲਿੰਕ 'ਤੇ ਟੈਪ ਕਰੋ।",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "ਕੀ ਇਸ ਬੋਰਡ ਦੀ ਪਾਲਣਾ ਕਰਨੀ ਹੈ?",
+  "announceConfirmFollowBody": "ਕੀ ਇਸ ਸੱਦੇ ਤੋਂ “{title}” ਦਾ ਅਨੁਸਰਣ ਕਰਨਾ ਹੈ?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "ਦਾ ਪਾਲਣ ਕਰੋ"
+}

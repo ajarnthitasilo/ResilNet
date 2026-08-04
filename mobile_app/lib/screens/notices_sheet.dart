@@ -11,6 +11,7 @@ import '../models/notice_expiry.dart';
 import '../state/app_state.dart';
 import 'chat_screen.dart';
 import 'online_people_sheet.dart';
+import '../app/glass_overlays.dart';
 
 /// Bitchat-style public notices for #mesh or Area.
 Future<void> showNoticesSheet(
@@ -74,7 +75,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
     if (_posting) return;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
@@ -101,7 +102,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
         final sent = s.lastBulletinBleSent;
         if (sent > 0) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.noticeMeshPublishSent(sent))),
+            GlassSnackBar(content: Text(context.l10n.noticeMeshPublishSent(sent))),
           );
         } else if (warn != null) {
           final msg = switch (warn) {
@@ -111,12 +112,12 @@ class _NoticesSheetState extends State<_NoticesSheet> {
             _ => context.l10n.noticePublishFailed,
           };
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(msg)),
+            GlassSnackBar(content: Text(msg)),
           );
         }
       } else if (warn != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.noticePublishFailed)),
+          GlassSnackBar(content: Text(context.l10n.noticePublishFailed)),
         );
       }
       setState(() {});
@@ -133,14 +134,14 @@ class _NoticesSheetState extends State<_NoticesSheet> {
     final items = s.noticesForScope(_scope);
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
 
-    return Container(
-      height: MediaQuery.sizeOf(context).height * 0.88,
-      decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-      ),
+    return ResilNetTheme.glassPanel(
+      context: context,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+      blurSigma: 28,
       padding: EdgeInsets.fromLTRB(16, 14, 16, 12 + bottom),
-      child: Column(
+      child: SizedBox(
+        height: MediaQuery.sizeOf(context).height * 0.88,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
@@ -334,10 +335,11 @@ class _NoticesSheetState extends State<_NoticesSheet> {
                         setState(() => _expiry = NoticeExpiry.sevenDays),
                   ),
                 ],
-              ),
-            ],
-          ),
-        ],
+               ),
+             ],
+           ),
+         ],
+       ),
       ),
     );
   }
@@ -589,14 +591,14 @@ class _NoticesSheetState extends State<_NoticesSheet> {
       await s.deleteLocalNotice(n.id);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.noticeDeleted)),
+        GlassSnackBar(content: Text(l10n.noticeDeleted)),
       );
       return;
     }
 
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.noticeDeleteConfirmTitle),
         content: Text(l10n.noticeDeleteLocalOnlyBody),
         actions: [
@@ -615,7 +617,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
     await s.deleteLocalNotice(n.id);
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.noticeDeleted)),
+      GlassSnackBar(content: Text(l10n.noticeDeleted)),
     );
   }
 
@@ -633,12 +635,8 @@ class _NoticesSheetState extends State<_NoticesSheet> {
     );
     final isSelf = senderId == s.myUserId;
 
-    final action = await showModalBottomSheet<String>(
+    final action = await showGlassModalBottomSheet<String>(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
       builder: (ctx) {
         return SafeArea(
           child: Column(
@@ -713,7 +711,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
         );
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          GlassSnackBar(
             content: Text(
               ok ? l10n.noticeAnonActionSent : l10n.noticeAnonNeedKey,
             ),
@@ -726,7 +724,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
         );
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          GlassSnackBar(
             content: Text(
               ok ? l10n.noticeAnonActionSent : l10n.noticeAnonNeedKey,
             ),
@@ -736,7 +734,7 @@ class _NoticesSheetState extends State<_NoticesSheet> {
         await s.setPeerBlocked(senderId, blocked: true);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.noticeAnonBlocked(anon))),
+          GlassSnackBar(content: Text(l10n.noticeAnonBlocked(anon))),
         );
     }
   }

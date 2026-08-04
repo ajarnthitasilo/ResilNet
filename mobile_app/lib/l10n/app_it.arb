@@ -1,0 +1,1105 @@
+{
+  "@@locale": "it",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "Aggiornamento ResilNet…",
+  "appRefreshed": "Aggiornato: le radio e la scoperta sono riavviate",
+  "appRefreshFailed": "Aggiornamento non riuscito: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "Doppio tocco = aggiornamento graduale. Pressione prolungata = recupero difficile. Tocco triplo = cancellazione di emergenza.",
+  "softRefreshTipTitle": "Se ResilNet si sente bloccato",
+  "softRefreshTipBody": "Tocca due volte ResilNet (in alto a sinistra) per un aggiornamento graduale della radio. Se il problema persiste: premi a lungo sul titolo, utilizza ⋮ → Ripristino hardware o Impostazioni. Il triplo tocco consente solo la cancellazione di emergenza.",
+  "softRefreshTipGotIt": "Fatto",
+  "infoSoftRefreshTitle": "Se l'app sembra bloccata",
+  "infoSoftRefreshStepRefresh": "Tocca due volte ResilNet (in alto a sinistra) → aggiornamento graduale delle radio e delle persone vicine",
+  "infoSoftRefreshStepHard": "Ancora bloccato? Premi a lungo il titolo o ⋮ / Impostazioni → Ripristino hardware",
+  "infoSoftRefreshStepWait": "Attendi il risultato snackbar, quindi riprova. Il ripristino della sessione mantiene le tue chiavi.",
+  "infoSoftRefreshStepWipe": "Tocco triplo = cancellazione di emergenza (elimina i dati locali) - solo se intenzionale",
+  "appRecoverySection": "Ripristino dell'app",
+  "appRecoverySectionSubtitle": "Da utilizzare quando l'app sembra bloccata. Soft = doppio tocco del titolo. Il recupero difficile è più forte. Il ripristino della sessione riavvia i servizi senza cancellare le chiavi.",
+  "appHardRecoverAction": "Difficile recupero",
+  "appHardRecovering": "Difficile recupero…",
+  "appSessionResetAction": "Reimposta sessione",
+  "appSessionResetRunning": "Reimpostazione della sessione…",
+  "appSessionResetConfirmTitle": "Reimpostare la sessione?",
+  "appSessionResetConfirmBody": "Riavvia i servizi ResilNet su questo dispositivo. Le tue chiavi di identità vengono conservate.",
+  "appRecoveryBusy": "Ripristino già in esecuzione...",
+  "appRecoveryOk": "Terminato il recupero",
+  "appRecoveryPartial": "Il ripristino è terminato con alcuni passaggi saltati: riprova se il problema persiste",
+  "appRecoveryFailed": "Ripristino non riuscito: prova a ripristinare la sessione o a chiudere forzatamente l'app dal sistema operativo",
+  "localWifiTitle": "Locale Wi‑Fi",
+  "localWifiSubtitle": "Collega i dispositivi vicini senza Internet, come se fossi su una LAN.",
+  "localWifiNotGatewayHint": "Non il gateway ESP32 LoRa SoftAP. Questo è solo telefono↔telefono/LAN.",
+  "localWifiUnavailable": "Il locale non Wi‑Fi è ancora pronto: attendi l'avvio dell'app.",
+  "lxmfBridgeTitle": "Nodo domestico",
+  "lxmfBridgeSubtitle": "Mac o Pi opzionale sul tuo Wi‑Fi che inoltra chat sigillate. Disattivato per impostazione predefinita. Non sostituisce la crittografia end-to-end.",
+  "lxmfBridgeEnable": "Usa il nodo home",
+  "lxmfBridgeDisabledHint": "Attiva solo quando l'app bridge è in esecuzione su un Mac o Pi su questa rete.",
+  "lxmfBridgeOnline": "In linea — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "Impossibile raggiungere il nodo home: {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Indirizzo del nodo domestico",
+  "lxmfBridgeBaseUrlHelper": "IP o http://IP:porta — esempio 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "Peer → LXMF destinazione (JSON)",
+  "lxmfBridgeRefresh": "Salva e aggiorna lo stato",
+  "lxmfBridgeLabHint": "Avanzato: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "Impostazioni del nodo Home",
+  "lxmfBridgeCheckConnection": "Controllare la connessione",
+  "lxmfBridgeStatusOnline": "Connesso al nodo home",
+  "lxmfBridgeStatusOffline": "Nodo home non raggiungibile",
+  "lxmfBridgeYourDest": "L'indirizzo di questo nodo (condividi con gli amici)",
+  "lxmfBridgeCopyDest": "Copia indirizzo",
+  "lxmfBridgeDestCopied": "Indirizzo copiato",
+  "lxmfBridgeLinkedPeers": "Amici collegati",
+  "lxmfBridgeLinkedPeersHint": "Ogni amico ha bisogno del proprio indirizzo del nodo di casa una volta. Quindi le chat sigillate possono utilizzare questo percorso.",
+  "lxmfBridgeNoLinks": "Nessun amico collegato ancora.",
+  "lxmfBridgeAddLink": "Collega un amico",
+  "lxmfBridgePickPeer": "Amico",
+  "lxmfBridgePeerDest": "Il loro indirizzo del nodo home",
+  "lxmfBridgePeerDestHint": "Codice di 32 caratteri dalla schermata del nodo Home",
+  "lxmfBridgeInvalidDest": "Quell'indirizzo non sembra valido. Incolla il codice completo dal loro nodo home.",
+  "lxmfBridgeRemoveLink": "Scollega",
+  "lxmfBridgeSaveLink": "Salva",
+  "lxmfBridgeLinkSaved": "Amico collegato",
+  "lxmfBridgeNoPeers": "Nessun contatto ancora inviabile ai messaggi: aggiungi prima un amico.",
+  "lxmfBridgeHelp": "Mantieni il bridge in esecuzione sul Mac/Pi. Questo percorso rimane sulla tua LAN: non è LoRa e non sostituisce Internet o Bluetooth Mesh.",
+  "localWifiModeHotspot": "Nelle vicinanze",
+  "localWifiModeRouter": "Router",
+  "localWifiHotspotIntro": "Un dispositivo condivide un hotspot personale. Altri si uniscono a quell'hotspot, quindi ResilNet li trova sulla rete locale.",
+  "localWifiHostAction": "Crea rete (host)",
+  "localWifiJoinAction": "Unisciti alla rete",
+  "localWifiHostSteps": "1. Apri Impostazioni iOS/Android e attiva Hotspot personale (o Condivisione Internet).\n2. Comunica agli amici il nome dell'hotspot (e la password).\n3. Torna qui e tocca \"L'hotspot è attivo: inizia ad aspettare\".",
+  "localWifiHostReady": "L'hotspot è attivo: inizia ad aspettare",
+  "localWifiHostWaiting": "In attesa che gli amici si uniscano...",
+  "localWifiJoinSteps": "1. Apri le Impostazioni di sistema e accedi all'hotspot personale del tuo amico.\n2. Torna qui e tocca \"Sono connesso - cerca\".",
+  "localWifiJoinReady": "Sono connesso: cerca",
+  "localWifiRouterIntro": "Connetti tutti i dispositivi allo stesso router/AP Wi‑Fi. Il router non ha bisogno di Internet, ma solo di una rete locale condivisa.",
+  "localWifiRouterSearch": "Cerca su questo Wi‑Fi",
+  "localWifiRefreshNetwork": "Aggiorna Wi‑Fi informazioni",
+  "localWifiRouterNoWifiTitle": "Non su Wi‑Fi",
+  "localWifiRouterNoWifiBody": "Unisciti a Wi‑Fi del router nelle Impostazioni di sistema, quindi cerca di nuovo.",
+  "localWifiDiscovering": "Ricerca su Wi‑Fi locale…",
+  "localWifiPeersFound": "Dispositivi su questa rete",
+  "localWifiStop": "Fermare",
+  "localWifiSsidUnknown": "Wi‑Fi nome non disponibile",
+  "localWifiStubBanner": "In attesa della presa LAN…",
+  "localWifiLiveBanner": "LAN discovery live (UDP): annuncio + chat sigillata su questo Wi‑Fi",
+  "localWifiEmptyHotspot": "Nessun dispositivo ancora.\nVerifica che gli amici si siano uniti al tuo hotspot e abbiano consentito l'accesso alla rete locale.",
+  "localWifiEmptyRouter": "Nessun dispositivo ancora.\nStesso SSID? Rete locale consentita? Alcuni router bloccano il traffico da dispositivo a dispositivo (isolamento AP).",
+  "localWifiIsolationHelp": "Perché non possiamo trovarci?",
+  "localWifiIsolationTitle": "Il router potrebbe isolare i client",
+  "localWifiIsolationBody": "Se l'isolamento AP/client (o una rete ospite) è attivo, i telefoni sullo stesso Wi‑Fi non possono parlare. Disattiva l'isolamento, utilizza l'SSID principale o passa alla modalità Nelle vicinanze (Hotspot).",
+  "localWifiPeerReady": "Pronto per chattare (ha la chiave)",
+  "localWifiPeerNeedKey": "Trovato: scansiona il QR per scambiare le chiavi",
+  "localWifiErrorTitle": "Errore Wi‑Fi locale",
+  "localWifiErrorBody": "Qualcosa è andato storto. Fermati e riprova.",
+  "preparingSystem": "Preparazione del sistema...",
+  "bootFailedTitle": "Impossibile avviare",
+  "retry": "Riprova",
+  "bootRecoveryAction": "Avvia una nuova identità (cancella i dati locali)",
+  "bootRecoveryConfirmTitle": "Iniziare una nuova identità?",
+  "bootRecoveryConfirmBody": "Ciò cancellerà permanentemente le chat locali, le chiavi e l'identità su questo dispositivo.\nI peer devono scansionare nuovamente il tuo QR con la tua nuova identità.\nQuesta operazione non può essere annullata.",
+  "bootRecoveryRunning": "Reimpostazione dell'identità locale…",
+  "bootRecoverySuccess": "Reimpostazione dell'identità locale completata",
+  "bootRecoveryFailed": "Impossibile reimpostare l'identità: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancellare",
+  "save": "Salva",
+  "close": "Chiudi",
+  "start": "Inizio",
+  "send": "Inviare",
+  "settings": "Impostazioni",
+  "language": "Lingua",
+  "languageSubtitle": "Per impostazione predefinita, l'app segue la lingua del tuo telefono (se supportata). Altre lingue ricadono nell'inglese. Puoi anche bloccare una lingua qui.",
+  "languageSystem": "Predefinito del sistema",
+  "languageThai": "tailandese",
+  "languageEnglish": "Inglese",
+  "notificationsTooltip": "Impostazioni di notifica",
+  "enableMessageNotifications": "Abilita le notifiche dei messaggi",
+  "settingsNotificationsSubtitle": "Messaggi 1:1 e persone online (avvisi locali)",
+  "networkMembersTooltip": "Membri della rete",
+  "identityQrTooltip": "Identità / QR",
+  "feedDirects": "Chiacchierata",
+  "feedMesh": "#maglia",
+  "feedGeo": "Zona",
+  "feedDirectsSubtitle": "Messaggi E2EE privati",
+  "feedMeshSubtitle": "peer vicini (BLE)",
+  "feedGeoSubtitle": "Canale di scoperta di Geohash",
+  "peerIdHint": "Incolla l'ID del destinatario (hash della chiave pubblica) per avviare una chat",
+  "directsEmpty": "Ancora nessuna chat: scansiona un QR o incolla un ID destinatario per iniziare\nI messaggi vengono sigillati con E2EE prima dell'invio (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • toccare per aprire la chat",
+  "meshIntro": "Peer nell'intervallo BLE: tocca per una chat E2EE privata (nessuna composizione pubblica su #mesh)\nInvia tramite router ibrido (BLE + LoRa + Nostr quando online)",
+  "meshEmptyRunning": "Ancora nessun peer nelle vicinanze: apri l'app su un altro dispositivo nel raggio di BLE",
+  "meshEmptyStopped": "BLE non è in esecuzione: concedi l'autorizzazione Bluetooth/Posizione",
+  "meshNearbyPrefix": "Nelle vicinanze",
+  "meshRetentionTitle": "Elimina automaticamente i messaggi",
+  "meshRetentionSubtitle": "La cronologia chat locale precedente viene rimossa automaticamente",
+  "meshRetentionKeep": "Mantenere",
+  "meshRetention1Day": "1 giorno",
+  "meshRetention3Days": "3 giorni",
+  "meshRetention7Days": "7 giorni",
+  "refreshLocationTooltip": "Aggiorna posizione",
+  "geoIntro": "Le persone online in questo geohash possono ricevere messaggi 1:1 o con un fan-out pubblico dell'area (ancora E2EE sigillato per peer, non testo in chiaro)",
+  "geoEmpty": "Ancora nessuno online in {channel}\nUsa Trasporti → Internet/Auto, attendi Nostr, aggiorna la posizione",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "Online in {channel} • tocca per 1:1 E2EE",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "Nelle vicinanze (in attesa di presenza area) • toccare per 1:1 E2EE",
+  "geoPeerNostrSubtitle": "Visto su Nostr in {channel} • solo scoperta (legacy)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "Presenza anonima legacy: attendi un peer associato o scambia QR",
+  "bleRadioNearbySubtitle": "BLE nelle vicinanze: scansiona il QR per avviare 1:1 E2EE",
+  "geoInternetDiscoverHint": "Per scoprire Internet è necessario che Nostr sia connesso (Impostazioni → Trasporto → Internet/Auto)",
+  "geoEmptyNoLocation": "Posizione non ancora risolta: consenti il ​​GPS e aggiorna per pubblicare il tuo geohash su Nostr",
+  "geoEmptyNeedsPermission": "Autorizzazione alla posizione negata: consenti ResilNet in Impostazioni → Privacy → Posizione",
+  "geoEmptyServicesDisabled": "I servizi di localizzazione sono disattivati: attivali nelle Impostazioni",
+  "geoEmptyNoGpsFix": "Impossibile ottenere una correzione GPS (comune sugli iPad Wi‑Fi): imposta manualmente il geohash di seguito",
+  "geoEmptyTeleportHint": "Tocca l'icona del luogo → inserisci un geohash (ad esempio w5) → Teletrasporto",
+  "geoSetGeohashManually": "Imposta geohash",
+  "geoTeleportHint": "Niente GPS? Inserisci il prefisso geohash (2–7 caratteri, ad esempio w5) e tocca Teletrasporto",
+  "geoTeleportInvalid": "Geohash non valido: utilizza solo lettere/numeri Base32 (ad esempio w5 o w5jt8)",
+  "geoTeleportOk": "Area impostata su {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "Area manuale: {channel} (l'aggiornamento GPS avrà la priorità)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr non pronto: tocca Riconnetti (0/0 finché l'inizializzazione non riesce)",
+  "geoEmptyMeshOnly": "Il trasporto è solo Mesh: passa a Internet o Auto per scoprire peer su Nostr",
+  "geoEmptyWaiting": "Ancora nessuno in {channel}: mantieni Area + Internet aperta su entrambi i dispositivi e attendi circa 60 secondi",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#zona",
+  "geoRefreshLocation": "Aggiorna posizione",
+  "settingsClearLocationTitle": "Posizione chiara",
+  "settingsClearLocationSubtitle": "Rimuovi geohash GPS/teletrasporto (l'area diventa #—)",
+  "settingsClearLocationConfirmTitle": "Posizione chiara?",
+  "settingsClearLocationConfirmBody": "Elimina il geohash memorizzato su questo dispositivo. Puoi aggiornare il GPS o teletrasportarti nuovamente in seguito.",
+  "settingsClearLocationAction": "Posizione chiara",
+  "settingsClearLocationSnack": "Posizione cancellata",
+  "chatVoiceTooLarge": "Nota vocale troppo grande: massimo circa 30 secondi",
+  "chatVoiceNeedInternet": "La nota vocale necessita di Internet (Nostr): troppo grande solo per BLE",
+  "chatVoiceSentInternet": "Nota vocale inviata via Internet",
+  "noticeAnonMention": "menzione",
+  "noticeAnonDm": "messaggio diretto",
+  "noticeAnonHug": "abbraccio",
+  "noticeAnonSlap": "schiaffo",
+  "noticeAnonBlock": "bloccare",
+  "noticeAnonNeedKey": "Nessuna chiave pubblica ancora: scambia prima QR per 1:1",
+  "noticeAnonActionSent": "Inviato",
+  "noticeAnonBlocked": "Bloccato {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "*un abbraccio {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* schiaffeggia {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Riconnetti Nostr",
+  "nostrSectionTitle": "Nostr relè",
+  "nostrSectionSubtitle": "La messaggistica Internet e l'individuazione dell'area utilizzano questi relè. Tocca Riconnettiti se lo stato rimane offline.",
+  "nostrStatusOnline": "Connesso {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "Offline: relè elencati ma nessuno connesso",
+  "nostrStatusNotInit": "Non avviato (0/0): toccare Riconnetti per inizializzare",
+  "nostrReconnectAction": "Riconnetti Nostr",
+  "nostrReconnectOk": "Nostr connesso ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "Ancora offline: controlla Wi‑Fi/cellular o riprova",
+  "nostrReconnectFailedDetail": "Non riuscito: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Connessione ai relè...",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "Internet (Nostr) in {channel} • chat sigillata pronta",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "Trasporti di zona",
+  "transportModeSubtitle": "Mesh = BLE nelle vicinanze (radio) quando non Nostr · Internet e Auto = Nostr elenco persone",
+  "transportModeMesh": "Maglia",
+  "transportModeInternet": "Internet",
+  "transportModeAuto": "Auto",
+  "geoPublicHint": "Messaggio pubblico a tutti coloro che sono online in quest'area",
+  "geoPublicSend": "Pubblico",
+  "geoPublicHelp": "Distribuzione sigillata a {count} peer online: ciascuno riceve una busta privata",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Inviato a {count} peer in quest'area",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "Nessun peer inviabile tramite messaggi online: apri Area/Mesh con peer che dispongono di chiavi o attendi BLE/Nostr",
+  "areaPublicBadge": "Zona pubblica",
+  "geoErrorPermission": "Impossibile leggere la posizione: controlla l'autorizzazione alla posizione",
+  "geoPrecisionRegion": "Regione",
+  "geoPrecisionProvince": "Provincia",
+  "geoPrecisionCity": "Città",
+  "geoPrecisionNeighborhood": "Quartiere",
+  "geoPrecisionBlock": "Bloccare",
+  "aliasTitle": "Imposta nickname (alias contatto)",
+  "aliasHintBody": "Questo alias è archiviato solo su questo dispositivo (solo locale)\nNon viene mai inviato con traffico E2EE",
+  "aliasLabel": "Soprannome",
+  "aliasHint": "per esempio. “capo villaggio”, “P’Somchai”…",
+  "settingsDevices": "Dispositivi",
+  "settingsFirmwareTitle": "Scarica/aggiorna il firmware ESP32",
+  "settingsFirmwareSubtitle": "Scarica i file .bin e aggiorna la scheda ESP32 tramite OTA",
+  "mtBridgeTitle": "Meshtastic ponte",
+  "mtBridgeSettingsSubtitle": "Bridge A/B di solo testo, non ResilNet E2EE",
+  "mtBridgeIntro": "Sposta il breve testo in chiaro tra Meshtastic e ResilNet. Le modalità A e B non possono essere eseguite contemporaneamente. Questa non è una crittografia end-to-end.",
+  "mtBridgeModeLabel": "Modalità",
+  "mtBridgeModeOff": "Spento",
+  "mtBridgeModeA": "Ingerire A",
+  "mtBridgeModeB": "Uscita B",
+  "mtBridgeModeOffShort": "Spento",
+  "mtBridgeModeAShort": "Nell'A",
+  "mtBridgeModeBShort": "Fuori B",
+  "mtBridgeMutexHint": "La selezione di una modalità disattiva automaticamente l'altra. La simultanea A+B non è supportata.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "Demo (registrazione)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "Il testo in entrata viene visualizzato sotto Avvisi come #meshtastic. Il relè mesh è opzionale (disattivato per impostazione predefinita).",
+  "mtBridgeRelayTitle": "Inoltra anche su mesh ResilNet",
+  "mtBridgeRelayHint": "Quando è attivo vengono trasmessi i bollettini pubblici firmati. Spento = solo Avvisi di questo telefono.",
+  "mtBridgeSimulateHint": "Messaggio dimostrativo",
+  "mtBridgeSimulate": "Simula il messaggio Meshtastic",
+  "mtBridgeIngestOk": "Inserito negli avvisi (#meshtastic)",
+  "mtBridgeEgressWarning": "Attenzione: i messaggi inviati qui NON sono ResilNet E2EE. Chiunque si trovi nel percorso Meshtastic può leggerli.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "Testo da pubblicare",
+  "mtBridgeSend": "Invia a Meshtastic",
+  "mtBridgeEgressOk": "In coda per Meshtastic (vedi registro/cronologia)",
+  "mtBridgeLastEgress": "Ultima uscita",
+  "mtBridgeEgressHistory": "Uscita recente",
+  "mtBridgeOffHint": "Attiva Ingest (A) o Egress (B) per utilizzare il bridge.",
+  "mtBridgeNoticeBadge": "MESHTASTICO · non E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "Utilizza il trasporto MQTT",
+  "mtBridgeUseMqttHint": "Disattivato = solo registrazione demo (MQTT in ingresso ignorato). On = MQTT per l'inserimento/l'uscita quando connesso.",
+  "mtBridgeMqttHost": "Ospite dell'intermediario",
+  "mtBridgeMqttPort": "Porta",
+  "mtBridgeMqttTls": "Utilizza TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "Porta tipica 8883. Utilizza certificati di sistema; fallisce in modo debole in caso di errori di handshake.",
+  "mtBridgeMqttAutoReconnect": "Riconnessione automatica",
+  "mtBridgeMqttAutoReconnectHint": "Quando è attivo, il client tenta di riconnettersi dopo le interruzioni. Lo stato mostra Connessione in corso fino al ripristino.",
+  "mtBridgeMqttTopicHelpers": "Aiutanti per argomenti",
+  "mtBridgeMqttRegion": "Prefisso regionale (facoltativo)",
+  "mtBridgeMqttRegionHint": "Se impostato, Apply ricostruisce la root come msh/<region>/2/json (sostituisce la root dell'argomento).",
+  "mtBridgeMqttTopicRoot": "Radice dell'argomento JSON",
+  "mtBridgeMqttDownlinkChannel": "Nome del canale di downlink",
+  "mtBridgeMqttApplyTopics": "Applica root → iscriviti/pubblica argomenti",
+  "mtBridgeMqttAdvanced": "MQTT avanzato",
+  "mtBridgeMqttAdvancedHint": "TLS, riconnessione, argomenti, credenziali",
+  "mtBridgeMqttTopicIn": "Sottoscrivi argomento",
+  "mtBridgeMqttTopicOut": "Pubblica argomento",
+  "mtBridgeMqttGatewayFrom": "ID nodo gateway (da)",
+  "mtBridgeMqttGatewayFromHint": "ID decimale o !hex: richiesto per il downlink sendtext",
+  "mtBridgeMqttChannelIndex": "Indice del canale mesh (opzionale 0–7)",
+  "mtBridgeMqttUser": "Nome utente (facoltativo)",
+  "mtBridgeMqttPass": "Password (facoltativa)",
+  "mtBridgeMqttPassStored": "Su questo dispositivo è memorizzata una password (non mostrata).",
+  "mtBridgeMqttPassReplace": "Nuova password (lascia vuoto per mantenerla)",
+  "mtBridgeMqttPassReplaceHint": "Lasciare vuoto per mantenere la password memorizzata.",
+  "mtBridgeMqttPassClear": "Cancella password",
+  "mtBridgeMqttSave": "Salva MQTT impostazioni",
+  "mtBridgeMqttSaved": "MQTT impostazioni salvate",
+  "mtBridgeMqttConnect": "Collegare",
+  "mtBridgeMqttDisconnect": "Disconnetti",
+  "mtBridgeMqttConnected": "MQTT connesso",
+  "mtBridgeMqttConnecting": "MQTT connessione in corso...",
+  "mtBridgeMqttDisconnected": "MQTT disconnesso",
+  "mtBridgeMqttError": "Errore MQTT",
+  "mtBridgeErrModeIngest": "Passa prima a Ingest (A).",
+  "mtBridgeErrModeEgress": "Passa prima all'uscita (B).",
+  "mtBridgeErrRate": "Rallenta: velocità limitata",
+  "mtBridgeErrDedupe": "Messaggio duplicato ignorato",
+  "mtBridgeErrLoop": "Droppato per evitare un loop del ponte",
+  "mtBridgeErrEmpty": "Il messaggio è vuoto",
+  "mtBridgeErrPublish": "Pubblicazione non riuscita",
+  "mtBridgeErrNotConnected": "MQTT non connesso",
+  "mtBridgeErrMissingHost": "Inserisci MQTT host broker",
+  "mtBridgeErrMissingTopic": "Inserisci iscriviti e pubblica argomenti",
+  "mtBridgeErrMissingFromNode": "Inserisci l'ID del nodo gateway (da) per sendtext",
+  "mtBridgeErrConnect": "MQTT connessione non riuscita",
+  "mtBridgeErrConnectTls": "MQTT Connessione TLS non riuscita",
+  "settingsData": "Dati",
+  "settingsDataHint": "Elimina i messaggi locali per ridurre le dimensioni del database: identità, chiavi e peer vengono mantenuti",
+  "settingsSaveHistoryTitle": "Salva la cronologia dei messaggi",
+  "settingsSaveHistorySubtitle": "Quando sono disattivati, i messaggi rimangono E2EE in rete e vengono conservati solo per questa sessione (non nella cronologia della chat locale). Il tuo testo viene ancora visualizzato come testo normale su questo dispositivo.",
+  "settingsPrivacy": "Privacy",
+  "settingsE2eeTitle": "Crittografia end-to-end",
+  "settingsE2eeSubtitle": "Sempre attivo: i messaggi vengono sigillati con RSA-OAEP + AES-GCM prima dell'invio. I relè e gli hop vicini non possono leggere i contenuti.",
+  "settingsScreenshotTitle": "Avvisi di screenshot",
+  "settingsScreenshotSubtitle": "Mostra una riga di sistema nella chat quando questo dispositivo acquisisce lo schermo",
+  "settingsNostrExpiryTitle": "Nostr messaggio conserva l'ora",
+  "settingsNostrExpirySubtitle": "Per quanto tempo le buste sigillate devono rimanere localmente quando sono online tramite Nostr",
+  "noticeExpiresIn": "scade tra",
+  "noticesTitle": "Avvisi",
+  "noticesMeshIntro": "Bollettino pubblico — visibile a tutti nel raggio radio, non crittografato. Salta da telefono a telefono offline e le caselle di ResilNet ritrasmissione nelle vicinanze ne conservano una copia in modo che le persone che arrivano più tardi la vedano ancora.",
+  "noticesMeshPublicBadge": "PUBBLICO · non crittografato",
+  "noticesGeoIntro": "Aggiungi brevi note per questo luogo in modo che altri visitatori possano trovarle.",
+  "noticesEmpty": "nessun avviso ancora",
+  "noticesEmptyHint": "appunta il primo avviso per le persone da queste parti.",
+  "noticesComposeHint": "pubblica un avviso...",
+  "noticesUrgent": "urgente",
+  "noticesOpen": "Avvisi",
+  "screenshotTaken": "*hai fatto uno screenshot*",
+  "chatAttachImage": "Allega immagine",
+  "chatImageLabel": "Immagine",
+  "chatImageTooLarge": "Immagine troppo grande: prova con un'altra foto",
+  "chatNostrExpiry": "Nostr mantieni",
+  "geoPublicComposeHint": "Invia a {channel}: pubblico",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "Cancella tutti i messaggi",
+  "settingsClearSubtitle": "Elimina tutte le chat su questo dispositivo",
+  "settingsClearConfirmTitle": "Cancellare tutti i messaggi?",
+  "settingsClearConfirmBody": "Verranno eliminati tutti i messaggi di chat su questo dispositivo.\nCoetanei e soprannomi non vengono rimossi.",
+  "settingsClearAction": "Cancella dati",
+  "settingsClearedSnack": "Dati cancellati",
+  "settingsVersion": "versione {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: scansione dei nodi",
+  "meshBleEsp32Scanning": "ESP32: ricerca di un nodo vicino",
+  "meshBleSyncing": "BLE: sincronizzazione con ESP32",
+  "meshNostrPublishing": "Nostr: pubblicazione",
+  "meshBleIdle": "BLE mesh attivo: ancora nessun telefono nelle vicinanze",
+  "meshBlePeersNearby": "BLE mesh: {count} telefono/i nelle vicinanze",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: autorizzazione richiesta",
+  "meshBlePausedCamera": "BLE in pausa per la fotocamera: tocca Avvia BLE",
+  "meshBleStopped": "BLE è disattivato: verifica che il Bluetooth sia attivo, quindi tocca Avvia BLE",
+  "meshBleRestart": "Inizia BLE",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "Controlla le autorizzazioni e avvia BLE",
+  "meshNostrOffline": "Nostr offline",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} peer vicini • LoRa {lora} • sincronizza ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "pronto",
+  "meshLoraNotReady": "non pronto",
+  "meshGatewayProgress": "UDP del gateway: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Gateway UDP: pronto",
+  "permissionTitle": "Consenti l'accesso per avviare la rete mesh BLE",
+  "permissionBody": "L'app richiede Bluetooth (scansione/connessione/pubblicità), posizione (per dispositivi Android meno recenti) e microfono (per note vocali nella chat e annunci) per la messaggistica della community.",
+  "permissionE2ee": "Crittografia end-to-end (E2EE)\nI nodi di inoltro non possono leggere il contenuto del messaggio",
+  "permissionReady": "Autorizzazioni pronte",
+  "permissionRequest": "Consenti e continua",
+  "permissionNotReadySnack": "Sistema non ancora pronto: attendi un attimo e riprova",
+  "permissionDeniedSnack": "Autorizzazioni incomplete: apri Impostazioni > ResilNet e consenti Bluetooth/Posizione/Microfono",
+  "permissionMicDenied": "Accesso al microfono negato: consentilo in Impostazioni per registrare note vocali",
+  "permissionMicOpenSettings": "Impostazioni",
+  "permissionCameraDenied": "Accesso alla fotocamera negato: consentilo nelle Impostazioni per scansionare i codici QR",
+  "permissionCameraFailed": "Per scansionare i codici QR è necessaria l'autorizzazione della fotocamera",
+  "permissionCameraOpenSettings": "Impostazioni",
+  "permissionPhotosDenied": "Accesso alla libreria foto negato: consentilo in Impostazioni per salvare il tuo codice QR",
+  "permissionPhotosFailed": "Per salvare il codice QR è necessaria l'autorizzazione della libreria foto",
+  "permissionPhotosOpenSettings": "Impostazioni",
+  "permissionFailedSnack": "Richiesta di autorizzazione non riuscita: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet Architettura • Multi-hop Store-and-Forward",
+  "onboardingSkip": "Saltare",
+  "onboardingNext": "Prossimo",
+  "onboardingStart": "Inizia",
+  "onboardingWelcomeTitle": "Benvenuto a ResilNet",
+  "onboardingWelcomeBody": "Chatta su ResilNet su una rete mesh, anche senza Internet",
+  "onboardingFriendsTitle": "Aggiungi facilmente gli amici",
+  "onboardingFriendsBody": "Condividi un QR da Identity o scansiona il QR di un amico per scambiare chiavi pubbliche",
+  "onboardingChannelsTitle": "Chat crittografata + canali vicini",
+  "onboardingChannelsBody": "Cambia #mesh / Area (geohash) per trovare peer vicini: i messaggi rimangono E2EE su BLE mesh e Nostr",
+  "chatTitle": "Chatta (E2EE)",
+  "chatScanTooltip": "Scansiona il QR per aggiungere un peer",
+  "chatBlockTooltip": "Blocca questo mittente",
+  "chatBlockedSnack": "Bloccato: nessuna notifica/nessun relè",
+  "chatAliasTooltip": "Imposta soprannome",
+  "chatReceiverPemLabel": "Chiave pubblica del destinatario (PEM)",
+  "chatReceiverPemHint": "Incolla la chiave pubblica del tuo amico (da QR/file condiviso)",
+  "chatNeedPeerKey": "Scansiona prima il QR di questo peer (è richiesta la chiave pubblica verificata)",
+  "chatPeerKeyMismatch": "La chiave pubblica archiviata non corrisponde a questo ID peer",
+  "chatVoiceFailed": "Impossibile registrare l'audio: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Impossibile riprodurre la nota vocale: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Riproduci la nota vocale",
+  "chatPauseVoice": "Pausa",
+  "chatVoiceLabelSent": "🎤 Nota vocale (sigillata)",
+  "chatVoiceLabel": "🎤 Nota vocale",
+  "chatDecryptFailed": "[decifratura fallita]",
+  "chatSentSealed": "[sigillato • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[sigillato]",
+  "chatComposeHint": "Digita un messaggio... (sigillato all'invio)",
+  "chatEmptyThread": "Nessun messaggio ancora\nDigita di seguito per inviare tramite mesh",
+  "chatLoadFailed": "Impossibile caricare la conversazione: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "Emoji",
+  "statusPending": "In attesa di",
+  "statusSent": "Inviato",
+  "statusRelayed": "Trasmesso",
+  "statusDelivered": "Consegnato",
+  "statusRead": "Leggere",
+  "statusFailed": "Fallito",
+  "chatCopy": "Copia",
+  "chatDeleteLocal": "Elimina su questo dispositivo",
+  "chatDeletedLocalSnack": "Eliminato su questo dispositivo",
+  "chatRetry": "Riprova",
+  "chatSendFailed": "Non consegnato: tocca Riprova",
+  "chatImageNeedInternet": "Connettersi a Internet per inviare immagini",
+  "chatImageTooLargeOnline": "Impossibile comprimere abbastanza l'immagine da inviare",
+  "chatOpenLinkFailed": "Impossibile aprire il collegamento",
+  "identityTitle": "Identità",
+  "identityScanTooltip": "Scansiona il codice QR con la fotocamera",
+  "identityCopiedHash": "Hash della chiave pubblica copiato",
+  "identityPeerSaved": "Peer salvato da QR",
+  "identityGalleryDenied": "Autorizzazione della raccolta foto negata",
+  "identityQrSaved": "QR salvato nella libreria di foto",
+  "identityQrSaveFailed": "Impossibile salvare il QR: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Membri della rete",
+  "qrScanTitle": "Scansiona il QR per aggiungere un amico",
+  "qrInvalid": "Scansione non riuscita: QR non valido",
+  "qrIdKeyMismatch": "QR rifiutato: l'ID non corrisponde alla chiave pubblica",
+  "qrCameraNotReady": "Fotocamera non pronta",
+  "qrRetrySettings": "Riprova / apri le impostazioni",
+  "qrCameraOpenFailed": "Impossibile aprire la fotocamera: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "Allinea il codice QR all'interno della cornice",
+  "firmwareDownloadTitle": "Scarica il firmware ESP32",
+  "firmwareSourceOnline": "Ultime (online)",
+  "firmwareSourceCached": "Copia salvata (offline)",
+  "firmwareSourceBaseline": "Riferimento in bundle (offline)",
+  "firmwareSourceUnavailable": "Nessun firmware disponibile",
+  "firmwareBaselineIncompatible": "Il firmware in bundle è troppo vecchio: connettiti a Internet per scaricare una versione più recente",
+  "firmwareChecksumFailed": "Controllo dell'integrità del firmware non riuscito: lampeggiamento bloccato",
+  "firmwareReadyFromSource": "Firmware pronto: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "Aggiorna",
+  "peersBlocked": "Bloccato",
+  "peersNearbyBle": "Nelle vicinanze (BLE)",
+  "peersRecentlyOnline": "Recentemente online",
+  "peersOnlineInArea": "In linea in zona",
+  "peersSeenMinutesAgo": "Visto {minutes} minuto fa",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Non in linea",
+  "peersBlockedSnack": "Bloccato {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Sbloccato",
+  "peersEmpty": "Nessun membro ancora nel database\nScansiona un QR o attendi il rilevamento della mesh BLE",
+  "peersOpenChat": "Apri la chat",
+  "peersBlockAction": "Bloccare",
+  "peersUnblockAction": "Sbloccare",
+  "channelPickerTooltip": "Chat / #mesh / Area",
+  "locationPickerTooltip": "Canale di localizzazione",
+  "transportPickerTooltip": "Mesh / Internet / Auto",
+  "onlinePeopleTooltip": "Persone in linea",
+  "unreadDirectsTooltipEmpty": "Messaggi privati",
+  "unreadDirectsTooltip": "{count} messaggi privati ​​non letti",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "persone",
+  "onlinePeopleEmpty": "Nessuno online ancora qui",
+  "onlinePeopleCount": "{count} in linea",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · vicinanze + zona",
+  "peerOnlineMeshTitle": "Qualcuno nelle vicinanze sulla rete",
+  "peerOnlineMeshBody": "{name} è nelle vicinanze sulla mesh",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "Qualcuno in linea in zona",
+  "peerOnlineAreaBody": "{name} è online tramite Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#canali di localizzazione",
+  "channelPinsTitle": "Appuntato",
+  "channelPinsHint": "Blocca i canali che usi spesso: rimangono in alto",
+  "channelPinTooltip": "Blocca questo canale",
+  "channelUnpinTooltip": "Sblocca",
+  "locationSheetIntro": "Chatta con le persone nelle vicinanze utilizzando il geohash approssimativo, non il GPS preciso. La presenza su Internet utilizza chiavi Nostr anonime.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "Teletrasporto",
+  "homeComposeHint": "Messaggio {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "Invia a {channel}: pubblico",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "scade tra",
+  "voiceRecordTapToStart": "Tocca per registrare il messaggio vocale",
+  "voiceRecordTooShort": "Registrazione troppo breve: riprova",
+  "voiceRecordFailed": "Impossibile salvare la registrazione: riprova",
+  "voicePttHold": "Tieni premuto per registrare",
+  "voicePttRelease": "Rilascia per visualizzare l'anteprima",
+  "voicePttRecording": "Registrazione…",
+  "voicePttDraftReady": "Nota vocale pronta",
+  "voicePttDiscard": "Scartare",
+  "voicePttReRecord": "Registra di nuovo",
+  "voicePttSend": "Invia nota vocale",
+  "voicePttPlayPreview": "Riproduci l'anteprima",
+  "voicePttStopPreview": "Interrompi l'anteprima",
+  "noticesBackfilling": "Caricamento avvisi...",
+  "noticesNostrOnline": "Nostr in linea",
+  "noticesNostrOffline": "Nostr offline: il bollettino necessita di Internet",
+  "noticesBackfillLoaded": "{count} avvisi caricati",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "Impossibile pubblicare l'avviso al consiglio di zona. Controlla la connessione Nostr.",
+  "noticeMeshPublishNoLink": "Salvato localmente. Connettiti a una radio mesh nelle vicinanze (o gateway Wi‑Fi) in modo che altri possano riceverlo.",
+  "noticeMeshPublishSent": "Bollettino inviato a {count} dispositivi vicini su BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Sono state rilevate radio nelle vicinanze, ma la scrittura BLE non è riuscita. Mantieni entrambe le app aperte nella schermata Avvisi e riprova (o utilizza un relè ESP32).",
+  "noticeMeshPublishNoGatt": "Il ricevitore BLE di questo dispositivo non è pronto. Attiva/disattiva Bluetooth e riapri Avvisi.",
+  "noticeDelete": "Elimina avviso",
+  "noticeDeleteConfirmTitle": "Eliminare questo avviso?",
+  "noticeDeleteLocalOnlyBody": "Verrà rimosso solo da questo dispositivo. Gli altri che l'hanno già ricevuto lo vedranno ancora.",
+  "noticeDeleted": "Avviso cancellato",
+  "chatNoticeHidden": "Avviso di zona — Avvisi aperti",
+  "identityDisplayNameTitle": "Nome da visualizzare",
+  "identitySaveName": "Salva nome",
+  "identityUserIdLabel": "ID utente (hash della chiave pubblica)",
+  "identityCopyHashTooltip": "Copia l'hash della chiave pubblica",
+  "identityMyQrTitle": "Il mio QR (id + pubKey + nome)",
+  "identityQrFailed": "Impossibile creare il QR\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "Risparmio…",
+  "identitySaveQr": "Salva QR nella libreria di foto",
+  "identityOpenScanner": "Apri la fotocamera per scansionare il QR",
+  "identityQrHelp": "Chiedi a un amico di scansionarlo per salvare la tua chiave pubblica e (se necessario) impostarti come emittente verificato",
+  "identityChatTip": "Suggerimento: puoi anche scansionare un QR in chat per aggiungere una chiave pubblica per E2EE",
+  "infoOpen": "Informazioni/Informazioni",
+  "docsGuideTitle": "Guida per l'utente",
+  "docsGuideSubtitle": "Si apre nel browser",
+  "docsOpenAction": "Apri la guida",
+  "docsOpenFailed": "Impossibile aprire la guida per l'utente",
+  "firmwareOtaGuideTitle": "Guida Flash e protocollo OTA",
+  "firmwareOtaGuideSubtitle": "Apre la guida Web: download di file .bin e passaggi completi",
+  "firmwareWebDownloadsTitle": "Download del firmware sul Web",
+  "firmwareWebDownloadsSubtitle": "Collegamenti e checksum per versione sul sito della documentazione",
+  "inviteCopyShortLink": "Copia il collegamento breve",
+  "inviteShareLink": "Condividi collegamento",
+  "inviteShowFullLink": "Collegamento completo",
+  "inviteCopyFullLink": "Copia il collegamento completo",
+  "inviteLinkCopied": "Collegamento copiato",
+  "inviteLongPressHint": "Premi a lungo per le azioni di collegamento",
+  "inviteSendInChat": "Invia nella chat ResilNet...",
+  "inviteSendInChatHint": "Solo le persone per le quali hai già una chiave pubblica",
+  "inviteSendInChatEmpty": "Nessuna chat ancora messaggiabile.\nScansiona prima un QR, apri Area/Mesh o condividi prima il collegamento all'esterno dell'app.",
+  "inviteSentToChat": "Invito inviato in chat",
+  "infoTabInfo": "Informazioni",
+  "infoTabSettingsHint": "Apri Impostazioni dal menu per lingua, E2EE e strumenti dati",
+  "infoHowToTitle": "Come usare",
+  "infoHowToBody": "• Tocca l'icona del canale per cambiare Chat / #mesh / Area\n• Tocca il luogo per scegliere la dimensione del geohash\n• Tocca le persone per i membri o chi è online\n• Apri Identity/QR da ⋮ per scambiare le chiavi di persona\n• L'area “pubblica” invia E2EE sigillato a ciascun peer online, non a una stanza di testo in chiaro",
+  "infoFeaturesTitle": "Caratteristiche",
+  "infoFeatureOffline": "Messaggistica offline tramite Bluetooth Low Energy",
+  "infoFeatureE2ee": "Crittografia end-to-end con RSA-OAEP + AES-GCM (non Noise)",
+  "infoFeatureMultihop": "I messaggi possono passare attraverso i peer vicini per andare più lontano",
+  "infoFeatureBridge": "Mesh ibrido ↔ internet (Nostr) per buste sigillate",
+  "infoFeatureGeo": "Canali geohash locali per le persone nelle vicinanze (discovery UX)",
+  "infoFeatureNotices": "Bandi con scadenza per #mesh e Area",
+  "infoPrivacyTitle": "Privacy",
+  "infoPrivacyNoRoom": "Nessun villaggio in chiaro/chat room pubblica in rete",
+  "infoPrivacyFanout": "Invio area = fan-out sigillato 1:1 verso peer con chiavi pubbliche conosciute",
+  "infoPrivacyPresence": "La presenza nell'area Internet utilizza chiavi Nostr temporanee",
+  "infoSymbolsTitle": "Simboli",
+  "infoSymBle": "Collegamento Bluetooth diretto",
+  "infoSymMesh": "Raggiungibile tramite mesh (altri in avanti)",
+  "infoSymInternet": "Via internet (Nostr) — buste sigillate",
+  "infoSymBridge": "Arrivato tramite il percorso mesh↔bridge Internet",
+  "infoSymOffline": "Offline: non raggiungibile in questo momento",
+  "infoSymInArea": "Nell'area del canale di questa posizione",
+  "infoSymE2eeOk": "Sessione crittografata end-to-end",
+  "infoSymE2eeFail": "Crittografia non disponibile: non inviare testo sensibile",
+  "infoSymVerified": "Chiave di identità verificata/conosciuta",
+  "infoSymBlocked": "Bloccato",
+  "infoSymUnread": "Messaggio privato non letto",
+  "infoEmergencyTitle": "Modalità di emergenza",
+  "infoEmergencyBody": "Tocca tre volte il titolo ResilNet nella schermata iniziale per cancellare messaggi, chiavi e identità su questo dispositivo.",
+  "infoLegendNote": "Alcune icone del percorso sono documentate qui per chiarezza; i segni di spunta di consegna in chat rimangono lo stato di invio principale.",
+  "dangerZoneTitle": "Zona pericolosa",
+  "dangerZoneSubtitle": "Elimina messaggi, chiavi di crittografia, identità Nostr, peer e nickname su questo dispositivo. Ti sistemerai di nuovo.",
+  "panicWipeTitle": "Pulitura d'emergenza",
+  "panicWipeSubtitle": "Cancella tutto in locale, come toccare tre volte il titolo principale (il doppio tocco aggiorna le radio)",
+  "panicWipeConfirmTitle": "Cancellare tutti i dati locali?",
+  "panicWipeConfirmBody": "Ciò eliminerà permanentemente chat, chiavi e identità su questo telefono.\nI peer devono scambiare nuovamente le chiavi QR con la tua nuova identità.\nQuesta operazione non può essere annullata.",
+  "panicWipeAction": "Pulisci tutto",
+  "panicWipeSnack": "Identità locale cancellata: riconfigurata",
+  "panicWipeFailed": "Cancellazione non riuscita: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "Ponte a rete",
+  "meshBridgeSubtitle": "Se attivata (impostazione predefinita), le buste sigillate possono utilizzare sia BLE mesh che Internet (Nostr) insieme in modo che le isole mesh vicine possano connettersi. Quando è disattivato, gli invii utilizzano un solo percorso: non invia mai testo in chiaro sulla rete.",
+  "favoritesTitle": "Preferiti",
+  "favoritesAdd": "Aggiungi ai preferiti",
+  "favoritesRemove": "Rimuovi dai preferiti",
+  "favoritesEmpty": "Ancora nessun preferito: aggiungi un collega dall'elenco dei membri",
+  "favoritesNearbyTitle": "Preferito nelle vicinanze",
+  "favoritesNearbyBody": "{name} è nelle vicinanze sulla mesh",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "Preferito in zona",
+  "favoritesInAreaBody": "{name} è online in quest'area",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Topologia a maglie",
+  "topologySubtitle": "Peer e suggerimenti di connessione dall'annuncio mesh (sola lettura)",
+  "topologyConnectedNow": "Connesso ora (BLE)",
+  "topologyNearby": "Nelle vicinanze (BLE)",
+  "topologyKnown": "Coetanei conosciuti",
+  "topologyEmpty": "Nessun peer ancora imparato: rimani nelle vicinanze con BLE attivo",
+  "topologyYou": "Voi",
+  "topologyStats": "{peers} peer · {links} collegamenti",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "Stima in base al rilevamento mesh nelle vicinanze: il tuo dispositivo è evidenziato. Tocca un collega per aprire la chat.",
+  "topologyOpen": "Topologia a maglie",
+  "slashHelpTitle": "Comandi",
+  "slashHelpBody": "/help: questo elenco\n/who: persone online nel canale corrente\n/drop <testo>: appunta qui un avviso sigillato (fan-out E2EE)\n\nGuida completa: utilizza la guida Apri di seguito o Impostazioni → Guida per l'utente.",
+  "slashWhoEmpty": "Nessuno online in questo canale in questo momento",
+  "slashWhoTitle": "In linea ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "Utilizzo: /rilascia il testo della nota",
+  "slashDropDone": "Avviso ritirato il {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "Comando sconosciuto: prova /help",
+  "announceOpen": "Annunci",
+  "announceTitle": "Annunci",
+  "announceEmpty": "Ancora nessuna bacheca: creane una per pubblicare avvisi bloccati o aperti",
+  "announceCreate": "Crea tavola",
+  "announceCreateHint": "Nome della scheda",
+  "announceDefaultTitle": "Consiglio comunitario",
+  "announceSettings": "Impostazioni della scheda",
+  "announceAllowLocked": "Consenti post bloccati (crittografati).",
+  "announceAllowLockedSub": "Crittografato sulla chiave della scheda: i lettori devono accedere",
+  "announceAllowOpen": "Consenti post aperti (testo normale).",
+  "announceAllowOpenSub": "Non E2EE: leggibile su mesh/relè. Disattivato per impostazione predefinita.",
+  "announceComposeHint": "Scrivi un annuncio...",
+  "announceMediaInternetOnly": "Annunci fotografici/vocali inviati tramite Internet (non BLE)",
+  "announceNeedInternet": "Connettersi a Internet per inviare foto o annunci vocali",
+  "announceVoiceFailed": "Impossibile registrare la voce: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "L'immagine è troppo grande (max ~180 KB)",
+  "announcePlayVoice": "Riproduci la nota vocale",
+  "announceImageLabel": "📷 Immagine",
+  "announceAudioLabel": "🎤 Nota vocale",
+  "announceModeLocked": "Bloccato",
+  "announceModeOpen": "Aprire",
+  "announceOpenBadge": "APERTO · non crittografato",
+  "announceLockedBadge": "Bloccato",
+  "announceLockedPlaceholder": "Crittografato: richiedi l'accesso in lettura",
+  "announceRequestAccess": "Richiedi l'accesso",
+  "announceRequestSent": "Richiesta di accesso inviata al proprietario della scheda",
+  "announceRequestFailed": "Impossibile richiedere l'accesso (è necessaria la chiave pubblica del proprietario)",
+  "announceOpenConfirmTitle": "Pubblicare senza crittografia?",
+  "announceOpenConfirmBody": "I post aperti non sono E2EE. Chiunque sul percorso (mesh/relè) può leggerli. Continuare?",
+  "announcePostAction": "Inviare",
+  "announcePendingRequests": "Richieste di accesso",
+  "announceApprove": "Approvare",
+  "announceDeny": "Negare",
+  "announceGranted": "Puoi leggere i post bloccati su questa bacheca",
+  "announceOwner": "Possiedi questa scheda",
+  "announceCopyInvite": "Copia il testo dell'invito",
+  "announceShowInviteQr": "Mostra il QR di invito",
+  "announceScanInviteQr": "Scansiona il QR di invito della bacheca",
+  "announceFollow": "Segui la bacheca dall'invito",
+  "announceFollowHint": "Incolla il testo dell'invito o il link ResilNet del proprietario",
+  "announceFollowOk": "Segue il consiglio",
+  "announceFollowOkNamed": "Ora segue \"{title}\"",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "L'invito non è valido o è danneggiato",
+  "announceInviteCopied": "Testo dell'invito copiato",
+  "announceInviteSaveQr": "Salva QR",
+  "announceInviteShare": "Condividi invito",
+  "announceFollowFromCompose": "Invito alla bacheca rilevato nella finestra di messaggio",
+  "peerConfirmAddTitle": "Aggiungere un membro della rete?",
+  "peerConfirmAddBody": "Aggiungere \"{name}\" con la chiave pubblica in modo da potergli inviare messaggi in privato?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "Aggiungi membro",
+  "peerAddedOk": "Aggiunto {name} ai membri della rete",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "Identità/chiave pubblica rilevata nella finestra di messaggio",
+  "peerHashCopied": "Hash della chiave pubblica copiato",
+  "peerHashOpenChat": "Apri la chat",
+  "peerHashAddHint": "Ha copiato. Chiedi loro di condividere il collegamento identificativo o il QR in modo da poter aggiungere la chiave pubblica completa per E2EE.",
+  "peerQrNoCode": "Nessun QR ResilNet trovato in questa immagine",
+  "identityInviteSharePreamble": "Identità ResilNet: “{name}”\nApri il collegamento o incollalo nella chat → Aggiungi membro\nOppure scansiona il QR dell'identità.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "Condividi collegamento identità",
+  "identityInviteCopied": "Collegamento identità copiato",
+  "announceInviteSharePreamble": "Invito al consiglio: \"{title}\"\nApri ResilNet → Bacheche della community → Segui dall'invito\nOppure scansiona il QR/tocca il link sottostante.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "Seguire questa bacheca?",
+  "announceConfirmFollowBody": "Seguire \"{title}\" da questo invito?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "Seguire"
+}

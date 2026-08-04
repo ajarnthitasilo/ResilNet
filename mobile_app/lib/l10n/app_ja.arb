@@ -1,0 +1,1105 @@
+{
+  "@@locale": "ja",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "ResilNet を更新中…",
+  "appRefreshed": "更新 — 無線と検出が再開されました",
+  "appRefreshFailed": "更新に失敗しました: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "ダブルタップ = ソフトリフレッシュ。長押し = ハードリカバリ。トリプルタップ = 緊急ワイプ。",
+  "softRefreshTipTitle": "ResilNet が行き詰まりを感じている場合",
+  "softRefreshTipBody": "ResilNet (左上) をダブルタップすると、無線がソフトに更新されます。それでも解決しない場合は、タイトルを長押しし、「⋮」→「ハードリカバリ」または「設定」を使用します。トリプルタップは緊急ワイプのみです。",
+  "softRefreshTipGotIt": "わかった",
+  "infoSoftRefreshTitle": "アプリが行き詰まっていると感じた場合",
+  "infoSoftRefreshStepRefresh": "ResilNet (左上) をダブルタップ → ラジオと近くの人々をソフトリフレッシュします",
+  "infoSoftRefreshStepHard": "まだ行き詰まっていますか?タイトル長押し、または ⋮ / 設定 → ハードリカバリ",
+  "infoSoftRefreshStepWait": "結果のスナックバーを待ってから、再試行してください。セッションをリセットしてもキーは保持されます。",
+  "infoSoftRefreshStepWipe": "トリプルタップ = 緊急ワイプ (ローカル データを削除) — 意図的である場合のみ",
+  "appRecoverySection": "アプリの回復",
+  "appRecoverySectionSubtitle": "アプリがフリーズしていると感じた場合に使用します。ソフト = タイトルをダブルタップします。ハードリカバリーの方が強い。セッションをリセットすると、キーをワイプせずにサービスが再起動されます。",
+  "appHardRecoverAction": "ハードリカバリ",
+  "appHardRecovering": "回復が難しい…",
+  "appSessionResetAction": "セッションをリセットする",
+  "appSessionResetRunning": "セッションをリセット中…",
+  "appSessionResetConfirmTitle": "セッションをリセットしますか?",
+  "appSessionResetConfirmBody": "このデバイス上の ResilNet サービスを再起動します。 ID キーは保管されます。",
+  "appRecoveryBusy": "リカバリはすでに実行中です…",
+  "appRecoveryOk": "回復が完了しました",
+  "appRecoveryPartial": "いくつかの手順をスキップしてリカバリが終了しました - まだスタックしている場合はもう一度試してください",
+  "appRecoveryFailed": "回復に失敗しました - セッションのリセットを試みるか、OS からアプリを強制終了してください",
+  "localWifiTitle": "ローカル Wi‑Fi",
+  "localWifiSubtitle": "インターネットなしで近くのデバイスをリンクします。1 つの LAN 上にあるのと同じです。",
+  "localWifiNotGatewayHint": "ESP32 LoRa ゲートウェイ SoftAP ではありません。電話↔電話・LANのみです。",
+  "localWifiUnavailable": "ローカル Wi‑Fi はまだ準備ができていません。アプリが起動するまで待ちます。",
+  "lxmfBridgeTitle": "ホームノード",
+  "lxmfBridgeSubtitle": "封印されたチャットを中継する Wi‑Fi 上のオプションの Mac または Pi。デフォルトではオフです。エンドツーエンド暗号化に代わるものではありません。",
+  "lxmfBridgeEnable": "ホームノードを使用する",
+  "lxmfBridgeDisabledHint": "ブリッジ アプリがこのネットワーク上の Mac または Pi で実行されている場合にのみオンになります。",
+  "lxmfBridgeOnline": "オンライン — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "ホームノードに到達できません — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "ホームノードアドレス",
+  "lxmfBridgeBaseUrlHelper": "IP または http://IP:port — 例 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "ピア → LXMF 宛先 (JSON)",
+  "lxmfBridgeRefresh": "ステータスの保存と更新",
+  "lxmfBridgeLabHint": "上級: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "ホームノードの設定",
+  "lxmfBridgeCheckConnection": "接続を確認してください",
+  "lxmfBridgeStatusOnline": "ホームノードに接続されています",
+  "lxmfBridgeStatusOffline": "ホームノードに到達できません",
+  "lxmfBridgeYourDest": "このノードのアドレス (友人と共有)",
+  "lxmfBridgeCopyDest": "アドレスをコピーする",
+  "lxmfBridgeDestCopied": "アドレスをコピーしました",
+  "lxmfBridgeLinkedPeers": "リンクされた友達",
+  "lxmfBridgeLinkedPeersHint": "各友人は自分のホームノード アドレスを 1 回必要とします。これにより、シールドされたチャットがこのパスを使用できるようになります。",
+  "lxmfBridgeNoLinks": "まだ友達がリンクされていません。",
+  "lxmfBridgeAddLink": "友達をリンクする",
+  "lxmfBridgePickPeer": "友達",
+  "lxmfBridgePeerDest": "ホームノードアドレス",
+  "lxmfBridgePeerDestHint": "ホームノード画面からの 32 文字のコード",
+  "lxmfBridgeInvalidDest": "そのアドレスは有効ではないようです。ホーム ノードから完全なコードを貼り付けます。",
+  "lxmfBridgeRemoveLink": "リンクを解除する",
+  "lxmfBridgeSaveLink": "保存",
+  "lxmfBridgeLinkSaved": "友達がリンクされました",
+  "lxmfBridgeNoPeers": "メッセージ可能な連絡先はまだありません。まず友達を追加してください。",
+  "lxmfBridgeHelp": "Mac/Pi 上でブリッジを実行し続けます。このパスは LAN 上に残ります。これは LoRa ではなく、インターネットや Bluetooth メッシュに代わるものではありません。",
+  "localWifiModeHotspot": "近く",
+  "localWifiModeRouter": "ルーター",
+  "localWifiHotspotIntro": "1 台のデバイスがパーソナル ホットスポットを共有します。他の人がそのホットスポットに参加し、ResilNet がローカル ネットワーク上でそれらを見つけます。",
+  "localWifiHostAction": "ネットワークの作成（ホスト）",
+  "localWifiJoinAction": "ネットワークに接続する",
+  "localWifiHostSteps": "1. iOS/Androidの設定を開き、パーソナルホットスポット（またはインターネット共有）をオンにします。\n2.ホットスポット名（とパスワード）を友達に伝えます。\n3.ここに戻って「ホットスポットがオンになっています。お待ちください」をタップします。",
+  "localWifiHostReady": "ホットスポットがオンになっています - 待機を開始します",
+  "localWifiHostWaiting": "友達の参加を待っています…",
+  "localWifiJoinSteps": "1. システムの設定を開き、友人の個人ホットスポットに参加します。\n2. ここに戻り、「接続中 – 検索」をタップします。",
+  "localWifiJoinReady": "接続しています — 検索",
+  "localWifiRouterIntro": "すべてのデバイスを同じ Wi‑Fi ルーター/AP に接続します。ルーターにはインターネットは必要ありません。共有ローカル ネットワークのみが必要です。",
+  "localWifiRouterSearch": "この Wi‑Fi で検索します",
+  "localWifiRefreshNetwork": "Wi‑Fi 情報を更新",
+  "localWifiRouterNoWifiTitle": "Wi‑Fi にはありません",
+  "localWifiRouterNoWifiBody": "システム設定でルーターの Wi‑Fi に参加し、再度検索します。",
+  "localWifiDiscovering": "ローカル Wi‑Fi で検索しています…",
+  "localWifiPeersFound": "このネットワーク上のデバイス",
+  "localWifiStop": "停止",
+  "localWifiSsidUnknown": "Wi‑Fi 名が利用できません",
+  "localWifiStubBanner": "LANソケットを待っています…",
+  "localWifiLiveBanner": "LAN ディスカバリ ライブ (UDP) — この Wi‑Fi でアナウンス + 非公開チャット",
+  "localWifiEmptyHotspot": "まだデバイスがありません。\n友達がホットスポットに参加し、ローカル ネットワーク アクセスを許可していることを確認してください。",
+  "localWifiEmptyRouter": "まだデバイスがありません。\n同じSSIDですか？ローカルネットワークは許可されますか?一部のルーターはデバイス間のトラフィックをブロックします (AP 分離)。",
+  "localWifiIsolationHelp": "なぜお互いを見つけることができないのですか？",
+  "localWifiIsolationTitle": "ルーターがクライアントを隔離する可能性がある",
+  "localWifiIsolationBody": "AP/クライアント分離 (またはゲスト ネットワーク) がオンになっている場合、同じ Wi‑Fi 上の電話は通話できません。分離をオフにするか、メイン SSID を使用するか、近く (ホットスポット) モードに切り替えます。",
+  "localWifiPeerReady": "チャットの準備ができました (鍵あり)",
+  "localWifiPeerNeedKey": "見つかりました— QRをスキャンして鍵を交換",
+  "localWifiErrorTitle": "ローカル Wi‑Fi エラー",
+  "localWifiErrorBody": "何か問題が発生しました。停止してもう一度試してください。",
+  "preparingSystem": "システムを準備中…",
+  "bootFailedTitle": "開始できませんでした",
+  "retry": "もう一度やり直してください",
+  "bootRecoveryAction": "新しいアイデンティティを開始する (ローカル データを消去する)",
+  "bootRecoveryConfirmTitle": "新しいアイデンティティを始めますか?",
+  "bootRecoveryConfirmBody": "これにより、このデバイス上のローカル チャット、キー、ID が完全に消去されます。\nピアは、新しい ID を使用して QR を再度スキャンする必要があります。\nこれを元に戻すことはできません。",
+  "bootRecoveryRunning": "ローカル ID をリセットしています…",
+  "bootRecoverySuccess": "ローカル ID のリセットが完了しました",
+  "bootRecoveryFailed": "IDをリセットできませんでした： {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "キャンセル",
+  "save": "保存",
+  "close": "近い",
+  "start": "始める",
+  "send": "送信",
+  "settings": "設定",
+  "language": "言語",
+  "languageSubtitle": "デフォルトでは、アプリは電話の言語に従います (サポートされている場合)。他の言語は英語に戻ります。ここで言語をロックすることもできます。",
+  "languageSystem": "システムのデフォルト",
+  "languageThai": "タイ語",
+  "languageEnglish": "英語",
+  "notificationsTooltip": "通知設定",
+  "enableMessageNotifications": "メッセージ通知を有効にする",
+  "settingsNotificationsSubtitle": "1 対 1 のメッセージとオンラインの人々 (ローカル アラート)",
+  "networkMembersTooltip": "ネットワークメンバー",
+  "identityQrTooltip": "アイデンティティ/QR",
+  "feedDirects": "チャット",
+  "feedMesh": "＃メッシュ",
+  "feedGeo": "エリア",
+  "feedDirectsSubtitle": "プライベート E2EE メッセージ",
+  "feedMeshSubtitle": "近くのピア (BLE)",
+  "feedGeoSubtitle": "Geohash ディスカバリー チャネル",
+  "peerIdHint": "受信者 ID (公開キー ハッシュ) を貼り付けてチャットを開始します",
+  "directsEmpty": "まだチャットはありません - QR をスキャンするか、受信者 ID を貼り付けて開始してください\nメッセージは送信前に E2EE でシールされます (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • タップしてチャットを開きます",
+  "meshIntro": "BLE 範囲内のピア — プライベート E2EE チャットをタップします (#mesh でのパブリック作成はありません)\nハイブリッド ルーター経由で送信 (オンライン時は BLE + LoRa + Nostr)",
+  "meshEmptyRunning": "近くにピアがまだありません - BLE 範囲内の別のデバイスでアプリを開きます",
+  "meshEmptyStopped": "BLE は実行されていません — Bluetooth / 位置情報のアクセス許可を付与します",
+  "meshNearbyPrefix": "近く",
+  "meshRetentionTitle": "メッセージの自動削除",
+  "meshRetentionSubtitle": "古いローカル チャット履歴は自動的に削除されます",
+  "meshRetentionKeep": "保つ",
+  "meshRetention1Day": "1日",
+  "meshRetention3Days": "3日間",
+  "meshRetention7Days": "7日間",
+  "refreshLocationTooltip": "場所を更新する",
+  "geoIntro": "このジオハッシュ内のオンラインの人々は、1 対 1 でメッセージを送信することも、エリアのパブリック ファンアウトでメッセージを送信することもできます (ピアごとに E2EE はまだ封印されています。平文ではありません)。",
+  "geoEmpty": "{channel} にはまだオンラインの人がいません\nトランスポート → インターネット/自動を使用し、Nostr を待ち、場所を更新します",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "{channel} でオンライン • 1 対 1 E2EE をタップ",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "近く (待機エリアに存在) • 1:1 E2EE の場合はタップします",
+  "geoPeerNostrSubtitle": "{channel} の Nostr で見られる • 検出のみ (レガシー)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "従来の匿名プレゼンス - バインドされたピアを待つか、QR を交換します",
+  "bleRadioNearbySubtitle": "BLE 近く— 1: 1 E 2 EEを開始するためにQRをスキャン",
+  "geoInternetDiscoverHint": "エリア インターネット検出には Nostr が接続されている必要があります (設定 → トランスポート → インターネット/自動)",
+  "geoEmptyNoLocation": "場所はまだ解決されていません— GPSとリフレッシュを許可して、ジオハッシュを公開します Nostr",
+  "geoEmptyNeedsPermission": "位置情報の許可が拒否されました - [設定] → [プライバシー] → [位置情報] で ResilNet を許可します",
+  "geoEmptyServicesDisabled": "位置情報サービスがオフになっています - 設定でオンにしてください",
+  "geoEmptyNoGpsFix": "GPS 修正を取得できませんでした (Wi‑Fi iPad で一般的) — 以下で geohash を手動で設定します",
+  "geoEmptyTeleportHint": "場所アイコンをタップ → ジオハッシュ (例: w5) を入力 → テレポート",
+  "geoSetGeohashManually": "ジオハッシュを設定する",
+  "geoTeleportHint": "GPS がありませんか? geohash プレフィックス (2 ～ 7 文字、例: w5) を入力し、「テレポート」をタップします",
+  "geoTeleportInvalid": "無効な geohash — Base32 文字/数字のみを使用してください (例: w5 または w5jt8)",
+  "geoTeleportOk": "{channel} に設定された領域",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "手動エリア: {channel} (GPS 更新は上書きされます)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr の準備ができていません — [再接続] をタップします (初期化が成功するまで 0/0)",
+  "geoEmptyMeshOnly": "トランスポートはメッシュのみです - Nostr 経由でピアを検出するには、インターネットまたは自動に切り替えてください",
+  "geoEmptyWaiting": "{channel} にはまだ誰もいません — 両方のデバイスでエリアとインターネットを開いたままにして、最大 60 秒待ちます",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "＃エリア",
+  "geoRefreshLocation": "場所を更新する",
+  "settingsClearLocationTitle": "明確な場所",
+  "settingsClearLocationSubtitle": "GPS / テレポート ジオハッシュを削除 (エリアは #— になります)",
+  "settingsClearLocationConfirmTitle": "明確な場所？",
+  "settingsClearLocationConfirmBody": "このデバイスに保存されている geohash を削除します。その後、GPS を更新したり、再度テレポートしたりできます。",
+  "settingsClearLocationAction": "明確な場所",
+  "settingsClearLocationSnack": "場所がクリアされました",
+  "chatVoiceTooLarge": "音声メモが大きすぎます - 最大約 30 秒",
+  "chatVoiceNeedInternet": "ボイスメモにはインターネット (Nostr) が必要です - BLE だけでは大きすぎます",
+  "chatVoiceSentInternet": "インターネット経由で送信されるボイスメモ",
+  "noticeAnonMention": "言及",
+  "noticeAnonDm": "ダイレクトメッセージ",
+  "noticeAnonHug": "Pa hug",
+  "noticeAnonSlap": "平手打ち",
+  "noticeAnonBlock": "ブロック",
+  "noticeAnonNeedKey": "公開キーはまだありません - 最初に QR を 1:1 で交換します",
+  "noticeAnonActionSent": "送信済み",
+  "noticeAnonBlocked": "ブロックされました {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* ハグ {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* 平手打ち {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "再接続 Nostr",
+  "nostrSectionTitle": "Nostr リレー",
+  "nostrSectionSubtitle": "インターネット メッセージングとエリア検出では、これらのリレーが使用されます。ステータスがオフラインのままの場合は、「再接続」をタップします。",
+  "nostrStatusOnline": "{connected}/{total} に接続しました",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "オフライン — リレーはリストされていますが、接続されていません",
+  "nostrStatusNotInit": "未開始 (0/0) — [再接続] をタップして初期化します",
+  "nostrReconnectAction": "再接続 Nostr",
+  "nostrReconnectOk": "Nostr が接続されました ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "まだオフラインです - Wi‑Fi/セルラーを確認するか、もう一度試してください",
+  "nostrReconnectFailedDetail": "失敗しました: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "リレーに接続中…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "{channel} のインターネット (Nostr) • シールドチャット対応",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "エリア輸送",
+  "transportModeSubtitle": "メッシュ = BLE 近く (無線) Nostr がない場合 · インターネットと自動 = Nostr 人のリスト",
+  "transportModeMesh": "メッシュ",
+  "transportModeInternet": "インターネット",
+  "transportModeAuto": "自動",
+  "geoPublicHint": "この地域のオンライン上のすべての人への公開メッセージ",
+  "geoPublicSend": "公共",
+  "geoPublicHelp": "{count} のオンライン ピアへの密閉されたファンアウト - それぞれがプライベート エンベロープを受け取ります",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "このエリアの {count} ピアに送信されます",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "オンラインにメッセージ送信可能なピアがありません — キーを持つピアでエリア/メッシュを開くか、BLE/Nostr を待ちます",
+  "areaPublicBadge": "エリア公共",
+  "geoErrorPermission": "位置情報を読み取れませんでした - 位置情報の許可を確認してください",
+  "geoPrecisionRegion": "地域",
+  "geoPrecisionProvince": "州",
+  "geoPrecisionCity": "市",
+  "geoPrecisionNeighborhood": "近所",
+  "geoPrecisionBlock": "ブロック",
+  "aliasTitle": "ニックネームの設定（連絡先エイリアス）",
+  "aliasHintBody": "このエイリアスはこのデバイスのみに保存されます (ローカルのみ)\nE2EE トラフィックで送信されることはありません",
+  "aliasLabel": "ニックネーム",
+  "aliasHint": "例えば「村長」「プソムチャイ」…",
+  "settingsDevices": "デバイス",
+  "settingsFirmwareTitle": "ESP32 ファームウェアのダウンロード / アップデート",
+  "settingsFirmwareSubtitle": ".bin ファイルをダウンロードし、OTA 経由で ESP32 ボードを更新します",
+  "mtBridgeTitle": "Meshtastic ブリッジ",
+  "mtBridgeSettingsSubtitle": "テキストのみの A/B ブリッジ - ResilNet E2EE ではない",
+  "mtBridgeIntro": "短い平文を Meshtastic と ResilNet の間に移動します。モード A と B を同時に実行することはできません。これはエンドツーエンドの暗号化ではありません。",
+  "mtBridgeModeLabel": "モード",
+  "mtBridgeModeOff": "オフ",
+  "mtBridgeModeA": "Aを摂取する",
+  "mtBridgeModeB": "出口B",
+  "mtBridgeModeOffShort": "オフ",
+  "mtBridgeModeAShort": "Aで",
+  "mtBridgeModeBShort": "アウトB",
+  "mtBridgeMutexHint": "どちらかのモードを選択すると、もう一方のモードが自動的にオフになります。 A+B の同時はサポートされていません。",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "デモ（ロギング）",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "受信テキストは「通知」の下に #meshtastic として表示されます。メッシュ リレーはオプションです (デフォルトではオフ)。",
+  "mtBridgeRelayTitle": "ResilNet メッシュでも中継します",
+  "mtBridgeRelayHint": "オンにすると、署名された公開情報がブロードキャストされます。オフ = この電話の通知のみ。",
+  "mtBridgeSimulateHint": "デモメッセージ",
+  "mtBridgeSimulate": "Meshtastic メッセージをシミュレートします",
+  "mtBridgeIngestOk": "通知に取り込まれます (#meshtastic)",
+  "mtBridgeEgressWarning": "警告: ここに送信されるメッセージは ResilNet E2EE ではありません。 Meshtastic パス上の誰でもそれらを読み取ることができます。",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "公開するテキスト",
+  "mtBridgeSend": "Meshtastic に送信",
+  "mtBridgeEgressOk": "Meshtastic のキューに登録されました (ログ/履歴を参照)",
+  "mtBridgeLastEgress": "最終出力",
+  "mtBridgeEgressHistory": "最近の出力",
+  "mtBridgeOffHint": "ブリッジを使用するには、インジェスト (A) またはエグレス (B) をオンにします。",
+  "mtBridgeNoticeBadge": "MESHTASTIC · E2EE ではありません",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "MQTT トランスポートを使用する",
+  "mtBridgeUseMqttHint": "オフ = デモ ログのみ (MQTT インバウンドは無視されます)。接続時の取り込み/出力に対してオン = MQTT。",
+  "mtBridgeMqttHost": "ブローカーホスト",
+  "mtBridgeMqttPort": "ポート",
+  "mtBridgeMqttTls": "TLS (mqtts) を使用する",
+  "mtBridgeMqttTlsHint": "一般的なポート 8883。システム証明書を使用します。ハンドシェイク エラーでソフトが失敗します。",
+  "mtBridgeMqttAutoReconnect": "自動再接続",
+  "mtBridgeMqttAutoReconnectHint": "オンにすると、クライアントは切断後に再接続を試行します。ステータスには、復元されるまで接続中と表示されます。",
+  "mtBridgeMqttTopicHelpers": "トピックヘルパー",
+  "mtBridgeMqttRegion": "地域プレフィックス (オプション)",
+  "mtBridgeMqttRegionHint": "設定すると、Apply はルートを msh/<region>/2/json として再構築します (トピック ルートをオーバーライドします)。",
+  "mtBridgeMqttTopicRoot": "JSONトピックルート",
+  "mtBridgeMqttDownlinkChannel": "ダウンリンクチャンネル名",
+  "mtBridgeMqttApplyTopics": "ルートを適用 → トピックを購読/公開",
+  "mtBridgeMqttAdvanced": "上級 MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS、再接続、トピック、資格情報",
+  "mtBridgeMqttTopicIn": "トピックを購読する",
+  "mtBridgeMqttTopicOut": "トピックを公開する",
+  "mtBridgeMqttGatewayFrom": "ゲートウェイ ノード ID (送信元)",
+  "mtBridgeMqttGatewayFromHint": "10 進数の ID または !hex — sendtext ダウンリンクに必要",
+  "mtBridgeMqttChannelIndex": "メッシュ チャネル インデックス (オプション 0 ～ 7)",
+  "mtBridgeMqttUser": "ユーザー名 (オプション)",
+  "mtBridgeMqttPass": "パスワード (オプション)",
+  "mtBridgeMqttPassStored": "パスワードはこのデバイスに保存されます (図示せず)。",
+  "mtBridgeMqttPassReplace": "新しいパスワード (空白のままにしておきます)",
+  "mtBridgeMqttPassReplaceHint": "保存されたパスワードを保持するには、空のままにします。",
+  "mtBridgeMqttPassClear": "パスワードをクリア",
+  "mtBridgeMqttSave": "MQTT 設定を保存する",
+  "mtBridgeMqttSaved": "MQTT 設定が保存されました",
+  "mtBridgeMqttConnect": "接続する",
+  "mtBridgeMqttDisconnect": "切断する",
+  "mtBridgeMqttConnected": "MQTT が接続されました",
+  "mtBridgeMqttConnecting": "MQTT 接続中…",
+  "mtBridgeMqttDisconnected": "MQTT が切断されました",
+  "mtBridgeMqttError": "MQTT エラー",
+  "mtBridgeErrModeIngest": "最初にインジェスト (A) に切り替えます",
+  "mtBridgeErrModeEgress": "最初に下り (B) に切り替えます",
+  "mtBridgeErrRate": "速度を落とす - 速度制限あり",
+  "mtBridgeErrDedupe": "重複メッセージは無視されました",
+  "mtBridgeErrLoop": "ブリッジループを防ぐために削除されました",
+  "mtBridgeErrEmpty": "メッセージが空です",
+  "mtBridgeErrPublish": "公開に失敗しました",
+  "mtBridgeErrNotConnected": "MQTT が接続されていません",
+  "mtBridgeErrMissingHost": "MQTT ブローカー ホストを入力してください",
+  "mtBridgeErrMissingTopic": "トピックを購読して公開するを入力してください",
+  "mtBridgeErrMissingFromNode": "sendtext のゲートウェイ ノード ID (from) を入力してください",
+  "mtBridgeErrConnect": "MQTT 接続に失敗しました",
+  "mtBridgeErrConnectTls": "MQTT TLS 接続に失敗しました",
+  "settingsData": "データ",
+  "settingsDataHint": "ローカル メッセージを削除してデータベースを縮小します。ID、キー、ピアは保持されます。",
+  "settingsSaveHistoryTitle": "メッセージ履歴を保存する",
+  "settingsSaveHistorySubtitle": "オフの場合、メッセージはネットワーク上の E2EE に留まり、このセッションに対してのみ保持されます (ローカル チャット履歴には残りません)。このデバイスでは、自分のテキストが平文として表示されます。",
+  "settingsPrivacy": "プライバシー",
+  "settingsE2eeTitle": "エンドツーエンドの暗号化",
+  "settingsE2eeSubtitle": "常時オン — メッセージは送信前に RSA-OAEP + AES-GCM でシールされます。リレーと近くのホップはコンテンツを読み取ることができません。",
+  "settingsScreenshotTitle": "スクリーンショットのアラート",
+  "settingsScreenshotSubtitle": "このデバイスが画面をキャプチャしたときにチャットにシステム行を表示します",
+  "settingsNostrExpiryTitle": "Nostr メッセージの保持時間",
+  "settingsNostrExpirySubtitle": "Nostr 経由でオンラインの場合、封印した封筒をローカルに保持する期間",
+  "noticeExpiresIn": "に有効期限が切れます",
+  "noticesTitle": "お知らせ",
+  "noticesMeshIntro": "公開掲示 — 無線範囲内にいる全員が閲覧できますが、暗号化されていません。電話から電話をオフラインでホップし、近くの ResilNet 中継ボックスにコピーが保存されるので、後から到着した人にもコピーが表示されます。",
+  "noticesMeshPublicBadge": "PUBLIC · 暗号化されていません",
+  "noticesGeoIntro": "他の訪問者が見つけられるように、この場所に関する短いメモを追加します。",
+  "noticesEmpty": "まだ通知はありません",
+  "noticesEmptyHint": "この辺りの人たちに最初の通知をピンで留めてください。",
+  "noticesComposeHint": "通知を投稿します...",
+  "noticesUrgent": "緊急",
+  "noticesOpen": "お知らせ",
+  "screenshotTaken": "* スクリーンショットを撮りました *",
+  "chatAttachImage": "画像を添付",
+  "chatImageLabel": "画像",
+  "chatImageTooLarge": "画像が大きすぎます - 別の写真を試してください",
+  "chatNostrExpiry": "Nostr キープ",
+  "geoPublicComposeHint": "{channel} に送信 — パブリック",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "すべてのメッセージをクリア",
+  "settingsClearSubtitle": "このデバイス上のすべてのチャットを削除します",
+  "settingsClearConfirmTitle": "すべてのメッセージをクリアしますか?",
+  "settingsClearConfirmBody": "これにより、このデバイス上のすべてのチャット メッセージが削除されます。\nピアとニックネームは削除されません。",
+  "settingsClearAction": "データのクリア",
+  "settingsClearedSnack": "データクリア",
+  "settingsVersion": "バージョン {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: ノードをスキャンしています",
+  "meshBleEsp32Scanning": "ESP32: 近くのノードを探しています",
+  "meshBleSyncing": "BLE: ESP32 と同期中",
+  "meshNostrPublishing": "Nostr: 公開中",
+  "meshBleIdle": "BLE メッシュがオン — 近くに電話がまだありません",
+  "meshBlePeersNearby": "BLE メッシュ — {count} 台の電話が近くにあります",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: 許可が必要です",
+  "meshBlePausedCamera": "BLE はカメラのために一時停止しています — [開始 BLE] をタップします",
+  "meshBleStopped": "BLE がオフになっています — Bluetooth がオンになっていることを確認し、[開始 BLE] をタップします",
+  "meshBleRestart": "BLE を開始",
+  "meshBleStatusDetail": "BT {bt} · ロック {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "権限を確認して BLE を開始してください",
+  "meshNostrOffline": "Nostr オフライン",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} 近くのピア • LoRa {lora} • 同期 ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "準備ができて",
+  "meshLoraNotReady": "準備ができていない",
+  "meshGatewayProgress": "ゲートウェイ UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "ゲートウェイUDP ：準備完了",
+  "permissionTitle": "BLE メッシュ ネットワークを開始するためのアクセスを許可します",
+  "permissionBody": "アプリには、Bluetooth （スキャン/接続/広告）、Location （古いAndroidデバイスの場合）、およびMicrophone （チャットやお知らせのボイスノート用）が必要です。",
+  "permissionE2ee": "エンドツーエンド暗号化 (E2EE)\n中継ノードはメッセージの内容を読み取ることができません",
+  "permissionReady": "権限の準備ができました",
+  "permissionRequest": "許可して続行する",
+  "permissionNotReadySnack": "システムの準備がまだ整っていません - しばらく待ってからもう一度お試しください",
+  "permissionDeniedSnack": "権限が不完全です — [設定] > ResilNet を開き、Bluetooth / 位置情報 / マイクを許可します",
+  "permissionMicDenied": "マイクへのアクセスが拒否されました - 音声メモの録音を設定で許可します",
+  "permissionMicOpenSettings": "設定",
+  "permissionCameraDenied": "カメラへのアクセスが拒否されました - 設定で QR コードのスキャンを許可します",
+  "permissionCameraFailed": "QRコードをスキャンするにはカメラの許可が必要です",
+  "permissionCameraOpenSettings": "設定",
+  "permissionPhotosDenied": "写真ライブラリへのアクセスが拒否されました - QR コードを保存するには設定で許可してください",
+  "permissionPhotosFailed": "QRコードを保存するにはフォトライブラリの許可が必要です",
+  "permissionPhotosOpenSettings": "設定",
+  "permissionFailedSnack": "許可リクエストが失敗しました: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet アーキテクチャ • ストア アンド フォワード マルチホップ",
+  "onboardingSkip": "スキップ",
+  "onboardingNext": "次",
+  "onboardingStart": "始めましょう",
+  "onboardingWelcomeTitle": "ResilNet へようこそ",
+  "onboardingWelcomeBody": "インターネットがなくても、メッシュ ネットワーク経由で ResilNet でチャットできます",
+  "onboardingFriendsTitle": "友達を簡単に追加",
+  "onboardingFriendsBody": "Identity から QR を共有するか、友人の QR をスキャンして公開キーを交換します",
+  "onboardingChannelsTitle": "暗号化されたチャット + 近くのチャンネル",
+  "onboardingChannelsBody": "#mesh / Area (geohash) を切り替えて近くのピアを検索します。メッセージは BLE メッシュおよび Nostr を介して E2EE に留まります。",
+  "chatTitle": "チャット (E2EE)",
+  "chatScanTooltip": "QR をスキャンしてピアを追加します",
+  "chatBlockTooltip": "この送信者をブロックする",
+  "chatBlockedSnack": "ブロック中: 通知なし / 中継なし",
+  "chatAliasTooltip": "ニックネームを設定する",
+  "chatReceiverPemLabel": "受信者公開キー (PEM)",
+  "chatReceiverPemHint": "友達の公開キーを貼り付けます（QR / 共有ファイルから）",
+  "chatNeedPeerKey": "最初にこのピアの QR をスキャンします (検証された公開キーが必要です)",
+  "chatPeerKeyMismatch": "保存された公開キーがこのピア ID と一致しません",
+  "chatVoiceFailed": "音声を録音できませんでした: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "音声メモを再生できませんでした: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "ボイスメモを再生する",
+  "chatPauseVoice": "一時停止",
+  "chatVoiceLabelSent": "🎤 ボイスメモ（封印済み）",
+  "chatVoiceLabel": "🎤 ボイスメモ",
+  "chatDecryptFailed": "[復号化に失敗しました]",
+  "chatSentSealed": "[封印・ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[封印済み]",
+  "chatComposeHint": "メッセージを入力してください… (送信時に封印されます)",
+  "chatEmptyThread": "まだメッセージはありません\n以下を入力してメッシュ上に送信します",
+  "chatLoadFailed": "会話を読み込めませんでした: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "絵文字",
+  "statusPending": "保留中",
+  "statusSent": "送信済み",
+  "statusRelayed": "中継された",
+  "statusDelivered": "納品済み",
+  "statusRead": "読む",
+  "statusFailed": "失敗した",
+  "chatCopy": "コピー",
+  "chatDeleteLocal": "このデバイスで削除",
+  "chatDeletedLocalSnack": "このデバイスでは削除されました",
+  "chatRetry": "リトライ",
+  "chatSendFailed": "配信されません — [再試行] をタップします",
+  "chatImageNeedInternet": "インターネットに接続して画像を送信する",
+  "chatImageTooLargeOnline": "送信できるほど画像を圧縮できませんでした",
+  "chatOpenLinkFailed": "リンクを開けませんでした",
+  "identityTitle": "身元",
+  "identityScanTooltip": "カメラでQRをスキャン",
+  "identityCopiedHash": "公開鍵ハッシュがコピーされました",
+  "identityPeerSaved": "QR から保存されたピア",
+  "identityGalleryDenied": "写真ライブラリの許可が拒否されました",
+  "identityQrSaved": "QRをフォトライブラリに保存しました",
+  "identityQrSaveFailed": "QR を保存できませんでした: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "ネットワークメンバー",
+  "qrScanTitle": "QRをスキャンして友達を追加してください",
+  "qrInvalid": "スキャン失敗: 無効な QR",
+  "qrIdKeyMismatch": "QR が拒否されました: ID が公開キーと一致しません",
+  "qrCameraNotReady": "カメラの準備ができていません",
+  "qrRetrySettings": "もう一度試してください / 設定を開きます",
+  "qrCameraOpenFailed": "カメラを開けませんでした: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "QRコードを枠内に合わせる",
+  "firmwareDownloadTitle": "ESP32 ファームウェアをダウンロード",
+  "firmwareSourceOnline": "最新（オンライン）",
+  "firmwareSourceCached": "保存されたコピー (オフライン)",
+  "firmwareSourceBaseline": "バンドルされたベースライン (オフライン)",
+  "firmwareSourceUnavailable": "利用可能なファームウェアがありません",
+  "firmwareBaselineIncompatible": "バンドルされているファームウェアが古すぎます - インターネットに接続して新しいバージョンをダウンロードしてください",
+  "firmwareChecksumFailed": "ファームウェアの整合性チェックに失敗しました - 点滅がブロックされました",
+  "firmwareReadyFromSource": "ファームウェアの準備が完了しました: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "再読み込み",
+  "peersBlocked": "ブロックされました",
+  "peersNearbyBle": "付近",
+  "peersRecentlyOnline": "最近オンライン",
+  "peersOnlineInArea": "エリア内でオンライン",
+  "peersSeenMinutesAgo": "{minutes} 分前に見た",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "オフライン",
+  "peersBlockedSnack": "ブロックされました {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "ブロック解除されました",
+  "peersEmpty": "データベースにはまだメンバーがいません\nQR をスキャンするか、BLE メッシュの検出を待ちます",
+  "peersOpenChat": "オープンチャット",
+  "peersBlockAction": "ブロック",
+  "peersUnblockAction": "ブロックを解除する",
+  "channelPickerTooltip": "チャット / #mesh / エリア",
+  "locationPickerTooltip": "ロケーションチャンネル",
+  "transportPickerTooltip": "メッシュ / インターネット / 自動",
+  "onlinePeopleTooltip": "オンラインの人々",
+  "unreadDirectsTooltipEmpty": "プライベートメッセージ",
+  "unreadDirectsTooltip": "{count} 件の未読プライベート メッセージ",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "人々",
+  "onlinePeopleEmpty": "ここにはまだオンラインの人がいません",
+  "onlinePeopleCount": "{count} オンライン",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1・近隣+エリア",
+  "peerOnlineMeshTitle": "近くにメッシュ上の誰かがいる",
+  "peerOnlineMeshBody": "{name} はメッシュ上で近くにあります",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "エリア内でオンライン中の人",
+  "peerOnlineAreaBody": "{name} は Nostr 経由でオンラインです",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#ロケーションチャンネル",
+  "channelPinsTitle": "固定された",
+  "channelPinsHint": "よく使うチャンネルを固定します - 常に上部に表示されます",
+  "channelPinTooltip": "このチャンネルを固定する",
+  "channelUnpinTooltip": "固定を解除する",
+  "locationSheetIntro": "正確な GPS ではなく、粗いジオハッシュを使用して近くの人々とチャットします。インターネット上のプレゼンスには匿名の Nostr キーが使用されます。",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#ジオハッシュ",
+  "locationTeleport": "テレポート",
+  "homeComposeHint": "メッセージ {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "{channel} に送信 — パブリック",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "に有効期限が切れます",
+  "voiceRecordTapToStart": "タップして音声メッセージを録音します",
+  "voiceRecordTooShort": "録音が短すぎます - もう一度試してください",
+  "voiceRecordFailed": "録音を保存できませんでした - もう一度試してください",
+  "voicePttHold": "長押しして録音する",
+  "voicePttRelease": "リリースしてプレビューする",
+  "voicePttRecording": "録音中…",
+  "voicePttDraftReady": "ボイスメモの準備完了",
+  "voicePttDiscard": "破棄",
+  "voicePttReRecord": "再度録音します",
+  "voicePttSend": "ボイスメモを送信する",
+  "voicePttPlayPreview": "プレビューを再生する",
+  "voicePttStopPreview": "プレビューを停止する",
+  "noticesBackfilling": "通知を読み込んでいます…",
+  "noticesNostrOnline": "Nostr オンライン",
+  "noticesNostrOffline": "Nostr オフライン — 速報にはインターネットが必要です",
+  "noticesBackfillLoaded": "{count} 通知をロードしました",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "エリアボードに通知を発行できませんでした。 Nostr 接続を確認してください。",
+  "noticeMeshPublishNoLink": "ローカルに保存されました。他の人が受信できるように、近くのメッシュ無線 (または Wi‑Fi ゲートウェイ) に接続します。",
+  "noticeMeshPublishSent": "BLE 経由で近くの {count} デバイスに通知が送信されます。",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "近くの無線が認識されましたが、BLE の書き込みに失敗しました。通知画面で両方のアプリを開いたままにし、再試行します (または ESP32 リレーを使用します)。",
+  "noticeMeshPublishNoGatt": "このデバイスの BLE 受信機の準備ができていません。 Bluetooth を切り替えて、通知を再度開きます。",
+  "noticeDelete": "通知の削除",
+  "noticeDeleteConfirmTitle": "この通知を削除しますか?",
+  "noticeDeleteLocalOnlyBody": "これにより、このデバイス上でのみ削除されます。すでに受け取っている他の人には引き続き表示されます。",
+  "noticeDeleted": "通知が削除されました",
+  "chatNoticeHidden": "エリア通知 — 通知を開く",
+  "identityDisplayNameTitle": "表示名",
+  "identitySaveName": "名前を保存する",
+  "identityUserIdLabel": "ユーザーID（公開鍵ハッシュ）",
+  "identityCopyHashTooltip": "公開鍵ハッシュをコピーする",
+  "identityMyQrTitle": "私のQR (ID + pubKey + 名前)",
+  "identityQrFailed": "QRを作成できませんでした\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "保存中…",
+  "identitySaveQr": "QRをフォトライブラリに保存",
+  "identityOpenScanner": "カメラを開いて QR をスキャンします",
+  "identityQrHelp": "友人にこれをスキャンしてもらい、公開キーを保存し、（必要に応じて）あなたを認証済み発行者として設定してもらいます",
+  "identityChatTip": "ヒント: チャットで QR をスキャンして E2EE の公開キーを追加することもできます",
+  "infoOpen": "概要/情報",
+  "docsGuideTitle": "ユーザーガイド",
+  "docsGuideSubtitle": "ブラウザで開きます",
+  "docsOpenAction": "オープンガイド",
+  "docsOpenFailed": "ユーザーガイドを開けませんでした",
+  "firmwareOtaGuideTitle": "フラッシュガイドとOTAプロトコル",
+  "firmwareOtaGuideSubtitle": "Web ガイドを開きます — .bin のダウンロードと完全な手順",
+  "firmwareWebDownloadsTitle": "Web からのファームウェアのダウンロード",
+  "firmwareWebDownloadsSubtitle": "ドキュメント サイトのバージョンごとのリンクとチェックサム",
+  "inviteCopyShortLink": "短いリンクをコピーする",
+  "inviteShareLink": "リンクを共有する",
+  "inviteShowFullLink": "フルリンク",
+  "inviteCopyFullLink": "リンク全体をコピーする",
+  "inviteLinkCopied": "リンクがコピーされました",
+  "inviteLongPressHint": "長押しするとリンクアクションが実行されます",
+  "inviteSendInChat": "ResilNet チャットに送信…",
+  "inviteSendInChatHint": "すでに公開鍵を持っている人のみ",
+  "inviteSendInChatEmpty": "メッセージ可能なチャットはまだありません。\nまず QR をスキャンし、エリア/メッシュを開くか、アプリの外部でリンクを共有します。",
+  "inviteSentToChat": "チャットで招待を送信",
+  "infoTabInfo": "情報",
+  "infoTabSettingsHint": "言語、E2EE、およびデータ ツールのメニューから [設定] を開きます",
+  "infoHowToTitle": "使用方法",
+  "infoHowToBody": "• チャンネルアイコンをタップしてチャット/#mesh/エリアを切り替えます\n• 場所をタップしてジオハッシュのサイズを選択します\n• メンバーまたはオンライン中の人をタップします\n• ⋮ から ID/QR を開いて直接キーを交換します\n• エリア「パブリック」は、平文ルームではなく、封印された E2EE を各オンライン ピアに送信します。",
+  "infoFeaturesTitle": "特徴",
+  "infoFeatureOffline": "Bluetooth Low Energy によるオフライン メッセージング",
+  "infoFeatureE2ee": "RSA-OAEP + AES-GCM (ノイズではない) によるエンドツーエンド暗号化",
+  "infoFeatureMultihop": "メッセージは近くのピアを経由してさらに遠くに送信できます",
+  "infoFeatureBridge": "密封された封筒用のハイブリッド メッシュ ↔ インターネット (Nostr)",
+  "infoFeatureGeo": "近くにいる人のためのローカル geohash チャネル (ディスカバリー UX)",
+  "infoFeatureNotices": "#mesh と Area の有効期限に関するお知らせ",
+  "infoPrivacyTitle": "プライバシー",
+  "infoPrivacyNoRoom": "電線上に平文の村やパブリック チャット ルームはありません",
+  "infoPrivacyFanout": "エリア送信 = 既知の公開鍵を持つピアへの密閉された 1:1 ファンアウト",
+  "infoPrivacyPresence": "インターネット エリアのプレゼンスは一時的な Nostr キーを使用します",
+  "infoSymbolsTitle": "記号",
+  "infoSymBle": "Bluetooth の直接リンク",
+  "infoSymMesh": "メッシュ経由で到達可能 (その他は転送)",
+  "infoSymInternet": "インターネット経由 (Nostr) — 密封された封筒",
+  "infoSymBridge": "メッシュ↔インターネットブリッジパス経由で到着",
+  "infoSymOffline": "オフライン — 現在アクセスできません",
+  "infoSymInArea": "このロケーションチャンネルのエリア内",
+  "infoSymE2eeOk": "エンドツーエンドの暗号化されたセッション",
+  "infoSymE2eeFail": "暗号化は利用できません - 機密テキストは送信しないでください",
+  "infoSymVerified": "ID が検証済み / 既知のキー",
+  "infoSymBlocked": "ブロック",
+  "infoSymUnread": "未読のプライベートメッセージ",
+  "infoEmergencyTitle": "緊急モード",
+  "infoEmergencyBody": "ホーム画面の ResilNet タイトルをトリプルタップして、このデバイス上のメッセージ、キー、ID をワイプします。",
+  "infoLegendNote": "わかりやすくするために、いくつかのパス アイコンをここに記載します。チャットの配信ティックは引き続き主要な送信ステータスです。",
+  "dangerZoneTitle": "危険地帯",
+  "dangerZoneSubtitle": "このデバイス上のメッセージ、暗号化キー、Nostr ID、ピア、ニックネームを削除します。再度セットアップします。",
+  "panicWipeTitle": "緊急時の拭き取り",
+  "panicWipeSubtitle": "ローカルのすべてを消去します - ホーム タイトルを 3 回タップするのと同じです (ダブルタップするとラジオが更新されます)。",
+  "panicWipeConfirmTitle": "ローカルデータをすべて消去しますか?",
+  "panicWipeConfirmBody": "これにより、この電話上のチャット、キー、ID が完全に削除されます。\nピアは、新しい ID と QR キーを再交換する必要があります。\nこれを元に戻すことはできません。",
+  "panicWipeAction": "すべてを拭きます",
+  "panicWipeSnack": "ローカル ID が消去されました - 再度セットアップしてください",
+  "panicWipeFailed": "ワイプに失敗しました: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "メッシュブリッジ",
+  "meshBridgeSubtitle": "オン (デフォルト) の場合、密封されたエンベロープは BLE メッシュとインターネット (Nostr) の両方を一緒に使用できるため、近くのメッシュ アイランドが接続できます。オフの場合、送信は 1 つのパスのみを使用し、プレーンテキストをワイヤ上に送信しません。",
+  "favoritesTitle": "お気に入り",
+  "favoritesAdd": "お気に入りに追加",
+  "favoritesRemove": "お気に入りから削除",
+  "favoritesEmpty": "まだお気に入りはありません — メンバーリストからピアにスターを付けます",
+  "favoritesNearbyTitle": "近くのお気に入り",
+  "favoritesNearbyBody": "{name} はメッシュ上で近くにあります",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "地域のお気に入り",
+  "favoritesInAreaBody": "{name} はこのエリアでオンラインです",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "メッシュトポロジー",
+  "topologySubtitle": "メッシュアナウンスからのピアと接続のヒント (読み取り専用)",
+  "topologyConnectedNow": "現在接続中 (BLE)",
+  "topologyNearby": "近く (BLE)",
+  "topologyKnown": "既知のピア",
+  "topologyEmpty": "まだ学習したピアはありません - BLE をオンにして近くにいてください",
+  "topologyYou": "あなた",
+  "topologyStats": "{peers} ピア · {links} リンク",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "近くのメッシュ検出から推定 — デバイスが強調表示されます。ピアをタップしてチャットを開きます。",
+  "topologyOpen": "メッシュトポロジー",
+  "slashHelpTitle": "コマンド",
+  "slashHelpBody": "/help — このリスト\n/who — 現在のチャネルでオンラインの人々\n/drop <text> — 封印された通知をここに固定します (E2EE ファンアウト)\n\n完全なガイド: 以下のガイドを開く、または [設定] → [ユーザー ガイド] を使用します。",
+  "slashWhoEmpty": "現在このチャンネルにオンラインしている人はいません",
+  "slashWhoTitle": "オンライン ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "使用法: /drop メモのテキスト",
+  "slashDropDone": "{channel} に通知が投下されました",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "不明なコマンド — /help を試してください",
+  "announceOpen": "お知らせ",
+  "announceTitle": "お知らせ",
+  "announceEmpty": "まだボードがありません — ロックされた通知またはオープン通知を投稿するためにボードを作成してください",
+  "announceCreate": "ボードの作成",
+  "announceCreateHint": "理事会名",
+  "announceDefaultTitle": "コミュニティ掲示板",
+  "announceSettings": "ボードの設定",
+  "announceAllowLocked": "ロックされた（暗号化された）投稿を許可する",
+  "announceAllowLockedSub": "ボードキーに暗号化 - リーダーはアクセスする必要があります",
+  "announceAllowOpen": "オープン（プレーンテキスト）投稿を許可する",
+  "announceAllowOpenSub": "E2EE ではありません - メッシュ/リレーで読み取り可能です。デフォルトではオフです。",
+  "announceComposeHint": "お知らせを書いて…",
+  "announceMediaInternetOnly": "写真/音声アナウンスはインターネット経由で送信されます (BLE ではありません)",
+  "announceNeedInternet": "インターネットに接続して写真や音声アナウンスを送信します",
+  "announceVoiceFailed": "音声を録音できませんでした: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "画像が大きすぎます (最大約 180 KB)",
+  "announcePlayVoice": "ボイスメモを再生する",
+  "announceImageLabel": "📷 画像",
+  "announceAudioLabel": "🎤 ボイスメモ",
+  "announceModeLocked": "ロックされています",
+  "announceModeOpen": "開ける",
+  "announceOpenBadge": "OPEN · 暗号化されていない",
+  "announceLockedBadge": "ロックされています",
+  "announceLockedPlaceholder": "暗号化 — 読み取りアクセスを要求します",
+  "announceRequestAccess": "アクセスをリクエストする",
+  "announceRequestSent": "ボード所有者に送信されたアクセス要求",
+  "announceRequestFailed": "アクセスを要求できませんでした (所有者の公開キーが必要です)",
+  "announceOpenConfirmTitle": "暗号化せずに投稿しますか?",
+  "announceOpenConfirmBody": "開いている投稿は E2EE ではありません。パス (メッシュ/リレー) 上の誰でもそれらを読むことができます。続く？",
+  "announcePostAction": "役職",
+  "announcePendingRequests": "アクセスリクエスト",
+  "announceApprove": "承認する",
+  "announceDeny": "拒否",
+  "announceGranted": "この掲示板ではロックされた投稿を読むことができます",
+  "announceOwner": "あなたはこのボードの所有者です",
+  "announceCopyInvite": "招待文をコピーする",
+  "announceShowInviteQr": "招待QRを表示",
+  "announceScanInviteQr": "ボード招待 QR をスキャンします",
+  "announceFollow": "招待からボードをフォローする",
+  "announceFollowHint": "所有者からの招待テキストまたは ResilNet リンクを貼り付けます",
+  "announceFollowOk": "次のボード",
+  "announceFollowOkNamed": "「{title}」に続きます",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "招待が無効か破損しています",
+  "announceInviteCopied": "招待テキストをコピーしました",
+  "announceInviteSaveQr": "QRを保存",
+  "announceInviteShare": "招待を共有する",
+  "announceFollowFromCompose": "メッセージ ボックスでボードへの招待が検出されました",
+  "peerConfirmAddTitle": "ネットワークメンバーを追加しますか?",
+  "peerConfirmAddBody": "「{name}」と公開キーを追加して、非公開でメッセージを送信できるようにしますか?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "メンバーを追加",
+  "peerAddedOk": "{name} をネットワークメンバーに追加しました",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "メッセージ ボックスで ID/公開キーが検出されました",
+  "peerHashCopied": "公開鍵ハッシュがコピーされました",
+  "peerHashOpenChat": "オープンチャット",
+  "peerHashAddHint": "ハッシュがコピーされました。 E2EE の完全な公開キーを追加できるように、ID リンクまたは QR を共有するよう依頼します。",
+  "peerQrNoCode": "この画像には ResilNet QR が見つかりません",
+  "identityInviteSharePreamble": "ResilNet ID: 「{name}」\nリンクを開くかチャットに貼り付け→メンバーを追加\nまたは、ID QR をスキャンします。",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "ID リンクを共有する",
+  "identityInviteCopied": "ID リンクがコピーされました",
+  "announceInviteSharePreamble": "理事会への招待: 「{title}」\nResilNet を開く → コミュニティボード → 招待からフォローする\nまたは、QR をスキャンするか、下のリンクをタップしてください。",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "この掲示板をフォローしますか？",
+  "announceConfirmFollowBody": "この招待から「{title}」をフォローしますか?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "フォローする"
+}

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../app/glass_overlays.dart';
 
 const photosPermanentlyDeniedCode = 'PHOTOS_PERMANENTLY_DENIED';
 
@@ -66,7 +67,7 @@ void showPhotosPermissionError(
 }) {
   if (error is StateError && error.message == photosPermanentlyDeniedCode) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(deniedMessage),
         action: SnackBarAction(
           label: openSettingsLabel,
@@ -77,6 +78,6 @@ void showPhotosPermissionError(
     return;
   }
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(failedMessage)),
+    GlassSnackBar(content: Text(failedMessage)),
   );
 }

@@ -8,6 +8,7 @@ import '../core/geohash.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 /// Bitchat-style location channel picker (mesh + geohash ladder with ~radius).
 Future<void> showLocationChannelSheet(BuildContext context) {
@@ -63,14 +64,14 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
     if (!mounted) return;
     if (!ok) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.geoTeleportInvalid)),
+        GlassSnackBar(content: Text(context.l10n.geoTeleportInvalid)),
       );
       return;
     }
     await s.setFeedChannel(FeedChannel.geo);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(
           context.l10n.geoTeleportOk(Geohash.channelLabel(parsed)),
         ),
@@ -108,14 +109,14 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final pinned = s.pinnedLocationChannels;
 
-    return Container(
-      height: MediaQuery.sizeOf(context).height * 0.82,
-      decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-      ),
+    return ResilNetTheme.glassPanel(
+      context: context,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+      blurSigma: 28,
       padding: EdgeInsets.fromLTRB(16, 14, 16, 12 + bottom),
-      child: Column(
+      child: SizedBox(
+        height: MediaQuery.sizeOf(context).height * 0.82,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
@@ -315,6 +316,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
             label: Text(l10n.geoRefreshLocation),
           ),
         ],
+      ),
       ),
     );
   }

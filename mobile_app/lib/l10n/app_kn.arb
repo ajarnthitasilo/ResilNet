@@ -1,0 +1,1105 @@
+{
+  "@@locale": "kn",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗುತ್ತಿದೆ ResilNet...",
+  "appRefreshed": "ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗಿದೆ - ರೇಡಿಯೋಗಳು ಮತ್ತು ಅನ್ವೇಷಣೆಯನ್ನು ಮರುಪ್ರಾರಂಭಿಸಲಾಗಿದೆ",
+  "appRefreshFailed": "ರಿಫ್ರೆಶ್ ವಿಫಲವಾಗಿದೆ: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "ಡಬಲ್-ಟ್ಯಾಪ್ = ಮೃದುವಾದ ರಿಫ್ರೆಶ್. ಲಾಂಗ್-ಪ್ರೆಸ್ = ಹಾರ್ಡ್ ಚೇತರಿಸಿಕೊಳ್ಳಲು. ಟ್ರಿಪಲ್-ಟ್ಯಾಪ್ = ತುರ್ತು ಒರೆಸುವಿಕೆ.",
+  "softRefreshTipTitle": "ResilNet ಅಂಟಿಕೊಂಡಿದೆ ಎಂದು ಭಾವಿಸಿದರೆ",
+  "softRefreshTipBody": "ಮೃದುವಾದ ರೇಡಿಯೊ ರಿಫ್ರೆಶ್‌ಗಾಗಿ ResilNet (ಮೇಲಿನ-ಎಡ) ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ. ಇನ್ನೂ ಅಂಟಿಕೊಂಡಿದ್ದರೆ: ಶೀರ್ಷಿಕೆಯನ್ನು ದೀರ್ಘವಾಗಿ ಒತ್ತಿರಿ, ⋮ → ಹಾರ್ಡ್ ರಿಕವರಿ ಅಥವಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬಳಸಿ. ಟ್ರಿಪಲ್-ಟ್ಯಾಪ್ ತುರ್ತು ವೈಪ್ ಮಾತ್ರ.",
+  "softRefreshTipGotIt": "ಅರ್ಥವಾಯಿತು",
+  "infoSoftRefreshTitle": "ಅಪ್ಲಿಕೇಶನ್ ಸಿಲುಕಿಕೊಂಡಿದೆ ಎಂದು ಭಾವಿಸಿದರೆ",
+  "infoSoftRefreshStepRefresh": "ಡಬಲ್-ಟ್ಯಾಪ್ ResilNet (ಮೇಲಿನ-ಎಡ) → ಸಾಫ್ಟ್ ರಿಫ್ರೆಶ್ ರೇಡಿಯೋಗಳು ಮತ್ತು ಹತ್ತಿರದ ಜನರನ್ನು",
+  "infoSoftRefreshStepHard": "ಇನ್ನೂ ಅಂಟಿಕೊಂಡಿದೆಯೇ? ಲಾಂಗ್-ಪ್ರೆಸ್ ಶೀರ್ಷಿಕೆ, ಅಥವಾ ⋮ / ಸೆಟ್ಟಿಂಗ್‌ಗಳು → ಹಾರ್ಡ್ ರಿಕವರಿ",
+  "infoSoftRefreshStepWait": "ಫಲಿತಾಂಶ ಸ್ನ್ಯಾಕ್‌ಬಾರ್‌ಗಾಗಿ ನಿರೀಕ್ಷಿಸಿ, ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ. ಸೆಷನ್ ರೀಸೆಟ್ ನಿಮ್ಮ ಕೀಗಳನ್ನು ಇರಿಸುತ್ತದೆ.",
+  "infoSoftRefreshStepWipe": "ಟ್ರಿಪಲ್-ಟ್ಯಾಪ್ = ತುರ್ತು ವೈಪ್ (ಸ್ಥಳೀಯ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತದೆ) — ಉದ್ದೇಶಪೂರ್ವಕವಾಗಿ ಮಾತ್ರ",
+  "appRecoverySection": "ಅಪ್ಲಿಕೇಶನ್ ಮರುಪಡೆಯುವಿಕೆ",
+  "appRecoverySectionSubtitle": "ಅಪ್ಲಿಕೇಶನ್ ಫ್ರೀಜ್ ಆಗಿರುವಾಗ ಬಳಸಿ. ಮೃದು = ಶೀರ್ಷಿಕೆ ಡಬಲ್-ಟ್ಯಾಪ್. ಹಾರ್ಡ್ ಚೇತರಿಕೆ ಬಲವಾಗಿರುತ್ತದೆ. ಸೆಷನ್ ರೀಸೆಟ್ ಕೀಗಳನ್ನು ಒರೆಸದೆ ಸೇವೆಗಳನ್ನು ಮರುಪ್ರಾರಂಭಿಸುತ್ತದೆ.",
+  "appHardRecoverAction": "ಚೇತರಿಸಿಕೊಳ್ಳುವುದು ಕಷ್ಟ",
+  "appHardRecovering": "ಚೇತರಿಸಿಕೊಳ್ಳುವುದು ಕಷ್ಟ...",
+  "appSessionResetAction": "ಸೆಶನ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ",
+  "appSessionResetRunning": "ಸೆಶನ್ ಅನ್ನು ಮರುಹೊಂದಿಸಲಾಗುತ್ತಿದೆ...",
+  "appSessionResetConfirmTitle": "ಸೆಶನ್ ಅನ್ನು ಮರುಹೊಂದಿಸುವುದೇ?",
+  "appSessionResetConfirmBody": "ಈ ಸಾಧನದಲ್ಲಿ ResilNet ಸೇವೆಗಳನ್ನು ಮರುಪ್ರಾರಂಭಿಸುತ್ತದೆ. ನಿಮ್ಮ ಗುರುತಿನ ಕೀಗಳನ್ನು ಇರಿಸಲಾಗಿದೆ.",
+  "appRecoveryBusy": "ಚೇತರಿಕೆ ಈಗಾಗಲೇ ಚಾಲನೆಯಲ್ಲಿದೆ...",
+  "appRecoveryOk": "ಚೇತರಿಕೆ ಮುಗಿದಿದೆ",
+  "appRecoveryPartial": "ಕೆಲವು ಹಂತಗಳನ್ನು ಬಿಟ್ಟುಬಿಡುವುದರೊಂದಿಗೆ ಮರುಪಡೆಯುವಿಕೆ ಪೂರ್ಣಗೊಂಡಿದೆ - ಇನ್ನೂ ಅಂಟಿಕೊಂಡಿದ್ದರೆ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+  "appRecoveryFailed": "ಮರುಪಡೆಯುವಿಕೆ ವಿಫಲವಾಗಿದೆ - ಸೆಷನ್ ಮರುಹೊಂದಿಸಲು ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ OS ನಿಂದ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಬಲವಂತವಾಗಿ ತ್ಯಜಿಸಿ",
+  "localWifiTitle": "ಸ್ಥಳೀಯ Wi‑Fi",
+  "localWifiSubtitle": "ಇಂಟರ್ನೆಟ್ ಇಲ್ಲದೆ ಹತ್ತಿರದ ಸಾಧನಗಳನ್ನು ಲಿಂಕ್ ಮಾಡಿ - ಒಂದು LAN ನಲ್ಲಿ ಇರುವಂತೆಯೇ.",
+  "localWifiNotGatewayHint": "ESP32 LoRa ಗೇಟ್‌ವೇ SoftAP ಅಲ್ಲ. ಇದು ಫೋನ್↔ಫೋನ್ / LAN ಮಾತ್ರ.",
+  "localWifiUnavailable": "ಸ್ಥಳೀಯ Wi‑Fi ಇನ್ನೂ ಸಿದ್ಧವಾಗಿಲ್ಲ - ಅಪ್ಲಿಕೇಶನ್ ಪ್ರಾರಂಭಕ್ಕಾಗಿ ನಿರೀಕ್ಷಿಸಿ.",
+  "lxmfBridgeTitle": "ಹೋಮ್ ನೋಡ್",
+  "lxmfBridgeSubtitle": "ನಿಮ್ಮ Wi‑Fi ನಲ್ಲಿ ಐಚ್ಛಿಕ Mac ಅಥವಾ Pi ಮೊಹರು ಮಾಡಿದ ಚಾಟ್‌ಗಳನ್ನು ಪ್ರಸಾರ ಮಾಡುತ್ತದೆ. ಡೀಫಾಲ್ಟ್ ಆಗಿ ಆಫ್. ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಅನ್ನು ಬದಲಾಯಿಸುವುದಿಲ್ಲ.",
+  "lxmfBridgeEnable": "ಹೋಮ್ ನೋಡ್ ಬಳಸಿ",
+  "lxmfBridgeDisabledHint": "ಈ ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ Mac ಅಥವಾ Pi ನಲ್ಲಿ ಸೇತುವೆಯ ಅಪ್ಲಿಕೇಶನ್ ಚಾಲನೆಯಲ್ಲಿರುವಾಗ ಮಾತ್ರ ಆನ್ ಮಾಡಿ.",
+  "lxmfBridgeOnline": "ಆನ್‌ಲೈನ್ - {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "ಹೋಮ್ ನೋಡ್ ಅನ್ನು ತಲುಪಲು ಸಾಧ್ಯವಿಲ್ಲ - {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "ಮುಖಪುಟ ನೋಡ್ ವಿಳಾಸ",
+  "lxmfBridgeBaseUrlHelper": "IP ಅಥವಾ http://IP:port — ಉದಾಹರಣೆ 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "ಪೀರ್ → LXMF dest (JSON)",
+  "lxmfBridgeRefresh": "ಸ್ಥಿತಿಯನ್ನು ಉಳಿಸಿ ಮತ್ತು ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+  "lxmfBridgeLabHint": "ಸುಧಾರಿತ: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "ಹೋಮ್ ನೋಡ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  "lxmfBridgeCheckConnection": "ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ",
+  "lxmfBridgeStatusOnline": "ಹೋಮ್ ನೋಡ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗಿದೆ",
+  "lxmfBridgeStatusOffline": "ಹೋಮ್ ನೋಡ್ ತಲುಪಲು ಸಾಧ್ಯವಿಲ್ಲ",
+  "lxmfBridgeYourDest": "ಈ ನೋಡ್‌ನ ವಿಳಾಸ (ಸ್ನೇಹಿತರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ)",
+  "lxmfBridgeCopyDest": "ವಿಳಾಸವನ್ನು ನಕಲಿಸಿ",
+  "lxmfBridgeDestCopied": "ವಿಳಾಸವನ್ನು ನಕಲಿಸಲಾಗಿದೆ",
+  "lxmfBridgeLinkedPeers": "ಲಿಂಕ್ ಮಾಡಿದ ಸ್ನೇಹಿತರು",
+  "lxmfBridgeLinkedPeersHint": "ಪ್ರತಿಯೊಬ್ಬ ಸ್ನೇಹಿತರಿಗೆ ಒಮ್ಮೆ ಅವರ ಮನೆ-ನೋಡ್ ವಿಳಾಸ ಬೇಕಾಗುತ್ತದೆ. ನಂತರ ಮೊಹರು ಮಾಡಿದ ಚಾಟ್‌ಗಳು ಈ ಮಾರ್ಗವನ್ನು ಬಳಸಬಹುದು.",
+  "lxmfBridgeNoLinks": "ಯಾವುದೇ ಸ್ನೇಹಿತರನ್ನು ಇನ್ನೂ ಲಿಂಕ್ ಮಾಡಿಲ್ಲ.",
+  "lxmfBridgeAddLink": "ಸ್ನೇಹಿತನನ್ನು ಲಿಂಕ್ ಮಾಡಿ",
+  "lxmfBridgePickPeer": "ಸ್ನೇಹಿತ",
+  "lxmfBridgePeerDest": "ಅವರ ಮನೆ-ನೋಡ್ ವಿಳಾಸ",
+  "lxmfBridgePeerDestHint": "ಅವರ ಹೋಮ್ ನೋಡ್ ಪರದೆಯಿಂದ 32-ಅಕ್ಷರಗಳ ಕೋಡ್",
+  "lxmfBridgeInvalidDest": "ಆ ವಿಳಾಸ ಮಾನ್ಯವಾಗಿ ಕಾಣುತ್ತಿಲ್ಲ. ಅವರ ಹೋಮ್ ನೋಡ್‌ನಿಂದ ಪೂರ್ಣ ಕೋಡ್ ಅನ್ನು ಅಂಟಿಸಿ.",
+  "lxmfBridgeRemoveLink": "ಅನ್‌ಲಿಂಕ್ ಮಾಡಿ",
+  "lxmfBridgeSaveLink": "ಉಳಿಸಿ",
+  "lxmfBridgeLinkSaved": "ಸ್ನೇಹಿತ ಲಿಂಕ್ ಮಾಡಲಾಗಿದೆ",
+  "lxmfBridgeNoPeers": "ಇನ್ನೂ ಯಾವುದೇ ಸಂದೇಶ ಮಾಡಬಹುದಾದ ಸಂಪರ್ಕಗಳಿಲ್ಲ - ಮೊದಲು ಸ್ನೇಹಿತರನ್ನು ಸೇರಿಸಿ.",
+  "lxmfBridgeHelp": "Mac/Pi ನಲ್ಲಿ ಸೇತುವೆಯನ್ನು ಚಾಲನೆಯಲ್ಲಿಡಿ. ಈ ಮಾರ್ಗವು ನಿಮ್ಮ LAN ನಲ್ಲಿ ಉಳಿಯುತ್ತದೆ - ಇದು LoRa ಅಲ್ಲ ಮತ್ತು ಇಂಟರ್ನೆಟ್ ಅಥವಾ ಬ್ಲೂಟೂತ್ ಮೆಶ್ ಅನ್ನು ಬದಲಿಸುವುದಿಲ್ಲ.",
+  "localWifiModeHotspot": "ಹತ್ತಿರದಲ್ಲಿದೆ",
+  "localWifiModeRouter": "ರೂಟರ್",
+  "localWifiHotspotIntro": "ಒಂದು ಸಾಧನವು ವೈಯಕ್ತಿಕ ಹಾಟ್‌ಸ್ಪಾಟ್ ಅನ್ನು ಹಂಚಿಕೊಳ್ಳುತ್ತದೆ. ಇತರರು ಆ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗೆ ಸೇರುತ್ತಾರೆ, ನಂತರ ResilNet ಅವರನ್ನು ಸ್ಥಳೀಯ ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ಹುಡುಕುತ್ತದೆ.",
+  "localWifiHostAction": "ನೆಟ್‌ವರ್ಕ್ ರಚಿಸಿ (ಹೋಸ್ಟ್)",
+  "localWifiJoinAction": "ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸೇರಿ",
+  "localWifiHostSteps": "1. iOS/Android ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ ಮತ್ತು ವೈಯಕ್ತಿಕ ಹಾಟ್‌ಸ್ಪಾಟ್ (ಅಥವಾ ಇಂಟರ್ನೆಟ್ ಹಂಚಿಕೆ) ಆನ್ ಮಾಡಿ.\n2. ಸ್ನೇಹಿತರಿಗೆ ಹಾಟ್‌ಸ್ಪಾಟ್ ಹೆಸರು (ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್) ತಿಳಿಸಿ.\n3. ಇಲ್ಲಿಗೆ ಹಿಂತಿರುಗಿ ಮತ್ತು \"ಹಾಟ್‌ಸ್ಪಾಟ್ ಆನ್ ಆಗಿದೆ - ಕಾಯುವುದನ್ನು ಪ್ರಾರಂಭಿಸಿ\" ಟ್ಯಾಪ್ ಮಾಡಿ.",
+  "localWifiHostReady": "ಹಾಟ್‌ಸ್ಪಾಟ್ ಆನ್ ಆಗಿದೆ — ಕಾಯುವುದನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+  "localWifiHostWaiting": "ಸ್ನೇಹಿತರು ಸೇರಲು ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ...",
+  "localWifiJoinSteps": "1. ಸಿಸ್ಟಮ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ ಮತ್ತು ನಿಮ್ಮ ಸ್ನೇಹಿತರ ವೈಯಕ್ತಿಕ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗೆ ಸೇರಿಕೊಳ್ಳಿ.\n2. ಇಲ್ಲಿಗೆ ಹಿಂತಿರುಗಿ ಮತ್ತು \"ನಾನು ಸಂಪರ್ಕಗೊಂಡಿದ್ದೇನೆ - ಹುಡುಕಾಟ\" ಟ್ಯಾಪ್ ಮಾಡಿ.",
+  "localWifiJoinReady": "ನಾನು ಸಂಪರ್ಕಗೊಂಡಿದ್ದೇನೆ - ಹುಡುಕಾಟ",
+  "localWifiRouterIntro": "ಪ್ರತಿಯೊಂದು ಸಾಧನವನ್ನು ಅದೇ Wi‑Fi ರೂಟರ್/AP ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ. ರೂಟರ್‌ಗೆ ಇಂಟರ್ನೆಟ್ ಅಗತ್ಯವಿಲ್ಲ - ಹಂಚಿದ ಸ್ಥಳೀಯ ನೆಟ್‌ವರ್ಕ್ ಮಾತ್ರ.",
+  "localWifiRouterSearch": "ಈ Wi‑Fi ನಲ್ಲಿ ಹುಡುಕಿ",
+  "localWifiRefreshNetwork": "Wi‑Fi ಮಾಹಿತಿಯನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+  "localWifiRouterNoWifiTitle": "Wi‑Fi ನಲ್ಲಿ ಇಲ್ಲ",
+  "localWifiRouterNoWifiBody": "ಸಿಸ್ಟಂ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ರೂಟರ್‌ನ Wi‑Fi ಗೆ ಸೇರಿ, ನಂತರ ಮತ್ತೆ ಹುಡುಕಿ.",
+  "localWifiDiscovering": "ಸ್ಥಳೀಯ Wi‑Fi ನಲ್ಲಿ ಹುಡುಕಲಾಗುತ್ತಿದೆ...",
+  "localWifiPeersFound": "ಈ ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿರುವ ಸಾಧನಗಳು",
+  "localWifiStop": "ನಿಲ್ಲಿಸು",
+  "localWifiSsidUnknown": "Wi‑Fi ಹೆಸರು ಲಭ್ಯವಿಲ್ಲ",
+  "localWifiStubBanner": "LAN ಸಾಕೆಟ್‌ಗಾಗಿ ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ...",
+  "localWifiLiveBanner": "LAN ಅನ್ವೇಷಣೆ ಲೈವ್ (UDP) — ಈ Wi‑Fi ನಲ್ಲಿ ಘೋಷಿಸಿ + ಮೊಹರು ಮಾಡಿದ ಚಾಟ್",
+  "localWifiEmptyHotspot": "ಇನ್ನೂ ಯಾವುದೇ ಸಾಧನಗಳಿಲ್ಲ.\nಸ್ನೇಹಿತರು ನಿಮ್ಮ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗೆ ಸೇರಿದ್ದಾರೆಯೇ ಮತ್ತು ಸ್ಥಳೀಯ ನೆಟ್‌ವರ್ಕ್ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಿದ್ದಾರೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಿ.",
+  "localWifiEmptyRouter": "ಇನ್ನೂ ಯಾವುದೇ ಸಾಧನಗಳಿಲ್ಲ.\nಅದೇ SSID? ಸ್ಥಳೀಯ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಅನುಮತಿಸಲಾಗಿದೆಯೇ? ಕೆಲವು ಮಾರ್ಗನಿರ್ದೇಶಕಗಳು ಸಾಧನದಿಂದ ಸಾಧನದ ಸಂಚಾರವನ್ನು ನಿರ್ಬಂಧಿಸುತ್ತವೆ (AP ಪ್ರತ್ಯೇಕತೆ).",
+  "localWifiIsolationHelp": "ನಾವು ಒಬ್ಬರನ್ನೊಬ್ಬರು ಏಕೆ ಹುಡುಕಲು ಸಾಧ್ಯವಿಲ್ಲ?",
+  "localWifiIsolationTitle": "ರೂಟರ್ ಗ್ರಾಹಕರನ್ನು ಪ್ರತ್ಯೇಕಿಸಬಹುದು",
+  "localWifiIsolationBody": "AP/ಕ್ಲೈಂಟ್ ಪ್ರತ್ಯೇಕತೆ (ಅಥವಾ ಅತಿಥಿ ನೆಟ್‌ವರ್ಕ್) ಆನ್ ಆಗಿದ್ದರೆ, ಅದೇ Wi‑Fi ನಲ್ಲಿರುವ ಫೋನ್‌ಗಳು ಮಾತನಾಡುವುದಿಲ್ಲ. ಪ್ರತ್ಯೇಕತೆಯನ್ನು ಆಫ್ ಮಾಡಿ, ಮುಖ್ಯ SSID ಬಳಸಿ ಅಥವಾ ಹತ್ತಿರದ (ಹಾಟ್‌ಸ್ಪಾಟ್) ಮೋಡ್‌ಗೆ ಬದಲಿಸಿ.",
+  "localWifiPeerReady": "ಚಾಟ್ ಮಾಡಲು ಸಿದ್ಧವಾಗಿದೆ (ಕೀಲಿಯನ್ನು ಹೊಂದಿದೆ)",
+  "localWifiPeerNeedKey": "ಕಂಡುಬಂದಿದೆ - ಕೀಗಳನ್ನು ವಿನಿಮಯ ಮಾಡಲು QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+  "localWifiErrorTitle": "ಸ್ಥಳೀಯ Wi‑Fi ದೋಷ",
+  "localWifiErrorBody": "ಏನೋ ತಪ್ಪಾಗಿದೆ. ನಿಲ್ಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "preparingSystem": "ವ್ಯವಸ್ಥೆಯನ್ನು ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...",
+  "bootFailedTitle": "ಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ",
+  "retry": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+  "bootRecoveryAction": "ಹೊಸ ಗುರುತನ್ನು ಪ್ರಾರಂಭಿಸಿ (ಸ್ಥಳೀಯ ಡೇಟಾವನ್ನು ಅಳಿಸಿ)",
+  "bootRecoveryConfirmTitle": "ಹೊಸ ಗುರುತನ್ನು ಪ್ರಾರಂಭಿಸುವುದೇ?",
+  "bootRecoveryConfirmBody": "ಇದು ಈ ಸಾಧನದಲ್ಲಿನ ಸ್ಥಳೀಯ ಚಾಟ್‌ಗಳು, ಕೀಗಳು ಮತ್ತು ಗುರುತನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ.\nಗೆಳೆಯರು ನಿಮ್ಮ ಹೊಸ ಗುರುತಿನೊಂದಿಗೆ ನಿಮ್ಮ QR ಅನ್ನು ಮತ್ತೊಮ್ಮೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಬೇಕು.\nಇದನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗುವುದಿಲ್ಲ.",
+  "bootRecoveryRunning": "ಸ್ಥಳೀಯ ಗುರುತನ್ನು ಮರುಹೊಂದಿಸಲಾಗುತ್ತಿದೆ...",
+  "bootRecoverySuccess": "ಸ್ಥಳೀಯ ಗುರುತಿನ ಮರುಹೊಂದಿಕೆ ಪೂರ್ಣಗೊಂಡಿದೆ",
+  "bootRecoveryFailed": "ಗುರುತನ್ನು ಮರುಹೊಂದಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "ರದ್ದುಮಾಡು",
+  "save": "ಉಳಿಸಿ",
+  "close": "ಮುಚ್ಚಿ",
+  "start": "ಪ್ರಾರಂಭಿಸಿ",
+  "send": "ಕಳುಹಿಸು",
+  "settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  "language": "ಭಾಷೆ",
+  "languageSubtitle": "ಡೀಫಾಲ್ಟ್ ಆಗಿ ಅಪ್ಲಿಕೇಶನ್ ನಿಮ್ಮ ಫೋನ್ ಭಾಷೆಯನ್ನು ಅನುಸರಿಸುತ್ತದೆ (ಬೆಂಬಲಿಸಿದಾಗ). ಇತರ ಭಾಷೆಗಳು ಇಂಗ್ಲಿಷ್‌ಗೆ ಹಿಂತಿರುಗುತ್ತವೆ. ನೀವು ಇಲ್ಲಿ ಭಾಷೆಯನ್ನು ಲಾಕ್ ಮಾಡಬಹುದು.",
+  "languageSystem": "ಸಿಸ್ಟಮ್ ಡೀಫಾಲ್ಟ್",
+  "languageThai": "ಥಾಯ್",
+  "languageEnglish": "ಇಂಗ್ಲೀಷ್",
+  "notificationsTooltip": "ಅಧಿಸೂಚನೆ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  "enableMessageNotifications": "ಸಂದೇಶ ಅಧಿಸೂಚನೆಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ",
+  "settingsNotificationsSubtitle": "1:1 ಸಂದೇಶಗಳು ಮತ್ತು ಆನ್‌ಲೈನ್ ಜನರು (ಸ್ಥಳೀಯ ಎಚ್ಚರಿಕೆಗಳು)",
+  "networkMembersTooltip": "ನೆಟ್ವರ್ಕ್ ಸದಸ್ಯರು",
+  "identityQrTooltip": "ಗುರುತು / QR",
+  "feedDirects": "ಚಾಟ್ ಮಾಡಿ",
+  "feedMesh": "#ಜಾಲರಿ",
+  "feedGeo": "ಪ್ರದೇಶ",
+  "feedDirectsSubtitle": "ಖಾಸಗಿ E2EE ಸಂದೇಶಗಳು",
+  "feedMeshSubtitle": "ಹತ್ತಿರದ ಗೆಳೆಯರು (BLE)",
+  "feedGeoSubtitle": "ಜಿಯೋಹಾಶ್ ಡಿಸ್ಕವರಿ ಚಾನೆಲ್",
+  "peerIdHint": "ಚಾಟ್ ಪ್ರಾರಂಭಿಸಲು ರಿಸೀವರ್ ಐಡಿ (ಸಾರ್ವಜನಿಕ ಕೀ ಹ್ಯಾಶ್) ಅಂಟಿಸಿ",
+  "directsEmpty": "ಇನ್ನೂ ಯಾವುದೇ ಚಾಟ್‌ಗಳಿಲ್ಲ - ಪ್ರಾರಂಭಿಸಲು QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಅಥವಾ ರಿಸೀವರ್ ಐಡಿಯನ್ನು ಅಂಟಿಸಿ\nಕಳುಹಿಸುವ ಮೊದಲು ಸಂದೇಶಗಳನ್ನು E2EE ನೊಂದಿಗೆ ಮುಚ್ಚಲಾಗುತ್ತದೆ (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • ಚಾಟ್ ತೆರೆಯಲು ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "meshIntro": "BLE ಶ್ರೇಣಿಯಲ್ಲಿರುವ ಗೆಳೆಯರು — ಖಾಸಗಿ E2EE ಚಾಟ್‌ಗಾಗಿ ಟ್ಯಾಪ್ ಮಾಡಿ (#mesh ನಲ್ಲಿ ಸಾರ್ವಜನಿಕ ಸಂಯೋಜನೆ ಇಲ್ಲ)\nಹೈಬ್ರಿಡ್ ರೂಟರ್ ಮೂಲಕ ಕಳುಹಿಸುತ್ತದೆ (BLE + LoRa + Nostr ಆನ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದಾಗ)",
+  "meshEmptyRunning": "ಯಾವುದೇ ಹತ್ತಿರದ ಗೆಳೆಯರು ಇನ್ನೂ ಇಲ್ಲ — BLE ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಮತ್ತೊಂದು ಸಾಧನದಲ್ಲಿ ಅಪ್ಲಿಕೇಶನ್ ತೆರೆಯಿರಿ",
+  "meshEmptyStopped": "BLE ಚಾಲನೆಯಲ್ಲಿಲ್ಲ - ಬ್ಲೂಟೂತ್ / ಸ್ಥಳ ಅನುಮತಿ ನೀಡಿ",
+  "meshNearbyPrefix": "ಹತ್ತಿರದಲ್ಲಿದೆ",
+  "meshRetentionTitle": "ಸಂದೇಶಗಳನ್ನು ಸ್ವಯಂ-ಅಳಿಸಿ",
+  "meshRetentionSubtitle": "ಹಳೆಯ ಸ್ಥಳೀಯ ಚಾಟ್ ಇತಿಹಾಸವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ",
+  "meshRetentionKeep": "ಇರಿಸಿಕೊಳ್ಳಿ",
+  "meshRetention1Day": "1 ದಿನ",
+  "meshRetention3Days": "3 ದಿನಗಳು",
+  "meshRetention7Days": "7 ದಿನಗಳು",
+  "refreshLocationTooltip": "ಸ್ಥಳವನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+  "geoIntro": "ಈ ಜಿಯೋಹಾಶ್‌ನಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿರುವ ಜನರಿಗೆ 1:1 ಅಥವಾ ಸಾರ್ವಜನಿಕ ಅಭಿಮಾನಿ-ಔಟ್ ಪ್ರದೇಶದೊಂದಿಗೆ ಸಂದೇಶವನ್ನು ಕಳುಹಿಸಬಹುದು (ಇನ್ನೂ ಪೀರ್‌ಗೆ E2EE ಎಂದು ಮುಚ್ಚಲಾಗಿದೆ - ಸರಳ ಪಠ್ಯವಲ್ಲ)",
+  "geoEmpty": "{channel} ನಲ್ಲಿ ಇನ್ನೂ ಯಾರೂ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿಲ್ಲ\nಸಾರಿಗೆ → ಇಂಟರ್ನೆಟ್/ಆಟೋ ಬಳಸಿ, Nostr ಗಾಗಿ ನಿರೀಕ್ಷಿಸಿ, ಸ್ಥಳವನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ {channel} • 1:1 E2EE ಗಾಗಿ ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "ಸಮೀಪದ (ಪ್ರದೇಶದ ಉಪಸ್ಥಿತಿಯನ್ನು ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ) • 1:1 E2EE ಗಾಗಿ ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "geoPeerNostrSubtitle": "Nostr ನಲ್ಲಿ {channel} ನಲ್ಲಿ ನೋಡಲಾಗಿದೆ • ಅನ್ವೇಷಣೆ ಮಾತ್ರ (ಪರಂಪರೆ)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "ಲೆಗಸಿ ಅನಾಮಧೇಯ ಉಪಸ್ಥಿತಿ - ಬೌಂಡ್ ಪೀರ್ ಅಥವಾ ಎಕ್ಸ್ಚೇಂಜ್ ಕ್ಯೂಆರ್ಗಾಗಿ ನಿರೀಕ್ಷಿಸಿ",
+  "bleRadioNearbySubtitle": "BLE ಹತ್ತಿರ — 1:1 E2EE ಅನ್ನು ಪ್ರಾರಂಭಿಸಲು QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+  "geoInternetDiscoverHint": "ಪ್ರದೇಶ ಇಂಟರ್ನೆಟ್ ಅನ್ವೇಷಣೆಗೆ Nostr ಸಂಪರ್ಕದ ಅಗತ್ಯವಿದೆ (ಸೆಟ್ಟಿಂಗ್‌ಗಳು → ಸಾರಿಗೆ → ಇಂಟರ್ನೆಟ್/ಆಟೋ)",
+  "geoEmptyNoLocation": "ಸ್ಥಳವನ್ನು ಇನ್ನೂ ಪರಿಹರಿಸಲಾಗಿಲ್ಲ - Nostr ನಲ್ಲಿ ನಿಮ್ಮ ಜಿಯೋಹಾಶ್ ಅನ್ನು ಪ್ರಕಟಿಸಲು GPS ಮತ್ತು ರಿಫ್ರೆಶ್ ಅನ್ನು ಅನುಮತಿಸಿ",
+  "geoEmptyNeedsPermission": "ಸ್ಥಳ ಅನುಮತಿಯನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ - ಸೆಟ್ಟಿಂಗ್‌ಗಳು → ಗೌಪ್ಯತೆ → ಸ್ಥಳದಲ್ಲಿ ResilNet ಅನ್ನು ಅನುಮತಿಸಿ",
+  "geoEmptyServicesDisabled": "ಸ್ಥಳ ಸೇವೆಗಳು ಆಫ್ ಆಗಿವೆ - ಅವುಗಳನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಆನ್ ಮಾಡಿ",
+  "geoEmptyNoGpsFix": "GPS ಫಿಕ್ಸ್ ಅನ್ನು ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ (Wi‑Fi iPad ಗಳಲ್ಲಿ ಸಾಮಾನ್ಯ) — geohash ಅನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ಕೆಳಗೆ ಹೊಂದಿಸಿ",
+  "geoEmptyTeleportHint": "ಸ್ಥಳ ಐಕಾನ್ ಟ್ಯಾಪ್ ಮಾಡಿ → ಜಿಯೋಹಾಶ್ ನಮೂದಿಸಿ (ಉದಾ. w5) → ಟೆಲಿಪೋರ್ಟ್",
+  "geoSetGeohashManually": "ಜಿಯೋಹಾಶ್ ಅನ್ನು ಹೊಂದಿಸಿ",
+  "geoTeleportHint": "ಜಿಪಿಎಸ್ ಇಲ್ಲವೇ? ಜಿಯೋಹಾಶ್ ಪೂರ್ವಪ್ರತ್ಯಯವನ್ನು ನಮೂದಿಸಿ (2–7 ಅಕ್ಷರಗಳು, ಉದಾ. w5) ಮತ್ತು ಟೆಲಿಪೋರ್ಟ್ ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "geoTeleportInvalid": "ಅಮಾನ್ಯ ಜಿಯೋಹಾಶ್ - ಬೇಸ್32 ಅಕ್ಷರಗಳು/ಸಂಖ್ಯೆಗಳನ್ನು ಮಾತ್ರ ಬಳಸಿ (ಉದಾ. w5 ಅಥವಾ w5jt8)",
+  "geoTeleportOk": "ಪ್ರದೇಶವನ್ನು {channel} ಗೆ ಹೊಂದಿಸಲಾಗಿದೆ",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "ಹಸ್ತಚಾಲಿತ ಪ್ರದೇಶ: {channel} (GPS ರಿಫ್ರೆಶ್ ಅತಿಕ್ರಮಿಸುತ್ತದೆ)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr ಸಿದ್ಧವಾಗಿಲ್ಲ - ಮರುಸಂಪರ್ಕ ಟ್ಯಾಪ್ ಮಾಡಿ (init ಯಶಸ್ವಿಯಾಗುವವರೆಗೆ 0/0)",
+  "geoEmptyMeshOnly": "ಸಾರಿಗೆಯು ಮೆಶ್-ಮಾತ್ರ - Nostr ಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಗೆಳೆಯರನ್ನು ಕಂಡುಹಿಡಿಯಲು ಇಂಟರ್ನೆಟ್ ಅಥವಾ ಆಟೋಗೆ ಬದಲಿಸಿ",
+  "geoEmptyWaiting": "{channel} ನಲ್ಲಿ ಇನ್ನೂ ಯಾರೂ ಇಲ್ಲ — ಎರಡೂ ಸಾಧನಗಳಲ್ಲಿ ಪ್ರದೇಶ + ಇಂಟರ್ನೆಟ್ ಅನ್ನು ತೆರೆದಿಡಿ ಮತ್ತು ~60s ನಿರೀಕ್ಷಿಸಿ",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#ಪ್ರದೇಶ",
+  "geoRefreshLocation": "ಸ್ಥಳವನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+  "settingsClearLocationTitle": "ಸ್ಥಳವನ್ನು ತೆರವುಗೊಳಿಸಿ",
+  "settingsClearLocationSubtitle": "GPS / ಟೆಲಿಪೋರ್ಟ್ ಜಿಯೋಹಾಶ್ ತೆಗೆದುಹಾಕಿ (ಪ್ರದೇಶ #- ಆಗುತ್ತದೆ)",
+  "settingsClearLocationConfirmTitle": "ಸ್ಥಳವನ್ನು ತೆರವುಗೊಳಿಸುವುದೇ?",
+  "settingsClearLocationConfirmBody": "ಈ ಸಾಧನದಲ್ಲಿ ಸಂಗ್ರಹವಾಗಿರುವ ಜಿಯೋಹಾಶ್ ಅನ್ನು ಅಳಿಸುತ್ತದೆ. ನೀವು GPS ಅನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಬಹುದು ಅಥವಾ ನಂತರ ಮತ್ತೆ ಟೆಲಿಪೋರ್ಟ್ ಮಾಡಬಹುದು.",
+  "settingsClearLocationAction": "ಸ್ಥಳವನ್ನು ತೆರವುಗೊಳಿಸಿ",
+  "settingsClearLocationSnack": "ಸ್ಥಳವನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ",
+  "chatVoiceTooLarge": "ಧ್ವನಿ ಟಿಪ್ಪಣಿ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ - ಗರಿಷ್ಠ ~30 ಸೆಕೆಂಡುಗಳು",
+  "chatVoiceNeedInternet": "ಧ್ವನಿ ಟಿಪ್ಪಣಿಗೆ ಇಂಟರ್ನೆಟ್ ಅಗತ್ಯವಿದೆ (Nostr) — BLE ಗೆ ಮಾತ್ರ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ",
+  "chatVoiceSentInternet": "ಇಂಟರ್ನೆಟ್ ಮೂಲಕ ಧ್ವನಿ ಟಿಪ್ಪಣಿ ಕಳುಹಿಸಲಾಗಿದೆ",
+  "noticeAnonMention": "ಉಲ್ಲೇಖಿಸಿ",
+  "noticeAnonDm": "ನೇರ ಸಂದೇಶ",
+  "noticeAnonHug": "ಅಪ್ಪುಗೆ",
+  "noticeAnonSlap": "ಬಡಿ",
+  "noticeAnonBlock": "ಬ್ಲಾಕ್",
+  "noticeAnonNeedKey": "ಇನ್ನೂ ಯಾವುದೇ ಸಾರ್ವಜನಿಕ ಕೀ ಇಲ್ಲ — QR ಅನ್ನು ಮೊದಲು 1:1 ಗೆ ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳಿ",
+  "noticeAnonActionSent": "ಕಳುಹಿಸಲಾಗಿದೆ",
+  "noticeAnonBlocked": "ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* ಅಪ್ಪುಗೆಗಳು {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* ಸ್ಲ್ಯಾಪ್ಸ್ {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Nostr ಅನ್ನು ಮರುಸಂಪರ್ಕಿಸಿ",
+  "nostrSectionTitle": "Nostr ರಿಲೇಗಳು",
+  "nostrSectionSubtitle": "ಇಂಟರ್ನೆಟ್ ಮೆಸೇಜಿಂಗ್ ಮತ್ತು ಏರಿಯಾ ಡಿಸ್ಕವರಿ ಈ ರಿಲೇಗಳನ್ನು ಬಳಸುತ್ತದೆ. ಸ್ಥಿತಿ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದರೆ ಮರುಸಂಪರ್ಕ ಟ್ಯಾಪ್ ಮಾಡಿ.",
+  "nostrStatusOnline": "{connected}/{total} ಸಂಪರ್ಕಿಸಲಾಗಿದೆ",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "ಆಫ್‌ಲೈನ್ - ರಿಲೇಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡಲಾಗಿದೆ ಆದರೆ ಯಾವುದೂ ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ",
+  "nostrStatusNotInit": "ಪ್ರಾರಂಭಿಸಲಾಗಿಲ್ಲ (0/0) — ಆರಂಭಿಸಲು ಮರುಸಂಪರ್ಕ ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "nostrReconnectAction": "Nostr ಅನ್ನು ಮರುಸಂಪರ್ಕಿಸಿ",
+  "nostrReconnectOk": "Nostr ಸಂಪರ್ಕಗೊಂಡಿದೆ ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "ಇನ್ನೂ ಆಫ್‌ಲೈನ್ - Wi‑Fi/ಸೆಲ್ಯುಲಾರ್ ಪರಿಶೀಲಿಸಿ ಅಥವಾ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+  "nostrReconnectFailedDetail": "ವಿಫಲವಾಗಿದೆ: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "ರಿಲೇಗಳಿಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ...",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "{channel} ನಲ್ಲಿ ಇಂಟರ್ನೆಟ್ (Nostr) • ಮೊಹರು ಮಾಡಿದ ಚಾಟ್ ಸಿದ್ಧವಾಗಿದೆ",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "ಪ್ರದೇಶ ಸಾರಿಗೆ",
+  "transportModeSubtitle": "ಮೆಶ್ = BLE ಹತ್ತಿರದ (ರೇಡಿಯೋ) Nostr · ಇಂಟರ್ನೆಟ್ ಮತ್ತು ಆಟೋ = Nostr ಜನರ ಪಟ್ಟಿ ಇಲ್ಲದಿದ್ದಾಗ",
+  "transportModeMesh": "ಜಾಲರಿ",
+  "transportModeInternet": "ಇಂಟರ್ನೆಟ್",
+  "transportModeAuto": "ಆಟೋ",
+  "geoPublicHint": "ಈ ಪ್ರದೇಶದಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಎಲ್ಲರಿಗೂ ಸಾರ್ವಜನಿಕ ಸಂದೇಶ",
+  "geoPublicSend": "ಸಾರ್ವಜನಿಕ",
+  "geoPublicHelp": "{count} ಆನ್‌ಲೈನ್ ಪೀರ್(ಗಳು) ಗೆ ಮೊಹರು ಮಾಡಿದ ಫ್ಯಾನ್-ಔಟ್ - ಪ್ರತಿಯೊಬ್ಬರೂ ಖಾಸಗಿ ಲಕೋಟೆಯನ್ನು ಸ್ವೀಕರಿಸುತ್ತಾರೆ",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "ಈ ಪ್ರದೇಶದಲ್ಲಿ {count} ಪೀರ್(ಗಳಿಗೆ) ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಸಂದೇಶ ನೀಡಬಹುದಾದ ಪೀರ್‌ಗಳಿಲ್ಲ - ಕೀಗಳನ್ನು ಹೊಂದಿರುವ ಗೆಳೆಯರೊಂದಿಗೆ ಪ್ರದೇಶ/ಮೆಶ್ ತೆರೆಯಿರಿ ಅಥವಾ BLE/Nostr ಗಾಗಿ ನಿರೀಕ್ಷಿಸಿ",
+  "areaPublicBadge": "ಪ್ರದೇಶದ ಸಾರ್ವಜನಿಕ",
+  "geoErrorPermission": "ಸ್ಥಳವನ್ನು ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ - ಸ್ಥಳ ಅನುಮತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ",
+  "geoPrecisionRegion": "ಪ್ರದೇಶ",
+  "geoPrecisionProvince": "ಪ್ರಾಂತ್ಯ",
+  "geoPrecisionCity": "ನಗರ",
+  "geoPrecisionNeighborhood": "ನೆರೆಹೊರೆ",
+  "geoPrecisionBlock": "ನಿರ್ಬಂಧಿಸಿ",
+  "aliasTitle": "ಅಡ್ಡಹೆಸರನ್ನು ಹೊಂದಿಸಿ (ಸಂಪರ್ಕ ಅಲಿಯಾಸ್)",
+  "aliasHintBody": "ಈ ಅಲಿಯಾಸ್ ಅನ್ನು ಈ ಸಾಧನದಲ್ಲಿ ಮಾತ್ರ ಸಂಗ್ರಹಿಸಲಾಗಿದೆ (ಸ್ಥಳೀಯ-ಮಾತ್ರ)\nಇದನ್ನು E2EE ಟ್ರಾಫಿಕ್‌ನೊಂದಿಗೆ ಎಂದಿಗೂ ಕಳುಹಿಸಲಾಗುವುದಿಲ್ಲ",
+  "aliasLabel": "ಅಡ್ಡಹೆಸರು",
+  "aliasHint": "ಉದಾ. \"ಗ್ರಾಮ ಮುಖ್ಯಸ್ಥ\", \"ಪಿ'ಸೋಮ್ಚೈ\"...",
+  "settingsDevices": "ಸಾಧನಗಳು",
+  "settingsFirmwareTitle": "ESP32 ಫರ್ಮ್‌ವೇರ್ ಅನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ / ನವೀಕರಿಸಿ",
+  "settingsFirmwareSubtitle": ".bin ಫೈಲ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಮತ್ತು OTA ಮೂಲಕ ESP32 ಬೋರ್ಡ್ ಅನ್ನು ನವೀಕರಿಸಿ",
+  "mtBridgeTitle": "Meshtastic ಸೇತುವೆ",
+  "mtBridgeSettingsSubtitle": "ಪಠ್ಯ-ಮಾತ್ರ A/B ಸೇತುವೆ — ResilNet E2EE ಅಲ್ಲ",
+  "mtBridgeIntro": "Meshtastic ಮತ್ತು ResilNet ನಡುವೆ ಸಣ್ಣ ಸರಳ ಪಠ್ಯವನ್ನು ಸರಿಸಿ. ಎ ಮತ್ತು ಬಿ ವಿಧಾನಗಳು ಒಂದೇ ಸಮಯದಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ. ಇದು ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಅಲ್ಲ.",
+  "mtBridgeModeLabel": "ಮೋಡ್",
+  "mtBridgeModeOff": "ಆಫ್",
+  "mtBridgeModeA": "ಇಂಜೆಸ್ಟ್ ಎ",
+  "mtBridgeModeB": "ಎಗ್ರೆಸ್ ಬಿ",
+  "mtBridgeModeOffShort": "ಆಫ್",
+  "mtBridgeModeAShort": "ಎ ನಲ್ಲಿ",
+  "mtBridgeModeBShort": "ಔಟ್ ಬಿ",
+  "mtBridgeMutexHint": "ಮೋಡ್ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡುವುದರಿಂದ ಇನ್ನೊಂದನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಆಫ್ ಮಾಡುತ್ತದೆ. ಏಕಕಾಲಿಕ A+B ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "ಡೆಮೊ (ಲಾಗಿಂಗ್)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "ಒಳಬರುವ ಪಠ್ಯವು ಸೂಚನೆಗಳ ಅಡಿಯಲ್ಲಿ #meshtastic ಎಂದು ಗೋಚರಿಸುತ್ತದೆ. ಮೆಶ್ ರಿಲೇ ಐಚ್ಛಿಕವಾಗಿರುತ್ತದೆ (ಡೀಫಾಲ್ಟ್ ಆಗಿ ಆಫ್).",
+  "mtBridgeRelayTitle": "ResilNet ಮೆಶ್‌ನಲ್ಲಿ ಸಹ ರಿಲೇ ಮಾಡಿ",
+  "mtBridgeRelayHint": "ಆನ್ ಮಾಡಿದಾಗ, ಸಹಿ ಮಾಡಿದ ಸಾರ್ವಜನಿಕ ಬುಲೆಟಿನ್‌ಗಳನ್ನು ಪ್ರಸಾರ ಮಾಡಲಾಗುತ್ತದೆ. ಆಫ್ = ಈ ಫೋನ್‌ನ ಸೂಚನೆಗಳು ಮಾತ್ರ.",
+  "mtBridgeSimulateHint": "ಡೆಮೊ ಸಂದೇಶ",
+  "mtBridgeSimulate": "Meshtastic ಸಂದೇಶವನ್ನು ಅನುಕರಿಸಿ",
+  "mtBridgeIngestOk": "ನೋಟಿಸ್‌ಗಳಲ್ಲಿ ಒಳಸೇರಿಸಲಾಗಿದೆ (#meshtastic)",
+  "mtBridgeEgressWarning": "ಎಚ್ಚರಿಕೆ: ಇಲ್ಲಿ ಕಳುಹಿಸಲಾದ ಸಂದೇಶಗಳು ResilNet E2EE ಅಲ್ಲ. Meshtastic ಮಾರ್ಗದಲ್ಲಿರುವ ಯಾರಾದರೂ ಅವುಗಳನ್ನು ಓದಬಹುದು.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "ಪ್ರಕಟಿಸಲು ಪಠ್ಯ",
+  "mtBridgeSend": "Meshtastic ಗೆ ಕಳುಹಿಸಿ",
+  "mtBridgeEgressOk": "Meshtastic ಗೆ ಸರತಿಯಲ್ಲಿದೆ (ಲಾಗ್ / ಇತಿಹಾಸವನ್ನು ನೋಡಿ)",
+  "mtBridgeLastEgress": "ಕೊನೆಯ ನಿರ್ಗಮನ",
+  "mtBridgeEgressHistory": "ಇತ್ತೀಚಿನ ಹೊರಹೊಮ್ಮುವಿಕೆ",
+  "mtBridgeOffHint": "ಸೇತುವೆಯನ್ನು ಬಳಸಲು ಇಂಜೆಸ್ಟ್ (ಎ) ಅಥವಾ ಎಗ್ರೆಸ್ (ಬಿ) ಅನ್ನು ಆನ್ ಮಾಡಿ.",
+  "mtBridgeNoticeBadge": "MESHTASTIC · E2EE ಅಲ್ಲ",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "MQTT ಸಾರಿಗೆ ಬಳಸಿ",
+  "mtBridgeUseMqttHint": "ಆಫ್ = ಡೆಮೊ ಲಾಗಿಂಗ್ ಮಾತ್ರ (MQTT ಒಳಬರುವಿಕೆಯನ್ನು ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ). ಆನ್ = MQTT ಅನ್ನು ಸಂಪರ್ಕಿಸಿದಾಗ ಸೇವನೆ/ಹೊರಬರುವಿಕೆಗಾಗಿ.",
+  "mtBridgeMqttHost": "ಬ್ರೋಕರ್ ಹೋಸ್ಟ್",
+  "mtBridgeMqttPort": "ಬಂದರು",
+  "mtBridgeMqttTls": "TLS (mqtts) ಬಳಸಿ",
+  "mtBridgeMqttTlsHint": "ವಿಶಿಷ್ಟ ಪೋರ್ಟ್ 8883. ಸಿಸ್ಟಮ್ ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಬಳಸುತ್ತದೆ; ಹ್ಯಾಂಡ್ಶೇಕ್ ದೋಷಗಳಲ್ಲಿ ಮೃದುವಾಗಿ ವಿಫಲಗೊಳ್ಳುತ್ತದೆ.",
+  "mtBridgeMqttAutoReconnect": "ಸ್ವಯಂ-ಮರುಸಂಪರ್ಕ",
+  "mtBridgeMqttAutoReconnectHint": "ಆನ್ ಆಗಿರುವಾಗ, ಕ್ಲೈಂಟ್ ಡ್ರಾಪ್ಸ್ ನಂತರ ಮರುಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಾನೆ. ಮರುಸ್ಥಾಪಿಸುವವರೆಗೆ ಸಂಪರ್ಕವನ್ನು ಸ್ಥಿತಿ ತೋರಿಸುತ್ತದೆ.",
+  "mtBridgeMqttTopicHelpers": "ವಿಷಯ ಸಹಾಯಕರು",
+  "mtBridgeMqttRegion": "ಪ್ರದೇಶ ಪೂರ್ವಪ್ರತ್ಯಯ (ಐಚ್ಛಿಕ)",
+  "mtBridgeMqttRegionHint": "ಹೊಂದಿಸಿದಾಗ, msh/<region>/2/json (ವಿಷಯದ ಮೂಲವನ್ನು ಅತಿಕ್ರಮಿಸುತ್ತದೆ) ಎಂದು ಮರುನಿರ್ಮಾಣಗಳನ್ನು ಅನ್ವಯಿಸಿ.",
+  "mtBridgeMqttTopicRoot": "JSON ವಿಷಯ ಮೂಲ",
+  "mtBridgeMqttDownlinkChannel": "ಡೌನ್‌ಲಿಂಕ್ ಚಾನಲ್ ಹೆಸರು",
+  "mtBridgeMqttApplyTopics": "ರೂಟ್ → ಚಂದಾದಾರಿಕೆ / ಪ್ರಕಟಣೆ ವಿಷಯಗಳನ್ನು ಅನ್ವಯಿಸಿ",
+  "mtBridgeMqttAdvanced": "ಸುಧಾರಿತ MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, ಮರುಸಂಪರ್ಕ, ವಿಷಯಗಳು, ರುಜುವಾತುಗಳು",
+  "mtBridgeMqttTopicIn": "ವಿಷಯ ಚಂದಾದಾರರಾಗಿ",
+  "mtBridgeMqttTopicOut": "ವಿಷಯವನ್ನು ಪ್ರಕಟಿಸಿ",
+  "mtBridgeMqttGatewayFrom": "ಗೇಟ್‌ವೇ ನೋಡ್ ಐಡಿ (ಇಂದ)",
+  "mtBridgeMqttGatewayFromHint": "ದಶಮಾಂಶ ಐಡಿ ಅಥವಾ !ಹೆಕ್ಸ್ — ಸೆಂಡ್‌ಟೆಕ್ಸ್ಟ್ ಡೌನ್‌ಲಿಂಕ್‌ಗೆ ಅಗತ್ಯವಿದೆ",
+  "mtBridgeMqttChannelIndex": "ಮೆಶ್ ಚಾನಲ್ ಇಂಡೆಕ್ಸ್ (ಐಚ್ಛಿಕ 0–7)",
+  "mtBridgeMqttUser": "ಬಳಕೆದಾರ ಹೆಸರು (ಐಚ್ಛಿಕ)",
+  "mtBridgeMqttPass": "ಪಾಸ್ವರ್ಡ್ (ಐಚ್ಛಿಕ)",
+  "mtBridgeMqttPassStored": "ಈ ಸಾಧನದಲ್ಲಿ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಸಂಗ್ರಹಿಸಲಾಗಿದೆ (ತೋರಿಸಲಾಗಿಲ್ಲ).",
+  "mtBridgeMqttPassReplace": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಇರಿಸಲು ಖಾಲಿ ಬಿಡಿ)",
+  "mtBridgeMqttPassReplaceHint": "ಸಂಗ್ರಹಿಸಿದ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಇರಿಸಿಕೊಳ್ಳಲು ಖಾಲಿ ಬಿಡಿ.",
+  "mtBridgeMqttPassClear": "ಪಾಸ್ವರ್ಡ್ ತೆರವುಗೊಳಿಸಿ",
+  "mtBridgeMqttSave": "MQTT ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಉಳಿಸಿ",
+  "mtBridgeMqttSaved": "MQTT ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ",
+  "mtBridgeMqttConnect": "ಸಂಪರ್ಕಿಸಿ",
+  "mtBridgeMqttDisconnect": "ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಿ",
+  "mtBridgeMqttConnected": "MQTT ಸಂಪರ್ಕಗೊಂಡಿದೆ",
+  "mtBridgeMqttConnecting": "MQTT ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ...",
+  "mtBridgeMqttDisconnected": "MQTT ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ",
+  "mtBridgeMqttError": "MQTT ದೋಷ",
+  "mtBridgeErrModeIngest": "ಮೊದಲು Ingest (A) ಗೆ ಬದಲಿಸಿ",
+  "mtBridgeErrModeEgress": "ಮೊದಲು ಎಗ್ರೆಸ್ (ಬಿ) ಗೆ ಬದಲಿಸಿ",
+  "mtBridgeErrRate": "ನಿಧಾನವಾಗಿ - ದರ ಸೀಮಿತವಾಗಿದೆ",
+  "mtBridgeErrDedupe": "ನಕಲಿ ಸಂದೇಶವನ್ನು ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ",
+  "mtBridgeErrLoop": "ಸೇತುವೆಯ ಲೂಪ್ ಅನ್ನು ತಡೆಯಲು ಕೈಬಿಡಲಾಗಿದೆ",
+  "mtBridgeErrEmpty": "ಸಂದೇಶ ಖಾಲಿಯಾಗಿದೆ",
+  "mtBridgeErrPublish": "ಪ್ರಕಟಿಸಲು ವಿಫಲವಾಗಿದೆ",
+  "mtBridgeErrNotConnected": "MQTT ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ",
+  "mtBridgeErrMissingHost": "MQTT ಬ್ರೋಕರ್ ಹೋಸ್ಟ್ ಅನ್ನು ನಮೂದಿಸಿ",
+  "mtBridgeErrMissingTopic": "ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಿ ಮತ್ತು ವಿಷಯಗಳನ್ನು ಪ್ರಕಟಿಸಿ",
+  "mtBridgeErrMissingFromNode": "ಕಳುಹಿಸುವ ಪಠ್ಯಕ್ಕಾಗಿ ಗೇಟ್‌ವೇ ನೋಡ್ ಐಡಿ (ಇಂದ) ನಮೂದಿಸಿ",
+  "mtBridgeErrConnect": "MQTT ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ",
+  "mtBridgeErrConnectTls": "MQTT TLS ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ",
+  "settingsData": "ಡೇಟಾ",
+  "settingsDataHint": "ಡೇಟಾಬೇಸ್ ಅನ್ನು ಕುಗ್ಗಿಸಲು ಸ್ಥಳೀಯ ಸಂದೇಶಗಳನ್ನು ಅಳಿಸಿ - ಗುರುತು, ಕೀಗಳು ಮತ್ತು ಗೆಳೆಯರನ್ನು ಇರಿಸಲಾಗುತ್ತದೆ",
+  "settingsSaveHistoryTitle": "ಸಂದೇಶ ಇತಿಹಾಸವನ್ನು ಉಳಿಸಿ",
+  "settingsSaveHistorySubtitle": "ಆಫ್ ಮಾಡಿದಾಗ, ಸಂದೇಶಗಳು ವೈರ್‌ನಲ್ಲಿ E2EE ಆಗಿರುತ್ತವೆ ಮತ್ತು ಈ ಸೆಷನ್‌ಗಾಗಿ ಮಾತ್ರ ಇರಿಸಲಾಗುತ್ತದೆ (ಸ್ಥಳೀಯ ಚಾಟ್ ಇತಿಹಾಸದಲ್ಲಿ ಅಲ್ಲ). ಈ ಸಾಧನದಲ್ಲಿ ನಿಮ್ಮ ಸ್ವಂತ ಪಠ್ಯವು ಇನ್ನೂ ಸರಳ ಪಠ್ಯದಂತೆ ತೋರಿಸುತ್ತದೆ.",
+  "settingsPrivacy": "ಗೌಪ್ಯತೆ",
+  "settingsE2eeTitle": "ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಷನ್",
+  "settingsE2eeSubtitle": "ಯಾವಾಗಲೂ ಆನ್ - ಸಂದೇಶಗಳನ್ನು ಕಳುಹಿಸುವ ಮೊದಲು RSA-OAEP + AES-GCM ನೊಂದಿಗೆ ಮುಚ್ಚಲಾಗುತ್ತದೆ. ರಿಲೇಗಳು ಮತ್ತು ಹತ್ತಿರದ ಹಾಪ್‌ಗಳು ವಿಷಯಗಳನ್ನು ಓದಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+  "settingsScreenshotTitle": "ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಎಚ್ಚರಿಕೆಗಳು",
+  "settingsScreenshotSubtitle": "ಈ ಸಾಧನವು ಪರದೆಯನ್ನು ಸೆರೆಹಿಡಿಯುವಾಗ ಚಾಟ್‌ನಲ್ಲಿ ಸಿಸ್ಟಮ್ ಲೈನ್ ಅನ್ನು ತೋರಿಸಿ",
+  "settingsNostrExpiryTitle": "Nostr ಸಂದೇಶವನ್ನು ಇರಿಸಿಕೊಳ್ಳಲು ಸಮಯ",
+  "settingsNostrExpirySubtitle": "Nostr ಮೂಲಕ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿರುವಾಗ ಸೀಲ್ ಮಾಡಿದ ಲಕೋಟೆಗಳು ಸ್ಥಳೀಯವಾಗಿ ಎಷ್ಟು ಕಾಲ ಉಳಿಯಬೇಕು",
+  "noticeExpiresIn": "ರಲ್ಲಿ ಮುಕ್ತಾಯಗೊಳ್ಳುತ್ತದೆ",
+  "noticesTitle": "ಸೂಚನೆಗಳು",
+  "noticesMeshIntro": "ಸಾರ್ವಜನಿಕ ಬುಲೆಟಿನ್ - ರೇಡಿಯೋ ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಎಲ್ಲರಿಗೂ ಗೋಚರಿಸುತ್ತದೆ, ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿಲ್ಲ. ಇದು ಫೋನ್‌ನಿಂದ ಫೋನ್‌ಗೆ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಹಾಪ್ ಮಾಡುತ್ತದೆ ಮತ್ತು ಹತ್ತಿರದ ResilNet ರಿಲೇ ಬಾಕ್ಸ್‌ಗಳು ನಕಲನ್ನು ಇರಿಸುತ್ತವೆ ಆದ್ದರಿಂದ ನಂತರ ಬರುವ ಜನರು ಅದನ್ನು ನೋಡುತ್ತಾರೆ.",
+  "noticesMeshPublicBadge": "ಸಾರ್ವಜನಿಕ · ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿಲ್ಲ",
+  "noticesGeoIntro": "ಈ ಸ್ಥಳಕ್ಕಾಗಿ ಕಿರು ಟಿಪ್ಪಣಿಗಳನ್ನು ಸೇರಿಸಿ ಇದರಿಂದ ಇತರ ಸಂದರ್ಶಕರು ಅವುಗಳನ್ನು ಹುಡುಕಬಹುದು.",
+  "noticesEmpty": "ಇನ್ನೂ ಯಾವುದೇ ಸೂಚನೆಗಳಿಲ್ಲ",
+  "noticesEmptyHint": "ಸುತ್ತಮುತ್ತಲಿನ ಜನರಿಗೆ ಮೊದಲ ಸೂಚನೆಯನ್ನು ಪಿನ್ ಮಾಡಿ.",
+  "noticesComposeHint": "ನೋಟಿಸ್ ಪೋಸ್ಟ್ ಮಾಡಿ...",
+  "noticesUrgent": "ತುರ್ತು",
+  "noticesOpen": "ಸೂಚನೆಗಳು",
+  "screenshotTaken": "* ನೀವು ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ತೆಗೆದುಕೊಂಡಿದ್ದೀರಿ *",
+  "chatAttachImage": "ಚಿತ್ರವನ್ನು ಲಗತ್ತಿಸಿ",
+  "chatImageLabel": "ಚಿತ್ರ",
+  "chatImageTooLarge": "ಚಿತ್ರ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ - ಇನ್ನೊಂದು ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ",
+  "chatNostrExpiry": "Nostr ಇರಿಸಿಕೊಳ್ಳಿ",
+  "geoPublicComposeHint": "{channel} ಗೆ ಕಳುಹಿಸಿ — ಸಾರ್ವಜನಿಕ",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "ಎಲ್ಲಾ ಸಂದೇಶಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ",
+  "settingsClearSubtitle": "ಈ ಸಾಧನದಲ್ಲಿರುವ ಎಲ್ಲಾ ಚಾಟ್‌ಗಳನ್ನು ಅಳಿಸಿ",
+  "settingsClearConfirmTitle": "ಎಲ್ಲಾ ಸಂದೇಶಗಳನ್ನು ತೆರವುಗೊಳಿಸುವುದೇ?",
+  "settingsClearConfirmBody": "ಇದು ಈ ಸಾಧನದಲ್ಲಿರುವ ಎಲ್ಲಾ ಚಾಟ್ ಸಂದೇಶಗಳನ್ನು ಅಳಿಸುತ್ತದೆ.\nಗೆಳೆಯರು ಮತ್ತು ಅಡ್ಡಹೆಸರುಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗುವುದಿಲ್ಲ.",
+  "settingsClearAction": "ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಿ",
+  "settingsClearedSnack": "ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ",
+  "settingsVersion": "ಆವೃತ್ತಿ {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: ನೋಡ್‌ಗಳಿಗಾಗಿ ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ",
+  "meshBleEsp32Scanning": "ESP32: ಹತ್ತಿರದ ನೋಡ್‌ಗಾಗಿ ಹುಡುಕುತ್ತಿದ್ದೇವೆ",
+  "meshBleSyncing": "BLE: ESP32 ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡಲಾಗುತ್ತಿದೆ",
+  "meshNostrPublishing": "Nostr: ಪ್ರಕಟಿಸಲಾಗುತ್ತಿದೆ",
+  "meshBleIdle": "BLE ಮೆಶ್ ಆನ್ - ಇನ್ನೂ ಯಾವುದೇ ಹತ್ತಿರದ ಫೋನ್‌ಗಳಿಲ್ಲ",
+  "meshBlePeersNearby": "BLE ಮೆಶ್ — {count} ಫೋನ್(ಗಳು) ಹತ್ತಿರದಲ್ಲಿದೆ",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: ಅನುಮತಿ ಅಗತ್ಯವಿದೆ",
+  "meshBlePausedCamera": "ಕ್ಯಾಮರಾಕ್ಕಾಗಿ BLE ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ - ಪ್ರಾರಂಭಿಸಿ BLE ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "meshBleStopped": "BLE ಆಫ್ ಆಗಿದೆ - ಬ್ಲೂಟೂತ್ ಆನ್ ಆಗಿದೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಿ, ನಂತರ ಸ್ಟಾರ್ಟ್ ಟ್ಯಾಪ್ ಮಾಡಿ BLE",
+  "meshBleRestart": "BLE ಅನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು BLE ಅನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+  "meshNostrOffline": "Nostr ಆಫ್‌ಲೈನ್",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} ಹತ್ತಿರದ ಗೆಳೆಯರು • LoRa {lora} • ಸಿಂಕ್ ~{meters}ಮೀ",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "ಸಿದ್ಧವಾಗಿದೆ",
+  "meshLoraNotReady": "ಸಿದ್ಧವಾಗಿಲ್ಲ",
+  "meshGatewayProgress": "ಗೇಟ್‌ವೇ UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "ಗೇಟ್‌ವೇ UDP: ಸಿದ್ಧವಾಗಿದೆ",
+  "permissionTitle": "BLE ಮೆಶ್ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಪ್ರಾರಂಭಿಸಲು ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಿ",
+  "permissionBody": "ಸಮುದಾಯ ಸಂದೇಶ ಕಳುಹಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಬ್ಲೂಟೂತ್ (ಸ್ಕ್ಯಾನ್ / ಸಂಪರ್ಕ / ಜಾಹೀರಾತು), ಸ್ಥಳ (ಹಳೆಯ Android ಸಾಧನಗಳಿಗೆ) ಮತ್ತು ಮೈಕ್ರೊಫೋನ್ (ಚಾಟ್ ಮತ್ತು ಪ್ರಕಟಣೆಗಳಲ್ಲಿ ಧ್ವನಿ ಟಿಪ್ಪಣಿಗಳಿಗಾಗಿ) ಅಗತ್ಯವಿದೆ.",
+  "permissionE2ee": "ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಶನ್ (E2EE)\nರಿಲೇ ನೋಡ್‌ಗಳು ಸಂದೇಶದ ವಿಷಯಗಳನ್ನು ಓದಲು ಸಾಧ್ಯವಿಲ್ಲ",
+  "permissionReady": "ಅನುಮತಿಗಳು ಸಿದ್ಧವಾಗಿವೆ",
+  "permissionRequest": "ಅನುಮತಿಸಿ ಮತ್ತು ಮುಂದುವರಿಸಿ",
+  "permissionNotReadySnack": "ಸಿಸ್ಟಂ ಇನ್ನೂ ಸಿದ್ಧವಾಗಿಲ್ಲ - ಸ್ವಲ್ಪ ನಿರೀಕ್ಷಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+  "permissionDeniedSnack": "ಅನುಮತಿಗಳು ಅಪೂರ್ಣ - ತೆರೆಯಿರಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು > ResilNet ಮತ್ತು ಬ್ಲೂಟೂತ್ / ಸ್ಥಳ / ಮೈಕ್ರೊಫೋನ್ ಅನ್ನು ಅನುಮತಿಸಿ",
+  "permissionMicDenied": "ಮೈಕ್ರೊಫೋನ್ ಪ್ರವೇಶವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ - ಧ್ವನಿ ಟಿಪ್ಪಣಿಗಳನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಅದನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಅನುಮತಿಸಿ",
+  "permissionMicOpenSettings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  "permissionCameraDenied": "ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ - QR ಕೋಡ್‌ಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲು ಅದನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಅನುಮತಿಸಿ",
+  "permissionCameraFailed": "QR ಕೋಡ್‌ಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲು ಕ್ಯಾಮರಾ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ",
+  "permissionCameraOpenSettings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  "permissionPhotosDenied": "ಫೋಟೋ ಲೈಬ್ರರಿ ಪ್ರವೇಶವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ - ನಿಮ್ಮ QR ಕೋಡ್ ಅನ್ನು ಉಳಿಸಲು ಅದನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಅನುಮತಿಸಿ",
+  "permissionPhotosFailed": "ನಿಮ್ಮ QR ಕೋಡ್ ಅನ್ನು ಉಳಿಸಲು ಫೋಟೋ ಲೈಬ್ರರಿ ಅನುಮತಿಯ ಅಗತ್ಯವಿದೆ",
+  "permissionPhotosOpenSettings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  "permissionFailedSnack": "ಅನುಮತಿ ವಿನಂತಿಯು ವಿಫಲವಾಗಿದೆ: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet ಆರ್ಕಿಟೆಕ್ಚರ್ • ಸ್ಟೋರ್ ಮತ್ತು ಫಾರ್ವರ್ಡ್ ಮಲ್ಟಿ-ಹಾಪ್",
+  "onboardingSkip": "ಬಿಟ್ಟುಬಿಡಿ",
+  "onboardingNext": "ಮುಂದೆ",
+  "onboardingStart": "ಪ್ರಾರಂಭಿಸಿ",
+  "onboardingWelcomeTitle": "ResilNet ಗೆ ಸುಸ್ವಾಗತ",
+  "onboardingWelcomeBody": "ಮೆಶ್ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ResilNet ನಲ್ಲಿ ಚಾಟ್ ಮಾಡಿ — ಇಂಟರ್ನೆಟ್ ಇಲ್ಲದಿದ್ದರೂ ಸಹ",
+  "onboardingFriendsTitle": "ಸ್ನೇಹಿತರನ್ನು ಸುಲಭವಾಗಿ ಸೇರಿಸಿ",
+  "onboardingFriendsBody": "ಗುರುತಿನ ಮೂಲಕ QR ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಿ ಅಥವಾ ಸಾರ್ವಜನಿಕ ಕೀಗಳನ್ನು ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳಲು ಸ್ನೇಹಿತರ QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+  "onboardingChannelsTitle": "ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಚಾಟ್ + ಹತ್ತಿರದ ಚಾನಲ್‌ಗಳು",
+  "onboardingChannelsBody": "ಹತ್ತಿರದ ಗೆಳೆಯರನ್ನು ಹುಡುಕಲು #mesh / Area (geohash) ಬದಲಿಸಿ — ಸಂದೇಶಗಳು BLE ಮೆಶ್ ಮತ್ತು Nostr ಮೇಲೆ E2EE ಆಗಿರುತ್ತವೆ",
+  "chatTitle": "ಚಾಟ್ (E2EE)",
+  "chatScanTooltip": "ಪೀರ್ ಅನ್ನು ಸೇರಿಸಲು QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+  "chatBlockTooltip": "ಈ ಕಳುಹಿಸುವವರನ್ನು ನಿರ್ಬಂಧಿಸಿ",
+  "chatBlockedSnack": "ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ: ಯಾವುದೇ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ / ರಿಲೇ ಇಲ್ಲ",
+  "chatAliasTooltip": "ಅಡ್ಡಹೆಸರನ್ನು ಹೊಂದಿಸಿ",
+  "chatReceiverPemLabel": "ಸ್ವೀಕರಿಸುವವರ ಸಾರ್ವಜನಿಕ ಕೀ (PEM)",
+  "chatReceiverPemHint": "ನಿಮ್ಮ ಸ್ನೇಹಿತರ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಅಂಟಿಸಿ (QR / ಹಂಚಿದ ಫೈಲ್‌ನಿಂದ)",
+  "chatNeedPeerKey": "ಈ ಪೀರ್‌ನ QR ಅನ್ನು ಮೊದಲು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ (ಪರಿಶೀಲಿಸಿದ ಸಾರ್ವಜನಿಕ ಕೀ ಅಗತ್ಯವಿದೆ)",
+  "chatPeerKeyMismatch": "ಸಂಗ್ರಹಿಸಲಾದ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯು ಈ ಪೀರ್ ಐಡಿಗೆ ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ",
+  "chatVoiceFailed": "ಆಡಿಯೋ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "ಧ್ವನಿ ಟಿಪ್ಪಣಿಯನ್ನು ಪ್ಲೇ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "ಧ್ವನಿ ಟಿಪ್ಪಣಿಯನ್ನು ಪ್ಲೇ ಮಾಡಿ",
+  "chatPauseVoice": "ವಿರಾಮ",
+  "chatVoiceLabelSent": "🎤 ಧ್ವನಿ ಟಿಪ್ಪಣಿ (ಮೊಹರು)",
+  "chatVoiceLabel": "🎤 ಧ್ವನಿ ಟಿಪ್ಪಣಿ",
+  "chatDecryptFailed": "[ಡಿಕ್ರಿಪ್ಶನ್ ವಿಫಲವಾಗಿದೆ]",
+  "chatSentSealed": "[ಮೊಹರು • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[ಮೊಹರು]",
+  "chatComposeHint": "ಸಂದೇಶವನ್ನು ಟೈಪ್ ಮಾಡಿ... (ಕಳುಹಿಸಲು ಮುಚ್ಚಲಾಗಿದೆ)",
+  "chatEmptyThread": "ಇನ್ನೂ ಯಾವುದೇ ಸಂದೇಶಗಳಿಲ್ಲ\nಜಾಲರಿಯ ಮೇಲೆ ಕಳುಹಿಸಲು ಕೆಳಗೆ ಟೈಪ್ ಮಾಡಿ",
+  "chatLoadFailed": "ಸಂಭಾಷಣೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "ಎಮೋಜಿ",
+  "statusPending": "ಬಾಕಿಯಿದೆ",
+  "statusSent": "ಕಳುಹಿಸಲಾಗಿದೆ",
+  "statusRelayed": "ಪ್ರಸಾರ ಮಾಡಲಾಗಿದೆ",
+  "statusDelivered": "ವಿತರಿಸಲಾಗಿದೆ",
+  "statusRead": "ಓದು",
+  "statusFailed": "ವಿಫಲವಾಗಿದೆ",
+  "chatCopy": "ನಕಲು ಮಾಡಿ",
+  "chatDeleteLocal": "ಈ ಸಾಧನದಲ್ಲಿ ಅಳಿಸಿ",
+  "chatDeletedLocalSnack": "ಈ ಸಾಧನದಲ್ಲಿ ಅಳಿಸಲಾಗಿದೆ",
+  "chatRetry": "ಮರುಪ್ರಯತ್ನಿಸಿ",
+  "chatSendFailed": "ವಿತರಿಸಲಾಗಿಲ್ಲ - ಮರುಪ್ರಯತ್ನಿಸಿ ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "chatImageNeedInternet": "ಚಿತ್ರಗಳನ್ನು ಕಳುಹಿಸಲು ಇಂಟರ್ನೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ",
+  "chatImageTooLargeOnline": "ಕಳುಹಿಸಲು ಸಾಕಷ್ಟು ಚಿತ್ರವನ್ನು ಕುಗ್ಗಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ",
+  "chatOpenLinkFailed": "ಲಿಂಕ್ ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ",
+  "identityTitle": "ಗುರುತು",
+  "identityScanTooltip": "ಕ್ಯಾಮೆರಾದೊಂದಿಗೆ QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+  "identityCopiedHash": "ಸಾರ್ವಜನಿಕ ಕೀ ಹ್ಯಾಶ್ ನಕಲಿಸಲಾಗಿದೆ",
+  "identityPeerSaved": "QR ನಿಂದ ಪೀರ್ ಉಳಿಸಲಾಗಿದೆ",
+  "identityGalleryDenied": "ಫೋಟೋ ಲೈಬ್ರರಿ ಅನುಮತಿಯನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ",
+  "identityQrSaved": "QR ಅನ್ನು ಫೋಟೋ ಲೈಬ್ರರಿಗೆ ಉಳಿಸಲಾಗಿದೆ",
+  "identityQrSaveFailed": "QR ಅನ್ನು ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "ನೆಟ್ವರ್ಕ್ ಸದಸ್ಯರು",
+  "qrScanTitle": "ಸ್ನೇಹಿತರನ್ನು ಸೇರಿಸಲು QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+  "qrInvalid": "ಸ್ಕ್ಯಾನ್ ವಿಫಲವಾಗಿದೆ: ಅಮಾನ್ಯ QR",
+  "qrIdKeyMismatch": "QR ತಿರಸ್ಕರಿಸಲಾಗಿದೆ: ಐಡಿ ಸಾರ್ವಜನಿಕ ಕೀಗೆ ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ",
+  "qrCameraNotReady": "ಕ್ಯಾಮರಾ ಸಿದ್ಧವಾಗಿಲ್ಲ",
+  "qrRetrySettings": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ / ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ",
+  "qrCameraOpenFailed": "ಕ್ಯಾಮರಾವನ್ನು ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "ಫ್ರೇಮ್ ಒಳಗೆ QR ಕೋಡ್ ಅನ್ನು ಹೊಂದಿಸಿ",
+  "firmwareDownloadTitle": "ESP32 ಫರ್ಮ್‌ವೇರ್ ಅನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+  "firmwareSourceOnline": "ಇತ್ತೀಚಿನ (ಆನ್‌ಲೈನ್)",
+  "firmwareSourceCached": "ಉಳಿಸಿದ ನಕಲು (ಆಫ್‌ಲೈನ್)",
+  "firmwareSourceBaseline": "ಬಂಡಲ್ ಬೇಸ್‌ಲೈನ್ (ಆಫ್‌ಲೈನ್)",
+  "firmwareSourceUnavailable": "ಯಾವುದೇ ಫರ್ಮ್‌ವೇರ್ ಲಭ್ಯವಿಲ್ಲ",
+  "firmwareBaselineIncompatible": "ಬಂಡಲ್ ಮಾಡಿದ ಫರ್ಮ್‌ವೇರ್ ತುಂಬಾ ಹಳೆಯದಾಗಿದೆ - ಹೊಸ ಆವೃತ್ತಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಇಂಟರ್ನೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ",
+  "firmwareChecksumFailed": "ಫರ್ಮ್‌ವೇರ್ ಸಮಗ್ರತೆಯ ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ - ಮಿನುಗುವಿಕೆಯನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ",
+  "firmwareReadyFromSource": "ಫರ್ಮ್‌ವೇರ್ ಸಿದ್ಧವಾಗಿದೆ: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+  "peersBlocked": "ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ",
+  "peersNearbyBle": "ಹತ್ತಿರದ (BLE)",
+  "peersRecentlyOnline": "ಇತ್ತೀಚೆಗೆ ಆನ್‌ಲೈನ್",
+  "peersOnlineInArea": "ಪ್ರದೇಶದಲ್ಲಿ ಆನ್‌ಲೈನ್",
+  "peersSeenMinutesAgo": "{minutes} ನಿಮಿಷಗಳ ಹಿಂದೆ ನೋಡಲಾಗಿದೆ",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "ಆಫ್‌ಲೈನ್",
+  "peersBlockedSnack": "ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "ಅನಿರ್ಬಂಧಿಸಲಾಗಿದೆ",
+  "peersEmpty": "ಡೇಟಾಬೇಸ್‌ನಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ಸದಸ್ಯರು ಇಲ್ಲ\nQR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಅಥವಾ BLE ಮೆಶ್ ಅನ್ವೇಷಣೆಗಾಗಿ ನಿರೀಕ್ಷಿಸಿ",
+  "peersOpenChat": "ಚಾಟ್ ತೆರೆಯಿರಿ",
+  "peersBlockAction": "ನಿರ್ಬಂಧಿಸಿ",
+  "peersUnblockAction": "ಅನಿರ್ಬಂಧಿಸಿ",
+  "channelPickerTooltip": "ಚಾಟ್ / #ಮೆಶ್ / ಪ್ರದೇಶ",
+  "locationPickerTooltip": "ಸ್ಥಳ ಚಾನಲ್",
+  "transportPickerTooltip": "ಮೆಶ್ / ಇಂಟರ್ನೆಟ್ / ಆಟೋ",
+  "onlinePeopleTooltip": "ಜನರು ಆನ್ಲೈನ್",
+  "unreadDirectsTooltipEmpty": "ಖಾಸಗಿ ಸಂದೇಶಗಳು",
+  "unreadDirectsTooltip": "{count} ಓದದಿರುವ ಖಾಸಗಿ ಸಂದೇಶಗಳು",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "ಜನರು",
+  "onlinePeopleEmpty": "ಇಲ್ಲಿ ಇನ್ನೂ ಯಾರೂ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿಲ್ಲ",
+  "onlinePeopleCount": "{count} ಆನ್‌ಲೈನ್",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · ಹತ್ತಿರದ + ಪ್ರದೇಶ",
+  "peerOnlineMeshTitle": "ಮೆಶ್‌ನಲ್ಲಿ ಹತ್ತಿರದಲ್ಲಿ ಯಾರೋ ಒಬ್ಬರು",
+  "peerOnlineMeshBody": "ಮೆಶ್‌ನಲ್ಲಿ {name} ಸಮೀಪದಲ್ಲಿದೆ",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "ಪ್ರದೇಶದಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಯಾರಾದರೂ",
+  "peerOnlineAreaBody": "{name} Nostr ಮೂಲಕ ಆನ್‌ಲೈನ್ ಆಗಿದೆ",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#ಸ್ಥಳ ಚಾನಲ್‌ಗಳು",
+  "channelPinsTitle": "ಪಿನ್ ಮಾಡಲಾಗಿದೆ",
+  "channelPinsHint": "ನೀವು ಆಗಾಗ್ಗೆ ಬಳಸುವ ಚಾನಲ್‌ಗಳನ್ನು ಪಿನ್ ಮಾಡಿ - ಅವುಗಳು ಮೇಲ್ಭಾಗದಲ್ಲಿ ಉಳಿಯುತ್ತವೆ",
+  "channelPinTooltip": "ಈ ಚಾನಲ್ ಅನ್ನು ಪಿನ್ ಮಾಡಿ",
+  "channelUnpinTooltip": "ಅನ್‌ಪಿನ್ ಮಾಡಿ",
+  "locationSheetIntro": "ಒರಟಾದ ಜಿಯೋಹಾಶ್ ಅನ್ನು ಬಳಸಿಕೊಂಡು ಹತ್ತಿರದ ಜನರೊಂದಿಗೆ ಚಾಟ್ ಮಾಡಿ — ನಿಖರವಾದ GPS ಅಲ್ಲ. ಇಂಟರ್ನೆಟ್‌ನಲ್ಲಿ ಇರುವಿಕೆಯು ಅನಾಮಧೇಯ Nostr ಕೀಗಳನ್ನು ಬಳಸುತ್ತದೆ.",
+  "locationMeshSubtitle": "#ಬ್ಲೂಟೂತ್ • ~10–50 ಮೀ",
+  "locationTeleportHint": "#ಜಿಯೋಹಾಶ್",
+  "locationTeleport": "ಟೆಲಿಪೋರ್ಟ್",
+  "homeComposeHint": "ಸಂದೇಶ {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "{channel} ಗೆ ಕಳುಹಿಸಿ — ಸಾರ್ವಜನಿಕ",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "ರಲ್ಲಿ ಮುಕ್ತಾಯಗೊಳ್ಳುತ್ತದೆ",
+  "voiceRecordTapToStart": "ಧ್ವನಿ ಸಂದೇಶವನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ",
+  "voiceRecordTooShort": "ರೆಕಾರ್ಡಿಂಗ್ ತುಂಬಾ ಚಿಕ್ಕದಾಗಿದೆ - ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+  "voiceRecordFailed": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಉಳಿಸಲಾಗಲಿಲ್ಲ - ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+  "voicePttHold": "ರೆಕಾರ್ಡ್ ಮಾಡಲು ಹಿಡಿದುಕೊಳ್ಳಿ",
+  "voicePttRelease": "ಪೂರ್ವವೀಕ್ಷಣೆಗಾಗಿ ಬಿಡುಗಡೆ ಮಾಡಿ",
+  "voicePttRecording": "ರೆಕಾರ್ಡಿಂಗ್…",
+  "voicePttDraftReady": "ಧ್ವನಿ ಟಿಪ್ಪಣಿ ಸಿದ್ಧವಾಗಿದೆ",
+  "voicePttDiscard": "ತಿರಸ್ಕರಿಸು",
+  "voicePttReRecord": "ಮತ್ತೆ ರೆಕಾರ್ಡ್ ಮಾಡಿ",
+  "voicePttSend": "ಧ್ವನಿ ಟಿಪ್ಪಣಿಯನ್ನು ಕಳುಹಿಸಿ",
+  "voicePttPlayPreview": "ಪೂರ್ವವೀಕ್ಷಣೆ ಪ್ಲೇ ಮಾಡಿ",
+  "voicePttStopPreview": "ಪೂರ್ವವೀಕ್ಷಣೆ ನಿಲ್ಲಿಸಿ",
+  "noticesBackfilling": "ಸೂಚನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+  "noticesNostrOnline": "Nostr ಆನ್‌ಲೈನ್",
+  "noticesNostrOffline": "Nostr ಆಫ್‌ಲೈನ್ - ಬುಲೆಟಿನ್‌ಗೆ ಇಂಟರ್ನೆಟ್ ಅಗತ್ಯವಿದೆ",
+  "noticesBackfillLoaded": "{count} ಸೂಚನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "ಪ್ರದೇಶ ಮಂಡಳಿಗೆ ಸೂಚನೆ ಪ್ರಕಟಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. Nostr ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.",
+  "noticeMeshPublishNoLink": "ಸ್ಥಳೀಯವಾಗಿ ಉಳಿಸಲಾಗಿದೆ. ಹತ್ತಿರದ ಮೆಶ್ ರೇಡಿಯೊಕ್ಕೆ (ಅಥವಾ Wi‑Fi ಗೇಟ್‌ವೇ) ಸಂಪರ್ಕಪಡಿಸಿ ಇದರಿಂದ ಇತರರು ಅದನ್ನು ಸ್ವೀಕರಿಸಬಹುದು.",
+  "noticeMeshPublishSent": "BLE ಕ್ಕಿಂತ {count} ಹತ್ತಿರದ ಸಾಧನ(ಗಳಿಗೆ) ಬುಲೆಟಿನ್ ಕಳುಹಿಸಲಾಗಿದೆ.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "ಹತ್ತಿರದ ರೇಡಿಯೋಗಳನ್ನು ನೋಡಲಾಗಿದೆ, ಆದರೆ BLE ಬರೆಯಲು ವಿಫಲವಾಗಿದೆ. ಸೂಚನೆಗಳ ಪರದೆಯಲ್ಲಿ ಎರಡೂ ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ (ಅಥವಾ ESP32 ರಿಲೇ ಬಳಸಿ).",
+  "noticeMeshPublishNoGatt": "ಈ ಸಾಧನದ BLE ರಿಸೀವರ್ ಸಿದ್ಧವಾಗಿಲ್ಲ. ಬ್ಲೂಟೂತ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ ಮತ್ತು ನೋಟಿಸ್‌ಗಳನ್ನು ಪುನಃ ತೆರೆಯಿರಿ.",
+  "noticeDelete": "ಸೂಚನೆ ಅಳಿಸಿ",
+  "noticeDeleteConfirmTitle": "ಈ ಸೂಚನೆಯನ್ನು ಅಳಿಸುವುದೇ?",
+  "noticeDeleteLocalOnlyBody": "ಇದು ಈ ಸಾಧನದಲ್ಲಿ ಮಾತ್ರ ಅದನ್ನು ತೆಗೆದುಹಾಕುತ್ತದೆ. ಈಗಾಗಲೇ ಅದನ್ನು ಸ್ವೀಕರಿಸಿದ ಇತರರು ಅದನ್ನು ಇನ್ನೂ ನೋಡುತ್ತಾರೆ.",
+  "noticeDeleted": "ಸೂಚನೆ ಅಳಿಸಲಾಗಿದೆ",
+  "chatNoticeHidden": "ಪ್ರದೇಶ ಸೂಚನೆ - ತೆರೆದ ಸೂಚನೆಗಳು",
+  "identityDisplayNameTitle": "ಪ್ರದರ್ಶನ ಹೆಸರು",
+  "identitySaveName": "ಹೆಸರನ್ನು ಉಳಿಸಿ",
+  "identityUserIdLabel": "ಬಳಕೆದಾರ ಐಡಿ (ಸಾರ್ವಜನಿಕ ಕೀ ಹ್ಯಾಶ್)",
+  "identityCopyHashTooltip": "ಸಾರ್ವಜನಿಕ ಕೀ ಹ್ಯಾಶ್ ಅನ್ನು ನಕಲಿಸಿ",
+  "identityMyQrTitle": "ನನ್ನ QR (id + pubKey + ಹೆಸರು)",
+  "identityQrFailed": "QR ರಚಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+  "identitySaveQr": "ಫೋಟೋ ಲೈಬ್ರರಿಗೆ QR ಅನ್ನು ಉಳಿಸಿ",
+  "identityOpenScanner": "QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲು ಕ್ಯಾಮರಾ ತೆರೆಯಿರಿ",
+  "identityQrHelp": "ನಿಮ್ಮ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಉಳಿಸಲು ಮತ್ತು (ಅಗತ್ಯವಿದ್ದರೆ) ನಿಮ್ಮನ್ನು ಪರಿಶೀಲಿಸಿದ ವಿತರಕರಾಗಿ ಹೊಂದಿಸಲು ಸ್ನೇಹಿತರಿಗೆ ಇದನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+  "identityChatTip": "ಸಲಹೆ: E2EE ಗಾಗಿ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಸೇರಿಸಲು ನೀವು ಚಾಟ್‌ನಲ್ಲಿ QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಬಹುದು",
+  "infoOpen": "ಬಗ್ಗೆ / ಮಾಹಿತಿ",
+  "docsGuideTitle": "ಬಳಕೆದಾರ ಮಾರ್ಗದರ್ಶಿ",
+  "docsGuideSubtitle": "ಬ್ರೌಸರ್‌ನಲ್ಲಿ ತೆರೆಯುತ್ತದೆ",
+  "docsOpenAction": "ಮಾರ್ಗದರ್ಶಿ ತೆರೆಯಿರಿ",
+  "docsOpenFailed": "ಬಳಕೆದಾರರ ಮಾರ್ಗದರ್ಶಿ ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ",
+  "firmwareOtaGuideTitle": "ಫ್ಲ್ಯಾಶ್ ಗೈಡ್ ಮತ್ತು OTA ಪ್ರೋಟೋಕಾಲ್",
+  "firmwareOtaGuideSubtitle": "ವೆಬ್ ಮಾರ್ಗದರ್ಶಿ ತೆರೆಯುತ್ತದೆ — .bin ಡೌನ್‌ಲೋಡ್‌ಗಳು ಮತ್ತು ಪೂರ್ಣ ಹಂತಗಳು",
+  "firmwareWebDownloadsTitle": "ವೆಬ್‌ನಲ್ಲಿ ಫರ್ಮ್‌ವೇರ್ ಡೌನ್‌ಲೋಡ್‌ಗಳು",
+  "firmwareWebDownloadsSubtitle": "ಡಾಕ್ಸ್ ಸೈಟ್‌ನಲ್ಲಿ ಪ್ರತಿ-ವರ್ಷದ ಲಿಂಕ್‌ಗಳು ಮತ್ತು ಚೆಕ್ಸಮ್‌ಗಳು",
+  "inviteCopyShortLink": "ಕಿರು ಲಿಂಕ್ ನಕಲಿಸಿ",
+  "inviteShareLink": "ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ",
+  "inviteShowFullLink": "ಪೂರ್ಣ ಲಿಂಕ್",
+  "inviteCopyFullLink": "ಸಂಪೂರ್ಣ ಲಿಂಕ್ ಅನ್ನು ನಕಲಿಸಿ",
+  "inviteLinkCopied": "ಲಿಂಕ್ ಕಾಪಿ ಮಾಡಲಾಗಿದೆ!",
+  "inviteLongPressHint": "ಲಿಂಕ್ ಕ್ರಿಯೆಗಳಿಗೆ ದೀರ್ಘ-ಪ್ರೆಸ್",
+  "inviteSendInChat": "ResilNet ಚಾಟ್‌ನಲ್ಲಿ ಕಳುಹಿಸಿ...",
+  "inviteSendInChatHint": "ನೀವು ಈಗಾಗಲೇ ಸಾರ್ವಜನಿಕ ಕೀ ಹೊಂದಿರುವ ಜನರಿಗೆ ಮಾತ್ರ",
+  "inviteSendInChatEmpty": "ಇನ್ನೂ ಯಾವುದೇ ಸಂದೇಶ ಕಳುಹಿಸಬಹುದಾದ ಚಾಟ್‌ಗಳಿಲ್ಲ.\nQR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ, ಪ್ರದೇಶ/ಮೆಶ್ ತೆರೆಯಿರಿ ಅಥವಾ ಅಪ್ಲಿಕೇಶನ್‌ನ ಹೊರಗೆ ಲಿಂಕ್ ಅನ್ನು ಮೊದಲು ಹಂಚಿಕೊಳ್ಳಿ.",
+  "inviteSentToChat": "ಆಹ್ವಾನವನ್ನು ಚಾಟ್‌ನಲ್ಲಿ ಕಳುಹಿಸಲಾಗಿದೆ",
+  "infoTabInfo": "ಮಾಹಿತಿ",
+  "infoTabSettingsHint": "ಭಾಷೆ, E2EE ಮತ್ತು ಡೇಟಾ ಪರಿಕರಗಳಿಗಾಗಿ ಮೆನುವಿನಿಂದ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ",
+  "infoHowToTitle": "ಹೇಗೆ ಬಳಸುವುದು",
+  "infoHowToBody": "• ಚಾಟ್ / #ಮೆಶ್ / ಏರಿಯಾ ಬದಲಾಯಿಸಲು ಚಾನಲ್ ಐಕಾನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ\n• ಜಿಯೋಹಾಶ್ ಗಾತ್ರವನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಸ್ಥಳವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ\n• ಸದಸ್ಯರಿಗಾಗಿ ಅಥವಾ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿರುವ ಜನರನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ\n• ವೈಯಕ್ತಿಕವಾಗಿ ಕೀಗಳನ್ನು ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳಲು ⋮ ನಿಂದ ಗುರುತು/QR ತೆರೆಯಿರಿ\n• ಪ್ರದೇಶ \"ಸಾರ್ವಜನಿಕ\" ಪ್ರತಿ ಆನ್‌ಲೈನ್ ಪೀರ್‌ಗೆ ಮೊಹರು ಮಾಡಿದ E2EE ಅನ್ನು ಕಳುಹಿಸುತ್ತದೆ - ಸರಳ ಪಠ್ಯ ಕೊಠಡಿ ಅಲ್ಲ",
+  "infoFeaturesTitle": "ವೈಶಿಷ್ಟ್ಯಗಳು",
+  "infoFeatureOffline": "ಬ್ಲೂಟೂತ್ ಲೋ ಎನರ್ಜಿ ಮೂಲಕ ಆಫ್‌ಲೈನ್ ಸಂದೇಶ ಕಳುಹಿಸುವಿಕೆ",
+  "infoFeatureE2ee": "RSA-OAEP + AES-GCM ನೊಂದಿಗೆ ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಶನ್ (ಶಬ್ದವಲ್ಲ)",
+  "infoFeatureMultihop": "ದೂರದವರೆಗೆ ಹೋಗಲು ಹತ್ತಿರದ ಗೆಳೆಯರ ಮೂಲಕ ಸಂದೇಶಗಳು ಹಾಪ್ ಆಗಬಹುದು",
+  "infoFeatureBridge": "ಮುಚ್ಚಿದ ಲಕೋಟೆಗಳಿಗಾಗಿ ಹೈಬ್ರಿಡ್ ಮೆಶ್ ↔ ಇಂಟರ್ನೆಟ್ (Nostr).",
+  "infoFeatureGeo": "ಹತ್ತಿರದ ಜನರಿಗಾಗಿ ಸ್ಥಳೀಯ ಜಿಯೋಹಾಶ್ ಚಾನಲ್‌ಗಳು (ಡಿಸ್ಕವರಿ UX)",
+  "infoFeatureNotices": "#ಮೆಶ್ ಮತ್ತು ಪ್ರದೇಶಕ್ಕೆ ಮುಕ್ತಾಯದೊಂದಿಗೆ ಸೂಚನೆಗಳು",
+  "infoPrivacyTitle": "ಗೌಪ್ಯತೆ",
+  "infoPrivacyNoRoom": "ತಂತಿಯ ಮೇಲೆ ಸರಳ ಪಠ್ಯ ಗ್ರಾಮ / ಸಾರ್ವಜನಿಕ ಚಾಟ್ ರೂಮ್ ಇಲ್ಲ",
+  "infoPrivacyFanout": "ತಿಳಿದಿರುವ ಸಾರ್ವಜನಿಕ ಕೀಗಳನ್ನು ಹೊಂದಿರುವ ಗೆಳೆಯರಿಗೆ ಪ್ರದೇಶ ಕಳುಹಿಸುವಿಕೆ = 1:1 ಫ್ಯಾನ್-ಔಟ್ ಮೊಹರು",
+  "infoPrivacyPresence": "ಇಂಟರ್ನೆಟ್ ಪ್ರದೇಶದ ಉಪಸ್ಥಿತಿಯು ಅಲ್ಪಕಾಲಿಕ Nostr ಕೀಗಳನ್ನು ಬಳಸುತ್ತದೆ",
+  "infoSymbolsTitle": "ಚಿಹ್ನೆಗಳು",
+  "infoSymBle": "ನೇರ ಬ್ಲೂಟೂತ್ ಲಿಂಕ್",
+  "infoSymMesh": "ಮೆಶ್ ಮೂಲಕ ತಲುಪಬಹುದು (ಇತರರು ಮುಂದಕ್ಕೆ)",
+  "infoSymInternet": "ಇಂಟರ್ನೆಟ್ ಮೂಲಕ (Nostr) — ಮುಚ್ಚಿದ ಲಕೋಟೆಗಳು",
+  "infoSymBridge": "ಮೆಶ್↔ಇಂಟರ್ನೆಟ್ ಸೇತುವೆ ಮಾರ್ಗದ ಮೂಲಕ ಆಗಮಿಸಿದೆ",
+  "infoSymOffline": "ಆಫ್‌ಲೈನ್ - ಇದೀಗ ತಲುಪಲು ಸಾಧ್ಯವಿಲ್ಲ",
+  "infoSymInArea": "ಈ ಸ್ಥಳ ಚಾನಲ್‌ನ ಪ್ರದೇಶದಲ್ಲಿ",
+  "infoSymE2eeOk": "ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಸೆಷನ್",
+  "infoSymE2eeFail": "ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಲಭ್ಯವಿಲ್ಲ - ಸೂಕ್ಷ್ಮ ಪಠ್ಯವನ್ನು ಕಳುಹಿಸಬೇಡಿ",
+  "infoSymVerified": "ಗುರುತು ಪರಿಶೀಲಿಸಲಾಗಿದೆ / ತಿಳಿದಿರುವ ಕೀ",
+  "infoSymBlocked": "ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ",
+  "infoSymUnread": "ಓದದ ಖಾಸಗಿ ಸಂದೇಶ",
+  "infoEmergencyTitle": "ತುರ್ತು ಮೋಡ್",
+  "infoEmergencyBody": "ಈ ಸಾಧನದಲ್ಲಿ ಸಂದೇಶಗಳು, ಕೀಗಳು ಮತ್ತು ಗುರುತನ್ನು ಅಳಿಸಲು ಮುಖಪುಟ ಪರದೆಯಲ್ಲಿ ResilNet ಶೀರ್ಷಿಕೆಯನ್ನು ಮೂರು ಬಾರಿ ಟ್ಯಾಪ್ ಮಾಡಿ.",
+  "infoLegendNote": "ಸ್ಪಷ್ಟತೆಗಾಗಿ ಕೆಲವು ಮಾರ್ಗ ಐಕಾನ್‌ಗಳನ್ನು ಇಲ್ಲಿ ದಾಖಲಿಸಲಾಗಿದೆ; ಚಾಟ್‌ನಲ್ಲಿನ ಡೆಲಿವರಿ ಟಿಕ್‌ಗಳು ಪ್ರಾಥಮಿಕ ಕಳುಹಿಸುವ ಸ್ಥಿತಿಯಾಗಿ ಉಳಿಯುತ್ತವೆ.",
+  "dangerZoneTitle": "ಅಪಾಯದ ವಲಯ",
+  "dangerZoneSubtitle": "ಈ ಸಾಧನದಲ್ಲಿ ಸಂದೇಶಗಳು, ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಕೀಗಳು, Nostr ಗುರುತು, ಗೆಳೆಯರು ಮತ್ತು ಅಡ್ಡಹೆಸರುಗಳನ್ನು ಅಳಿಸುತ್ತದೆ. ನೀವು ಮತ್ತೆ ಹೊಂದಿಸುವಿರಿ.",
+  "panicWipeTitle": "ತುರ್ತು ಒರೆಸುವಿಕೆ",
+  "panicWipeSubtitle": "ಸ್ಥಳೀಯ ಎಲ್ಲವನ್ನೂ ಅಳಿಸಿ - ಮನೆಯ ಶೀರ್ಷಿಕೆಯನ್ನು ಮೂರು ಬಾರಿ ಟ್ಯಾಪ್ ಮಾಡುವಂತೆಯೇ (ಡಬಲ್-ಟ್ಯಾಪ್ ರೇಡಿಯೊಗಳನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡುತ್ತದೆ)",
+  "panicWipeConfirmTitle": "ಎಲ್ಲಾ ಸ್ಥಳೀಯ ಡೇಟಾವನ್ನು ಅಳಿಸುವುದೇ?",
+  "panicWipeConfirmBody": "ಇದು ಈ ಫೋನ್‌ನಲ್ಲಿರುವ ಚಾಟ್‌ಗಳು, ಕೀಗಳು ಮತ್ತು ಗುರುತನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ.\nಗೆಳೆಯರು ನಿಮ್ಮ ಹೊಸ ಗುರುತಿನೊಂದಿಗೆ QR ಕೀಗಳನ್ನು ಮರು ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳಬೇಕು.\nಇದನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗುವುದಿಲ್ಲ.",
+  "panicWipeAction": "ಎಲ್ಲವನ್ನೂ ಒರೆಸಿ",
+  "panicWipeSnack": "ಸ್ಥಳೀಯ ಗುರುತನ್ನು ಅಳಿಸಿಹಾಕಲಾಗಿದೆ - ಮತ್ತೆ ಹೊಂದಿಸಲಾಗಿದೆ",
+  "panicWipeFailed": "ಅಳಿಸುವಿಕೆ ವಿಫಲವಾಗಿದೆ: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "ಜಾಲರಿ ಸೇತುವೆ",
+  "meshBridgeSubtitle": "ಆನ್ ಆಗಿರುವಾಗ (ಡೀಫಾಲ್ಟ್), ಮೊಹರು ಮಾಡಿದ ಲಕೋಟೆಗಳು BLE ಮೆಶ್ ಮತ್ತು ಇಂಟರ್ನೆಟ್ (Nostr) ಎರಡನ್ನೂ ಒಟ್ಟಿಗೆ ಬಳಸಬಹುದು ಆದ್ದರಿಂದ ಹತ್ತಿರದ ಮೆಶ್ ದ್ವೀಪಗಳು ಸಂಪರ್ಕಿಸಬಹುದು. ಆಫ್ ಆಗಿರುವಾಗ, ಕಳುಹಿಸುವಿಕೆಯು ಒಂದು ಮಾರ್ಗವನ್ನು ಮಾತ್ರ ಬಳಸುತ್ತದೆ - ಎಂದಿಗೂ ಸರಳ ಪಠ್ಯವನ್ನು ತಂತಿಯ ಮೇಲೆ ಇರಿಸುವುದಿಲ್ಲ.",
+  "favoritesTitle": "ಮೆಚ್ಚಿನವುಗಳು",
+  "favoritesAdd": "ಮೆಚ್ಚಿನವುಗಳಿಗೆ ಸೇರಿಸಿ",
+  "favoritesRemove": "ಮೆಚ್ಚಿನವುಗಳಿಂದ ತೆಗೆದುಹಾಕಿ",
+  "favoritesEmpty": "ಇನ್ನೂ ಯಾವುದೇ ಮೆಚ್ಚಿನವುಗಳಿಲ್ಲ - ಸದಸ್ಯರ ಪಟ್ಟಿಯಿಂದ ಒಬ್ಬ ಗೆಳೆಯನಿಗೆ ನಕ್ಷತ್ರ ಹಾಕಿ",
+  "favoritesNearbyTitle": "ಹತ್ತಿರದ ನೆಚ್ಚಿನ",
+  "favoritesNearbyBody": "ಮೆಶ್‌ನಲ್ಲಿ {name} ಸಮೀಪದಲ್ಲಿದೆ",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "ಪ್ರದೇಶದಲ್ಲಿ ನೆಚ್ಚಿನ",
+  "favoritesInAreaBody": "ಈ ಪ್ರದೇಶದಲ್ಲಿ {name} ಆನ್‌ಲೈನ್‌ನಲ್ಲಿದೆ",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "ಮೆಶ್ ಟೋಪೋಲಜಿ",
+  "topologySubtitle": "ಮೆಶ್‌ನಿಂದ ಗೆಳೆಯರು ಮತ್ತು ಸಂಪರ್ಕದ ಸುಳಿವುಗಳನ್ನು ಪ್ರಕಟಿಸಿ (ಓದಲು ಮಾತ್ರ)",
+  "topologyConnectedNow": "ಈಗ ಸಂಪರ್ಕಗೊಂಡಿದೆ (BLE)",
+  "topologyNearby": "ಹತ್ತಿರದ (BLE)",
+  "topologyKnown": "ಪರಿಚಿತ ಗೆಳೆಯರು",
+  "topologyEmpty": "ಯಾವುದೇ ಗೆಳೆಯರು ಇನ್ನೂ ಕಲಿತಿಲ್ಲ - BLE ಆನ್‌ನೊಂದಿಗೆ ಹತ್ತಿರದಲ್ಲಿರಿ",
+  "topologyYou": "ನೀವು",
+  "topologyStats": "{peers} ಗೆಳೆಯರು · {links} ಲಿಂಕ್‌ಗಳು",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "ಹತ್ತಿರದ ಮೆಶ್ ಅನ್ವೇಷಣೆಯಿಂದ ಅಂದಾಜಿಸಲಾಗಿದೆ — ನಿಮ್ಮ ಸಾಧನವನ್ನು ಹೈಲೈಟ್ ಮಾಡಲಾಗಿದೆ. ಚಾಟ್ ತೆರೆಯಲು ಪೀರ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.",
+  "topologyOpen": "ಮೆಶ್ ಟೋಪೋಲಜಿ",
+  "slashHelpTitle": "ಆಜ್ಞೆಗಳು",
+  "slashHelpBody": "/ ಸಹಾಯ - ಈ ಪಟ್ಟಿ\n/ ಯಾರು - ಪ್ರಸ್ತುತ ಚಾನಲ್‌ನಲ್ಲಿ ಆನ್‌ಲೈನ್ ಜನರು\n/ ಡ್ರಾಪ್ <text> — ಇಲ್ಲಿ ಮೊಹರು ಮಾಡಿದ ಸೂಚನೆಯನ್ನು ಪಿನ್ ಮಾಡಿ (E2EE ಫ್ಯಾನ್-ಔಟ್)\n\nಪೂರ್ಣ ಮಾರ್ಗದರ್ಶಿ: ಕೆಳಗೆ ತೆರೆದ ಮಾರ್ಗದರ್ಶಿ ಬಳಸಿ, ಅಥವಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳು → ಬಳಕೆದಾರ ಮಾರ್ಗದರ್ಶಿ.",
+  "slashWhoEmpty": "ಈ ಚಾನಲ್‌ನಲ್ಲಿ ಇದೀಗ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಯಾರೂ ಇಲ್ಲ",
+  "slashWhoTitle": "ಆನ್‌ಲೈನ್ ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "ಬಳಕೆ: / ನಿಮ್ಮ ಟಿಪ್ಪಣಿ ಪಠ್ಯವನ್ನು ಬಿಡಿ",
+  "slashDropDone": "{channel} ರಂದು ಸೂಚನೆಯನ್ನು ಕೈಬಿಡಲಾಗಿದೆ",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "ಅಜ್ಞಾತ ಆಜ್ಞೆ - ಪ್ರಯತ್ನಿಸಿ / ಸಹಾಯ",
+  "announceOpen": "ಪ್ರಕಟಣೆಗಳು",
+  "announceTitle": "ಪ್ರಕಟಣೆಗಳು",
+  "announceEmpty": "ಇನ್ನೂ ಯಾವುದೇ ಬೋರ್ಡ್‌ಗಳಿಲ್ಲ - ಲಾಕ್ ಮಾಡಿದ ಅಥವಾ ತೆರೆದ ಸೂಚನೆಗಳನ್ನು ಪೋಸ್ಟ್ ಮಾಡಲು ಒಂದನ್ನು ರಚಿಸಿ",
+  "announceCreate": "ಬೋರ್ಡ್ ರಚಿಸಿ",
+  "announceCreateHint": "ಬೋರ್ಡ್ ಹೆಸರು",
+  "announceDefaultTitle": "ಸಮುದಾಯ ಮಂಡಳಿ",
+  "announceSettings": "ಬೋರ್ಡ್ ಸೆಟ್ಟಿಂಗ್ಗಳು",
+  "announceAllowLocked": "ಲಾಕ್ ಮಾಡಿದ (ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ) ಪೋಸ್ಟ್‌ಗಳನ್ನು ಅನುಮತಿಸಿ",
+  "announceAllowLockedSub": "ಬೋರ್ಡ್ ಕೀಗೆ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿದೆ - ಓದುಗರಿಗೆ ಪ್ರವೇಶದ ಅಗತ್ಯವಿದೆ",
+  "announceAllowOpen": "ತೆರೆದ (ಸಾದಾ ಪಠ್ಯ) ಪೋಸ್ಟ್‌ಗಳನ್ನು ಅನುಮತಿಸಿ",
+  "announceAllowOpenSub": "E2EE ಅಲ್ಲ - ಮೆಶ್/ರಿಲೇಗಳಲ್ಲಿ ಓದಬಹುದಾಗಿದೆ. ಡೀಫಾಲ್ಟ್ ಆಗಿ ಆಫ್.",
+  "announceComposeHint": "ಪ್ರಕಟಣೆಯನ್ನು ಬರೆಯಿರಿ...",
+  "announceMediaInternetOnly": "ಫೋಟೋ/ಧ್ವನಿ ಪ್ರಕಟಣೆಗಳನ್ನು ಇಂಟರ್ನೆಟ್ ಮೂಲಕ ಕಳುಹಿಸಲಾಗುತ್ತದೆ (BLE ಅಲ್ಲ)",
+  "announceNeedInternet": "ಫೋಟೋ ಅಥವಾ ಧ್ವನಿ ಪ್ರಕಟಣೆಗಳನ್ನು ಕಳುಹಿಸಲು ಇಂಟರ್ನೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ",
+  "announceVoiceFailed": "ಧ್ವನಿಯನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "ಚಿತ್ರ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ (ಗರಿಷ್ಠ ~180 KB)",
+  "announcePlayVoice": "ಧ್ವನಿ ಟಿಪ್ಪಣಿಯನ್ನು ಪ್ಲೇ ಮಾಡಿ",
+  "announceImageLabel": "📷 ಚಿತ್ರ",
+  "announceAudioLabel": "🎤 ಧ್ವನಿ ಟಿಪ್ಪಣಿ",
+  "announceModeLocked": "ಲಾಕ್ ಮಾಡಲಾಗಿದೆ",
+  "announceModeOpen": "ತೆರೆಯಿರಿ",
+  "announceOpenBadge": "ತೆರೆಯಲಾಗಿದೆ · ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿಲ್ಲ",
+  "announceLockedBadge": "ಲಾಕ್ ಮಾಡಲಾಗಿದೆ",
+  "announceLockedPlaceholder": "ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿದೆ - ಓದಲು ಪ್ರವೇಶವನ್ನು ವಿನಂತಿಸಿ",
+  "announceRequestAccess": "ಪ್ರವೇಶವನ್ನು ವಿನಂತಿಸಿ",
+  "announceRequestSent": "ಪ್ರವೇಶ ವಿನಂತಿಯನ್ನು ಮಂಡಳಿಯ ಮಾಲೀಕರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ",
+  "announceRequestFailed": "ಪ್ರವೇಶವನ್ನು ವಿನಂತಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ (ಮಾಲೀಕರ ಸಾರ್ವಜನಿಕ ಕೀ ಅಗತ್ಯವಿದೆ)",
+  "announceOpenConfirmTitle": "ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಇಲ್ಲದೆ ಪೋಸ್ಟ್ ಮಾಡುವುದೇ?",
+  "announceOpenConfirmBody": "ತೆರೆದ ಪೋಸ್ಟ್‌ಗಳು E2EE ಅಲ್ಲ. ಹಾದಿಯಲ್ಲಿರುವ ಯಾರಾದರೂ (ಮೆಶ್ / ರಿಲೇಗಳು) ಅವುಗಳನ್ನು ಓದಬಹುದು. ಮುಂದುವರಿಸುವುದೇ?",
+  "announcePostAction": "ಪೋಸ್ಟ್ ಮಾಡಿ",
+  "announcePendingRequests": "ಪ್ರವೇಶ ವಿನಂತಿಗಳು",
+  "announceApprove": "ಅನುಮೋದಿಸಿ",
+  "announceDeny": "ನಿರಾಕರಿಸು",
+  "announceGranted": "ಈ ಬೋರ್ಡ್‌ನಲ್ಲಿ ನೀವು ಲಾಕ್ ಪೋಸ್ಟ್‌ಗಳನ್ನು ಓದಬಹುದು",
+  "announceOwner": "ನೀವು ಈ ಬೋರ್ಡ್ ಅನ್ನು ಹೊಂದಿದ್ದೀರಿ",
+  "announceCopyInvite": "ಆಹ್ವಾನ ಪಠ್ಯವನ್ನು ನಕಲಿಸಿ",
+  "announceShowInviteQr": "ಆಹ್ವಾನ QR ತೋರಿಸಿ",
+  "announceScanInviteQr": "ಸ್ಕ್ಯಾನ್ ಬೋರ್ಡ್ QR ಆಹ್ವಾನ",
+  "announceFollow": "ಆಹ್ವಾನದಿಂದ ಬೋರ್ಡ್ ಅನ್ನು ಅನುಸರಿಸಿ",
+  "announceFollowHint": "ಮಾಲೀಕರಿಂದ ಆಹ್ವಾನ ಪಠ್ಯ ಅಥವಾ ResilNet ಲಿಂಕ್ ಅನ್ನು ಅಂಟಿಸಿ",
+  "announceFollowOk": "ಕೆಳಗಿನ ಬೋರ್ಡ್",
+  "announceFollowOkNamed": "ಈಗ ಅನುಸರಿಸುತ್ತಿರುವ “{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "ಆಹ್ವಾನವು ಅಮಾನ್ಯವಾಗಿದೆ ಅಥವಾ ಹಾನಿಯಾಗಿದೆ",
+  "announceInviteCopied": "ಆಹ್ವಾನ ಪಠ್ಯವನ್ನು ನಕಲಿಸಲಾಗಿದೆ",
+  "announceInviteSaveQr": "QR ಉಳಿಸಿ",
+  "announceInviteShare": "ಆಹ್ವಾನವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ",
+  "announceFollowFromCompose": "ಸಂದೇಶ ಪೆಟ್ಟಿಗೆಯಲ್ಲಿ ಬೋರ್ಡ್ ಆಹ್ವಾನ ಪತ್ತೆಯಾಗಿದೆ",
+  "peerConfirmAddTitle": "ನೆಟ್‌ವರ್ಕ್ ಸದಸ್ಯರನ್ನು ಸೇರಿಸುವುದೇ?",
+  "peerConfirmAddBody": "ಅವರ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯೊಂದಿಗೆ \"{name}\" ಅನ್ನು ಸೇರಿಸಿ ಇದರಿಂದ ನೀವು ಅವರಿಗೆ ಖಾಸಗಿಯಾಗಿ ಸಂದೇಶ ಕಳುಹಿಸಬಹುದೇ?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ",
+  "peerAddedOk": "ನೆಟ್‌ವರ್ಕ್ ಸದಸ್ಯರಿಗೆ {name} ಅನ್ನು ಸೇರಿಸಲಾಗಿದೆ",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "ಸಂದೇಶ ಪೆಟ್ಟಿಗೆಯಲ್ಲಿ ಗುರುತು / ಸಾರ್ವಜನಿಕ ಕೀ ಪತ್ತೆ",
+  "peerHashCopied": "ಸಾರ್ವಜನಿಕ ಕೀ ಹ್ಯಾಶ್ ನಕಲಿಸಲಾಗಿದೆ",
+  "peerHashOpenChat": "ಚಾಟ್ ತೆರೆಯಿರಿ",
+  "peerHashAddHint": "ಹ್ಯಾಶ್ ನಕಲಿಸಿದ್ದಾರೆ. ಅವರ ಗುರುತಿನ ಲಿಂಕ್ ಅಥವಾ QR ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಲು ಅವರನ್ನು ಕೇಳಿ ಇದರಿಂದ ನೀವು E2EE ಗಾಗಿ ಸಂಪೂರ್ಣ ಸಾರ್ವಜನಿಕ ಕೀಲಿಯನ್ನು ಸೇರಿಸಬಹುದು.",
+  "peerQrNoCode": "ಈ ಚಿತ್ರದಲ್ಲಿ ಯಾವುದೇ ResilNet QR ಕಂಡುಬಂದಿಲ್ಲ",
+  "identityInviteSharePreamble": "ResilNet ಗುರುತು: “{name}”\nಲಿಂಕ್ ತೆರೆಯಿರಿ ಅಥವಾ ಅದನ್ನು ಚಾಟ್‌ನಲ್ಲಿ ಅಂಟಿಸಿ → ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ\nಅಥವಾ ಗುರುತು QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "ಗುರುತಿನ ಲಿಂಕ್ ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಿ",
+  "identityInviteCopied": "ಗುರುತಿನ ಲಿಂಕ್ ಅನ್ನು ನಕಲಿಸಲಾಗಿದೆ",
+  "announceInviteSharePreamble": "ಮಂಡಳಿಯ ಆಹ್ವಾನ: “{title}”\nResilNet → ಸಮುದಾಯ ಬೋರ್ಡ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ → ಆಹ್ವಾನದಿಂದ ಅನುಸರಿಸಿ\nಅಥವಾ QR ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ / ಕೆಳಗಿನ ಲಿಂಕ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "ಈ ಬೋರ್ಡ್ ಅನ್ನು ಅನುಸರಿಸುವುದೇ?",
+  "announceConfirmFollowBody": "ಈ ಆಹ್ವಾನದಿಂದ \"{title}\" ಅನ್ನು ಅನುಸರಿಸುವುದೇ?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "ಅನುಸರಿಸಿ"
+}

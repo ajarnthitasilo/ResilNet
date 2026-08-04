@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../services/camera_permission.dart';
 import '../l10n/l10n_ext.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 class QrScannerScreen extends StatefulWidget {
   const QrScannerScreen({super.key});
@@ -140,7 +141,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       } catch (_) {}
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        GlassSnackBar(
           content: Text(
             e is FormatException &&
                     e.message.contains('does not match public key')

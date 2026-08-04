@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 
 /// ResilNet look — emerald identity; follows system light/dark via [ThemeMode.system].
 ///
-/// Light mode aims for a soft **liquid glass** feel (frosted translucent panels).
-/// Dark mode keeps the existing deep-navy mesh aesthetic.
+/// Soft **liquid glass** for panels, snack bars, dialogs, menus, and sheets
+/// in both light and dark (frosted translucent surfaces over the mesh canvas).
 class ResilNetTheme {
   static const deepNavy = Color(0xFF0B1224);
   static const deepNavy2 = Color(0xFF0A0F1C);
@@ -72,32 +72,30 @@ class ResilNetTheme {
       ? Colors.white.withValues(alpha: 0.08)
       : Colors.white.withValues(alpha: 0.55);
 
-  /// Frosted panel decoration — blur when supported, solid fallback otherwise.
+  /// Frosted panel decoration — translucent fill + soft edge highlight.
   static BoxDecoration glassDecoration(
     BuildContext context, {
     BorderRadius borderRadius = const BorderRadius.all(Radius.circular(16)),
-    double blurSigma = 18,
+    double blurSigma = 22,
   }) {
     final dark = isDark(context);
     return BoxDecoration(
       borderRadius: borderRadius,
       color: dark
-          ? surface.withValues(alpha: 0.55)
-          : const Color(0xFFEAF4F8).withValues(alpha: 0.52),
+          ? surface.withValues(alpha: 0.52)
+          : const Color(0xFFEAF4F8).withValues(alpha: 0.48),
       border: Border.all(
         color: dark
-            ? Colors.white.withValues(alpha: 0.08)
-            : Colors.white.withValues(alpha: 0.55),
+            ? Colors.white.withValues(alpha: 0.14)
+            : Colors.white.withValues(alpha: 0.62),
       ),
-      boxShadow: dark
-          ? null
-          : [
-              BoxShadow(
-                color: const Color(0xFF0F172A).withValues(alpha: 0.08),
-                blurRadius: 28,
-                offset: const Offset(0, 10),
-              ),
-            ],
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xFF0F172A).withValues(alpha: dark ? 0.35 : 0.08),
+          blurRadius: dark ? 20 : 28,
+          offset: const Offset(0, 10),
+        ),
+      ],
     );
   }
 
@@ -107,17 +105,15 @@ class ResilNetTheme {
     required Widget child,
     BorderRadius borderRadius = const BorderRadius.all(Radius.circular(16)),
     EdgeInsetsGeometry? padding,
-    double blurSigma = 18,
+    double blurSigma = 22,
   }) {
     final deco = glassDecoration(
       context,
       borderRadius: borderRadius,
       blurSigma: blurSigma,
     );
-    final content = padding == null ? child : Padding(padding: padding, child: child);
-    if (isDark(context)) {
-      return DecoratedBox(decoration: deco, child: content);
-    }
+    final content =
+        padding == null ? child : Padding(padding: padding, child: child);
     return ClipRRect(
       borderRadius: borderRadius,
       child: BackdropFilter(
@@ -126,6 +122,59 @@ class ResilNetTheme {
       ),
     );
   }
+
+  static SnackBarThemeData _snackBarTheme(ColorScheme cs) => SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        contentTextStyle: TextStyle(color: cs.onSurface),
+        actionTextColor: cs.primary,
+        disabledActionTextColor: cs.onSurface.withValues(alpha: 0.38),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        insetPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      );
+
+  static DialogThemeData _dialogTheme({required bool dark}) => DialogThemeData(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+        barrierColor: Colors.black.withValues(alpha: dark ? 0.42 : 0.28),
+      );
+
+  static PopupMenuThemeData _popupMenuTheme({required bool dark}) =>
+      PopupMenuThemeData(
+        color: dark
+            ? surface.withValues(alpha: 0.78)
+            : const Color(0xFFEAF4F8).withValues(alpha: 0.82),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(
+            color: dark
+                ? Colors.white.withValues(alpha: 0.14)
+                : Colors.white.withValues(alpha: 0.55),
+          ),
+        ),
+      );
+
+  static BottomSheetThemeData _bottomSheetTheme({required bool dark}) =>
+      BottomSheetThemeData(
+        backgroundColor: dark
+            ? surface.withValues(alpha: 0.82)
+            : const Color(0xFFEAF4F8).withValues(alpha: 0.86),
+        modalBackgroundColor: dark
+            ? surface.withValues(alpha: 0.9)
+            : const Color(0xFFF0F7FA).withValues(alpha: 0.9),
+        elevation: 0,
+        modalElevation: 0,
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+      );
 
   static ThemeData dark() {
     final scheme = ColorScheme.fromSeed(
@@ -162,6 +211,13 @@ class ResilNetTheme {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
+      snackBarTheme: _snackBarTheme(scheme.copyWith(
+        primary: emerald,
+        onSurface: Colors.white,
+      )),
+      dialogTheme: _dialogTheme(dark: true),
+      popupMenuTheme: _popupMenuTheme(dark: true),
+      bottomSheetTheme: _bottomSheetTheme(dark: true),
       chipTheme: ChipThemeData(
         backgroundColor: surface,
         selectedColor: Colors.white.withValues(alpha: 0.16),
@@ -249,19 +305,13 @@ class ResilNetTheme {
           side: BorderSide(color: Colors.white.withValues(alpha: 0.55)),
         ),
       ),
-      dialogTheme: DialogThemeData(
-        backgroundColor: const Color(0xFFF0F7FA).withValues(alpha: 0.92),
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-      bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: const Color(0xFFEAF4F8).withValues(alpha: 0.88),
-        modalBackgroundColor: const Color(0xFFF0F7FA).withValues(alpha: 0.92),
-        elevation: 0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-      ),
+      snackBarTheme: _snackBarTheme(scheme.copyWith(
+        primary: const Color(0xFF0D9488),
+        onSurface: const Color(0xFF0F172A),
+      )),
+      dialogTheme: _dialogTheme(dark: false),
+      popupMenuTheme: _popupMenuTheme(dark: false),
+      bottomSheetTheme: _bottomSheetTheme(dark: false),
       chipTheme: ChipThemeData(
         backgroundColor: const Color(0xFFEAF4F8).withValues(alpha: 0.55),
         selectedColor: emerald.withValues(alpha: 0.18),

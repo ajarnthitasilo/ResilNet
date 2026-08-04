@@ -1,9 +1,12 @@
 * [What is ResilNet](/en/)
 * User guide
+  * [What’s new (1.9.64)](/en/guide/whats-new)
   * [Install the app](/en/guide/install)
   * [1:1 chat](/en/guide/chat)
   * [#mesh / public bulletin](/en/guide/mesh)
   * [Community boards](/en/guide/boards)
+  * [Local Wi‑Fi](/en/guide/local-wifi)
+  * [Home node (Reticulum / LXMF)](/en/guide/reticulum-home-node)
   * [ESP32 Mule](/en/guide/esp32-mule)
   * [ESP32 LoRa Gateway](/en/guide/esp32-lora)
   * [Flash / BLE OTA](/en/guide/esp32-ota)

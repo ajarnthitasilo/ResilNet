@@ -9,6 +9,7 @@ import '../l10n/l10n_ext.dart';
 import '../models/peer.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
+import '../app/glass_overlays.dart';
 
 /// Product UI for Mac/Pi LXMF home-node bridge (no raw JSON).
 Future<void> showHomeNodeBridgeSheet(BuildContext context) {
@@ -62,7 +63,7 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
     await Clipboard.setData(ClipboardData(text: dest));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.lxmfBridgeDestCopied)),
+      GlassSnackBar(content: Text(context.l10n.lxmfBridgeDestCopied)),
     );
   }
 
@@ -72,7 +73,7 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
     if (!mounted) return;
     if (peers.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.lxmfBridgeNoPeers)),
+        GlassSnackBar(content: Text(l10n.lxmfBridgeNoPeers)),
       );
       return;
     }
@@ -87,7 +88,7 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setLocal) {
-            return AlertDialog(
+            return GlassAlertDialog(
               title: Text(l10n.lxmfBridgeAddLink),
               content: SingleChildScrollView(
                 child: Column(
@@ -161,12 +162,12 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
     if (!mounted) return;
     if (err != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.lxmfBridgeInvalidDest)),
+        GlassSnackBar(content: Text(l10n.lxmfBridgeInvalidDest)),
       );
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.lxmfBridgeLinkSaved)),
+      GlassSnackBar(content: Text(l10n.lxmfBridgeLinkSaved)),
     );
   }
 
@@ -180,13 +181,13 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
     final dest = bridge?.lxmfDestination?.trim() ?? '';
     final muted = ResilNetTheme.mutedOnSurface(context);
 
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-      ),
-      child: SafeArea(
+    return ResilNetTheme.glassPanel(
+      context: context,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+      blurSigma: 28,
+      child: SizedBox(
+        height: height,
+        child: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -363,7 +364,7 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
                             final ctrl = TextEditingController(text: e.value);
                             final save = await showDialog<bool>(
                               context: context,
-                              builder: (ctx) => AlertDialog(
+                              builder: (ctx) => GlassAlertDialog(
                                 title: Text(label),
                                 content: TextField(
                                   controller: ctrl,
@@ -397,7 +398,7 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
                             if (!context.mounted) return;
                             if (err != null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                GlassSnackBar(
                                   content: Text(l10n.lxmfBridgeInvalidDest),
                                 ),
                               );
@@ -424,6 +425,7 @@ class _HomeNodeBridgeSheetState extends State<_HomeNodeBridgeSheet> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

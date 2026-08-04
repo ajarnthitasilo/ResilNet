@@ -26,11 +26,10 @@ class _FeedChannelSheet extends StatelessWidget {
     final l10n = context.l10n;
     final muted = ResilNetTheme.mutedOnSurface(context);
     final channels = s.feedChannelsForPicker();
-    return Container(
-      decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-      ),
+    return ResilNetTheme.glassPanel(
+      context: context,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+      blurSigma: 28,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -115,11 +114,10 @@ class _TransportModeSheet extends StatelessWidget {
       (TransportMode.internet, l10n.transportModeInternet, Icons.public),
       (TransportMode.auto, l10n.transportModeAuto, Icons.sync_alt),
     ];
-    return Container(
-      decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-      ),
+    return ResilNetTheme.glassPanel(
+      context: context,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+      blurSigma: 28,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,

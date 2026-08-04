@@ -8,6 +8,7 @@ import '../models/peer.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'chat_screen.dart';
+import '../app/glass_overlays.dart';
 
 /// รายการสมาชิกในเครือข่าย (จาก SQLite peers)
 class PeerListScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
     if (!mounted) return;
     final l10n = context.l10n;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(
           next
               ? l10n.peersBlockedSnack(formatShortPeerId(peer.id))

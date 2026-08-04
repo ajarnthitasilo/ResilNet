@@ -29,12 +29,11 @@ class _InfoSheet extends StatelessWidget {
       minChildSize: 0.45,
       maxChildSize: 0.95,
       builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            gradient: ResilNetTheme.scaffoldGradientFor(context),
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(18)),
-          ),
+        return ResilNetTheme.glassPanel(
+          context: context,
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(18)),
+          blurSigma: 28,
           child: Column(
             children: [
               const SizedBox(height: 10),

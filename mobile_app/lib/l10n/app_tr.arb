@@ -1,0 +1,1105 @@
+{
+  "@@locale": "tr",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "ResilNet yenileniyor…",
+  "appRefreshed": "Yenilendi — radyolar ve keşif yeniden başlatıldı",
+  "appRefreshFailed": "Yenileme başarısız oldu: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "Çift dokunma = yumuşak yenileme. Uzun basma = sert kurtarma. Üç kez dokunma = acil durum silme.",
+  "softRefreshTipTitle": "ResilNet sıkışmış hissediyorsa",
+  "softRefreshTipBody": "Geçici radyo yenilemesi için ResilNet (sol üst) öğesine iki kez dokunun. Hala takılıp kalıyorsanız: başlığa uzun basın, ⋮ → Sert kurtarma veya Ayarlar'ı kullanın. Üç kez dokunma yalnızca acil durum silme işlemidir.",
+  "softRefreshTipGotIt": "Anladım",
+  "infoSoftRefreshTitle": "Uygulama sıkışmış gibi görünüyorsa",
+  "infoSoftRefreshStepRefresh": "ResilNet (sol üst) öğesine iki kez dokunun → radyoları ve yakındaki kişileri otomatik olarak yenileyin",
+  "infoSoftRefreshStepHard": "Hala sıkıştınız mı? Başlığa uzun basın veya ⋮ / Ayarlar → Sert kurtarma",
+  "infoSoftRefreshStepWait": "Sonuç atıştırmalık çubuğunu bekleyin ve ardından tekrar deneyin. Oturum sıfırlama anahtarlarınızı korur.",
+  "infoSoftRefreshStepWipe": "Üç kez dokunma = acil durum silme (yerel verileri siler) — yalnızca kasıtlıysa",
+  "appRecoverySection": "Uygulama kurtarma",
+  "appRecoverySectionSubtitle": "Uygulamanın donduğunu hissettiğinizde kullanın. Yumuşak = başlığa iki kez dokunun. Zor iyileşme daha güçlüdür. Oturum sıfırlama, anahtarları silmeden hizmetleri yeniden başlatır.",
+  "appHardRecoverAction": "Zor kurtarma",
+  "appHardRecovering": "İyileşmek zor…",
+  "appSessionResetAction": "Oturumu sıfırla",
+  "appSessionResetRunning": "Oturum sıfırlanıyor…",
+  "appSessionResetConfirmTitle": "Oturum sıfırlansın mı?",
+  "appSessionResetConfirmBody": "Bu cihazda ResilNet hizmetlerini yeniden başlatır. Kimlik anahtarlarınız saklanır.",
+  "appRecoveryBusy": "Kurtarma zaten çalışıyor…",
+  "appRecoveryOk": "Kurtarma tamamlandı",
+  "appRecoveryPartial": "Kurtarma işlemi bazı adımların atlanmasıyla tamamlandı; hâlâ takılıp kalıyorsanız tekrar deneyin",
+  "appRecoveryFailed": "Kurtarma başarısız oldu; Oturumu sıfırlamayı deneyin veya uygulamayı işletim sisteminden çıkmaya zorlayın",
+  "localWifiTitle": "Yerel Wi‑Fi",
+  "localWifiSubtitle": "Yakındaki cihazları internet olmadan bağlayın; tek bir LAN'da olmakla aynı şey.",
+  "localWifiNotGatewayHint": "ESP32 LoRa ağ geçidi SoftAP değil. Bu yalnızca telefon↔telefon / LAN'dır.",
+  "localWifiUnavailable": "Yerel Wi‑Fi henüz hazır değil; uygulamanın başlatılmasını bekleyin.",
+  "lxmfBridgeTitle": "Ana düğüm",
+  "lxmfBridgeSubtitle": "Wi‑Fi cihazınızda mühürlü sohbetleri aktaran isteğe bağlı Mac veya Pi. Varsayılan olarak kapalıdır. Uçtan uca şifrelemenin yerini almaz.",
+  "lxmfBridgeEnable": "Ana düğümü kullan",
+  "lxmfBridgeDisabledHint": "Yalnızca köprü uygulaması bu ağdaki bir Mac veya Pi'de çalışırken açın.",
+  "lxmfBridgeOnline": "Çevrimiçi — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "Ana düğüme ulaşılamıyor — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Ana düğüm adresi",
+  "lxmfBridgeBaseUrlHelper": "IP veya http://IP:bağlantı noktası — örnek 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "Eş → LXMF hedef (JSON)",
+  "lxmfBridgeRefresh": "Durumu kaydet ve yenile",
+  "lxmfBridgeLabHint": "Gelişmiş: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "Ana düğüm ayarları",
+  "lxmfBridgeCheckConnection": "Bağlantıyı kontrol edin",
+  "lxmfBridgeStatusOnline": "Ev düğümüne bağlanıldı",
+  "lxmfBridgeStatusOffline": "Ana düğüme ulaşılamıyor",
+  "lxmfBridgeYourDest": "Bu düğümün adresi (arkadaşlarınızla paylaşın)",
+  "lxmfBridgeCopyDest": "Adresi kopyala",
+  "lxmfBridgeDestCopied": "Adres kopyalandı",
+  "lxmfBridgeLinkedPeers": "Bağlantılı arkadaşlar",
+  "lxmfBridgeLinkedPeersHint": "Her arkadaşın ev düğümü adresine bir kez ihtiyacı vardır. Daha sonra mühürlü sohbetler bu yolu kullanabilir.",
+  "lxmfBridgeNoLinks": "Henüz bağlı arkadaş yok.",
+  "lxmfBridgeAddLink": "Bir arkadaşınızı bağlayın",
+  "lxmfBridgePickPeer": "Arkadaş",
+  "lxmfBridgePeerDest": "Ev düğümü adresi",
+  "lxmfBridgePeerDestHint": "Ana düğüm ekranından 32 karakterlik kod",
+  "lxmfBridgeInvalidDest": "Bu adres geçerli görünmüyor. Kodun tamamını ana düğümden yapıştırın.",
+  "lxmfBridgeRemoveLink": "Bağlantıyı kaldır",
+  "lxmfBridgeSaveLink": "Kaydetmek",
+  "lxmfBridgeLinkSaved": "Arkadaş bağlantılı",
+  "lxmfBridgeNoPeers": "Henüz mesaj gönderilebilecek kişi yok; önce bir arkadaş ekleyin.",
+  "lxmfBridgeHelp": "Köprünün Mac/Pi'de çalışır durumda kalmasını sağlayın. Bu yol LAN'ınızda kalır; LoRa değildir ve internet veya Bluetooth ağının yerini almaz.",
+  "localWifiModeHotspot": "Yakında",
+  "localWifiModeRouter": "Yönlendirici",
+  "localWifiHotspotIntro": "Bir cihaz Kişisel Erişim Noktasını paylaşır. Diğerleri bu erişim noktasına katılır, ardından ResilNet onları yerel ağda bulur.",
+  "localWifiHostAction": "Ağ oluştur (Ana Bilgisayar)",
+  "localWifiJoinAction": "Ağa katıl",
+  "localWifiHostSteps": "1. iOS/Android Ayarlarını açın ve Kişisel Erişim Noktasını (veya İnternet Paylaşımını) açın.\n2. Arkadaşlarınıza erişim noktası adını (ve şifresini) söyleyin.\n3. Buraya geri gelin ve \"Erişim noktası açık — beklemeye başlayın\" seçeneğine dokunun.",
+  "localWifiHostReady": "Erişim noktası açık — beklemeye başlayın",
+  "localWifiHostWaiting": "Arkadaşların katılmasını bekliyorum...",
+  "localWifiJoinSteps": "1. Sistem Ayarlarını açın ve arkadaşınızın Kişisel Erişim Noktasına katılın.\n2. Buraya dönün ve \"Bağlandım - ara\"ya dokunun.",
+  "localWifiJoinReady": "Bağlandım — ara",
+  "localWifiRouterIntro": "Her cihazı aynı Wi‑Fi yönlendiriciye/AP'ye bağlayın. Yönlendiricinin internete ihtiyacı yoktur; yalnızca paylaşılan bir yerel ağ vardır.",
+  "localWifiRouterSearch": "Bu Wi‑Fi üzerinde ara",
+  "localWifiRefreshNetwork": "Wi‑Fi bilgisini yenile",
+  "localWifiRouterNoWifiTitle": "Wi‑Fi üzerinde değil",
+  "localWifiRouterNoWifiBody": "Sistem Ayarlarında yönlendiricinin Wi‑Fi öğesine katılın, ardından tekrar arayın.",
+  "localWifiDiscovering": "Yerel Wi‑Fi aranıyor…",
+  "localWifiPeersFound": "Bu ağdaki cihazlar",
+  "localWifiStop": "Durmak",
+  "localWifiSsidUnknown": "Wi‑Fi adı kullanılamıyor",
+  "localWifiStubBanner": "LAN soketi bekleniyor…",
+  "localWifiLiveBanner": "LAN keşfi canlı (UDP) — bu Wi‑Fi'da duyuru + mühürlü sohbet",
+  "localWifiEmptyHotspot": "Henüz cihaz yok.\nArkadaşlarınızın erişim noktanıza katılıp katılmadıklarını ve Yerel Ağ erişimine izin verip vermediklerini kontrol edin.",
+  "localWifiEmptyRouter": "Henüz cihaz yok.\nAynı SSID'yi mi? Yerel Ağa izin veriliyor mu? Bazı yönlendiriciler cihazdan cihaza trafiği engeller (AP izolasyonu).",
+  "localWifiIsolationHelp": "Neden birbirimizi bulamıyoruz?",
+  "localWifiIsolationTitle": "Yönlendirici istemcileri izole edebilir",
+  "localWifiIsolationBody": "AP/İstemci izolasyonu (veya misafir ağı) açıksa, aynı Wi‑Fi üzerindeki telefonlar konuşamaz. Yalıtımı kapatın, ana SSID'yi kullanın veya Yakın (Hotspot) moduna geçin.",
+  "localWifiPeerReady": "Sohbete hazır (anahtarı var)",
+  "localWifiPeerNeedKey": "Bulundu — anahtar alışverişi için QR'yi tarayın",
+  "localWifiErrorTitle": "Yerel Wi‑Fi hatası",
+  "localWifiErrorBody": "Bir şeyler ters gitti. Durun ve tekrar deneyin.",
+  "preparingSystem": "Sistem hazırlanıyor…",
+  "bootFailedTitle": "Başlatılamadı",
+  "retry": "Tekrar deneyin",
+  "bootRecoveryAction": "Yeni kimlik başlat (yerel verileri sil)",
+  "bootRecoveryConfirmTitle": "Yeni kimlik başlatılsın mı?",
+  "bootRecoveryConfirmBody": "Bu işlem, bu cihazdaki yerel sohbetleri, anahtarları ve kimliği kalıcı olarak silecektir.\nEşlerinizin yeni kimliğinizle QR'nizi tekrar taraması gerekir.\nBu geri alınamaz.",
+  "bootRecoveryRunning": "Yerel kimlik sıfırlanıyor…",
+  "bootRecoverySuccess": "Yerel kimlik sıfırlama işlemi tamamlandı",
+  "bootRecoveryFailed": "Kimlik sıfırlanamadı: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "İptal etmek",
+  "save": "Kaydetmek",
+  "close": "Kapalı",
+  "start": "Başlangıç",
+  "send": "Göndermek",
+  "settings": "Ayarlar",
+  "language": "Dil",
+  "languageSubtitle": "Uygulama varsayılan olarak telefonunuzun dilini takip eder (desteklendiğinde). Diğer diller İngilizceye geri dönüyor. Ayrıca burada bir dili de kilitleyebilirsiniz.",
+  "languageSystem": "Sistem varsayılanı",
+  "languageThai": "Tay dili",
+  "languageEnglish": "İngilizce",
+  "notificationsTooltip": "Bildirim ayarları",
+  "enableMessageNotifications": "Mesaj bildirimlerini etkinleştir",
+  "settingsNotificationsSubtitle": "Çevrimiçi 1:1 mesajlar ve kişiler (yerel uyarılar)",
+  "networkMembersTooltip": "Ağ üyeleri",
+  "identityQrTooltip": "Kimlik / QR",
+  "feedDirects": "Sohbet",
+  "feedMesh": "#örgü",
+  "feedGeo": "Alan",
+  "feedDirectsSubtitle": "Özel E2EE mesajları",
+  "feedMeshSubtitle": "Yakındaki eşler (BLE)",
+  "feedGeoSubtitle": "Geohash keşif kanalı",
+  "peerIdHint": "Sohbet başlatmak için Alıcı Kimliğini (Genel Anahtar Karması) yapıştırın",
+  "directsEmpty": "Henüz sohbet yok; başlamak için bir QR tarayın veya Alıcı Kimliğini yapıştırın\nMesajlar gönderilmeden önce E2EE ile mühürlenir (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • sohbeti açmak için dokunun",
+  "meshIntro": "BLE aralığındaki eşler — özel bir E2EE sohbeti için dokunun (#mesh'te herkese açık oluşturma yapılmaz)\nHibrit yönlendirici aracılığıyla gönderir (çevrimiçiyken BLE + LoRa + Nostr)",
+  "meshEmptyRunning": "Henüz yakınlarda eş yok; uygulamayı BLE menzilindeki başka bir cihazda açın",
+  "meshEmptyStopped": "BLE çalışmıyor — Bluetooth / Konum izni verin",
+  "meshNearbyPrefix": "Yakında",
+  "meshRetentionTitle": "Mesajları otomatik sil",
+  "meshRetentionSubtitle": "Daha eski yerel sohbet geçmişi otomatik olarak kaldırılır",
+  "meshRetentionKeep": "Kale",
+  "meshRetention1Day": "1 gün",
+  "meshRetention3Days": "3 gün",
+  "meshRetention7Days": "7 gün",
+  "refreshLocationTooltip": "Konumu yenile",
+  "geoIntro": "Bu geohash'taki çevrimiçi kişilere 1:1 veya alan geneline açık bir yayılımla mesaj gönderilebilir (hala eş başına E2EE mühürlüdür - düz metin değil)",
+  "geoEmpty": "{channel} bölgesinde henüz çevrimiçi kimse yok\nTaşıma → İnternet/Otomatik'i kullanın, Nostr'ı bekleyin, konumu yenileyin",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "{channel}'da çevrimiçi • 1:1 E2EE için dokunun",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "Yakınlarda (alan varlığı bekleniyor) • 1:1 E2EE için dokunun",
+  "geoPeerNostrSubtitle": "{channel}'de Nostr'de görüldü • yalnızca keşif (eski)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "Eski anonim varlık — bağlı bir eş için bekleyin veya QR alışverişi yapın",
+  "bleRadioNearbySubtitle": "BLE yakında — 1:1 E2EE'yi başlatmak için QR'yi tarayın",
+  "geoInternetDiscoverHint": "Alan İnternet keşfi için Nostr bağlı olması gerekiyor (Ayarlar → Aktarım → İnternet/Otomatik)",
+  "geoEmptyNoLocation": "Konum henüz çözülmedi — GPS'e izin verin ve geohash'ınızı Nostr üzerinde yayınlamak için yenileyin",
+  "geoEmptyNeedsPermission": "Konum izni reddedildi — Ayarlar → Gizlilik → Konum'da ResilNet'ye izin verin",
+  "geoEmptyServicesDisabled": "Konum Servisleri kapalı; bunları Ayarlar'dan açın",
+  "geoEmptyNoGpsFix": "GPS düzeltmesi alınamadı (Wi‑Fi iPad'lerde yaygındır) — aşağıda geohash'ı manuel olarak ayarlayın",
+  "geoEmptyTeleportHint": "Yer simgesine dokunun → bir geohash girin (ör. w5) → Işınlan",
+  "geoSetGeohashManually": "Geohash'ı ayarla",
+  "geoTeleportHint": "GPS yok mu? Geohash önekini girin (2-7 karakter, örneğin w5) ve Işınlan'a dokunun",
+  "geoTeleportInvalid": "Geçersiz geohash — yalnızca base32 harf/sayı kullanın (ör. w5 veya w5jt8)",
+  "geoTeleportOk": "Alan {channel} olarak ayarlandı",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "Manuel alan: {channel} (GPS yenilemesi geçersiz kılınacaktır)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "hazır Nostr değil — Yeniden Bağlan'a dokunun (init başarılı olana kadar 0/0)",
+  "geoEmptyMeshOnly": "Aktarım yalnızca Mesh'tedir — Nostr üzerindeki eşleri keşfetmek için İnternet'e veya Otomatik'e geçin",
+  "geoEmptyWaiting": "{channel} bölgesinde henüz kimse yok — Alan + İnternet'i her iki cihazda da açık tutun ve yaklaşık 60 saniye bekleyin",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#alan",
+  "geoRefreshLocation": "Konumu yenile",
+  "settingsClearLocationTitle": "Konumu temizle",
+  "settingsClearLocationSubtitle": "GPS / ışınlanma geohash'ını kaldırın (Alan #— olur)",
+  "settingsClearLocationConfirmTitle": "Konumu temizle?",
+  "settingsClearLocationConfirmBody": "Bu cihazda depolanan geohash'ı siler. Daha sonra GPS'i yenileyebilir veya ışınlanabilirsiniz.",
+  "settingsClearLocationAction": "Konumu temizle",
+  "settingsClearLocationSnack": "Konum temizlendi",
+  "chatVoiceTooLarge": "Sesli not çok büyük — maksimum ~30 saniye",
+  "chatVoiceNeedInternet": "Sesli not için İnternet (Nostr) gerekiyor — tek başına BLE için çok büyük",
+  "chatVoiceSentInternet": "İnternet üzerinden gönderilen sesli not",
+  "noticeAnonMention": "değinmek",
+  "noticeAnonDm": "doğrudan mesaj",
+  "noticeAnonHug": "sarılmak",
+  "noticeAnonSlap": "tokat",
+  "noticeAnonBlock": "engellemek",
+  "noticeAnonNeedKey": "Henüz ortak anahtar yok — önce QR'yi 1:1 ile değiştirin",
+  "noticeAnonActionSent": "Gönderilmiş",
+  "noticeAnonBlocked": "{anon} engellendi",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* sarılıyor {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* {anon}'a tokat atar *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Nostr'i yeniden bağla",
+  "nostrSectionTitle": "Nostr röleler",
+  "nostrSectionSubtitle": "İnternet mesajlaşma ve Alan bulma bu aktarımları kullanır. Durum çevrimdışı kalırsa yeniden bağlan'a dokunun.",
+  "nostrStatusOnline": "Bağlandı {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "Çevrimdışı — röleler listeleniyor ancak hiçbiri bağlı değil",
+  "nostrStatusNotInit": "Başlatılmadı (0/0) — başlatmak için Yeniden Bağlan'a dokunun",
+  "nostrReconnectAction": "Nostr'i yeniden bağla",
+  "nostrReconnectOk": "Nostr bağlandı ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "Hâlâ çevrimdışı — Wi‑Fi/hücresel'i kontrol edin veya tekrar deneyin",
+  "nostrReconnectFailedDetail": "Başarısız: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Rölelere bağlanılıyor…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "{channel} bölgesinde İnternet (Nostr) • mühürlü sohbete hazır",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "Bölge taşımacılığı",
+  "transportModeSubtitle": "Ağ = Nostr olmadığında yakındaki BLE (radyo) · İnternet ve Otomatik = Nostr kişi listesi",
+  "transportModeMesh": "ağ",
+  "transportModeInternet": "internet",
+  "transportModeAuto": "Otomatik",
+  "geoPublicHint": "Bu alandaki çevrimiçi herkese genel mesaj",
+  "geoPublicSend": "Halk",
+  "geoPublicHelp": "{count} çevrimiçi akrana/eşlere mühürlü dağıtım — her biri özel bir zarf alır",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Bu bölgedeki {count} akranlara gönderildi",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "Çevrimiçi mesaj gönderilebilecek eş yok — Anahtarları olan eşlerle Alan/Mesh'i açın veya BLE/Nostr'yi bekleyin",
+  "areaPublicBadge": "Alan kamu",
+  "geoErrorPermission": "Konum okunamadı — konum iznini kontrol edin",
+  "geoPrecisionRegion": "Bölge",
+  "geoPrecisionProvince": "Vilayet",
+  "geoPrecisionCity": "Şehir",
+  "geoPrecisionNeighborhood": "Komşu",
+  "geoPrecisionBlock": "Engellemek",
+  "aliasTitle": "Takma adı ayarlayın (İletişim Takma Adı)",
+  "aliasHintBody": "Bu takma ad yalnızca bu cihazda depolanıyor (yalnızca yerel)\nHiçbir zaman E2EE trafiğiyle gönderilmez",
+  "aliasLabel": "Takma ad",
+  "aliasHint": "örneğin “Köy muhtarı”, “P’Somchai”…",
+  "settingsDevices": "Cihazlar",
+  "settingsFirmwareTitle": "ESP32 donanım yazılımını indirin / güncelleyin",
+  "settingsFirmwareSubtitle": ".bin dosyalarını indirin ve ESP32 kartını OTA aracılığıyla güncelleyin",
+  "mtBridgeTitle": "Meshtastic köprü",
+  "mtBridgeSettingsSubtitle": "Salt metin A/B köprüsü — ResilNet değil E2EE",
+  "mtBridgeIntro": "Kısa düz metni Meshtastic ve ResilNet arasında taşıyın. A ve B modları aynı anda çalışamaz. Bu uçtan uca şifreleme değildir.",
+  "mtBridgeModeLabel": "Mod",
+  "mtBridgeModeOff": "Kapalı",
+  "mtBridgeModeA": "A'yı Al",
+  "mtBridgeModeB": "Çıkış B",
+  "mtBridgeModeOffShort": "Kapalı",
+  "mtBridgeModeAShort": "A'da",
+  "mtBridgeModeBShort": "Çıkış B",
+  "mtBridgeMutexHint": "Bir mod seçildiğinde diğeri otomatik olarak kapanır. Eşzamanlı A+B desteklenmez.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "Demo (günlüğe kaydetme)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "Gelen metin, Bildirimler altında #meshtastic olarak görünür. Örgü rölesi isteğe bağlıdır (varsayılan olarak kapalıdır).",
+  "mtBridgeRelayTitle": "Ayrıca ResilNet ağ üzerinde geçiş yapın",
+  "mtBridgeRelayHint": "Açıldığında imzalı kamu bültenleri yayınlanır. Kapalı = yalnızca bu telefonun Bildirimleri.",
+  "mtBridgeSimulateHint": "Demo mesajı",
+  "mtBridgeSimulate": "Meshtastic mesajını simüle et",
+  "mtBridgeIngestOk": "Bildirimlere Alındı ​​(#meshtastic)",
+  "mtBridgeEgressWarning": "Uyarı: buraya gönderilen mesajlar ResilNet E2EE DEĞİLDİR. Meshtastic yolundaki herkes bunları okuyabilir.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "Yayınlanacak metin",
+  "mtBridgeSend": "Meshtastic'a gönder",
+  "mtBridgeEgressOk": "Meshtastic için sıraya alındı ​​(günlüğe/geçmişe bakın)",
+  "mtBridgeLastEgress": "Son çıkış",
+  "mtBridgeEgressHistory": "Son çıkış",
+  "mtBridgeOffHint": "Köprüyü kullanmak için Alım (A) veya Çıkışı (B) açın.",
+  "mtBridgeNoticeBadge": "MEŞTASTİK · E2EE değil",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "MQTT aktarımını kullan",
+  "mtBridgeUseMqttHint": "Kapalı = yalnızca demo kaydı (MQTT gelenler göz ardı edilir). Bağlandığında giriş/çıkış için Açık = MQTT.",
+  "mtBridgeMqttHost": "Komisyoncu ana bilgisayarı",
+  "mtBridgeMqttPort": "Liman",
+  "mtBridgeMqttTls": "TLS (mqtts) kullanın",
+  "mtBridgeMqttTlsHint": "Tipik bağlantı noktası 8883. Sistem sertifikalarını kullanır; el sıkışma hatalarında yumuşak bir şekilde başarısız olur.",
+  "mtBridgeMqttAutoReconnect": "Otomatik yeniden bağlan",
+  "mtBridgeMqttAutoReconnectHint": "Açık olduğunda istemci, düşmelerden sonra yeniden bağlanmaya çalışır. Durum, geri yüklenene kadar bağlanılıyor ifadesini gösterir.",
+  "mtBridgeMqttTopicHelpers": "Konu yardımcıları",
+  "mtBridgeMqttRegion": "Bölge öneki (isteğe bağlı)",
+  "mtBridgeMqttRegionHint": "Ayarlandığında Uygula, kökü msh/<region>/2/json olarak yeniden oluşturur (konu kökünü geçersiz kılar).",
+  "mtBridgeMqttTopicRoot": "JSON konu kökü",
+  "mtBridgeMqttDownlinkChannel": "Downlink kanal adı",
+  "mtBridgeMqttApplyTopics": "Kök uygula → abone ol / konuları yayınla",
+  "mtBridgeMqttAdvanced": "Gelişmiş MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, yeniden bağlanma, konular, kimlik bilgileri",
+  "mtBridgeMqttTopicIn": "Konuya abone ol",
+  "mtBridgeMqttTopicOut": "Konuyu yayınla",
+  "mtBridgeMqttGatewayFrom": "Ağ geçidi düğüm kimliği (kimden)",
+  "mtBridgeMqttGatewayFromHint": "Ondalık kimlik veya !hex — metin gönderme bağlantısı için gereklidir",
+  "mtBridgeMqttChannelIndex": "Örgü kanal dizini (isteğe bağlı 0–7)",
+  "mtBridgeMqttUser": "Kullanıcı adı (isteğe bağlı)",
+  "mtBridgeMqttPass": "Şifre (isteğe bağlı)",
+  "mtBridgeMqttPassStored": "Bu cihazda bir şifre kayıtlıdır (gösterilmemiştir).",
+  "mtBridgeMqttPassReplace": "Yeni şifre (saklamak için boş bırakın)",
+  "mtBridgeMqttPassReplaceHint": "Saklanan şifreyi korumak için boş bırakın.",
+  "mtBridgeMqttPassClear": "Şifreyi temizle",
+  "mtBridgeMqttSave": "MQTT ayarlarını kaydet",
+  "mtBridgeMqttSaved": "MQTT ayarlar kaydedildi",
+  "mtBridgeMqttConnect": "Bağlamak",
+  "mtBridgeMqttDisconnect": "Bağlantıyı kes",
+  "mtBridgeMqttConnected": "MQTT bağlandı",
+  "mtBridgeMqttConnecting": "MQTT bağlanılıyor…",
+  "mtBridgeMqttDisconnected": "MQTT bağlantısı kesildi",
+  "mtBridgeMqttError": "MQTT hatası",
+  "mtBridgeErrModeIngest": "Önce Beslemeye (A) geçin",
+  "mtBridgeErrModeEgress": "Önce Çıkışa (B) geçin",
+  "mtBridgeErrRate": "Yavaşlayın — hız sınırlı",
+  "mtBridgeErrDedupe": "Yinelenen ileti göz ardı edildi",
+  "mtBridgeErrLoop": "Köprü döngüsünü önlemek için düştü",
+  "mtBridgeErrEmpty": "Mesaj boş",
+  "mtBridgeErrPublish": "Yayınlama başarısız oldu",
+  "mtBridgeErrNotConnected": "MQTT bağlı değil",
+  "mtBridgeErrMissingHost": "MQTT aracı ana bilgisayarını girin",
+  "mtBridgeErrMissingTopic": "Abone olma ve konuları yayınlama",
+  "mtBridgeErrMissingFromNode": "Gönderim metni için ağ geçidi düğüm kimliğini (kimden) girin",
+  "mtBridgeErrConnect": "MQTT bağlantı başarısız oldu",
+  "mtBridgeErrConnectTls": "MQTT TLS bağlantısı başarısız oldu",
+  "settingsData": "Veri",
+  "settingsDataHint": "Veritabanını küçültmek için yerel mesajları silin; kimlik, anahtarlar ve eşler korunur",
+  "settingsSaveHistoryTitle": "Mesaj geçmişini kaydet",
+  "settingsSaveHistorySubtitle": "Kapalıyken, mesajlar kabloda E2EE olarak kalır ve yalnızca bu oturum için saklanır (yerel sohbet geçmişinde değil). Kendi metniniz bu cihazda hâlâ düz metin olarak gösteriliyor.",
+  "settingsPrivacy": "Mahremiyet",
+  "settingsE2eeTitle": "Uçtan uca şifreleme",
+  "settingsE2eeSubtitle": "Her zaman açık — mesajlar gönderilmeden önce RSA-OAEP + AES-GCM ile mühürlenir. Röleler ve yakındaki atlamalar içerikleri okuyamaz.",
+  "settingsScreenshotTitle": "Ekran görüntüsü uyarıları",
+  "settingsScreenshotSubtitle": "Bu cihaz ekranı yakaladığında sohbette bir sistem hattı göster",
+  "settingsNostrExpiryTitle": "Nostr mesaj zaman tutma",
+  "settingsNostrExpirySubtitle": "Nostr aracılığıyla çevrimiçi olduğunda mühürlü zarfların yerel olarak ne kadar süre kalması gerekir?",
+  "noticeExpiresIn": "süresi doluyor",
+  "noticesTitle": "Bildirimler",
+  "noticesMeshIntro": "Genel bülten — radyo aralığındaki herkes tarafından görülebilir, şifrelenmez. Telefondan telefona çevrimdışı geçiş yapar ve yakındaki ResilNet geçiş kutuları bir kopyasını saklar, böylece daha sonra gelen kişiler onu görmeye devam eder.",
+  "noticesMeshPublicBadge": "KAMU · şifrelenmemiş",
+  "noticesGeoIntro": "Diğer ziyaretçilerin bulabilmesi için bu yerle ilgili kısa notlar ekleyin.",
+  "noticesEmpty": "henüz bildirim yok",
+  "noticesEmptyHint": "Buradaki insanlar için ilk bildirimi sabitleyin.",
+  "noticesComposeHint": "bir duyuru yayınla...",
+  "noticesUrgent": "acil",
+  "noticesOpen": "Bildirimler",
+  "screenshotTaken": "* ekran görüntüsü aldın *",
+  "chatAttachImage": "Resim ekle",
+  "chatImageLabel": "Resim",
+  "chatImageTooLarge": "Resim çok büyük — başka bir fotoğraf deneyin",
+  "chatNostrExpiry": "Nostr sakla",
+  "geoPublicComposeHint": "{channel}'a gönder — herkese açık",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "Tüm mesajları temizle",
+  "settingsClearSubtitle": "Bu cihazdaki tüm sohbetleri sil",
+  "settingsClearConfirmTitle": "Tüm mesajlar silinsin mi?",
+  "settingsClearConfirmBody": "Bu işlem, bu cihazdaki tüm sohbet mesajlarını siler.\nAkranlar ve takma adlar kaldırılmaz.",
+  "settingsClearAction": "Verileri temizle",
+  "settingsClearedSnack": "Veriler temizlendi",
+  "settingsVersion": "sürüm {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: düğümler taranıyor",
+  "meshBleEsp32Scanning": "ESP32: yakındaki bir düğüm aranıyor",
+  "meshBleSyncing": "BLE: ESP32 ile senkronize ediliyor",
+  "meshNostrPublishing": "Nostr: yayınlama",
+  "meshBleIdle": "BLE ağ açık — henüz yakınlarda telefon yok",
+  "meshBlePeersNearby": "BLE ağ — yakında {count} telefon(lar)",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: izin gerekli",
+  "meshBlePausedCamera": "BLE kamera için duraklatıldı — Başlat BLE'a dokunun",
+  "meshBleStopped": "BLE kapalı — Bluetooth'un açık olduğunu kontrol edin ve ardından Başlat BLE öğesine dokunun",
+  "meshBleRestart": "BLE'ı başlat",
+  "meshBleStatusDetail": "BT {bt} · Lok {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "İzinleri kontrol edin ve BLE'ı başlatın",
+  "meshNostrOffline": "Nostr çevrimdışı",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} yakındaki eşler • LoRa {lora} • senkronizasyon ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "hazır",
+  "meshLoraNotReady": "hazır değil",
+  "meshGatewayProgress": "Ağ Geçidi UDP'si: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Ağ Geçidi UDP: hazır",
+  "permissionTitle": "BLE ağ ağını başlatmak için erişime izin ver",
+  "permissionBody": "Uygulamanın, topluluk mesajlaşması için Bluetooth'a (tarama / bağlanma / reklam verme), Konum'a (eski Android cihazlar için) ve Mikrofona (sohbet ve duyurulardaki sesli notlar için) ihtiyacı vardır.",
+  "permissionE2ee": "Uçtan Uca Şifreleme (E2EE)\nAktarma düğümleri mesaj içeriğini okuyamıyor",
+  "permissionReady": "İzinler hazır",
+  "permissionRequest": "İzin ver ve devam et",
+  "permissionNotReadySnack": "Sistem henüz hazır değil — biraz bekleyin ve tekrar deneyin",
+  "permissionDeniedSnack": "İzinler tamamlanmadı — Ayarlar > ResilNet'ı açın ve Bluetooth / Konum / Mikrofon'a izin verin",
+  "permissionMicDenied": "Mikrofon erişimi reddedildi; Ayarlar'dan sesli not kaydetmesine izin verin",
+  "permissionMicOpenSettings": "Ayarlar",
+  "permissionCameraDenied": "Kamera erişimi reddedildi; Ayarlar'dan QR kodlarını taramasına izin verin",
+  "permissionCameraFailed": "QR kodlarını taramak için kamera izni gereklidir",
+  "permissionCameraOpenSettings": "Ayarlar",
+  "permissionPhotosDenied": "Fotoğraf kitaplığına erişim reddedildi; QR kodunuzu kaydetmesine Ayarlar'dan izin verin",
+  "permissionPhotosFailed": "QR kodunuzu kaydetmek için fotoğraf kitaplığı izni gereklidir",
+  "permissionPhotosOpenSettings": "Ayarlar",
+  "permissionFailedSnack": "İzin isteği başarısız oldu: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet Mimari • Sakla ve İlet Çoklu Atlama",
+  "onboardingSkip": "Atlamak",
+  "onboardingNext": "Sonraki",
+  "onboardingStart": "Başlayın",
+  "onboardingWelcomeTitle": "ResilNet'a hoş geldiniz",
+  "onboardingWelcomeBody": "İnternet olmasa bile ağ ağı üzerinden ResilNet üzerinde sohbet edin",
+  "onboardingFriendsTitle": "Kolayca arkadaş ekleyin",
+  "onboardingFriendsBody": "Identity'den bir QR paylaşın veya genel anahtarları paylaşmak için bir arkadaşınızın QR'sini tarayın",
+  "onboardingChannelsTitle": "Şifreli sohbet + yakındaki kanallar",
+  "onboardingChannelsBody": "Yakındaki eşleri bulmak için #mesh / Area (geohash) geçişini yapın — mesajlar BLE ağ ve Nostr üzerinden E2EE olarak kalır",
+  "chatTitle": "Sohbet (E2EE)",
+  "chatScanTooltip": "Bir eş eklemek için QR'yi tarayın",
+  "chatBlockTooltip": "Bu göndereni engelle",
+  "chatBlockedSnack": "Engellendi: bildirim yok / aktarma yok",
+  "chatAliasTooltip": "Takma adı ayarla",
+  "chatReceiverPemLabel": "Alıcı ortak anahtarı (PEM)",
+  "chatReceiverPemHint": "Arkadaşınızın genel anahtarını yapıştırın (QR'dan / paylaşılan dosyadan)",
+  "chatNeedPeerKey": "Önce bu eşin QR'sini tarayın (doğrulanmış ortak anahtar gereklidir)",
+  "chatPeerKeyMismatch": "Saklanan ortak anahtar bu eş kimliğiyle eşleşmiyor",
+  "chatVoiceFailed": "Ses kaydedilemedi: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Sesli not çalınamadı: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Sesli notu çal",
+  "chatPauseVoice": "Duraklat",
+  "chatVoiceLabelSent": "🎤 Sesli not (mühürlü)",
+  "chatVoiceLabel": "🎤 Sesli not",
+  "chatDecryptFailed": "[şifre çözme başarısız oldu]",
+  "chatSentSealed": "[mühürlü • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "Mühürlü",
+  "chatComposeHint": "Bir mesaj yazın… (gönderildiğinde mühürlenir)",
+  "chatEmptyThread": "Henüz mesaj yok\nAğ üzerinden göndermek için aşağıya yazın",
+  "chatLoadFailed": "Konuşma yüklenemedi: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "Emoji",
+  "statusPending": "Askıda olması",
+  "statusSent": "Gönderilmiş",
+  "statusRelayed": "Aktarılan",
+  "statusDelivered": "Teslim edilmiş",
+  "statusRead": "Okumak",
+  "statusFailed": "Arızalı",
+  "chatCopy": "Kopyala",
+  "chatDeleteLocal": "Bu cihazda sil",
+  "chatDeletedLocalSnack": "Bu cihazda silindi",
+  "chatRetry": "Yeniden dene",
+  "chatSendFailed": "Teslim edilmedi; Yeniden Dene'ye dokunun",
+  "chatImageNeedInternet": "Görüntü göndermek için internete bağlanın",
+  "chatImageTooLargeOnline": "Resim gönderilecek kadar sıkıştırılamadı",
+  "chatOpenLinkFailed": "Bağlantı açılamadı",
+  "identityTitle": "Kimlik",
+  "identityScanTooltip": "QR'yi kamerayla tarayın",
+  "identityCopiedHash": "Ortak anahtar karması kopyalandı",
+  "identityPeerSaved": "Eş QR'den kaydedildi",
+  "identityGalleryDenied": "Fotoğraf kitaplığı izni reddedildi",
+  "identityQrSaved": "QR, fotoğraf kitaplığına kaydedildi",
+  "identityQrSaveFailed": "QR kaydedilemedi: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Ağ üyeleri",
+  "qrScanTitle": "Arkadaş eklemek için QR'yi tarayın",
+  "qrInvalid": "Tarama başarısız oldu: geçersiz QR",
+  "qrIdKeyMismatch": "QR reddedildi: kimlik genel anahtarla eşleşmiyor",
+  "qrCameraNotReady": "Kamera hazır değil",
+  "qrRetrySettings": "Tekrar deneyin / Ayarları açın",
+  "qrCameraOpenFailed": "Kamera açılamadı: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "QR kodunu çerçevenin içine hizalayın",
+  "firmwareDownloadTitle": "ESP32 donanım yazılımını indirin",
+  "firmwareSourceOnline": "En son (çevrimiçi)",
+  "firmwareSourceCached": "Kaydedilen kopya (çevrimdışı)",
+  "firmwareSourceBaseline": "Paketlenmiş temel (çevrimdışı)",
+  "firmwareSourceUnavailable": "Firmware yok",
+  "firmwareBaselineIncompatible": "Birlikte verilen ürün yazılımı çok eski; daha yeni bir sürümü indirmek için internete bağlanın",
+  "firmwareChecksumFailed": "Ürün yazılımı bütünlük kontrolünde başarısız oldu — yanıp sönme engellendi",
+  "firmwareReadyFromSource": "Firmware hazır: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "Yenile",
+  "peersBlocked": "Engellendi",
+  "peersNearbyBle": "Yakında (BLE)",
+  "peersRecentlyOnline": "Son zamanlarda çevrimiçi",
+  "peersOnlineInArea": "Bölgede çevrimiçi",
+  "peersSeenMinutesAgo": "{minutes} dakika önce görüldü",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Çevrimdışı",
+  "peersBlockedSnack": "{id} engellendi",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Engelleme kaldırıldı",
+  "peersEmpty": "Veritabanında henüz üye yok\nBir QR tarayın veya BLE ağ keşfini bekleyin",
+  "peersOpenChat": "Sohbeti aç",
+  "peersBlockAction": "Engellemek",
+  "peersUnblockAction": "Engellemeyi kaldır",
+  "channelPickerTooltip": "Sohbet / #mesh / Alan",
+  "locationPickerTooltip": "Konum kanalı",
+  "transportPickerTooltip": "Ağ / İnternet / Otomatik",
+  "onlinePeopleTooltip": "Çevrimiçi insanlar",
+  "unreadDirectsTooltipEmpty": "Özel mesajlar",
+  "unreadDirectsTooltip": "{count} okunmamış özel mesajlar",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "insanlar",
+  "onlinePeopleEmpty": "Henüz burada kimse çevrimiçi değil",
+  "onlinePeopleCount": "{count} çevrimiçi",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · yakındaki + bölge",
+  "peerOnlineMeshTitle": "Yakınlarda ağ üzerinde biri var",
+  "peerOnlineMeshBody": "{name} ağ üzerinde yakında",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "Bölgede çevrimiçi olan biri",
+  "peerOnlineAreaBody": "{name} Nostr aracılığıyla çevrimiçi",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#konum kanalları",
+  "channelPinsTitle": "Sabitlendi",
+  "channelPinsHint": "Sık kullandığınız kanalları sabitleyin; üstte kalırlar",
+  "channelPinTooltip": "Bu kanalı sabitle",
+  "channelUnpinTooltip": "Sabitlemeyi kaldır",
+  "locationSheetIntro": "Hassas GPS yerine kaba geohash kullanarak yakınınızdaki kişilerle sohbet edin. İnternetteki varlık anonim Nostr anahtarlarını kullanır.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "Işınlanma",
+  "homeComposeHint": "Mesaj {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "{channel}'a gönder — herkese açık",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "süresi doluyor",
+  "voiceRecordTapToStart": "Sesli mesajı kaydetmek için dokunun",
+  "voiceRecordTooShort": "Kayıt çok kısa; tekrar deneyin",
+  "voiceRecordFailed": "Kayıt kaydedilemedi; tekrar deneyin",
+  "voicePttHold": "Kaydetmek için basılı tutun",
+  "voicePttRelease": "Önizlemek için yayınlayın",
+  "voicePttRecording": "Kayıt…",
+  "voicePttDraftReady": "Sesli not hazır",
+  "voicePttDiscard": "At",
+  "voicePttReRecord": "Tekrar kaydet",
+  "voicePttSend": "Sesli not gönder",
+  "voicePttPlayPreview": "Önizlemeyi oynat",
+  "voicePttStopPreview": "Önizlemeyi durdur",
+  "noticesBackfilling": "Bildirimler yükleniyor…",
+  "noticesNostrOnline": "Nostr çevrimiçi",
+  "noticesNostrOffline": "Nostr çevrimdışı — bültenin internete ihtiyacı var",
+  "noticesBackfillLoaded": "{count} bildirimi yüklendi",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "Bölge kuruluna bildirim yayınlanamadı. Nostr bağlantısını kontrol edin.",
+  "noticeMeshPublishNoLink": "Yerel olarak kaydedildi. Başkalarının alabilmesi için yakındaki bir ağ radyosuna (veya Wi‑Fi ağ geçidine) bağlanın.",
+  "noticeMeshPublishSent": "Bülten BLE üzerinden yakındaki {count} cihaza/cihazlara gönderildi.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Yakındaki radyolar görüldü, ancak BLE yazma işlemi başarısız oldu. Bildirimler ekranında her iki uygulamayı da açık tutun ve tekrar deneyin (veya bir ESP32 geçişi kullanın).",
+  "noticeMeshPublishNoGatt": "Bu cihazın BLE alıcısı hazır değil. Bluetooth'u değiştirin ve Bildirimleri yeniden açın.",
+  "noticeDelete": "Bildirimi sil",
+  "noticeDeleteConfirmTitle": "Bu bildirim silinsin mi?",
+  "noticeDeleteLocalOnlyBody": "Bu, onu yalnızca bu cihazda kaldırır. Zaten almış olan diğer kişiler bunu görmeye devam edecek.",
+  "noticeDeleted": "Bildirim silindi",
+  "chatNoticeHidden": "Bölge bildirimi — Bildirimleri aç",
+  "identityDisplayNameTitle": "Ekran adı",
+  "identitySaveName": "Adı kaydet",
+  "identityUserIdLabel": "Kullanıcı Kimliği (Genel Anahtar Karması)",
+  "identityCopyHashTooltip": "Genel anahtar karmasını kopyala",
+  "identityMyQrTitle": "QR'im (kimlik + pubKey + ad)",
+  "identityQrFailed": "QR oluşturulamadı\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "Kaydediliyor…",
+  "identitySaveQr": "QR'yi fotoğraf kitaplığına kaydet",
+  "identityOpenScanner": "QR'yi taramak için kamerayı açın",
+  "identityQrHelp": "Bir arkadaşınızın genel anahtarınızı kaydetmesi ve (gerekirse) sizi Doğrulanmış Verici olarak ayarlaması için bunu taramasını sağlayın",
+  "identityChatTip": "İpucu: E2EE için genel anahtar eklemek üzere sohbetteki QR'yi de tarayabilirsiniz.",
+  "infoOpen": "Hakkında / Bilgi",
+  "docsGuideTitle": "Kullanım kılavuzu",
+  "docsGuideSubtitle": "Tarayıcıda açılır",
+  "docsOpenAction": "Kılavuzu aç",
+  "docsOpenFailed": "Kullanım kılavuzu açılamadı",
+  "firmwareOtaGuideTitle": "Flash kılavuzu ve OTA protokolü",
+  "firmwareOtaGuideSubtitle": "Web kılavuzunu açar - .bin indirmeleri ve tüm adımlar",
+  "firmwareWebDownloadsTitle": "Web'de bellenim indirmeleri",
+  "firmwareWebDownloadsSubtitle": "Dokümanlar sitesinde sürüm başına bağlantılar ve sağlama toplamları",
+  "inviteCopyShortLink": "Kısa bağlantıyı kopyala",
+  "inviteShareLink": "Bağlantıyı paylaş",
+  "inviteShowFullLink": "Tam bağlantı",
+  "inviteCopyFullLink": "Bağlantının tamamını kopyala",
+  "inviteLinkCopied": "Bağlantı kopyalandı",
+  "inviteLongPressHint": "Bağlantı eylemleri için uzun basın",
+  "inviteSendInChat": "ResilNet sohbete gönder…",
+  "inviteSendInChatHint": "Yalnızca zaten ortak anahtarınız olan kişiler",
+  "inviteSendInChatEmpty": "Henüz mesajlaşılabilir sohbet yok.\nBir QR tarayın, Alan/Mesh'i açın veya bağlantıyı önce uygulamanın dışında paylaşın.",
+  "inviteSentToChat": "Davet sohbette gönderildi",
+  "infoTabInfo": "Bilgi",
+  "infoTabSettingsHint": "Dil, E2EE ve veri araçları menüsünden Ayarlar'ı açın",
+  "infoHowToTitle": "Nasıl kullanılır",
+  "infoHowToBody": "• Sohbet / #mesh / Alan arasında geçiş yapmak için kanal simgesine dokunun\n• Geohash boyutunu seçmek için yere dokunun\n• Üyeler veya kimlerin çevrimiçi olduğu için kişilere dokunun\n• Anahtarları şahsen değiştirmek için ⋮'den Kimlik/QR'yi açın\n• \"Herkese açık\" alan, düz metin odasına değil, her çevrimiçi eşe mühürlü E2EE gönderir",
+  "infoFeaturesTitle": "Özellikler",
+  "infoFeatureOffline": "Bluetooth Low Energy aracılığıyla çevrimdışı mesajlaşma",
+  "infoFeatureE2ee": "RSA-OAEP + AES-GCM (Gürültü değil) ile uçtan uca şifreleme",
+  "infoFeatureMultihop": "Mesajlar daha uzağa gitmek için yakındaki eşler arasında atlayabilir",
+  "infoFeatureBridge": "Kapalı zarflar için hibrit ağ ↔ internet (Nostr)",
+  "infoFeatureGeo": "Yakındaki kişiler için yerel geohash kanalları (keşif UX)",
+  "infoFeatureNotices": "#mesh ve Area için geçerlilik süresi dolan bildirimler",
+  "infoPrivacyTitle": "Mahremiyet",
+  "infoPrivacyNoRoom": "Kabloda düz metin köyü / halka açık sohbet odası yok",
+  "infoPrivacyFanout": "Alan gönderimi = bilinen ortak anahtarlara sahip eşlere mühürlü 1:1 yayılma",
+  "infoPrivacyPresence": "İnternet alanı varlığı geçici Nostr tuşlarını kullanır",
+  "infoSymbolsTitle": "Semboller",
+  "infoSymBle": "Doğrudan Bluetooth bağlantısı",
+  "infoSymMesh": "Ağ üzerinden ulaşılabilir (diğerleri ileri doğru)",
+  "infoSymInternet": "İnternet üzerinden (Nostr) — mühürlü zarflar",
+  "infoSymBridge": "Mesh↔internet köprüsü yoluyla ulaştı",
+  "infoSymOffline": "Çevrimdışı — şu anda ulaşılamıyor",
+  "infoSymInArea": "Bu konum kanalının alanında",
+  "infoSymE2eeOk": "Uçtan uca şifrelenmiş oturum",
+  "infoSymE2eeFail": "Şifreleme kullanılamıyor — hassas metin göndermeyin",
+  "infoSymVerified": "Kimlik doğrulandı / bilinen anahtar",
+  "infoSymBlocked": "Engellendi",
+  "infoSymUnread": "Okunmamış özel mesaj",
+  "infoEmergencyTitle": "Acil durum modu",
+  "infoEmergencyBody": "Bu cihazdaki mesajları, anahtarları ve kimliği silmek için ana ekrandaki ResilNet başlığına üç kez dokunun.",
+  "infoLegendNote": "Bazı yol simgeleri netlik sağlamak amacıyla burada belgelenmiştir; sohbetteki teslimat onay işaretleri birincil gönderme durumu olarak kalır.",
+  "dangerZoneTitle": "Tehlike bölgesi",
+  "dangerZoneSubtitle": "Bu cihazdaki mesajları, şifreleme anahtarlarını, Nostr kimliğini, eşleri ve takma adları siler. Tekrar kuracaksınız.",
+  "panicWipeTitle": "Acil durum silme",
+  "panicWipeSubtitle": "Yerel her şeyi silin; ana sayfa başlığına üç kez dokunmakla aynıdır (çift dokunma radyoları yeniler)",
+  "panicWipeConfirmTitle": "Tüm yerel veriler silinsin mi?",
+  "panicWipeConfirmBody": "Bu işlem, bu telefondaki sohbetleri, anahtarları ve kimliği kalıcı olarak siler.\nEşlerinizin QR anahtarlarını yeni kimliğinizle yeniden değiştirmesi gerekir.\nBu geri alınamaz.",
+  "panicWipeAction": "Her şeyi sil",
+  "panicWipeSnack": "Yerel kimlik silindi; yeniden kuruldu",
+  "panicWipeFailed": "Silme başarısız oldu: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "Örgü köprü",
+  "meshBridgeSubtitle": "Açık (varsayılan) olduğunda, kapalı zarflar hem BLE ağı hem de interneti (Nostr) birlikte kullanabilir, böylece yakındaki ağ adaları bağlanabilir. Kapalıyken, gönderimler yalnızca tek bir yol kullanır; hiçbir zaman kabloya düz metin koymaz.",
+  "favoritesTitle": "Favoriler",
+  "favoritesAdd": "Favorilere ekle",
+  "favoritesRemove": "Favorilerden kaldır",
+  "favoritesEmpty": "Henüz favori yok — üye listesinden bir arkadaşınıza yıldız ekleyin",
+  "favoritesNearbyTitle": "Yakındaki favori",
+  "favoritesNearbyBody": "{name} ağ üzerinde yakında",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "Bölgedeki favori",
+  "favoritesInAreaBody": "{name} bu bölgede çevrimiçi",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Örgü topolojisi",
+  "topologySubtitle": "Mesh duyurusundan eşler ve bağlantı ipuçları (salt okunur)",
+  "topologyConnectedNow": "Şimdi bağlanıldı (BLE)",
+  "topologyNearby": "Yakında (BLE)",
+  "topologyKnown": "Bilinen akranlar",
+  "topologyEmpty": "Henüz öğrenilen arkadaş yok — BLE açıkken yakınınızda kalın",
+  "topologyYou": "Sen",
+  "topologyStats": "{peers} eşler · {links} bağlantılar",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "Yakındaki ağ keşfinden tahmin edilmiştir; cihazınız vurgulanmıştır. Sohbeti açmak için bir arkadaşınıza dokunun.",
+  "topologyOpen": "Örgü topolojisi",
+  "slashHelpTitle": "Komutlar",
+  "slashHelpBody": "/help — bu liste\n/who — geçerli kanaldaki çevrimiçi kişiler\n/drop <metin> — buraya mühürlü bir bildirim sabitleyin (E2EE yayılımı)\n\nTam kılavuz: Aşağıdaki kılavuzu aç veya Ayarlar → Kullanım kılavuzu'nu kullanın.",
+  "slashWhoEmpty": "Şu anda bu kanalda çevrimiçi kimse yok",
+  "slashWhoTitle": "Çevrimiçi ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "Kullanım: /not metninizi bırakın",
+  "slashDropDone": "{channel} ile ilgili bildirim bırakıldı",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "Bilinmeyen komut - /help'i deneyin",
+  "announceOpen": "Duyurular",
+  "announceTitle": "Duyurular",
+  "announceEmpty": "Henüz pano yok; kilitli veya açık bildirimleri yayınlamak için bir pano oluşturun",
+  "announceCreate": "Pano oluştur",
+  "announceCreateHint": "Yönetim kurulu adı",
+  "announceDefaultTitle": "Topluluk kurulu",
+  "announceSettings": "Kart ayarları",
+  "announceAllowLocked": "Kilitli (şifreli) yayınlara izin ver",
+  "announceAllowLockedSub": "Pano anahtarıyla şifrelendi — okuyucuların erişime ihtiyacı var",
+  "announceAllowOpen": "Açık (düz metin) gönderilere izin ver",
+  "announceAllowOpenSub": "E2EE değil — ağ/rölelerde okunabilir. Varsayılan olarak kapalıdır.",
+  "announceComposeHint": "Bir duyuru yazın…",
+  "announceMediaInternetOnly": "Fotoğraflı/sesli duyurular internet üzerinden gönderilir (BLE değil)",
+  "announceNeedInternet": "Fotoğraflı veya sesli duyurular göndermek için internete bağlanın",
+  "announceVoiceFailed": "Ses kaydedilemedi: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "Resim çok büyük (maks ~180 KB)",
+  "announcePlayVoice": "Sesli notu çal",
+  "announceImageLabel": "📷 Resim",
+  "announceAudioLabel": "🎤 Sesli not",
+  "announceModeLocked": "Kilitli",
+  "announceModeOpen": "Açık",
+  "announceOpenBadge": "AÇIK · şifrelenmemiş",
+  "announceLockedBadge": "Kilitli",
+  "announceLockedPlaceholder": "Şifreli — okuma erişimi isteyin",
+  "announceRequestAccess": "Erişim iste",
+  "announceRequestSent": "Pano sahibine erişim isteği gönderildi",
+  "announceRequestFailed": "Erişim isteğinde bulunulamadı (sahibin ortak anahtarı gerekiyor)",
+  "announceOpenConfirmTitle": "Şifreleme olmadan yayınlansın mı?",
+  "announceOpenConfirmBody": "Açık gönderiler E2EE değildir. Yoldaki herkes (kafes/röleler) bunları okuyabilir. Devam etmek?",
+  "announcePostAction": "Postalamak",
+  "announcePendingRequests": "Erişim istekleri",
+  "announceApprove": "Onaylamak",
+  "announceDeny": "Reddetmek",
+  "announceGranted": "Bu panodaki kilitli gönderileri okuyabilirsiniz",
+  "announceOwner": "Bu panonun sahibi sizsiniz",
+  "announceCopyInvite": "Davet metnini kopyala",
+  "announceShowInviteQr": "Davet QR'sini göster",
+  "announceScanInviteQr": "Tarama panosu davet QR'si",
+  "announceFollow": "Davetiyeden panoyu takip et",
+  "announceFollowHint": "Davet metnini veya sahibinden gelen ResilNet bağlantısını yapıştırın",
+  "announceFollowOk": "Takip panosu",
+  "announceFollowOkNamed": "Şimdi “{title}” takip ediliyor",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "Davet geçersiz veya hasarlı",
+  "announceInviteCopied": "Davet metni kopyalandı",
+  "announceInviteSaveQr": "QR'yi kaydet",
+  "announceInviteShare": "Daveti paylaş",
+  "announceFollowFromCompose": "Mesaj kutusunda kurul daveti algılandı",
+  "peerConfirmAddTitle": "Ağ üyesi eklensin mi?",
+  "peerConfirmAddBody": "Onlara özel olarak mesaj gönderebilmeniz için genel anahtarıyla birlikte “{name}” eklensin mi?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "Üye ekle",
+  "peerAddedOk": "Ağ üyelerine {name} eklendi",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "Mesaj kutusunda kimlik/ortak anahtar algılandı",
+  "peerHashCopied": "Ortak anahtar karması kopyalandı",
+  "peerHashOpenChat": "Sohbeti aç",
+  "peerHashAddHint": "Hash kopyalandı. E2EE'nin genel anahtarının tamamını ekleyebilmeniz için kimlik bağlantılarını veya QR'lerini paylaşmalarını isteyin.",
+  "peerQrNoCode": "Bu resimde ResilNet QR bulunamadı",
+  "identityInviteSharePreamble": "ResilNet kimliği: “{name}”\nBağlantıyı açın veya sohbete yapıştırın → Üye ekle\nVeya kimlik QR'sini tarayın.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "Kimlik bağlantısını paylaş",
+  "identityInviteCopied": "Kimlik bağlantısı kopyalandı",
+  "announceInviteSharePreamble": "Kurul daveti: “{title}”\nResilNet'ı açın → Topluluk panoları → Davetten takip edin\nVeya QR'yi tarayın / aşağıdaki bağlantıya dokunun.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "Bu panoyu takip ediyor musun?",
+  "announceConfirmFollowBody": "Bu davetteki “{title}” takip edilsin mi?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "Takip etmek"
+}

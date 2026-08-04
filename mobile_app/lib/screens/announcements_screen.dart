@@ -25,6 +25,7 @@ import '../state/app_state.dart';
 import '../widgets/invite_actions_sheet.dart';
 import 'qr_capture_screen.dart';
 import 'voice_record_sheet.dart';
+import '../app/glass_overlays.dart';
 
 Future<void> openAnnouncementsScreen(BuildContext context) {
   return Navigator.of(context).push(
@@ -67,7 +68,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     final ctrl = TextEditingController(text: prefill ?? '');
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.announceFollow),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -106,7 +107,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     final board = await s.followBoardFromInviteAny(ctrl.text);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(
           board != null
               ? l10n.announceFollowOkNamed(board.title)
@@ -130,7 +131,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     if (!mounted) return;
     final l10n = context.l10n;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(
           board != null
               ? l10n.announceFollowOkNamed(board.title)
@@ -150,7 +151,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       board,
       preamble: l10n.announceInviteSharePreamble,
     );
-    await showModalBottomSheet<void>(
+    await showGlassModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       builder: (ctx) {
@@ -186,7 +187,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                         await Clipboard.setData(ClipboardData(text: short));
                         if (!mounted) return;
                         ScaffoldMessenger.of(this.context).showSnackBar(
-                          SnackBar(content: Text(l10n.inviteLinkCopied)),
+                          GlassSnackBar(content: Text(l10n.inviteLinkCopied)),
                         );
                       },
                     ),
@@ -256,7 +257,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         if (!granted) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.identityGalleryDenied)),
+            GlassSnackBar(content: Text(l10n.identityGalleryDenied)),
           );
           return;
         }
@@ -286,7 +287,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.identityQrSaved)),
+        GlassSnackBar(content: Text(l10n.identityQrSaved)),
       );
     } catch (e) {
       debugPrint('[Announce] save invite QR failed: $e');
@@ -304,7 +305,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.identityQrSaveFailed('$e'))),
+        GlassSnackBar(content: Text(l10n.identityQrSaveFailed('$e'))),
       );
     }
   }
@@ -328,7 +329,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     await Clipboard.setData(ClipboardData(text: text));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.announceInviteCopied)),
+      GlassSnackBar(content: Text(l10n.announceInviteCopied)),
     );
   }
 
@@ -337,7 +338,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     final name = TextEditingController(text: l10n.announceDefaultTitle);
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.announceCreate),
         content: TextField(
           controller: name,
@@ -374,7 +375,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
 
     if (isMedia && !_hasInternet(s)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.announceNeedInternet)),
+        GlassSnackBar(content: Text(l10n.announceNeedInternet)),
       );
       return;
     }
@@ -391,7 +392,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     if (mode == AnnouncementPostMode.open && !isMedia) {
       final confirm = await showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (ctx) => GlassAlertDialog(
           title: Text(l10n.announceOpenConfirmTitle),
           content: Text(l10n.announceOpenConfirmBody),
           actions: [
@@ -423,7 +424,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         _compose.clear();
       } else if (isMedia && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.announceNeedInternet)),
+          GlassSnackBar(content: Text(l10n.announceNeedInternet)),
         );
       }
     } finally {
@@ -438,7 +439,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     if (_posting) return;
     if (!_hasInternet(s)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.announceNeedInternet)),
+        GlassSnackBar(content: Text(context.l10n.announceNeedInternet)),
       );
       return;
     }
@@ -459,7 +460,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     if (bytes == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.announceImageTooLarge)),
+        GlassSnackBar(content: Text(context.l10n.announceImageTooLarge)),
       );
       return;
     }
@@ -471,7 +472,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     if (_posting) return;
     if (!_hasInternet(s)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.announceNeedInternet)),
+        GlassSnackBar(content: Text(context.l10n.announceNeedInternet)),
       );
       return;
     }
@@ -481,7 +482,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       if (!mounted || result == null) return;
       if (result.bytes.length > AudioRecorderService.maxBytes) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
+          GlassSnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
         );
         return;
       }
@@ -508,7 +509,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     final ok = await s.requestBoardAccess(boardId);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(
           ok ? l10n.announceRequestSent : l10n.announceRequestFailed,
         ),

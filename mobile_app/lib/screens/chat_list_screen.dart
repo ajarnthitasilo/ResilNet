@@ -37,6 +37,7 @@ import 'online_people_sheet.dart';
 import 'panic_wipe.dart';
 import 'settings_screen.dart';
 import 'voice_record_sheet.dart';
+import '../app/glass_overlays.dart';
 
 /// Home feed — clean bitchat-style chrome with sheets for mode pickers.
 class ChatListScreen extends StatefulWidget {
@@ -101,7 +102,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final l10n = context.l10n;
     if (s.recovering) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.appRecoveryBusy)),
+        GlassSnackBar(content: Text(l10n.appRecoveryBusy)),
       );
       return;
     }
@@ -109,7 +110,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final messenger = ScaffoldMessenger.of(context);
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(l10n.appRefreshing),
         duration: const Duration(seconds: 2),
       ),
@@ -124,7 +125,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         AppRecoveryOutcome.failed => l10n.appRecoveryFailed,
       };
       messenger.showSnackBar(
-        SnackBar(
+        GlassSnackBar(
           content: Text(msg),
           duration: const Duration(seconds: 2),
         ),
@@ -133,7 +134,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       if (!mounted) return;
       messenger.hideCurrentSnackBar();
       messenger.showSnackBar(
-        SnackBar(content: Text(l10n.appRefreshFailed('$e'))),
+        GlassSnackBar(content: Text(l10n.appRefreshFailed('$e'))),
       );
     }
   }
@@ -209,7 +210,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     if (!context.mounted) return;
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.aliasTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -279,7 +280,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
@@ -300,7 +301,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         final sent = s.lastBulletinBleSent;
         if (sent > 0) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.noticeMeshPublishSent(sent))),
+            GlassSnackBar(content: Text(context.l10n.noticeMeshPublishSent(sent))),
           );
         } else if (warn != null) {
           final msg = switch (warn) {
@@ -310,7 +311,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             _ => context.l10n.noticePublishFailed,
           };
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(msg)),
+            GlassSnackBar(content: Text(msg)),
           );
         }
       } else if (s.feedChannel == FeedChannel.geo) {
@@ -318,7 +319,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         final n = await s.sendAreaPublicText(text);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
+          GlassSnackBar(content: Text(context.l10n.geoPublicSent(n))),
         );
       }
       _compose.clear();
@@ -331,7 +332,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Future<void> _sendPublicImage(AppState s) async {
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
@@ -354,7 +355,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     if (bytes == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatImageTooLarge)),
+        GlassSnackBar(content: Text(context.l10n.chatImageTooLarge)),
       );
       return;
     }
@@ -368,7 +369,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         );
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
+          GlassSnackBar(content: Text(context.l10n.geoPublicSent(n))),
         );
       } else if (s.feedChannel == FeedChannel.mesh) {
         final n = await s.sendMeshPublicText(
@@ -377,7 +378,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         );
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.geoPublicSent(n))),
+          GlassSnackBar(content: Text(context.l10n.geoPublicSent(n))),
         );
       }
     } finally {
@@ -389,7 +390,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     if (_sending) return;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
@@ -400,7 +401,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       if (!mounted || result == null) return;
       if (result.bytes.length > AudioRecorderService.maxBytes) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
+          GlassSnackBar(content: Text(context.l10n.chatVoiceTooLarge)),
         );
         return;
       }
@@ -415,7 +416,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             : await s.sendMeshPublicText(wirePlain, kind: PayloadKinds.audio);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          GlassSnackBar(
             content: Text(
               n <= 0
                   ? context.l10n.geoPublicSentNone
@@ -1026,7 +1027,7 @@ class _GeoListBody extends StatelessWidget {
                 onTap: () {
                   if (e.id.startsWith('radio:') || !e.canMessage) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      GlassSnackBar(
                         content: Text(
                           e.id.startsWith('radio:')
                               ? l10n.bleRadioNearbySubtitle

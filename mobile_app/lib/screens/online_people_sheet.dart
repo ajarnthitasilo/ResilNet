@@ -9,6 +9,7 @@ import '../widgets/geo_discovery_empty.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
 import 'chat_screen.dart';
+import '../app/glass_overlays.dart';
 
 /// People online for #mesh / Area — anon discovery + 1:1 when messageable.
 Future<void> showOnlinePeopleSheet(BuildContext context) {
@@ -38,14 +39,14 @@ class _OnlinePeopleSheet extends StatelessWidget {
       FeedChannel.geo => s.geoChannelLabel,
     };
 
-    return Container(
-      height: MediaQuery.sizeOf(context).height * 0.75,
-      decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-      ),
+    return ResilNetTheme.glassPanel(
+      context: context,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+      blurSigma: 28,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-      child: Column(
+      child: SizedBox(
+        height: MediaQuery.sizeOf(context).height * 0.75,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
@@ -136,7 +137,7 @@ class _OnlinePeopleSheet extends StatelessWidget {
                         onTap: () {
                           if (!e.canMessage) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              GlassSnackBar(
                                 content: Text(
                                   e.isBleRadioDiscovery
                                       ? l10n.bleRadioNearbySubtitle
@@ -158,6 +159,7 @@ class _OnlinePeopleSheet extends StatelessWidget {
                   ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'app/glass_overlays.dart';
 import 'app/theme.dart';
 import 'l10n/l10n_ext.dart';
+import 'l10n/supported_locales.dart';
 import 'screens/chat_list_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/permission_screen.dart';
@@ -79,27 +81,13 @@ class _ResilNetAppState extends State<ResilNetApp> {
                 ],
                 localeListResolutionCallback: (deviceLocales, supported) {
                   if (s.localeOverride != null) return s.localeOverride;
-                  if (deviceLocales != null) {
-                    for (final device in deviceLocales) {
-                      for (final locale in supported) {
-                        if (locale.languageCode == device.languageCode) {
-                          return locale;
-                        }
-                      }
-                    }
-                  }
-                  // Unsupported OS languages → English (only th/en shipped).
-                  return const Locale('en');
+                  // Follow the device automatically when Settings = system.
+                  return resolveDeviceLocale(deviceLocales);
                 },
                 localeResolutionCallback: (deviceLocale, supported) {
                   if (s.localeOverride != null) return s.localeOverride;
                   if (deviceLocale == null) return const Locale('en');
-                  for (final locale in supported) {
-                    if (locale.languageCode == deviceLocale.languageCode) {
-                      return locale;
-                    }
-                  }
-                  return const Locale('en');
+                  return resolveDeviceLocale([deviceLocale]);
                 },
                 home: !s.initDone
                     ? const _BootScreen()
@@ -168,7 +156,7 @@ class _BootErrorScreenState extends State<_BootErrorScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
+        return GlassAlertDialog(
           title: Text(l10n.bootRecoveryConfirmTitle),
           content: Text(l10n.bootRecoveryConfirmBody),
           actions: [
@@ -193,12 +181,12 @@ class _BootErrorScreenState extends State<_BootErrorScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.bootRecoverySuccess)));
+      ).showSnackBar(GlassSnackBar(content: Text(l10n.bootRecoverySuccess)));
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.bootRecoveryFailed('$e'))));
+      ).showSnackBar(GlassSnackBar(content: Text(l10n.bootRecoveryFailed('$e'))));
     } finally {
       if (mounted) {
         setState(() => _recovering = false);

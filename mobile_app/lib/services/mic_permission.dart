@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../app/glass_overlays.dart';
 
 /// Thrown when the user permanently denied microphone access.
 const micPermanentlyDeniedCode = 'MIC_PERMANENTLY_DENIED';
@@ -29,7 +30,7 @@ void showMicPermissionError(
 }) {
   if (error is StateError && error.message == micPermanentlyDeniedCode) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(deniedMessage),
         action: SnackBarAction(
           label: openSettingsLabel,
@@ -40,6 +41,6 @@ void showMicPermissionError(
     return;
   }
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(failedMessage)),
+    GlassSnackBar(content: Text(failedMessage)),
   );
 }

@@ -1,0 +1,1105 @@
+{
+  "@@locale": "ta",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "புதுப்பிக்கிறது ResilNet…",
+  "appRefreshed": "புதுப்பிக்கப்பட்டது - ரேடியோக்கள் மற்றும் கண்டுபிடிப்பு மீண்டும் தொடங்கப்பட்டது",
+  "appRefreshFailed": "புதுப்பிக்க முடியவில்லை: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "இருமுறை தட்டவும் = மென்மையான புதுப்பிப்பு. நீண்ட அழுத்தி = கடின மீட்பு. மும்முறை தட்டு = அவசர துடைப்பு.",
+  "softRefreshTipTitle": "ResilNet சிக்கியதாக உணர்ந்தால்",
+  "softRefreshTipBody": "மென்மையான ரேடியோ புதுப்பிப்புக்கு ResilNet (மேல்-இடது) இருமுறை தட்டவும். இன்னும் சிக்கியிருந்தால்: தலைப்பை நீண்ட நேரம் அழுத்தவும், ⋮ → Hard recover அல்லது அமைப்புகளைப் பயன்படுத்தவும். டிரிபிள் டப் என்பது அவசர துடைப்பு மட்டுமே.",
+  "softRefreshTipGotIt": "கிடைத்தது",
+  "infoSoftRefreshTitle": "பயன்பாடு சிக்கியதாக உணர்ந்தால்",
+  "infoSoftRefreshStepRefresh": "ResilNet (மேல்-இடது) → சாஃப்ட் ரெஃப்ரெஷ் ரேடியோக்கள் மற்றும் அருகிலுள்ளவர்களை இருமுறை தட்டவும்",
+  "infoSoftRefreshStepHard": "இன்னும் சிக்கியுள்ளதா? தலைப்பை நீண்ட நேரம் அழுத்தவும் அல்லது ⋮ / அமைப்புகள் → கடின மீட்பு",
+  "infoSoftRefreshStepWait": "ஸ்நாக்பார் முடிவுக்காகக் காத்திருந்து, மீண்டும் முயலவும். அமர்வு மீட்டமைப்பு உங்கள் விசைகளை வைத்திருக்கும்.",
+  "infoSoftRefreshStepWipe": "டிரிபிள்-டேப் = எமர்ஜென்சி துடைப்பு (உள்ளூர் தரவை நீக்குகிறது) — வேண்டுமென்றே இருந்தால் மட்டுமே",
+  "appRecoverySection": "பயன்பாட்டு மீட்பு",
+  "appRecoverySectionSubtitle": "பயன்பாடு உறைந்ததாக உணரும்போது பயன்படுத்தவும். மென்மையான = தலைப்பு இருமுறை தட்டவும். கடின மீட்பு வலிமையானது. அமர்வு மீட்டமைப்பு விசைகளைத் துடைக்காமல் சேவைகளை மறுதொடக்கம் செய்கிறது.",
+  "appHardRecoverAction": "கடின மீட்பு",
+  "appHardRecovering": "மீள்வது கடினம்...",
+  "appSessionResetAction": "அமர்வை மீட்டமைக்கவும்",
+  "appSessionResetRunning": "அமர்வை மீட்டமைக்கிறது…",
+  "appSessionResetConfirmTitle": "அமர்வை மீட்டமைக்கவா?",
+  "appSessionResetConfirmBody": "இந்தச் சாதனத்தில் ResilNet சேவைகளை மறுதொடக்கம் செய்கிறது. உங்கள் அடையாளச் சாவிகள் வைக்கப்பட்டுள்ளன.",
+  "appRecoveryBusy": "மீட்பு ஏற்கனவே இயங்குகிறது…",
+  "appRecoveryOk": "மீட்பு முடிந்தது",
+  "appRecoveryPartial": "சில படிகள் தவிர்க்கப்பட்டு மீட்பு முடிந்தது - இன்னும் சிக்கியிருந்தால் மீண்டும் முயற்சிக்கவும்",
+  "appRecoveryFailed": "மீட்டெடுப்பு தோல்வியடைந்தது - அமர்வு மீட்டமைப்பை முயற்சிக்கவும் அல்லது OS இலிருந்து பயன்பாட்டை வலுக்கட்டாயமாக வெளியேற்றவும்",
+  "localWifiTitle": "உள்ளூர் Wi‑Fi",
+  "localWifiSubtitle": "இணையம் இல்லாமலேயே அருகிலுள்ள சாதனங்களை இணைக்கவும் — ஒரு லேனில் இருப்பது போலவே.",
+  "localWifiNotGatewayHint": "ESP32 LoRa நுழைவாயில் SoftAP அல்ல. இது ஃபோன்↔ஃபோன் / லேன் மட்டுமே.",
+  "localWifiUnavailable": "உள்ளூர் Wi‑Fi இன்னும் தயாராகவில்லை - ஆப்ஸ் தொடங்குவதற்கு காத்திருக்கவும்.",
+  "lxmfBridgeTitle": "முகப்பு முனை",
+  "lxmfBridgeSubtitle": "சீல் செய்யப்பட்ட அரட்டைகளை உங்கள் Wi‑Fi இல் விருப்பமான Mac அல்லது Pi. இயல்பாக ஆஃப். எண்ட்-டு-எண்ட் என்க்ரிப்ஷனை மாற்றாது.",
+  "lxmfBridgeEnable": "வீட்டு முனையைப் பயன்படுத்தவும்",
+  "lxmfBridgeDisabledHint": "இந்த நெட்வொர்க்கில் Mac அல்லது Pi இல் பிரிட்ஜ் ஆப் இயங்கும் போது மட்டும் இயக்கவும்.",
+  "lxmfBridgeOnline": "ஆன்லைன் — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "முகப்பு முனையை அடைய முடியவில்லை — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "முகப்பு முனை முகவரி",
+  "lxmfBridgeBaseUrlHelper": "IP அல்லது http://IP:port — உதாரணம் 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "பியர் → LXMF டெஸ்ட் (JSON)",
+  "lxmfBridgeRefresh": "நிலையைச் சேமித்து புதுப்பிக்கவும்",
+  "lxmfBridgeLabHint": "மேம்பட்டது: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "முகப்பு முனை அமைப்புகள்",
+  "lxmfBridgeCheckConnection": "இணைப்பைச் சரிபார்க்கவும்",
+  "lxmfBridgeStatusOnline": "முகப்பு முனையுடன் இணைக்கப்பட்டது",
+  "lxmfBridgeStatusOffline": "முகப்பு முனையை அடைய முடியவில்லை",
+  "lxmfBridgeYourDest": "இந்த முனையின் முகவரி (நண்பர்களுடன் பகிரவும்)",
+  "lxmfBridgeCopyDest": "முகவரியை நகலெடுக்கவும்",
+  "lxmfBridgeDestCopied": "முகவரி நகலெடுக்கப்பட்டது",
+  "lxmfBridgeLinkedPeers": "இணைக்கப்பட்ட நண்பர்கள்",
+  "lxmfBridgeLinkedPeersHint": "ஒவ்வொரு நண்பருக்கும் அவர்களின் வீட்டு முனை முகவரி ஒருமுறை தேவை. சீல் செய்யப்பட்ட அரட்டைகள் இந்தப் பாதையைப் பயன்படுத்தலாம்.",
+  "lxmfBridgeNoLinks": "இதுவரை நண்பர்கள் யாரும் இணைக்கப்படவில்லை.",
+  "lxmfBridgeAddLink": "நண்பரை இணைக்கவும்",
+  "lxmfBridgePickPeer": "நண்பர்",
+  "lxmfBridgePeerDest": "அவர்களின் வீட்டு முனை முகவரி",
+  "lxmfBridgePeerDestHint": "முகப்பு முனை திரையில் இருந்து 32-எழுத்து குறியீடு",
+  "lxmfBridgeInvalidDest": "அந்த முகவரி சரியானதாக இல்லை. அவர்களின் முகப்பு முனையிலிருந்து முழு குறியீட்டையும் ஒட்டவும்.",
+  "lxmfBridgeRemoveLink": "இணைப்பை நீக்கவும்",
+  "lxmfBridgeSaveLink": "சேமிக்கவும்",
+  "lxmfBridgeLinkSaved": "நண்பர் இணைத்தார்",
+  "lxmfBridgeNoPeers": "இதுவரை செய்தி அனுப்பக்கூடிய தொடர்புகள் எதுவும் இல்லை — முதலில் ஒரு நண்பரைச் சேர்க்கவும்.",
+  "lxmfBridgeHelp": "மேக்/பையில் பாலத்தை இயக்கவும். இந்தப் பாதை உங்கள் LAN இல் இருக்கும் — இது LoRa அல்ல மேலும் இணையம் அல்லது புளூடூத் மெஷை மாற்றாது.",
+  "localWifiModeHotspot": "அருகில்",
+  "localWifiModeRouter": "திசைவி",
+  "localWifiHotspotIntro": "ஒரு சாதனம் தனிப்பட்ட ஹாட்ஸ்பாட்டைப் பகிர்ந்து கொள்கிறது. மற்றவர்கள் அந்த ஹாட்ஸ்பாட்டில் சேர்கிறார்கள், பிறகு ResilNet அவர்களை உள்ளூர் நெட்வொர்க்கில் கண்டுபிடிக்கும்.",
+  "localWifiHostAction": "நெட்வொர்க்கை உருவாக்கவும் (ஹோஸ்ட்)",
+  "localWifiJoinAction": "நெட்வொர்க்கில் சேரவும்",
+  "localWifiHostSteps": "1. iOS/Android அமைப்புகளைத் திறந்து தனிப்பட்ட ஹாட்ஸ்பாட் (அல்லது இணையப் பகிர்வு) ஆன் செய்யவும்.\n2. ஹாட்ஸ்பாட் பெயரை (மற்றும் கடவுச்சொல்) நண்பர்களிடம் சொல்லுங்கள்.\n3. இங்கு வந்து “ஹாட்ஸ்பாட் ஆன் - காத்திருப்பைத் தொடங்கு” என்பதைத் தட்டவும்.",
+  "localWifiHostReady": "ஹாட்ஸ்பாட் இயக்கத்தில் உள்ளது — காத்திருக்கத் தொடங்குங்கள்",
+  "localWifiHostWaiting": "நண்பர்கள் சேர்வதற்காகக் காத்திருக்கிறது…",
+  "localWifiJoinSteps": "1. கணினி அமைப்புகளைத் திறந்து, உங்கள் நண்பரின் தனிப்பட்ட ஹாட்ஸ்பாட்டில் சேரவும்.\n2. இங்கே திரும்பி \"நான் இணைக்கப்பட்டிருக்கிறேன் - தேடு\" என்பதைத் தட்டவும்.",
+  "localWifiJoinReady": "நான் இணைக்கப்பட்டிருக்கிறேன் - தேடல்",
+  "localWifiRouterIntro": "ஒவ்வொரு சாதனத்தையும் ஒரே Wi‑Fi திசைவி/AP உடன் இணைக்கவும். திசைவிக்கு இணையம் தேவையில்லை - பகிரப்பட்ட உள்ளூர் நெட்வொர்க் மட்டுமே.",
+  "localWifiRouterSearch": "இதை Wi‑Fi இல் தேடவும்",
+  "localWifiRefreshNetwork": "Wi‑Fi தகவலைப் புதுப்பிக்கவும்",
+  "localWifiRouterNoWifiTitle": "Wi‑Fi இல் இல்லை",
+  "localWifiRouterNoWifiBody": "கணினி அமைப்புகளில் ரூட்டரின் Wi‑Fi இல் சேர்ந்து, மீண்டும் தேடவும்.",
+  "localWifiDiscovering": "உள்ளூர் Wi‑Fi இல் தேடுகிறது…",
+  "localWifiPeersFound": "இந்த நெட்வொர்க்கில் உள்ள சாதனங்கள்",
+  "localWifiStop": "நிறுத்து",
+  "localWifiSsidUnknown": "Wi‑Fi பெயர் கிடைக்கவில்லை",
+  "localWifiStubBanner": "LAN சாக்கெட்டுக்காக காத்திருக்கிறது…",
+  "localWifiLiveBanner": "LAN கண்டுபிடிப்பு நேரலை (UDP) — இந்த Wi‑Fi இல் அறிவிப்பு + சீல் செய்யப்பட்ட அரட்டை",
+  "localWifiEmptyHotspot": "இதுவரை சாதனங்கள் இல்லை.\nநண்பர்கள் உங்கள் ஹாட்ஸ்பாட்டில் சேர்ந்தார்களா மற்றும் லோக்கல் நெட்வொர்க் அணுகலை அனுமதித்தார்களா என்பதைச் சரிபார்க்கவும்.",
+  "localWifiEmptyRouter": "இதுவரை சாதனங்கள் இல்லை.\nஅதே SSID? உள்ளூர் நெட்வொர்க் அனுமதிக்கப்படுகிறதா? சில திசைவிகள் சாதனத்திலிருந்து சாதன போக்குவரத்தைத் தடுக்கின்றன (AP தனிமைப்படுத்தல்).",
+  "localWifiIsolationHelp": "நாம் ஏன் ஒருவரையொருவர் கண்டுபிடிக்க முடியவில்லை?",
+  "localWifiIsolationTitle": "திசைவி வாடிக்கையாளர்களை தனிமைப்படுத்தலாம்",
+  "localWifiIsolationBody": "AP/கிளையண்ட் தனிமைப்படுத்தல் (அல்லது விருந்தினர் நெட்வொர்க்) இயக்கத்தில் இருந்தால், அதே Wi‑Fi இல் உள்ள ஃபோன்கள் பேச முடியாது. தனிமைப்படுத்தலை முடக்கவும், முக்கிய SSID ஐப் பயன்படுத்தவும் அல்லது அருகிலுள்ள (ஹாட்ஸ்பாட்) பயன்முறைக்கு மாறவும்.",
+  "localWifiPeerReady": "அரட்டையடிக்கத் தயார் (சாவி உள்ளது)",
+  "localWifiPeerNeedKey": "கிடைத்தது - விசைகளை மாற்ற QR ஐ ஸ்கேன் செய்யவும்",
+  "localWifiErrorTitle": "உள்ளூர் Wi‑Fi பிழை",
+  "localWifiErrorBody": "ஏதோ தவறாகிவிட்டது. நிறுத்திவிட்டு மீண்டும் முயற்சிக்கவும்.",
+  "preparingSystem": "அமைப்பு தயாராகிறது…",
+  "bootFailedTitle": "தொடங்க முடியவில்லை",
+  "retry": "மீண்டும் முயற்சிக்கவும்",
+  "bootRecoveryAction": "புதிய அடையாளத்தைத் தொடங்கவும் (உள்ளூர் தரவை அழிக்கவும்)",
+  "bootRecoveryConfirmTitle": "புதிய அடையாளத்தைத் தொடங்கவா?",
+  "bootRecoveryConfirmBody": "இது இந்தச் சாதனத்தில் உள்ள உள்ளூர் அரட்டைகள், விசைகள் மற்றும் அடையாளத்தை நிரந்தரமாக அழிக்கும்.\nசகாக்கள் உங்கள் புதிய அடையாளத்துடன் உங்கள் QR ஐ மீண்டும் ஸ்கேன் செய்ய வேண்டும்.\nஇதை செயல்தவிர்க்க முடியாது.",
+  "bootRecoveryRunning": "உள்ளூர் அடையாளத்தை மீட்டமைக்கிறது…",
+  "bootRecoverySuccess": "உள்ளூர் அடையாள மீட்டமைப்பு முடிந்தது",
+  "bootRecoveryFailed": "அடையாளத்தை மீட்டமைக்க முடியவில்லை: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "ரத்து செய்",
+  "save": "சேமிக்கவும்",
+  "close": "மூடு",
+  "start": "தொடங்கு",
+  "send": "அனுப்பு",
+  "settings": "அமைப்புகள்",
+  "language": "மொழி",
+  "languageSubtitle": "இயல்பாக, பயன்பாடு உங்கள் தொலைபேசி மொழியைப் பின்பற்றுகிறது (ஆதரிக்கப்படும் போது). மற்ற மொழிகள் ஆங்கிலத்திற்குத் திரும்புகின்றன. நீங்கள் ஒரு மொழியையும் இங்கே பூட்டலாம்.",
+  "languageSystem": "கணினி இயல்புநிலை",
+  "languageThai": "தாய்",
+  "languageEnglish": "ஆங்கிலம்",
+  "notificationsTooltip": "அறிவிப்பு அமைப்புகள்",
+  "enableMessageNotifications": "செய்தி அறிவிப்புகளை இயக்கவும்",
+  "settingsNotificationsSubtitle": "1:1 செய்திகள் மற்றும் ஆன்லைனில் உள்ளவர்கள் (உள்ளூர் விழிப்பூட்டல்கள்)",
+  "networkMembersTooltip": "நெட்வொர்க் உறுப்பினர்கள்",
+  "identityQrTooltip": "அடையாளம் / QR",
+  "feedDirects": "அரட்டை",
+  "feedMesh": "#கண்ணி",
+  "feedGeo": "பகுதி",
+  "feedDirectsSubtitle": "தனிப்பட்ட E2EE செய்திகள்",
+  "feedMeshSubtitle": "அருகிலுள்ள சகாக்கள் (BLE)",
+  "feedGeoSubtitle": "ஜியோஹாஷ் கண்டுபிடிப்பு சேனல்",
+  "peerIdHint": "அரட்டையைத் தொடங்க ரிசீவர் ஐடியை (பொது விசை ஹாஷ்) ஒட்டவும்",
+  "directsEmpty": "இன்னும் அரட்டைகள் இல்லை — தொடங்குவதற்கு QR ஐ ஸ்கேன் செய்யவும் அல்லது ரிசீவர் ஐடியை ஒட்டவும்\nசெய்திகளை அனுப்புவதற்கு முன் E2EE மூலம் சீல் வைக்கப்படும் (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • அரட்டையைத் திறக்க தட்டவும்",
+  "meshIntro": "BLE வரம்பில் உள்ள சகாக்கள் — தனிப்பட்ட E2EE அரட்டைக்கு தட்டவும் (#mesh இல் பொது எழுதுதல் இல்லை)\nஹைப்ரிட் ரூட்டர் வழியாக அனுப்புகிறது (BLE + LoRa + Nostr ஆன்லைனில் இருக்கும்போது)",
+  "meshEmptyRunning": "அருகில் இதுவரை யாரும் இல்லை — BLE வரம்பிற்குள் மற்றொரு சாதனத்தில் பயன்பாட்டைத் திறக்கவும்",
+  "meshEmptyStopped": "BLE இயங்கவில்லை - புளூடூத் / இருப்பிட அனுமதியை வழங்கவும்",
+  "meshNearbyPrefix": "அருகில்",
+  "meshRetentionTitle": "செய்திகளை தானாக நீக்கவும்",
+  "meshRetentionSubtitle": "பழைய உள்ளூர் அரட்டை வரலாறு தானாகவே அகற்றப்படும்",
+  "meshRetentionKeep": "வைத்துக்கொள்",
+  "meshRetention1Day": "1 நாள்",
+  "meshRetention3Days": "3 நாட்கள்",
+  "meshRetention7Days": "7 நாட்கள்",
+  "refreshLocationTooltip": "இருப்பிடத்தைப் புதுப்பிக்கவும்",
+  "geoIntro": "இந்த ஜியோஹாஷில் ஆன்லைனில் உள்ளவர்கள் 1:1 அல்லது ஒரு பகுதி பொது ரசிகர்களுக்கு செய்தி அனுப்பலாம் (இன்னும் ஒரு பியர்க்கு E2EE சீல் வைக்கப்பட்டுள்ளது — சாதாரண உரை அல்ல)",
+  "geoEmpty": "{channel} இல் இதுவரை யாரும் ஆன்லைனில் இல்லை\nபோக்குவரத்து → இணையம்/ஆட்டோவைப் பயன்படுத்தவும், Nostr க்கு காத்திருக்கவும், இருப்பிடத்தைப் புதுப்பிக்கவும்",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "ஆன்லைனில் {channel} • 1:1 E2EEக்கு தட்டவும்",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "அருகில் (காத்திருப்புப் பகுதி) • 1:1 E2EEக்கு தட்டவும்",
+  "geoPeerNostrSubtitle": "Nostr இல் {channel} இல் பார்க்கப்பட்டது • கண்டுபிடிப்பு மட்டும் (மரபு)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "லெகசி அநாமதேய இருப்பு — பிணைக்கப்பட்ட சக அல்லது பரிமாற்ற QRக்காக காத்திருங்கள்",
+  "bleRadioNearbySubtitle": "BLE அருகில் — 1:1 E2EE ஐ தொடங்க QR ஐ ஸ்கேன் செய்யவும்",
+  "geoInternetDiscoverHint": "பகுதி இணைய கண்டுபிடிப்பிற்கு Nostr இணைக்கப்பட வேண்டும் (அமைப்புகள் → போக்குவரத்து → இணையம்/தானியங்கு)",
+  "geoEmptyNoLocation": "இருப்பிடம் இன்னும் தீர்க்கப்படவில்லை — உங்கள் ஜியோஹாஷை Nostr இல் வெளியிட GPS ஐ அனுமதித்து புதுப்பிக்கவும்",
+  "geoEmptyNeedsPermission": "இருப்பிட அனுமதி மறுக்கப்பட்டது - அமைப்புகள் → தனியுரிமை → இருப்பிடத்தில் ResilNet ஐ அனுமதிக்கவும்",
+  "geoEmptyServicesDisabled": "இருப்பிடச் சேவைகள் முடக்கப்பட்டுள்ளன - அமைப்புகளில் அவற்றை இயக்கவும்",
+  "geoEmptyNoGpsFix": "ஜிபிஎஸ் பிழைத்திருத்தத்தைப் பெற முடியவில்லை (Wi‑Fi iPadகளில் பொதுவானது) — கைமுறையாக ஜியோஹாஷை கீழே அமைக்கவும்",
+  "geoEmptyTeleportHint": "இட ஐகானைத் தட்டவும் → ஜியோஹாஷை உள்ளிடவும் (எ.கா. w5) → டெலிபோர்ட்",
+  "geoSetGeohashManually": "ஜியோஹாஷை அமைக்கவும்",
+  "geoTeleportHint": "ஜிபிஎஸ் இல்லையா? ஜியோஹாஷ் முன்னொட்டை உள்ளிட்டு (2–7 எழுத்துகள், எ.கா. w5) டெலிபோர்ட் என்பதைத் தட்டவும்",
+  "geoTeleportInvalid": "தவறான ஜியோஹாஷ் - அடிப்படை32 எழுத்துக்கள்/எண்களை மட்டும் பயன்படுத்தவும் (எ.கா. w5 அல்லது w5jt8)",
+  "geoTeleportOk": "பகுதி {channel} என அமைக்கப்பட்டது",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "கையேடு பகுதி: {channel} (GPS புதுப்பிப்பு மேலெழுதப்படும்)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr தயாராக இல்லை - மீண்டும் இணை என்பதைத் தட்டவும் (init வெற்றிபெறும் வரை 0/0)",
+  "geoEmptyMeshOnly": "போக்குவரத்து என்பது மெஷ்-மட்டுமே — Nostrக்கு மேல் உள்ளவர்களைக் கண்டறிய இணையம் அல்லது ஆட்டோவுக்கு மாறவும்",
+  "geoEmptyWaiting": "{channel} இல் இதுவரை யாரும் இல்லை — இரண்டு சாதனங்களிலும் பகுதி + இணையத்தைத் திறந்து வைத்து ~60கள் காத்திருக்கவும்",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#பகுதி",
+  "geoRefreshLocation": "இருப்பிடத்தைப் புதுப்பிக்கவும்",
+  "settingsClearLocationTitle": "தெளிவான இடம்",
+  "settingsClearLocationSubtitle": "ஜிபிஎஸ் / டெலிபோர்ட் ஜியோஹாஷை அகற்று (பகுதி #—)",
+  "settingsClearLocationConfirmTitle": "இருப்பிடத்தை அழிக்கவா?",
+  "settingsClearLocationConfirmBody": "இந்தச் சாதனத்தில் சேமிக்கப்பட்ட ஜியோஹாஷை நீக்குகிறது. நீங்கள் GPS ஐப் புதுப்பிக்கலாம் அல்லது பின்னர் மீண்டும் டெலிபோர்ட் செய்யலாம்.",
+  "settingsClearLocationAction": "தெளிவான இடம்",
+  "settingsClearLocationSnack": "இடம் அழிக்கப்பட்டது",
+  "chatVoiceTooLarge": "குரல் குறிப்பு மிகவும் பெரியது — அதிகபட்சம் ~30 வினாடிகள்",
+  "chatVoiceNeedInternet": "குரல் குறிப்புக்கு இணையம் தேவை (Nostr) — BLEக்கு மட்டும் பெரியது",
+  "chatVoiceSentInternet": "குரல் குறிப்பு இணையம் வழியாக அனுப்பப்பட்டது",
+  "noticeAnonMention": "குறிப்பிடவும்",
+  "noticeAnonDm": "நேரடி செய்தி",
+  "noticeAnonHug": "கட்டிப்பிடி",
+  "noticeAnonSlap": "அறைதல்",
+  "noticeAnonBlock": "தொகுதி",
+  "noticeAnonNeedKey": "இதுவரை பொது விசை இல்லை — QR ஐ முதலில் 1:1க்கு மாற்றவும்",
+  "noticeAnonActionSent": "அனுப்பப்பட்டது",
+  "noticeAnonBlocked": "{anon} தடுக்கப்பட்டது",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* அணைப்புகள் {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* அறைகிறது {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Nostr ஐ மீண்டும் இணைக்கவும்",
+  "nostrSectionTitle": "Nostr ரிலேக்கள்",
+  "nostrSectionSubtitle": "இணைய செய்தி அனுப்புதல் மற்றும் பகுதி கண்டுபிடிப்பு ஆகியவை இந்த ரிலேகளைப் பயன்படுத்துகின்றன. நிலை ஆஃப்லைனில் இருந்தால், மீண்டும் இணை என்பதைத் தட்டவும்.",
+  "nostrStatusOnline": "{connected}/{total} இணைக்கப்பட்டது",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "ஆஃப்லைன் — ரிலேக்கள் பட்டியலிடப்பட்டுள்ளன ஆனால் எதுவும் இணைக்கப்படவில்லை",
+  "nostrStatusNotInit": "தொடங்கவில்லை (0/0) — துவக்க மீண்டும் இணை என்பதைத் தட்டவும்",
+  "nostrReconnectAction": "Nostr ஐ மீண்டும் இணைக்கவும்",
+  "nostrReconnectOk": "Nostr இணைக்கப்பட்டுள்ளது ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "இன்னும் ஆஃப்லைனில் உள்ளது — Wi‑Fi/செல்லுலரைச் சரிபார்க்கவும் அல்லது மீண்டும் முயற்சிக்கவும்",
+  "nostrReconnectFailedDetail": "தோல்வி: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "ரிலேகளுடன் இணைக்கிறது…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "{channel} இல் இணையம் (Nostr) • சீல் செய்யப்பட்ட அரட்டை தயார்",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "பகுதி போக்குவரத்து",
+  "transportModeSubtitle": "Mesh = BLE அருகில் (ரேடியோ) Nostr · இணையம் & ஆட்டோ = Nostr பேர் பட்டியல் இல்லாத போது",
+  "transportModeMesh": "கண்ணி",
+  "transportModeInternet": "இணையம்",
+  "transportModeAuto": "ஆட்டோ",
+  "geoPublicHint": "இந்தப் பகுதியில் ஆன்லைனில் உள்ள அனைவருக்கும் பொதுச் செய்தி",
+  "geoPublicSend": "பொது",
+  "geoPublicHelp": "{count} ஆன்லைன் பியர்(களுக்கு) சீல் செய்யப்பட்ட ஃபேன்-அவுட் - ஒவ்வொன்றும் ஒரு தனிப்பட்ட உறையைப் பெறுகின்றன",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "இந்தப் பகுதியில் உள்ள {count} பியர்(களுக்கு) அனுப்பப்பட்டது",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "ஆன்லைனில் மெசேஜ் செய்யக்கூடிய சகாக்கள் இல்லை - விசைகளை வைத்திருக்கும் பியர்களுடன் ஏரியா/மெஷ் திறக்கவும் அல்லது BLE/Nostr க்கு காத்திருக்கவும்",
+  "areaPublicBadge": "பகுதி பொதுமக்கள்",
+  "geoErrorPermission": "இருப்பிடத்தைப் படிக்க முடியவில்லை - இருப்பிட அனுமதியைச் சரிபார்க்கவும்",
+  "geoPrecisionRegion": "பிராந்தியம்",
+  "geoPrecisionProvince": "மாகாணம்",
+  "geoPrecisionCity": "நகரம்",
+  "geoPrecisionNeighborhood": "அக்கம்",
+  "geoPrecisionBlock": "தடு",
+  "aliasTitle": "புனைப்பெயரை அமைக்கவும் (தொடர்பு மாற்றுப்பெயர்)",
+  "aliasHintBody": "இந்த மாற்றுப்பெயர் இந்தச் சாதனத்தில் மட்டுமே சேமிக்கப்படுகிறது (உள்ளூர் மட்டும்)\nஇது E2EE டிராஃபிக்குடன் அனுப்பப்படாது",
+  "aliasLabel": "புனைப்பெயர்",
+  "aliasHint": "எ.கா. \"கிராமத் தலைவர்\", \"பி'சோம்சாய்\"...",
+  "settingsDevices": "சாதனங்கள்",
+  "settingsFirmwareTitle": "ESP32 நிலைபொருளைப் பதிவிறக்கவும் / புதுப்பிக்கவும்",
+  "settingsFirmwareSubtitle": ".bin கோப்புகளைப் பதிவிறக்கி, OTA வழியாக ESP32 போர்டைப் புதுப்பிக்கவும்",
+  "mtBridgeTitle": "Meshtastic பாலம்",
+  "mtBridgeSettingsSubtitle": "உரை-மட்டும் A/B பிரிட்ஜ் — ResilNet E2EE அல்ல",
+  "mtBridgeIntro": "Meshtastic மற்றும் ResilNet இடையே குறுகிய எளிய உரையை நகர்த்தவும். ஏ மற்றும் பி முறைகள் ஒரே நேரத்தில் இயங்க முடியாது. இது எண்ட்-டு-எண்ட் என்க்ரிப்ஷன் அல்ல.",
+  "mtBridgeModeLabel": "பயன்முறை",
+  "mtBridgeModeOff": "ஆஃப்",
+  "mtBridgeModeA": "இன்ஜெஸ்ட் ஏ",
+  "mtBridgeModeB": "எக்ரஸ் பி",
+  "mtBridgeModeOffShort": "ஆஃப்",
+  "mtBridgeModeAShort": "இல் ஏ",
+  "mtBridgeModeBShort": "அவுட் பி",
+  "mtBridgeMutexHint": "ஒரு பயன்முறையைத் தேர்ந்தெடுப்பது மற்றொன்று தானாகவே அணைக்கப்படும். ஒரே நேரத்தில் A+B ஆதரிக்கப்படவில்லை.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "டெமோ (பதிவு)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "உள்வரும் உரை #meshtastic என அறிவிப்புகளின் கீழ் தோன்றும். மெஷ் ரிலே விருப்பமானது (இயல்புநிலையாக ஆஃப்).",
+  "mtBridgeRelayTitle": "ResilNet மெஷிலும் ரிலே",
+  "mtBridgeRelayHint": "இயக்கப்பட்டால், கையொப்பமிடப்பட்ட பொது அறிவிப்புகள் ஒளிபரப்பப்படும். ஆஃப் = இந்த மொபைலின் அறிவிப்புகள் மட்டும்.",
+  "mtBridgeSimulateHint": "டெமோ செய்தி",
+  "mtBridgeSimulate": "Meshtastic செய்தியை உருவகப்படுத்தவும்",
+  "mtBridgeIngestOk": "அறிவிப்புகளில் உட்செலுத்தப்பட்டது (#meshtastic)",
+  "mtBridgeEgressWarning": "எச்சரிக்கை: இங்கு அனுப்பப்படும் செய்திகள் ResilNet E2EE அல்ல. Meshtastic பாதையில் உள்ள எவரும் அவற்றைப் படிக்கலாம்.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "வெளியிட வேண்டிய உரை",
+  "mtBridgeSend": "Meshtastic க்கு அனுப்பவும்",
+  "mtBridgeEgressOk": "Meshtastic க்கு வரிசையில் உள்ளது (பதிவு / வரலாற்றைப் பார்க்கவும்)",
+  "mtBridgeLastEgress": "கடைசி வெளியேற்றம்",
+  "mtBridgeEgressHistory": "சமீபத்திய முன்னேற்றம்",
+  "mtBridgeOffHint": "பிரிட்ஜைப் பயன்படுத்த Ingest (A) அல்லது Egress (B) ஐ இயக்கவும்.",
+  "mtBridgeNoticeBadge": "MESHTASTIC · E2EE அல்ல",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "MQTT போக்குவரத்தைப் பயன்படுத்தவும்",
+  "mtBridgeUseMqttHint": "ஆஃப் = டெமோ பதிவு மட்டுமே (MQTT உள்வரும் புறக்கணிக்கப்பட்டது). ஆன் = MQTT இணைக்கப்படும் போது உட்கொள்ளல்/வெளியேற்றம்.",
+  "mtBridgeMqttHost": "தரகர் ஹோஸ்ட்",
+  "mtBridgeMqttPort": "துறைமுகம்",
+  "mtBridgeMqttTls": "TLS (mqtts) பயன்படுத்தவும்",
+  "mtBridgeMqttTlsHint": "வழக்கமான போர்ட் 8883. கணினி சான்றிதழ்களைப் பயன்படுத்துகிறது; கைகுலுக்கல் பிழைகளில் மென்மையாக தோல்வியடைகிறது.",
+  "mtBridgeMqttAutoReconnect": "தானாக மீண்டும் இணைக்கவும்",
+  "mtBridgeMqttAutoReconnectHint": "ஆன் செய்யும்போது, ​​துளிகளுக்குப் பிறகு கிளையன்ட் மீண்டும் இணைக்க முயற்சிக்கிறார். மீட்டமைக்கப்படும் வரை இணைப்பதை நிலை காட்டுகிறது.",
+  "mtBridgeMqttTopicHelpers": "தலைப்பு உதவியாளர்கள்",
+  "mtBridgeMqttRegion": "பிராந்திய முன்னொட்டு (விரும்பினால்)",
+  "mtBridgeMqttRegionHint": "அமைக்கப்படும்போது, ​​ரூட்டை msh/<region>/2/json ஆகப் பயன்படுத்து (தலைப்பு மூலத்தை மீறுகிறது).",
+  "mtBridgeMqttTopicRoot": "JSON தலைப்பு ரூட்",
+  "mtBridgeMqttDownlinkChannel": "டவுன்லிங்க் சேனல் பெயர்",
+  "mtBridgeMqttApplyTopics": "ரூட்டைப் பயன்படுத்தவும் → சந்தா / தலைப்புகளை வெளியிடவும்",
+  "mtBridgeMqttAdvanced": "மேம்பட்ட MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, மீண்டும் இணைத்தல், தலைப்புகள், சான்றுகள்",
+  "mtBridgeMqttTopicIn": "தலைப்பை குழுசேர்",
+  "mtBridgeMqttTopicOut": "தலைப்பை வெளியிடவும்",
+  "mtBridgeMqttGatewayFrom": "கேட்வே நோட் ஐடி (இருந்து)",
+  "mtBridgeMqttGatewayFromHint": "டெசிமல் ஐடி அல்லது !ஹெக்ஸ் — அனுப்பு டெக்ஸ்ட் டவுன்லிங்கிற்கு தேவை",
+  "mtBridgeMqttChannelIndex": "மெஷ் சேனல் இன்டெக்ஸ் (விரும்பினால் 0–7)",
+  "mtBridgeMqttUser": "பயனர் பெயர் (விரும்பினால்)",
+  "mtBridgeMqttPass": "கடவுச்சொல் (விரும்பினால்)",
+  "mtBridgeMqttPassStored": "இந்தச் சாதனத்தில் கடவுச்சொல் சேமிக்கப்பட்டுள்ளது (காட்டப்படவில்லை).",
+  "mtBridgeMqttPassReplace": "புதிய கடவுச்சொல் (வைக்க காலியாக விடவும்)",
+  "mtBridgeMqttPassReplaceHint": "சேமிக்கப்பட்ட கடவுச்சொல்லை வைத்திருக்க காலியாக விடவும்.",
+  "mtBridgeMqttPassClear": "கடவுச்சொல்லை அழிக்கவும்",
+  "mtBridgeMqttSave": "MQTT அமைப்புகளைச் சேமிக்கவும்",
+  "mtBridgeMqttSaved": "MQTT அமைப்புகள் சேமிக்கப்பட்டன",
+  "mtBridgeMqttConnect": "இணைக்கவும்",
+  "mtBridgeMqttDisconnect": "துண்டிக்கவும்",
+  "mtBridgeMqttConnected": "MQTT இணைக்கப்பட்டுள்ளது",
+  "mtBridgeMqttConnecting": "MQTT இணைக்கிறது…",
+  "mtBridgeMqttDisconnected": "MQTT துண்டிக்கப்பட்டது",
+  "mtBridgeMqttError": "MQTT பிழை",
+  "mtBridgeErrModeIngest": "முதலில் Ingest (A) க்கு மாறவும்",
+  "mtBridgeErrModeEgress": "முதலில் எக்ரஸ் (B)க்கு மாறவும்",
+  "mtBridgeErrRate": "மெதுவாக - விகிதம் வரையறுக்கப்பட்ட",
+  "mtBridgeErrDedupe": "நகல் செய்தி புறக்கணிக்கப்பட்டது",
+  "mtBridgeErrLoop": "பிரிட்ஜ் லூப்பைத் தடுக்க கைவிடப்பட்டது",
+  "mtBridgeErrEmpty": "செய்தி காலியாக உள்ளது",
+  "mtBridgeErrPublish": "வெளியிட முடியவில்லை",
+  "mtBridgeErrNotConnected": "MQTT இணைக்கப்படவில்லை",
+  "mtBridgeErrMissingHost": "MQTT தரகர் ஹோஸ்டை உள்ளிடவும்",
+  "mtBridgeErrMissingTopic": "தலைப்புகளை பதிவு செய்து வெளியிடவும்",
+  "mtBridgeErrMissingFromNode": "அனுப்பும் உரைக்கு நுழைவாயில் முனை ஐடியை (இருந்து) உள்ளிடவும்",
+  "mtBridgeErrConnect": "MQTT இணைப்பு தோல்வியடைந்தது",
+  "mtBridgeErrConnectTls": "MQTT TLS இணைப்பு தோல்வியடைந்தது",
+  "settingsData": "தரவு",
+  "settingsDataHint": "தரவுத்தளத்தை சுருக்க உள்ளூர் செய்திகளை நீக்கவும் - அடையாளம், விசைகள் மற்றும் சகாக்கள் சேமிக்கப்படும்",
+  "settingsSaveHistoryTitle": "செய்தி வரலாற்றைச் சேமிக்கவும்",
+  "settingsSaveHistorySubtitle": "முடக்கப்பட்டிருக்கும் போது, ​​செய்திகள் கம்பியில் E2EE இருக்கும் மற்றும் இந்த அமர்வுக்கு மட்டுமே வைக்கப்படும் (உள்ளூர் அரட்டை வரலாற்றில் இல்லை). இந்தச் சாதனத்தில் உங்கள் சொந்த உரை இன்னும் எளிய உரையாகக் காட்டப்படும்.",
+  "settingsPrivacy": "தனியுரிமை",
+  "settingsE2eeTitle": "எண்ட்-டு-எண்ட் என்க்ரிப்ஷன்",
+  "settingsE2eeSubtitle": "எப்போதும் இயக்கத்தில் இருக்கும் — செய்திகளை அனுப்புவதற்கு முன் RSA-OAEP + AES-GCM உடன் சீல் வைக்கப்படும். ரிலே மற்றும் அருகிலுள்ள ஹாப்ஸ் உள்ளடக்கங்களைப் படிக்க முடியாது.",
+  "settingsScreenshotTitle": "ஸ்கிரீன்ஷாட் எச்சரிக்கைகள்",
+  "settingsScreenshotSubtitle": "இந்தச் சாதனம் திரையைப் பிடிக்கும் போது, ​​அரட்டையில் கணினி வரியைக் காட்டு",
+  "settingsNostrExpiryTitle": "Nostr செய்தியை வைத்திருக்கும் நேரம்",
+  "settingsNostrExpirySubtitle": "Nostr வழியாக ஆன்லைனில் இருக்கும்போது எவ்வளவு நேரம் சீல் செய்யப்பட்ட உறைகள் உள்நாட்டில் இருக்க வேண்டும்",
+  "noticeExpiresIn": "காலாவதியாகிறது",
+  "noticesTitle": "அறிவிப்புகள்",
+  "noticesMeshIntro": "பொது புல்லட்டின் — ரேடியோ வரம்பில் அனைவருக்கும் தெரியும், குறியாக்கம் செய்யப்படவில்லை. இது ஃபோன்-டு-ஃபோன் ஆஃப்லைனில் செல்கிறது, மேலும் அருகிலுள்ள ResilNet ரிலே பெட்டிகள் ஒரு நகலை வைத்திருக்கின்றன, இதனால் பின்னர் வருபவர்கள் அதை இன்னும் பார்க்கிறார்கள்.",
+  "noticesMeshPublicBadge": "பொது · குறியாக்கம் செய்யப்படவில்லை",
+  "noticesGeoIntro": "இந்த இடத்திற்கான சிறு குறிப்புகளைச் சேர்க்கவும், அதனால் மற்ற பார்வையாளர்கள் அவற்றைக் கண்டறிய முடியும்.",
+  "noticesEmpty": "இதுவரை எந்த அறிவிப்பும் இல்லை",
+  "noticesEmptyHint": "இங்குள்ளவர்களுக்கு முதல் அறிவிப்பைப் பின் செய்யவும்.",
+  "noticesComposeHint": "அறிவிப்பை இடுங்கள்...",
+  "noticesUrgent": "அவசரம்",
+  "noticesOpen": "அறிவிப்புகள்",
+  "screenshotTaken": "* நீங்கள் ஒரு ஸ்கிரீன்ஷாட் எடுத்தீர்கள் *",
+  "chatAttachImage": "படத்தை இணைக்கவும்",
+  "chatImageLabel": "படம்",
+  "chatImageTooLarge": "படம் மிகவும் பெரியது - மற்றொரு படத்தை முயற்சிக்கவும்",
+  "chatNostrExpiry": "Nostr வைத்திருங்கள்",
+  "geoPublicComposeHint": "{channel} க்கு அனுப்பு — பொது",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "அனைத்து செய்திகளையும் அழிக்கவும்",
+  "settingsClearSubtitle": "இந்தச் சாதனத்தில் உள்ள அனைத்து அரட்டைகளையும் நீக்கவும்",
+  "settingsClearConfirmTitle": "எல்லா செய்திகளையும் அழிக்கவா?",
+  "settingsClearConfirmBody": "இது இந்தச் சாதனத்தில் உள்ள அனைத்து அரட்டை செய்திகளையும் நீக்குகிறது.\nசகாக்கள் மற்றும் புனைப்பெயர்கள் அகற்றப்படவில்லை.",
+  "settingsClearAction": "தெளிவான தரவு",
+  "settingsClearedSnack": "தரவு அழிக்கப்பட்டது",
+  "settingsVersion": "பதிப்பு {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: முனைகளை ஸ்கேன் செய்கிறது",
+  "meshBleEsp32Scanning": "ESP32: அருகிலுள்ள முனையைத் தேடுகிறது",
+  "meshBleSyncing": "BLE: ESP32 உடன் ஒத்திசைக்கிறது",
+  "meshNostrPublishing": "Nostr: வெளியிடுதல்",
+  "meshBleIdle": "BLE மெஷ் ஆன் — அருகிலுள்ள ஃபோன்கள் எதுவும் இல்லை",
+  "meshBlePeersNearby": "BLE மெஷ் — {count} ஃபோன்(கள்) அருகில்",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: அனுமதி தேவை",
+  "meshBlePausedCamera": "கேமராவிற்கு BLE இடைநிறுத்தப்பட்டது - தொடக்கம் BLE என்பதைத் தட்டவும்",
+  "meshBleStopped": "BLE முடக்கத்தில் உள்ளது - புளூடூத் இயக்கத்தில் உள்ளதா என்பதைச் சரிபார்த்து, பிறகு தொடங்கு BLE என்பதைத் தட்டவும்",
+  "meshBleRestart": "BLE ஐத் தொடங்கவும்",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "அனுமதிகளைச் சரிபார்த்து BLEஐத் தொடங்கவும்",
+  "meshNostrOffline": "Nostr ஆஃப்லைனில்",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} அருகிலுள்ள சகாக்கள் • LoRa {lora} • ஒத்திசைவு ~{meters}நி",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "தயார்",
+  "meshLoraNotReady": "தயாராக இல்லை",
+  "meshGatewayProgress": "கேட்வே UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "கேட்வே யுடிபி: தயார்",
+  "permissionTitle": "BLE மெஷ் நெட்வொர்க்கைத் தொடங்க அணுகலை அனுமதிக்கவும்",
+  "permissionBody": "பயன்பாட்டிற்கு புளூடூத் (ஸ்கேன் / இணைப்பு / விளம்பரம்), இருப்பிடம் (பழைய ஆண்ட்ராய்டு சாதனங்களுக்கு) மற்றும் மைக்ரோஃபோன் (அரட்டை மற்றும் அறிவிப்புகளில் குரல் குறிப்புகளுக்கு) சமூக செய்தியிடல் தேவை.",
+  "permissionE2ee": "எண்ட்-டு-எண்ட் என்க்ரிப்ஷன் (E2EE)\nரிலே முனைகளால் செய்தி உள்ளடக்கங்களைப் படிக்க முடியாது",
+  "permissionReady": "அனுமதிகள் தயார்",
+  "permissionRequest": "அனுமதித்து தொடரவும்",
+  "permissionNotReadySnack": "சிஸ்டம் இன்னும் தயாராகவில்லை - சிறிது நேரம் காத்திருந்து மீண்டும் முயற்சிக்கவும்",
+  "permissionDeniedSnack": "அனுமதிகள் முழுமையடையவில்லை - அமைப்புகளைத் திறந்து > ResilNet மற்றும் புளூடூத் / இருப்பிடம் / மைக்ரோஃபோனை அனுமதிக்கவும்",
+  "permissionMicDenied": "மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது - குரல் குறிப்புகளை பதிவு செய்ய அமைப்புகளில் அனுமதிக்கவும்",
+  "permissionMicOpenSettings": "அமைப்புகள்",
+  "permissionCameraDenied": "கேமரா அணுகல் மறுக்கப்பட்டது - QR குறியீடுகளை ஸ்கேன் செய்ய அமைப்புகளில் அனுமதிக்கவும்",
+  "permissionCameraFailed": "QR குறியீடுகளை ஸ்கேன் செய்ய கேமரா அனுமதி தேவை",
+  "permissionCameraOpenSettings": "அமைப்புகள்",
+  "permissionPhotosDenied": "புகைப்பட நூலக அணுகல் மறுக்கப்பட்டது - உங்கள் QR குறியீட்டைச் சேமிக்க அமைப்புகளில் அனுமதிக்கவும்",
+  "permissionPhotosFailed": "உங்கள் QR குறியீட்டைச் சேமிக்க, புகைப்பட நூலக அனுமதி தேவை",
+  "permissionPhotosOpenSettings": "அமைப்புகள்",
+  "permissionFailedSnack": "அனுமதி கோரிக்கை தோல்வி: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet கட்டிடக்கலை • ஸ்டோர் மற்றும் ஃபார்வர்டு மல்டி-ஹாப்",
+  "onboardingSkip": "தவிர்க்கவும்",
+  "onboardingNext": "அடுத்து",
+  "onboardingStart": "தொடங்குங்கள்",
+  "onboardingWelcomeTitle": "ResilNet க்கு வரவேற்கிறோம்",
+  "onboardingWelcomeBody": "இணையம் இல்லாவிட்டாலும், மெஷ் நெட்வொர்க்கில் ResilNet இல் அரட்டையடிக்கவும்",
+  "onboardingFriendsTitle": "எளிதாக நண்பர்களைச் சேர்க்கவும்",
+  "onboardingFriendsBody": "அடையாளத்திலிருந்து QR ஐப் பகிரவும் அல்லது பொது விசைகளை மாற்ற நண்பரின் QR ஐ ஸ்கேன் செய்யவும்",
+  "onboardingChannelsTitle": "மறைகுறியாக்கப்பட்ட அரட்டை + அருகிலுள்ள சேனல்கள்",
+  "onboardingChannelsBody": "அருகிலுள்ள சகாக்களைக் கண்டறிய #mesh / Area (geohash) ஐ மாற்றவும் - செய்திகள் BLE மெஷ் மற்றும் Nostr மீது E2EE இருக்கும்.",
+  "chatTitle": "அரட்டை (E2EE)",
+  "chatScanTooltip": "ஒரு பியர் சேர்க்க QR ஐ ஸ்கேன் செய்யவும்",
+  "chatBlockTooltip": "இந்த அனுப்புநரைத் தடு",
+  "chatBlockedSnack": "தடுக்கப்பட்டது: அறிவிப்புகள் இல்லை / ரிலே இல்லை",
+  "chatAliasTooltip": "புனைப்பெயரை அமைக்கவும்",
+  "chatReceiverPemLabel": "பெறுநர் பொது விசை (PEM)",
+  "chatReceiverPemHint": "உங்கள் நண்பரின் பொது விசையை ஒட்டவும் (QR / பகிரப்பட்ட கோப்பிலிருந்து)",
+  "chatNeedPeerKey": "இந்த இணையரின் QR ஐ முதலில் ஸ்கேன் செய்யவும் (சரிபார்க்கப்பட்ட பொது விசை தேவை)",
+  "chatPeerKeyMismatch": "சேமிக்கப்பட்ட பொது விசை இந்த பியர் ஐடியுடன் பொருந்தவில்லை",
+  "chatVoiceFailed": "ஆடியோவை பதிவு செய்ய முடியவில்லை: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "குரல் குறிப்பை இயக்க முடியவில்லை: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "குரல் குறிப்பை இயக்கவும்",
+  "chatPauseVoice": "இடைநிறுத்தம்",
+  "chatVoiceLabelSent": "🎤 குரல் குறிப்பு (சீல்)",
+  "chatVoiceLabel": "🎤 குரல் குறிப்பு",
+  "chatDecryptFailed": "[டிக்ரிப்ஷன் தோல்வி]",
+  "chatSentSealed": "[சீல் செய்யப்பட்டது • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[சீல்]",
+  "chatComposeHint": "ஒரு செய்தியைத் தட்டச்சு செய்யவும்... (அனுப்பும்போது சீல் வைக்கப்பட்டுள்ளது)",
+  "chatEmptyThread": "இதுவரை செய்திகள் இல்லை\nமெஷ் மூலம் அனுப்ப கீழே உள்ளிடவும்",
+  "chatLoadFailed": "உரையாடலை ஏற்ற முடியவில்லை: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "ஈமோஜி",
+  "statusPending": "நிலுவையில் உள்ளது",
+  "statusSent": "அனுப்பப்பட்டது",
+  "statusRelayed": "ஒளிபரப்பப்பட்டது",
+  "statusDelivered": "வழங்கப்பட்டது",
+  "statusRead": "படிக்கவும்",
+  "statusFailed": "தோல்வியடைந்தது",
+  "chatCopy": "நகலெடுக்கவும்",
+  "chatDeleteLocal": "இந்தச் சாதனத்தில் நீக்கு",
+  "chatDeletedLocalSnack": "இந்தச் சாதனத்தில் நீக்கப்பட்டது",
+  "chatRetry": "மீண்டும் முயற்சிக்கவும்",
+  "chatSendFailed": "வழங்கப்படவில்லை - மீண்டும் முயற்சி என்பதைத் தட்டவும்",
+  "chatImageNeedInternet": "படங்களை அனுப்ப இணையத்துடன் இணைக்கவும்",
+  "chatImageTooLargeOnline": "அனுப்பும் அளவுக்கு படத்தை சுருக்க முடியவில்லை",
+  "chatOpenLinkFailed": "இணைப்பைத் திறக்க முடியவில்லை",
+  "identityTitle": "அடையாளம்",
+  "identityScanTooltip": "கேமரா மூலம் QR ஐ ஸ்கேன் செய்யவும்",
+  "identityCopiedHash": "பொது விசை ஹாஷ் நகலெடுக்கப்பட்டது",
+  "identityPeerSaved": "QR இலிருந்து சகாக் காப்பாற்றப்பட்டார்",
+  "identityGalleryDenied": "புகைப்பட நூலக அனுமதி மறுக்கப்பட்டது",
+  "identityQrSaved": "QR புகைப்பட நூலகத்தில் சேமிக்கப்பட்டது",
+  "identityQrSaveFailed": "QR ஐச் சேமிக்க முடியவில்லை: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "நெட்வொர்க் உறுப்பினர்கள்",
+  "qrScanTitle": "நண்பரைச் சேர்க்க QR ஐ ஸ்கேன் செய்யவும்",
+  "qrInvalid": "ஸ்கேன் தோல்வி: தவறான QR",
+  "qrIdKeyMismatch": "QR நிராகரிக்கப்பட்டது: பொது விசையுடன் ஐடி பொருந்தவில்லை",
+  "qrCameraNotReady": "கேமரா தயாராக இல்லை",
+  "qrRetrySettings": "மீண்டும் முயற்சிக்கவும் / அமைப்புகளைத் திறக்கவும்",
+  "qrCameraOpenFailed": "கேமராவைத் திறக்க முடியவில்லை: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "சட்டகத்தின் உள்ளே QR குறியீட்டை சீரமைக்கவும்",
+  "firmwareDownloadTitle": "ESP32 நிலைபொருளைப் பதிவிறக்கவும்",
+  "firmwareSourceOnline": "சமீபத்திய (ஆன்லைன்)",
+  "firmwareSourceCached": "சேமிக்கப்பட்ட நகல் (ஆஃப்லைன்)",
+  "firmwareSourceBaseline": "தொகுக்கப்பட்ட அடிப்படை (ஆஃப்லைன்)",
+  "firmwareSourceUnavailable": "ஃபார்ம்வேர் இல்லை",
+  "firmwareBaselineIncompatible": "தொகுக்கப்பட்ட ஃபார்ம்வேர் மிகவும் பழையது - புதிய பதிப்பைப் பதிவிறக்க இணையத்துடன் இணைக்கவும்",
+  "firmwareChecksumFailed": "நிலைபொருள் ஒருமைப்பாடு சரிபார்ப்பில் தோல்வியடைந்தது - ஒளிரும் தடுக்கப்பட்டது",
+  "firmwareReadyFromSource": "நிலைபொருள் தயார்: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "புதுப்பிக்கவும்",
+  "peersBlocked": "தடுக்கப்பட்டது",
+  "peersNearbyBle": "அருகில் (BLE)",
+  "peersRecentlyOnline": "சமீபத்தில் ஆன்லைனில்",
+  "peersOnlineInArea": "பகுதியில் ஆன்லைன்",
+  "peersSeenMinutesAgo": "{minutes} நிமிடத்திற்கு முன்பு பார்த்தேன்",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "ஆஃப்லைன்",
+  "peersBlockedSnack": "{id} தடுக்கப்பட்டது",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "தடைநீக்கப்பட்டது",
+  "peersEmpty": "தரவுத்தளத்தில் இதுவரை உறுப்பினர்கள் இல்லை\nQR ஐ ஸ்கேன் செய்யவும் அல்லது BLE மெஷ் கண்டுபிடிப்புக்காக காத்திருக்கவும்",
+  "peersOpenChat": "அரட்டையைத் திறக்கவும்",
+  "peersBlockAction": "தடு",
+  "peersUnblockAction": "தடைநீக்கு",
+  "channelPickerTooltip": "அரட்டை / #மெஷ் / பகுதி",
+  "locationPickerTooltip": "இருப்பிட சேனல்",
+  "transportPickerTooltip": "மெஷ் / இணையம் / ஆட்டோ",
+  "onlinePeopleTooltip": "மக்கள் ஆன்லைன்",
+  "unreadDirectsTooltipEmpty": "தனிப்பட்ட செய்திகள்",
+  "unreadDirectsTooltip": "{count} படிக்காத தனிப்பட்ட செய்திகள்",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "மக்கள்",
+  "onlinePeopleEmpty": "இங்கு இதுவரை யாரும் ஆன்லைனில் இல்லை",
+  "onlinePeopleCount": "{count} ஆன்லைன்",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · அருகில் + பகுதி",
+  "peerOnlineMeshTitle": "கண்ணி மீது அருகில் ஒருவர்",
+  "peerOnlineMeshBody": "மெஷில் {name} அருகில் உள்ளது",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "இப்பகுதியில் யாரோ ஆன்லைனில் உள்ளனர்",
+  "peerOnlineAreaBody": "Nostr வழியாக {name} ஆன்லைனில் உள்ளது",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#இருப்பிட சேனல்கள்",
+  "channelPinsTitle": "பின் செய்யப்பட்டது",
+  "channelPinsHint": "நீங்கள் அடிக்கடி பயன்படுத்தும் சேனல்களைப் பின் செய்யவும் — அவை மேலே இருக்கும்",
+  "channelPinTooltip": "இந்த சேனலை பின் செய்யவும்",
+  "channelUnpinTooltip": "அன்பின்",
+  "locationSheetIntro": "கரடுமுரடான ஜியோஹாஷைப் பயன்படுத்தி அருகிலுள்ளவர்களுடன் அரட்டையடிக்கவும் — துல்லியமான ஜிபிஎஸ் அல்ல. இணையத்தில் இருப்பது அநாமதேய Nostr விசைகளைப் பயன்படுத்துகிறது.",
+  "locationMeshSubtitle": "#புளூடூத் • ~10-50 மீ",
+  "locationTeleportHint": "#ஜியோஹாஷ்",
+  "locationTeleport": "டெலிபோர்ட்",
+  "homeComposeHint": "செய்தி {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "{channel} க்கு அனுப்பு — பொது",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "காலாவதியாகிறது",
+  "voiceRecordTapToStart": "குரல் செய்தியை பதிவு செய்ய தட்டவும்",
+  "voiceRecordTooShort": "மிகக் குறைவான பதிவு - மீண்டும் முயற்சிக்கவும்",
+  "voiceRecordFailed": "பதிவைச் சேமிக்க முடியவில்லை - மீண்டும் முயற்சிக்கவும்",
+  "voicePttHold": "பதிவு செய்ய பிடி",
+  "voicePttRelease": "முன்னோட்டத்தை வெளியிடவும்",
+  "voicePttRecording": "பதிவு செய்கிறது…",
+  "voicePttDraftReady": "குரல் குறிப்பு தயார்",
+  "voicePttDiscard": "நிராகரி",
+  "voicePttReRecord": "மீண்டும் பதிவு செய்யுங்கள்",
+  "voicePttSend": "குரல் குறிப்பை அனுப்பவும்",
+  "voicePttPlayPreview": "முன்னோட்டத்தை இயக்கவும்",
+  "voicePttStopPreview": "முன்னோட்டத்தை நிறுத்து",
+  "noticesBackfilling": "அறிவிப்புகளை ஏற்றுகிறது…",
+  "noticesNostrOnline": "Nostr ஆன்லைன்",
+  "noticesNostrOffline": "Nostr ஆஃப்லைன் — புல்லட்டின் இணையம் தேவை",
+  "noticesBackfillLoaded": "{count} அறிவிப்புகள் ஏற்றப்பட்டன",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "ஏரியா போர்டில் அறிவிப்பு வெளியிட முடியவில்லை. Nostr இணைப்பைச் சரிபார்க்கவும்.",
+  "noticeMeshPublishNoLink": "உள்நாட்டில் சேமிக்கப்பட்டது. அருகிலுள்ள மெஷ் ரேடியோவுடன் (அல்லது Wi‑Fi கேட்வே) இணைக்கவும், அதனால் மற்றவர்கள் அதைப் பெற முடியும்.",
+  "noticeMeshPublishSent": "BLEக்கு மேல் {count} அருகிலுள்ள சாதனங்களுக்கு (கள்) புல்லட்டின் அனுப்பப்பட்டது.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "அருகிலுள்ள ரேடியோக்கள் காணப்பட்டன, ஆனால் BLE எழுத முடியவில்லை. இரண்டு பயன்பாடுகளையும் அறிவிப்புகள் திரையில் திறந்து வைத்து மீண்டும் முயலவும் (அல்லது ESP32 ரிலேவைப் பயன்படுத்தவும்).",
+  "noticeMeshPublishNoGatt": "இந்தச் சாதனத்தின் BLE ரிசீவர் தயாராக இல்லை. புளூடூத்தை நிலைமாற்றி, அறிவிப்புகளை மீண்டும் திறக்கவும்.",
+  "noticeDelete": "அறிவிப்பை நீக்கு",
+  "noticeDeleteConfirmTitle": "இந்த அறிவிப்பை நீக்கவா?",
+  "noticeDeleteLocalOnlyBody": "இது இந்தச் சாதனத்தில் மட்டுமே அகற்றும். ஏற்கனவே அதைப் பெற்ற மற்றவர்கள் இன்னும் அதைப் பார்ப்பார்கள்.",
+  "noticeDeleted": "அறிவிப்பு நீக்கப்பட்டது",
+  "chatNoticeHidden": "பகுதி அறிவிப்பு - திறந்த அறிவிப்புகள்",
+  "identityDisplayNameTitle": "காட்சி பெயர்",
+  "identitySaveName": "பெயரை சேமிக்கவும்",
+  "identityUserIdLabel": "பயனர் ஐடி (பொது விசை ஹாஷ்)",
+  "identityCopyHashTooltip": "பொது விசை ஹாஷை நகலெடுக்கவும்",
+  "identityMyQrTitle": "எனது QR (ஐடி + பப்கே + பெயர்)",
+  "identityQrFailed": "QR ஐ உருவாக்க முடியவில்லை\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "சேமிக்கிறது…",
+  "identitySaveQr": "QR ஐ புகைப்பட நூலகத்தில் சேமிக்கவும்",
+  "identityOpenScanner": "QR ஐ ஸ்கேன் செய்ய கேமராவைத் திறக்கவும்",
+  "identityQrHelp": "உங்கள் பொது விசையைச் சேமிக்க உங்கள் நண்பர் இதை ஸ்கேன் செய்து (தேவைப்பட்டால்) சரிபார்க்கப்பட்ட வழங்குநராக உங்களை அமைக்கவும்",
+  "identityChatTip": "உதவிக்குறிப்பு: E2EEக்கான பொது விசையைச் சேர்க்க, அரட்டையில் QRஐ ஸ்கேன் செய்யலாம்",
+  "infoOpen": "பற்றி / தகவல்",
+  "docsGuideTitle": "பயனர் வழிகாட்டி",
+  "docsGuideSubtitle": "உலாவியில் திறக்கும்",
+  "docsOpenAction": "திறந்த வழிகாட்டி",
+  "docsOpenFailed": "பயனர் வழிகாட்டியைத் திறக்க முடியவில்லை",
+  "firmwareOtaGuideTitle": "ஃபிளாஷ் வழிகாட்டி & OTA நெறிமுறை",
+  "firmwareOtaGuideSubtitle": "இணைய வழிகாட்டியைத் திறக்கிறது — .bin பதிவிறக்கங்கள் மற்றும் முழுப் படிகள்",
+  "firmwareWebDownloadsTitle": "இணையத்தில் நிலைபொருள் பதிவிறக்கங்கள்",
+  "firmwareWebDownloadsSubtitle": "டாக்ஸ் தளத்தில் ஒவ்வொரு பதிப்பு இணைப்புகள் மற்றும் செக்சம்கள்",
+  "inviteCopyShortLink": "சுருக்கமான இணைப்பை நகலெடுக்கவும்",
+  "inviteShareLink": "இணைப்பைப் பகிரவும்",
+  "inviteShowFullLink": "முழு இணைப்பு",
+  "inviteCopyFullLink": "முழு இணைப்பை நகலெடுக்கவும்",
+  "inviteLinkCopied": "இணைப்பு நகலெடுக்கப்பட்டது",
+  "inviteLongPressHint": "இணைப்புச் செயல்களுக்கு நீண்ட நேரம் அழுத்தவும்",
+  "inviteSendInChat": "ResilNet அரட்டையில் அனுப்பு…",
+  "inviteSendInChatHint": "உங்களிடம் ஏற்கனவே பொது விசை உள்ளவர்கள் மட்டுமே",
+  "inviteSendInChatEmpty": "இதுவரை செய்தி அனுப்பக்கூடிய அரட்டைகள் எதுவும் இல்லை.\nQRஐ ஸ்கேன் செய்யவும், பகுதி/மெஷ்ஷைத் திறக்கவும் அல்லது பயன்பாட்டிற்கு வெளியே இணைப்பைப் பகிரவும்.",
+  "inviteSentToChat": "அழைப்பு அரட்டையில் அனுப்பப்பட்டது",
+  "infoTabInfo": "தகவல்",
+  "infoTabSettingsHint": "மொழி, E2EE மற்றும் தரவுக் கருவிகளுக்கான மெனுவிலிருந்து அமைப்புகளைத் திறக்கவும்",
+  "infoHowToTitle": "எப்படி பயன்படுத்துவது",
+  "infoHowToBody": "• அரட்டை / #மெஷ் / ஏரியாவை மாற்ற சேனல் ஐகானைத் தட்டவும்\n• ஜியோஹாஷ் அளவைத் தேர்ந்தெடுக்க, இடத்தைத் தட்டவும்\n• உறுப்பினர்கள் அல்லது ஆன்லைனில் இருப்பவர்களுக்காகத் தட்டவும்\n• தனிப்பட்ட முறையில் சாவிகளை பரிமாறிக்கொள்ள ⋮ இலிருந்து அடையாளம்/QR ஐத் திறக்கவும்\n• பகுதி \"பொது\" ஒவ்வொரு ஆன்லைன் பியர்களுக்கும் சீல் செய்யப்பட்ட E2EE ஐ அனுப்புகிறது - சாதாரண உரை அறை அல்ல",
+  "infoFeaturesTitle": "அம்சங்கள்",
+  "infoFeatureOffline": "புளூடூத் குறைந்த ஆற்றல் மூலம் ஆஃப்லைன் செய்தி அனுப்புதல்",
+  "infoFeatureE2ee": "RSA-OAEP + AES-GCM உடன் எண்ட்-டு-எண்ட் என்க்ரிப்ஷன் (சத்தம் அல்ல)",
+  "infoFeatureMultihop": "தொலைவுக்குச் செல்ல அருகிலுள்ள சகாக்கள் மூலம் செய்திகள் வரலாம்",
+  "infoFeatureBridge": "சீல் செய்யப்பட்ட உறைகளுக்கு ஹைப்ரிட் மெஷ் ↔ இணையம் (Nostr).",
+  "infoFeatureGeo": "அருகிலுள்ளவர்களுக்கான உள்ளூர் ஜியோஹாஷ் சேனல்கள் (டிஸ்கவரி யுஎக்ஸ்)",
+  "infoFeatureNotices": "#மெஷ் மற்றும் பகுதிக்கான காலாவதியுடன் கூடிய அறிவிப்புகள்",
+  "infoPrivacyTitle": "தனியுரிமை",
+  "infoPrivacyNoRoom": "கம்பியில் எளிய உரை கிராமம் / பொது அரட்டை அறை இல்லை",
+  "infoPrivacyFanout": "அறியப்பட்ட பொது விசைகள் மூலம் சகாக்களுக்கு அனுப்பும் பகுதி = சீல் 1:1 ஃபேன்-அவுட்",
+  "infoPrivacyPresence": "இணையப் பகுதி இருப்பு எபிமரல் Nostr விசைகளைப் பயன்படுத்துகிறது",
+  "infoSymbolsTitle": "சின்னங்கள்",
+  "infoSymBle": "நேரடி புளூடூத் இணைப்பு",
+  "infoSymMesh": "கண்ணி மூலம் அடையலாம் (மற்றவர்கள் முன்னோக்கி)",
+  "infoSymInternet": "இணையம் வழியாக (Nostr) — சீல் செய்யப்பட்ட உறைகள்",
+  "infoSymBridge": "மெஷ்↔இன்டர்நெட் பிரிட்ஜ் பாதை வழியாக வந்தடைந்தது",
+  "infoSymOffline": "ஆஃப்லைன் — இப்போது அணுக முடியாது",
+  "infoSymInArea": "இந்த இருப்பிட சேனலின் பகுதியில்",
+  "infoSymE2eeOk": "என்ட்-டு-எண்ட் என்க்ரிப்ட் செய்யப்பட்ட அமர்வு",
+  "infoSymE2eeFail": "குறியாக்கம் கிடைக்கவில்லை - முக்கியமான உரையை அனுப்ப வேண்டாம்",
+  "infoSymVerified": "அடையாளம் சரிபார்க்கப்பட்ட / அறியப்பட்ட விசை",
+  "infoSymBlocked": "தடுக்கப்பட்டது",
+  "infoSymUnread": "படிக்காத தனிப்பட்ட செய்தி",
+  "infoEmergencyTitle": "அவசர முறை",
+  "infoEmergencyBody": "இந்தச் சாதனத்தில் உள்ள செய்திகள், விசைகள் மற்றும் அடையாளத்தைத் துடைக்க முகப்புத் திரையில் உள்ள ResilNet தலைப்பை மூன்று முறை தட்டவும்.",
+  "infoLegendNote": "சில பாதை சின்னங்கள் தெளிவுக்காக இங்கே ஆவணப்படுத்தப்பட்டுள்ளன; அரட்டையில் டெலிவரி டிக்குகள் முதன்மை அனுப்பும் நிலையாக இருக்கும்.",
+  "dangerZoneTitle": "ஆபத்து மண்டலம்",
+  "dangerZoneSubtitle": "இந்தச் சாதனத்தில் உள்ள செய்திகள், குறியாக்க விசைகள், Nostr அடையாளம், சகாக்கள் மற்றும் புனைப்பெயர்களை நீக்குகிறது. நீங்கள் மீண்டும் அமைப்பீர்கள்.",
+  "panicWipeTitle": "அவசர துடைப்பான்",
+  "panicWipeSubtitle": "உள்ளூரில் உள்ள அனைத்தையும் அழிக்கவும் — வீட்டுத் தலைப்பை மூன்று முறை தட்டுவது போலவே (இரண்டு தட்டினால் ரேடியோக்களை புதுப்பிக்கிறது)",
+  "panicWipeConfirmTitle": "அனைத்து உள்ளூர் தரவையும் அழிக்கவா?",
+  "panicWipeConfirmBody": "இது இந்த மொபைலில் உள்ள அரட்டைகள், விசைகள் மற்றும் அடையாளத்தை நிரந்தரமாக நீக்குகிறது.\nசகாக்கள் உங்கள் புதிய அடையாளத்துடன் QR விசைகளை மீண்டும் பரிமாறிக்கொள்ள வேண்டும்.\nஇதை செயல்தவிர்க்க முடியாது.",
+  "panicWipeAction": "எல்லாவற்றையும் துடைக்கவும்",
+  "panicWipeSnack": "உள்ளூர் அடையாளம் அழிக்கப்பட்டது - மீண்டும் அமைக்கப்பட்டது",
+  "panicWipeFailed": "துடைக்க முடியவில்லை: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "கண்ணி பாலம்",
+  "meshBridgeSubtitle": "(இயல்புநிலை), சீல் செய்யப்பட்ட உறைகள் BLE மெஷ் மற்றும் இணையம் (Nostr) இரண்டையும் ஒன்றாகப் பயன்படுத்தக்கூடும், இதனால் அருகிலுள்ள மெஷ் தீவுகள் இணைக்க முடியும். ஆஃப் செய்யும்போது, ​​அனுப்பும் ஒரு பாதையை மட்டும் பயன்படுத்தவும் - கம்பியில் ஒருபோதும் எளிய உரையை வைக்காது.",
+  "favoritesTitle": "பிடித்தவை",
+  "favoritesAdd": "பிடித்தவைகளில் சேர்க்கவும்",
+  "favoritesRemove": "பிடித்தவற்றிலிருந்து அகற்று",
+  "favoritesEmpty": "இதுவரை பிடித்தவை எதுவும் இல்லை — உறுப்பினர் பட்டியலில் இருந்து ஒரு பியர் நட்சத்திரம்",
+  "favoritesNearbyTitle": "அருகில் பிடித்தது",
+  "favoritesNearbyBody": "மெஷில் {name} அருகில் உள்ளது",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "பகுதியில் பிடித்தது",
+  "favoritesInAreaBody": "இந்தப் பகுதியில் {name} ஆன்லைனில் உள்ளது",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "கண்ணி இடவியல்",
+  "topologySubtitle": "சகாக்கள் மற்றும் மெஷ் இணைப்பு குறிப்புகள் அறிவிக்கின்றன (படிக்க மட்டும்)",
+  "topologyConnectedNow": "இப்போது இணைக்கப்பட்டுள்ளது (BLE)",
+  "topologyNearby": "அருகில் (BLE)",
+  "topologyKnown": "தெரிந்த சகாக்கள்",
+  "topologyEmpty": "இதுவரை எந்த சகாக்களும் கற்றுக்கொள்ளவில்லை - BLE உடன் அருகில் இருங்கள்",
+  "topologyYou": "நீ",
+  "topologyStats": "{peers} சகாக்கள் · {links} இணைப்புகள்",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "அருகிலுள்ள மெஷ் கண்டுபிடிப்பிலிருந்து மதிப்பிடப்பட்டது — உங்கள் சாதனம் ஹைலைட் செய்யப்பட்டுள்ளது. அரட்டையைத் திறக்க இணையரைத் தட்டவும்.",
+  "topologyOpen": "கண்ணி இடவியல்",
+  "slashHelpTitle": "கட்டளைகள்",
+  "slashHelpBody": "/உதவி - இந்த பட்டியல்\n/ யார் — தற்போதைய சேனலில் ஆன்லைனில் உள்ளவர்கள்\n/drop <text> — சீல் செய்யப்பட்ட அறிவிப்பை இங்கே பொருத்தவும் (E2EE ஃபேன்-அவுட்)\n\nமுழு வழிகாட்டி: கீழே உள்ள திறந்த வழிகாட்டியைப் பயன்படுத்தவும் அல்லது அமைப்புகள் → பயனர் வழிகாட்டியைப் பயன்படுத்தவும்.",
+  "slashWhoEmpty": "இந்தச் சேனலில் இப்போது யாரும் ஆன்லைனில் இல்லை",
+  "slashWhoTitle": "ஆன்லைன் ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "பயன்பாடு: / உங்கள் குறிப்பு உரையை கைவிடவும்",
+  "slashDropDone": "{channel} அன்று அறிவிப்பு கைவிடப்பட்டது",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "தெரியாத கட்டளை - முயற்சி / உதவி",
+  "announceOpen": "அறிவிப்புகள்",
+  "announceTitle": "அறிவிப்புகள்",
+  "announceEmpty": "இன்னும் பலகைகள் இல்லை — பூட்டிய அல்லது திறந்த அறிவிப்புகளை இடுகையிட ஒன்றை உருவாக்கவும்",
+  "announceCreate": "பலகையை உருவாக்கவும்",
+  "announceCreateHint": "பலகையின் பெயர்",
+  "announceDefaultTitle": "சமூக வாரியம்",
+  "announceSettings": "பலகை அமைப்புகள்",
+  "announceAllowLocked": "பூட்டப்பட்ட (மறைகுறியாக்கப்பட்ட) இடுகைகளை அனுமதிக்கவும்",
+  "announceAllowLockedSub": "போர்டு விசையில் குறியாக்கம் செய்யப்பட்டது - வாசகர்களுக்கு அணுகல் தேவை",
+  "announceAllowOpen": "திறந்த (எளிமையான உரை) இடுகைகளை அனுமதிக்கவும்",
+  "announceAllowOpenSub": "E2EE அல்ல - மெஷ்/ரிலேயில் படிக்கக்கூடியது. இயல்பாக ஆஃப்.",
+  "announceComposeHint": "அறிவிப்பை எழுதுங்கள்...",
+  "announceMediaInternetOnly": "புகைப்படம்/குரல் அறிவிப்புகள் இணையத்தில் அனுப்பப்படும் (BLE அல்ல)",
+  "announceNeedInternet": "புகைப்படம் அல்லது குரல் அறிவிப்புகளை அனுப்ப இணையத்துடன் இணைக்கவும்",
+  "announceVoiceFailed": "குரலைப் பதிவு செய்ய முடியவில்லை: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "படம் மிகப் பெரியது (அதிகபட்சம் ~180 KB)",
+  "announcePlayVoice": "குரல் குறிப்பை இயக்கவும்",
+  "announceImageLabel": "📷 படம்",
+  "announceAudioLabel": "🎤 குரல் குறிப்பு",
+  "announceModeLocked": "பூட்டப்பட்டது",
+  "announceModeOpen": "திற",
+  "announceOpenBadge": "OPEN · குறியாக்கம் செய்யப்படவில்லை",
+  "announceLockedBadge": "பூட்டப்பட்டது",
+  "announceLockedPlaceholder": "குறியாக்கம் - படிக்க அணுகலைக் கோருங்கள்",
+  "announceRequestAccess": "அணுகலைக் கோருங்கள்",
+  "announceRequestSent": "போர்டு உரிமையாளருக்கு அணுகல் கோரிக்கை அனுப்பப்பட்டது",
+  "announceRequestFailed": "அணுகலைக் கோர முடியவில்லை (உரிமையாளரின் பொது விசை தேவை)",
+  "announceOpenConfirmTitle": "குறியாக்கம் இல்லாமல் இடுகையிடவா?",
+  "announceOpenConfirmBody": "திறந்த இடுகைகள் E2EE அல்ல. பாதையில் உள்ள எவரும் (மெஷ் / ரிலேக்கள்) அவற்றைப் படிக்கலாம். தொடரவா?",
+  "announcePostAction": "இடுகை",
+  "announcePendingRequests": "அணுகல் கோரிக்கைகள்",
+  "announceApprove": "ஒப்புதல்",
+  "announceDeny": "மறுக்கவும்",
+  "announceGranted": "பூட்டிய இடுகைகளை இந்த போர்டில் படிக்கலாம்",
+  "announceOwner": "இந்த பலகை உங்களுக்கு சொந்தமானது",
+  "announceCopyInvite": "அழைப்பு உரையை நகலெடுக்கவும்",
+  "announceShowInviteQr": "அழைப்பு QRஐக் காட்டு",
+  "announceScanInviteQr": "ஸ்கேன் போர்டு அழைப்பு QR",
+  "announceFollow": "அழைப்பிலிருந்து பலகையைப் பின்தொடரவும்",
+  "announceFollowHint": "உரிமையாளரிடமிருந்து அழைப்பு உரை அல்லது ResilNet இணைப்பை ஒட்டவும்",
+  "announceFollowOk": "தொடர்ந்து பலகை",
+  "announceFollowOkNamed": "இப்போது பின்தொடர்வது “{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "அழைப்பு தவறானது அல்லது சேதமடைந்தது",
+  "announceInviteCopied": "அழைப்பு உரை நகலெடுக்கப்பட்டது",
+  "announceInviteSaveQr": "QR ஐ சேமிக்கவும்",
+  "announceInviteShare": "அழைப்பைப் பகிரவும்",
+  "announceFollowFromCompose": "செய்தி பெட்டியில் போர்டு அழைப்பு கண்டறியப்பட்டது",
+  "peerConfirmAddTitle": "நெட்வொர்க் உறுப்பினரைச் சேர்க்கவா?",
+  "peerConfirmAddBody": "அவர்களின் பொது விசையுடன் “{name}” ஐச் சேர்க்கவும், அதனால் அவர்களுக்கு தனிப்பட்ட முறையில் செய்தி அனுப்பவா?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "உறுப்பினரைச் சேர்க்கவும்",
+  "peerAddedOk": "நெட்வொர்க் உறுப்பினர்களுக்கு {name} சேர்க்கப்பட்டது",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "செய்தி பெட்டியில் அடையாளம் / பொது விசை கண்டறியப்பட்டது",
+  "peerHashCopied": "பொது விசை ஹாஷ் நகலெடுக்கப்பட்டது",
+  "peerHashOpenChat": "அரட்டையைத் திறக்கவும்",
+  "peerHashAddHint": "ஹாஷ் நகலெடுத்தார். அவர்களின் அடையாள இணைப்பு அல்லது QR ஐப் பகிரும்படி அவர்களிடம் கேளுங்கள், இதன் மூலம் E2EEக்கான முழு பொது விசையையும் நீங்கள் சேர்க்கலாம்.",
+  "peerQrNoCode": "இந்தப் படத்தில் ResilNet QR இல்லை",
+  "identityInviteSharePreamble": "ResilNet அடையாளம்: “{name}”\nஇணைப்பைத் திறக்கவும் அல்லது அரட்டையில் ஒட்டவும் → உறுப்பினரைச் சேர்\nஅல்லது அடையாள QR ஐ ஸ்கேன் செய்யவும்.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "அடையாள இணைப்பைப் பகிரவும்",
+  "identityInviteCopied": "அடையாள இணைப்பு நகலெடுக்கப்பட்டது",
+  "announceInviteSharePreamble": "குழு அழைப்பு: “{title}”\nResilNet → சமூகப் பலகைகளைத் திறக்கவும் → அழைப்பிலிருந்து பின்தொடரவும்\nஅல்லது QR ஐ ஸ்கேன் செய்யவும் / கீழே உள்ள இணைப்பைத் தட்டவும்.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "இந்த பலகையைப் பின்பற்றவா?",
+  "announceConfirmFollowBody": "இந்த அழைப்பிலிருந்து \"{title}\" ஐப் பின்தொடரவா?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "பின்பற்றவும்"
+}

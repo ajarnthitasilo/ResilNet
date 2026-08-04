@@ -7,18 +7,20 @@ import '../app/theme.dart';
 import '../core/app_version.dart';
 import '../core/docs_links.dart';
 import '../l10n/l10n_ext.dart';
+import '../l10n/supported_locales.dart';
 import '../models/notice_expiry.dart';
 import '../models/transport_mode.dart';
 import '../state/app_state.dart';
 import 'announcements_screen.dart';
 import 'esp32_firmware_screen.dart';
+import 'home_node_bridge_sheet.dart';
 import 'info_sheet.dart';
+import 'local_wifi_link_sheet.dart';
 import 'mesh_topology_screen.dart';
 import 'meshtastic_bridge_screen.dart';
 import 'panic_wipe.dart';
 import '../widgets/app_recovery_actions.dart';
-import 'local_wifi_link_sheet.dart';
-import 'home_node_bridge_sheet.dart';
+import '../app/glass_overlays.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -31,13 +33,74 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _clearing = false;
   bool _wiping = false;
 
+  Future<void> _pickLanguage(BuildContext context, AppState s) async {
+    final l10n = context.l10n;
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final height = MediaQuery.sizeOf(ctx).height * 0.75;
+        final current = s.localeOverrideCode;
+        return ResilNetTheme.glassPanel(
+          context: ctx,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+          blurSigma: 28,
+          child: SizedBox(
+          height: height,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Text(l10n.language, style: Theme.of(ctx).textTheme.titleLarge),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      RadioListTile<String>(
+                        value: 'system',
+                        // ignore: deprecated_member_use
+                        groupValue: current ?? 'system',
+                        title: Text(l10n.languageSystem),
+                        subtitle: Text(l10n.languageSubtitle),
+                        onChanged: (v) => Navigator.pop(ctx, v),
+                      ),
+                      const Divider(),
+                      for (final o in kAppLocaleOptions)
+                        RadioListTile<String>(
+                          value: o.id,
+                          // ignore: deprecated_member_use
+                          groupValue: current ?? 'system',
+                          title: Text(o.nativeName),
+                          subtitle: Text(o.englishName),
+                          onChanged: (v) => Navigator.pop(ctx, v),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ),
+        );
+      },
+    );
+    if (selected == null || !context.mounted) return;
+    if (selected == 'system') {
+      await s.setLocaleOverrideId(null);
+    } else {
+      await s.setLocaleOverrideId(selected);
+    }
+  }
+
   Future<void> _confirmClearLocation(AppState s) async {
     if (_clearing || _wiping) return;
     final l10n = context.l10n;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
+        return GlassAlertDialog(
           title: Text(l10n.settingsClearLocationConfirmTitle),
           content: Text(l10n.settingsClearLocationConfirmBody),
           actions: [
@@ -58,7 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await s.clearStoredGeohash();
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.settingsClearLocationSnack)),
+      GlassSnackBar(content: Text(context.l10n.settingsClearLocationSnack)),
     );
   }
 
@@ -69,7 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
+        return GlassAlertDialog(
           title: Text(l10n.settingsClearConfirmTitle),
           content: Text(l10n.settingsClearConfirmBody),
           actions: [
@@ -94,7 +157,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await context.read<AppState>().clearAllMessages();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsClearedSnack)),
+        GlassSnackBar(content: Text(context.l10n.settingsClearedSnack)),
       );
     } finally {
       if (mounted) setState(() => _clearing = false);
@@ -139,24 +202,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
             ),
             const SizedBox(height: 12),
-            SegmentedButton<String>(
-              segments: [
-                ButtonSegment(
-                  value: 'system',
-                  label: Text(l10n.languageSystem),
-                ),
-                ButtonSegment(value: 'th', label: Text(l10n.languageThai)),
-                ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
-              ],
-              selected: {override ?? 'system'},
-              onSelectionChanged: (set) {
-                final next = set.first;
-                if (next == 'system') {
-                  s.setLocaleOverride(null);
-                } else {
-                  s.setLocaleOverride(Locale(next));
-                }
-              },
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.translate),
+              title: Text(l10n.language),
+              subtitle: Text(
+                () {
+                  if (override == null) return l10n.languageSystem;
+                  for (final o in kAppLocaleOptions) {
+                    if (o.id == override) return o.menuLabel;
+                  }
+                  return override;
+                }(),
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => unawaited(_pickLanguage(context, s)),
             ),
             const SizedBox(height: 28),
             _section(l10n.localWifiTitle),
@@ -239,7 +299,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   : () async {
                       final ok = await showDialog<bool>(
                         context: context,
-                        builder: (ctx) => AlertDialog(
+                        builder: (ctx) => GlassAlertDialog(
                           title: Text(l10n.appSessionResetConfirmTitle),
                           content: Text(l10n.appSessionResetConfirmBody),
                           actions: [
@@ -448,7 +508,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (!context.mounted) return;
                       final err = s.nostrLastError;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        GlassSnackBar(
                           content: Text(
                             ok
                                 ? l10n.nostrReconnectOk(

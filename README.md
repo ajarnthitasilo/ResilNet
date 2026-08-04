@@ -1,10 +1,12 @@
 # ResilNet — Decentralized Offline & Online Mesh
 
-**ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), and long-range sync over public **Nostr** relays.
+**ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), phone LAN / home-node bridges, and long-range sync over public **Nostr** relays.
 
-**Current app version:** `1.9.63`  
+**Current app version:** `1.9.64` (+82)  
 **ESP32 firmware (releases/):** `1.9.49` (LoRa mesh relay + store-and-forward)  
 **Bundled ESP32 firmware baseline:** `1.9.49`
+
+> App guide / docs are updated for **1.9.64**. CDN firmware may still list **1.9.49** until the next sync — trust `releases/firmware/manifest.json` for `.bin` hashes.
 
 ## Project layout
 
@@ -14,6 +16,7 @@ ResilNet/
 ├── resilnet_core/         # Rust core (routing, crypto, SQLite, Nostr client)
 ├── esp32_firmware/        # ESP32 standalone BLE mule + LoRa gateway (PlatformIO)
 ├── esp32_lora_firmware/   # Legacy / alternate LoRa firmware tree
+├── labs/reticulum_lxmf/   # Optional Home-node / Reticulum–LXMF bridge lab
 ├── releases/firmware/     # Pre-built .bin artifacts + manifest (SHA-256)
 ├── docs-site/             # User docs website (Docsify, TH + EN) — preview locally
 ├── tool/                  # Release helpers (e.g. sync_firmware_release.sh)
@@ -23,6 +26,7 @@ ResilNet/
 **User documentation:**
 
 - **Live (GitHub Pages):** https://ajarnthitasilo.github.io/ResilNet/
+- **What’s new (1.9.64):** https://ajarnthitasilo.github.io/ResilNet/#/en/guide/whats-new
 - **Firmware CDN base:** `https://ajarnthitasilo.github.io/ResilNet/firmware`
 - **Local preview:**
 
@@ -41,6 +45,8 @@ Deploy: `.github/workflows/deploy-docs.yml`. First time enable **Settings → Pa
 - **Account-less cryptographic identity:** No email/phone signup. Keys are generated on-device (`secp256k1` / `npub` / `nsec`) on first launch.
 - **Hybrid multi-tier transport:**
   - **Near:** Phone BLE mesh (discovery; chat still prefers Nostr when online)
+  - **LAN:** Local Wi‑Fi (hotspot / router) for nearby phones
+  - **Home node:** Optional Mac/Pi **Reticulum / LXMF** HTTP bridge (Settings → Home node)
   - **Mid:** ESP32 BLE data mule / LoRa gateway
   - **Far / Internet:** Nostr relays with local offline queue (store locally, flush when online)
 - **Rust-powered core:** Deduplication, hybrid fan-out routing, and queue handling via FFI.
@@ -49,6 +55,8 @@ Deploy: `.github/workflows/deploy-docs.yml`. First time enable **Settings → Pa
 - **Public mesh bulletin (#mesh):** Plaintext, self-signed announcements readable by anyone in radio range — no prior key exchange. ESP32 mule nodes store-and-forward bulletins (3-day TTL) so late joiners still receive them offline.
 - **Community board invites:** Owner shares a readable invite text, QR, or `resilnet://board/invite?...` deep link (compact public metadata only — never the board private key).
 - **Hybrid firmware delivery:** Online-first download, then verified local cache, then **bundled baseline** assets for offline flashing (SHA-256 + `minCompatibleVersion` checks). See `releases/firmware/README.md`.
+- **UI:** Soft **liquid glass** snack bars, dialogs, menus, and sheets (light + dark).
+- **Languages:** Follow system + in-app picker; many locales shipped (Thai curated; others may be MT drafts). See `mobile_app/lib/l10n/`.
 
 ---
 
@@ -91,11 +99,30 @@ flutter pub get
 flutter run
 ```
 
-Release Android APK:
+### Release builds
+
+**Android APK:**
 
 ```bash
 cd mobile_app
 flutter build apk --release
+```
+
+**macOS:**
+
+```bash
+cd mobile_app
+flutter build macos --release
+# output: build/macos/Build/Products/Release/resilnet.app
+```
+
+**iPhone / iPad (same iOS target):**
+
+```bash
+cd mobile_app
+flutter build ipa --release
+# or without local signing:
+flutter build ios --release --no-codesign
 ```
 
 **Android support:** `minSdk` 24 (Android 7+) through current `targetSdk` 36. Android 12+ uses `BLUETOOTH_SCAN` / `CONNECT` / `ADVERTISE`.

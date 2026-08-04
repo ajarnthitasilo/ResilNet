@@ -22,6 +22,7 @@ import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/peer_id.dart';
 import '../core/platform_caps.dart';
+import '../l10n/supported_locales.dart';
 import '../models/app_recovery.dart';
 import '../models/area_presence.dart';
 import '../models/ble_radio_state.dart';
@@ -511,21 +512,23 @@ class AppState extends ChangeNotifier {
   bool _onboardingCompleted = false;
   bool get onboardingCompleted => _onboardingCompleted;
 
-  /// `null` = follow device locale; otherwise an explicit `en` / `th` override.
+  /// `null` = follow device locale; otherwise an explicit override id
+  /// (`en`, `th`, `zh_TW`, …) from [kAppLocaleOptions].
   static const _kLocaleOverride = 'resilnet_locale_override';
   String? _localeOverrideCode;
   String? get localeOverrideCode => _localeOverrideCode;
 
   /// UI language for non-BuildContext strings (notifications, etc.).
-  /// Override wins; otherwise device `th` → Thai, everything else → English.
+  /// Override wins; otherwise device language if shipped, else English.
   String get effectiveUiLanguageCode {
     final o = _localeOverrideCode;
-    if (o == 'th') return 'th';
-    if (o == 'en') return 'en';
-    final device =
-        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-    if (device == 'th') return 'th';
-    return 'en';
+    if (o != null && o.isNotEmpty && o != 'system') {
+      final loc = localeFromOverrideId(o);
+      if (loc != null) return loc.languageCode;
+    }
+    return resolveDeviceLocale(
+      WidgetsBinding.instance.platformDispatcher.locales,
+    ).languageCode;
   }
 
   bool get effectiveUiIsThai => effectiveUiLanguageCode == 'th';
@@ -550,11 +553,7 @@ class AppState extends ChangeNotifier {
 
   static const _recoveryStepTimeout = Duration(seconds: 7);
 
-  Locale? get localeOverride {
-    final code = _localeOverrideCode;
-    if (code == null || code.isEmpty || code == 'system') return null;
-    return Locale(code);
-  }
+  Locale? get localeOverride => localeFromOverrideId(_localeOverrideCode);
 
   static const _kFeedChannel = 'resilnet_feed_channel';
   static const _kGeoPrecision = 'resilnet_geo_precision';
@@ -3870,8 +3869,24 @@ class AppState extends ChangeNotifier {
       _localeOverrideCode = null;
       await prefs.setString(_kLocaleOverride, 'system');
     } else {
-      _localeOverrideCode = locale.languageCode;
-      await prefs.setString(_kLocaleOverride, locale.languageCode);
+      _localeOverrideCode = overrideIdFromLocale(locale);
+      await prefs.setString(
+        _kLocaleOverride,
+        _localeOverrideCode ?? locale.languageCode,
+      );
+    }
+    notifyListeners();
+  }
+
+  /// Prefer storing stable option ids (`zh_TW`) from Settings.
+  Future<void> setLocaleOverrideId(String? id) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (id == null || id.isEmpty || id == 'system') {
+      _localeOverrideCode = null;
+      await prefs.setString(_kLocaleOverride, 'system');
+    } else {
+      _localeOverrideCode = id;
+      await prefs.setString(_kLocaleOverride, id);
     }
     notifyListeners();
   }

@@ -59,7 +59,7 @@
   },
   "lxmfBridgeBaseUrl": "ที่อยู่โหนดบ้าน",
   "lxmfBridgeBaseUrlHelper": "IP หรือ http://IP:พอร์ต เช่น 192.168.1.10:8766",
-  "lxmfBridgeIdentityMap": "Peer → LXMF dest (JSON)",
+  "lxmfBridgeIdentityMap": "เพียร์ → LXMF ปลายทาง (JSON)",
   "lxmfBridgeRefresh": "บันทึกและรีเฟรชสถานะ",
   "lxmfBridgeLabHint": "ขั้นสูง: labs/reticulum_lxmf",
   "lxmfBridgeOpen": "ตั้งค่าโหนดบ้าน",
@@ -135,17 +135,17 @@
   "send": "ส่ง",
   "settings": "การตั้งค่า",
   "language": "ภาษา",
-  "languageSubtitle": "ตามภาษาเครื่องเมื่อเป็นไทยหรืออังกฤษ — ภาษาอื่นของระบบใช้อังกฤษ หรือล็อกเป็นไทย / อังกฤษที่นี่",
+  "languageSubtitle": "ค่าเริ่มต้นตามภาษาเครื่อง (ถ้าแอปมีภาษานั้น) — ภาษาอื่นใช้อังกฤษ หรือล็อกภาษาที่นี่",
   "languageSystem": "ตามระบบ",
   "languageThai": "ไทย",
-  "languageEnglish": "English",
+  "languageEnglish": "ภาษาอังกฤษ",
   "notificationsTooltip": "การตั้งค่าแจ้งเตือน",
   "enableMessageNotifications": "เปิดแจ้งเตือนข้อความ",
   "settingsNotificationsSubtitle": "ข้อความ 1:1 และคนออนไลน์ (แจ้งเตือนในเครื่อง)",
   "networkMembersTooltip": "สมาชิกเครือข่าย",
   "identityQrTooltip": "ตัวตน/QR",
   "feedDirects": "แชท",
-  "feedMesh": "#mesh",
+  "feedMesh": "#ตาข่าย",
   "feedGeo": "พื้นที่",
   "feedDirectsSubtitle": "ข้อความส่วนตัว E2EE",
   "feedMeshSubtitle": "เพื่อนใกล้ตัว (BLE)",
@@ -166,9 +166,30 @@
   "refreshLocationTooltip": "รีเฟรชพิกัด",
   "geoIntro": "คนที่ออนไลน์ใน geohash นี้ ส่งได้ทั้ง 1:1 และสาธารณะในพื้นที่ (ยังผนึก E2EE รายคน — ไม่ใช่ plaintext)",
   "geoEmpty": "ยังไม่มีใครออนไลน์ใน {channel}\nใช้ Transport → Internet/Auto รอ Nostr แล้วรีเฟรชพิกัด",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "geoPeerSubtitle": "ออนไลน์ใน {channel} • แตะเพื่อแชต 1:1 E2EE",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "geoPeerNearbySubtitle": "ใกล้ตัว (รอ presence พื้นที่) • แตะเพื่อแชต 1:1 E2EE",
   "geoPeerNostrSubtitle": "เห็นบน Nostr ใน {channel} • ค้นพบอย่างเดียว (มรดก)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "geoPeerDiscoverOnlySnack": "presence นิรนามแบบเก่า — รอ peer ที่ผูกกุญแจ หรือสแกน QR",
   "bleRadioNearbySubtitle": "สัญญาณ BLE ใกล้ตัว — สแกน QR เพื่อแชท 1:1",
   "geoInternetDiscoverHint": "การค้นพบ Area ผ่านเน็ตต้องต่อ Nostr (Settings → Transport → Internet/Auto)",
@@ -181,11 +202,32 @@
   "geoTeleportHint": "ไม่มี GPS? ใส่ geohash 2–7 ตัว (เช่น w5) แล้วกดเทเลพอร์ต",
   "geoTeleportInvalid": "geohash ไม่ถูกต้อง — ใช้ตัวอักษร base32 เท่านั้น (เช่น w5 หรือ w5jt8)",
   "geoTeleportOk": "ตั้ง Area เป็น {channel} แล้ว",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "geoManualActive": "Area แบบ manual: {channel} (refresh GPS จะทับค่านี้)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "geoEmptyNoNostr": "Nostr ยังไม่พร้อม — กด Reconnect (จะเป็น 0/0 จนกว่า init สำเร็จ)",
   "geoEmptyMeshOnly": "Transport เป็น Mesh อย่างเดียว — เปลี่ยนเป็น Internet หรือ Auto เพื่อค้นหาผ่าน Nostr",
   "geoEmptyWaiting": "ยังไม่มีใครใน {channel} — เปิด Area + Internet ทั้งสองเครื่อง แล้วรอ ~60 วินาที",
-  "geoChannelFallback": "#area",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#พื้นที่",
   "geoRefreshLocation": "Refresh ตำแหน่ง",
   "settingsClearLocationTitle": "ลบพิกัดตำแหน่ง",
   "settingsClearLocationSubtitle": "ลบ GPS / geohash ที่เทเลพอร์ตไว้ (Area กลับเป็น #—)",
@@ -196,60 +238,117 @@
   "chatVoiceTooLarge": "ข้อความเสียงใหญ่เกินไป — สูงสุด ~30 วินาที",
   "chatVoiceNeedInternet": "ข้อความเสียงต้องใช้ Internet (Nostr) — ใหญ่เกินสำหรับ BLE อย่างเดียว",
   "chatVoiceSentInternet": "ส่งข้อความเสียงผ่าน Internet แล้ว",
-  "noticeAnonMention": "mention",
+  "noticeAnonMention": "กล่าวถึง",
   "noticeAnonDm": "ข้อความตรง",
-  "noticeAnonHug": "hug",
-  "noticeAnonSlap": "slap",
+  "noticeAnonHug": "กอด",
+  "noticeAnonSlap": "ตบ",
   "noticeAnonBlock": "บล็อก",
   "noticeAnonNeedKey": "ยังไม่มีกุญแจสาธารณะ — แลก QR ก่อนส่ง 1:1",
   "noticeAnonActionSent": "ส่งแล้ว",
   "noticeAnonBlocked": "บล็อก {anon} แล้ว",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
   "noticeAnonHugMessage": "* กอด {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
   "noticeAnonSlapMessage": "* ตบ {anon} *",
-  "geoReconnectNostr": "Reconnect Nostr",
-  "nostrSectionTitle": "Nostr relays",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "เชื่อมต่อใหม่ Nostr",
+  "nostrSectionTitle": "Nostr รีเลย์",
   "nostrSectionSubtitle": "ข้อความผ่านอินเทอร์เน็ตและการค้นหา Area ใช้ relay เหล่านี้ หากออฟไลน์ค้าง ให้กด reconnect",
   "nostrStatusOnline": "เชื่อมต่อแล้ว {connected}/{total}",
   "@nostrStatusOnline": {
     "placeholders": {
-      "connected": { "type": "int" },
-      "total": { "type": "int" }
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "nostrStatusOffline": "ออฟไลน์ — มีรายการ relay แต่ยังไม่ต่อ",
   "nostrStatusNotInit": "ยังไม่เริ่ม (0/0) — กด Reconnect เพื่อเริ่มระบบ",
-  "nostrReconnectAction": "Reconnect Nostr",
+  "nostrReconnectAction": "เชื่อมต่อใหม่ Nostr",
   "nostrReconnectOk": "เชื่อม Nostr แล้ว ({connected}/{total})",
   "@nostrReconnectOk": {
     "placeholders": {
-      "connected": { "type": "int" },
-      "total": { "type": "int" }
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "nostrReconnectFailed": "ยังออฟไลน์ — ตรวจ Wi‑Fi/เซลลูลาร์ หรือลองใหม่",
   "nostrReconnectFailedDetail": "ล้มเหลว: {error}",
   "@nostrReconnectFailedDetail": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "nostrReconnecting": "กำลังเชื่อม relay…",
   "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
   "geoPeerInternetSubtitle": "อินเทอร์เน็ต (Nostr) ใน {channel} • พร้อมแชตผนึก",
   "@geoPeerInternetSubtitle": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "transportModeTitle": "ช่องทางพื้นที่",
   "transportModeSubtitle": "Mesh = BLE ใกล้ตัว (radio) เมื่อไม่มี Nostr · Internet & Auto = รายชื่อจาก Nostr",
-  "transportModeMesh": "Mesh",
-  "transportModeInternet": "Internet",
-  "transportModeAuto": "Auto",
+  "transportModeMesh": "ตาข่าย",
+  "transportModeInternet": "อินเทอร์เน็ต",
+  "transportModeAuto": "อัตโนมัติ",
   "geoPublicHint": "ข้อความสาธารณะถึงทุกคนที่ออนไลน์ในพื้นที่นี้",
   "geoPublicSend": "สาธารณะ",
   "geoPublicHelp": "ส่งแบบผนึกถึง {count} คนที่ออนไลน์ — แต่ละคนได้ซองส่วนตัว",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "geoPublicSent": "ส่งแล้วถึง {count} คนในพื้นที่",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "geoPublicSentNone": "ยังไม่มีเพื่อนที่ส่งถึงได้ — เปิด Area/Mesh ให้มีคนที่ผูกคีย์แล้ว หรือรอ BLE/Nostr",
   "areaPublicBadge": "สาธารณะในพื้นที่",
   "geoErrorPermission": "ไม่สามารถอ่านพิกัดได้ — ตรวจสิทธิ์ตำแหน่ง",
@@ -279,8 +378,12 @@
   "mtBridgeStatusLine": "{mode} · {transport}",
   "@mtBridgeStatusLine": {
     "placeholders": {
-      "mode": { "type": "String" },
-      "transport": { "type": "String" }
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
     }
   },
   "mtBridgeTransportDemo": "ทดลอง (logging)",
@@ -376,6 +479,13 @@
   "chatImageTooLarge": "รูปใหญ่เกินไป — ลองเลือกรูปอื่น",
   "chatNostrExpiry": "เก็บบน Nostr",
   "geoPublicComposeHint": "ส่งข้อความถึง {channel} — สาธารณะ",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "settingsClearTitle": "ล้างข้อความทั้งหมด",
   "settingsClearSubtitle": "ลบแชตทั้งหมดในเครื่อง",
   "settingsClearConfirmTitle": "ล้างข้อความทั้งหมด?",
@@ -383,6 +493,13 @@
   "settingsClearAction": "ล้างข้อมูล",
   "settingsClearedSnack": "ล้างข้อมูลเรียบร้อยแล้ว",
   "settingsVersion": "เวอร์ชัน {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "meshBleScanning": "BLE: กำลังค้นหา Node",
   "meshBleEsp32Scanning": "ESP32: กำลังหาโหนดใกล้ ๆ",
   "meshBleSyncing": "BLE: กำลังซิงก์กับ ESP32",
@@ -391,21 +508,63 @@
   "meshBlePeersNearby": "BLE mesh — พบมือถือใกล้ ๆ {count} เครื่อง",
   "@meshBlePeersNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "meshBleNeedsPermission": "BLE: ต้องขอสิทธิ์ก่อน",
   "meshBlePausedCamera": "BLE หยุดชั่วคราว (กล้อง) — แตะ เริ่ม BLE",
   "meshBleStopped": "BLE ปิดอยู่ — เปิด Bluetooth แล้วแตะ เริ่ม BLE",
   "meshBleRestart": "เริ่ม BLE",
-  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "meshBleStatusDetail": "BT {bt} · ล็อค {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
   "meshBleEnsureAction": "ตรวจสิทธิ์และเริ่ม BLE",
   "meshNostrOffline": "Nostr ออฟไลน์",
   "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
   "meshFooter": "{count} เพื่อนใกล้เคียง • LoRa {lora} • รัศมีซิงก์ ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
   "meshLoraReady": "พร้อม",
   "meshLoraNotReady": "ไม่พร้อม",
-  "meshGatewayProgress": "Gateway UDP: {label}",
+  "meshGatewayProgress": "UDP เกตเวย์: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "meshGatewayReady": "Gateway UDP: พร้อมส่ง",
   "permissionTitle": "ขอสิทธิ์เพื่อเริ่มใช้งานเครือข่าย BLE Mesh",
   "permissionBody": "แอปต้องใช้ Bluetooth (สแกน/เชื่อมต่อ/โฆษณาตัวตน), Location (รองรับ Android รุ่นเก่า) และไมโครโฟน (สำหรับข้อความเสียงในแชตและประกาศ) เพื่อสื่อสารในชุมชน",
@@ -415,15 +574,22 @@
   "permissionNotReadySnack": "ระบบยังไม่พร้อม — รอสักครู่แล้วลองใหม่",
   "permissionDeniedSnack": "ยังไม่ได้สิทธิ์ครบ — เปิด Settings > ResilNet แล้วอนุญาต Bluetooth/Location/ไมโครโฟน",
   "permissionMicDenied": "ไม่ได้รับอนุญาตไมโครโฟน — เปิด Settings เพื่ออนุญาตการบันทึกเสียง",
-  "permissionMicOpenSettings": "Settings",
+  "permissionMicOpenSettings": "การตั้งค่า",
   "permissionCameraDenied": "ไม่ได้รับอนุญาตกล้อง — เปิด Settings เพื่อสแกน QR",
   "permissionCameraFailed": "ต้องอนุญาตกล้องเพื่อสแกน QR",
-  "permissionCameraOpenSettings": "Settings",
+  "permissionCameraOpenSettings": "การตั้งค่า",
   "permissionPhotosDenied": "ไม่ได้รับสิทธิ์คลังภาพ — เปิด Settings เพื่อบันทึก QR",
   "permissionPhotosFailed": "ต้องอนุญาตคลังภาพเพื่อบันทึก QR",
-  "permissionPhotosOpenSettings": "Settings",
+  "permissionPhotosOpenSettings": "การตั้งค่า",
   "permissionFailedSnack": "ขอสิทธิ์ล้มเหลว: {error}",
-  "permissionFooter": "ResilNet Architecture • Store-and-Forward Multi-hop",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet สถาปัตยกรรม • จัดเก็บและส่งต่อมัลติฮอป",
   "onboardingSkip": "ข้าม",
   "onboardingNext": "ถัดไป",
   "onboardingStart": "เริ่มใช้งาน",
@@ -443,20 +609,43 @@
   "chatNeedPeerKey": "สแกน QR ของเพื่อนนี้ก่อน (ต้องมีกุญแจที่ยืนยันแล้ว)",
   "chatPeerKeyMismatch": "กุญแจสาธารณะที่เก็บไว้ไม่ตรงกับรหัสเพื่อนนี้",
   "chatVoiceFailed": "ไม่สามารถอัดเสียงได้: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "chatPlayVoiceFailed": "เล่นเสียงไม่สำเร็จ: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "chatPlayVoice": "เล่นข้อความเสียง",
   "chatPauseVoice": "หยุดชั่วคราว",
   "chatVoiceLabelSent": "🎤 ข้อความเสียง (ผนึกแล้ว)",
   "chatVoiceLabel": "🎤 ข้อความเสียง",
   "chatDecryptFailed": "[ถอดรหัสไม่สำเร็จ]",
   "chatSentSealed": "[ผนึกแล้ว • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
   "chatSentSealedShort": "[ผนึกแล้ว]",
   "chatComposeHint": "พิมพ์ข้อความ… (เข้ารหัสทันทีเมื่อกดส่ง)",
   "chatEmptyThread": "ยังไม่มีข้อความ\nพิมพ์ข้อความด้านล่างเพื่อส่งผ่าน Mesh",
   "chatLoadFailed": "โหลดบทสนทนาไม่สำเร็จ: {error}",
   "@chatLoadFailed": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "chatEmojiTooltip": "อิโมจิ",
@@ -481,6 +670,13 @@
   "identityGalleryDenied": "ไม่ได้รับสิทธิ์บันทึกลงคลังภาพ",
   "identityQrSaved": "บันทึก QR ลงคลังภาพแล้ว",
   "identityQrSaveFailed": "บันทึก QR ไม่สำเร็จ: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "peersTitle": "สมาชิกเครือข่าย",
   "qrScanTitle": "สแกน QR เพิ่มเพื่อน",
   "qrInvalid": "สแกนไม่สำเร็จ: QR ไม่ถูกต้อง",
@@ -517,8 +713,22 @@
   "peersRecentlyOnline": "ออนไลน์ล่าสุด",
   "peersOnlineInArea": "ออนไลน์ในพื้นที่",
   "peersSeenMinutesAgo": "เห็นเมื่อ {minutes} นาทีที่แล้ว",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "peersOffline": "ออฟไลน์",
   "peersBlockedSnack": "บล็อก {id} แล้ว",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "peersUnblockedSnack": "ปลดบล็อกแล้ว",
   "peersEmpty": "ยังไม่มีสมาชิกในฐานข้อมูล\nสแกน QR หรือรอค้นพบผ่าน BLE Mesh",
   "peersOpenChat": "เปิดแชต",
@@ -526,31 +736,44 @@
   "peersUnblockAction": "ปลดบล็อก",
   "channelPickerTooltip": "แชท / #mesh / พื้นที่",
   "locationPickerTooltip": "ช่องตามตำแหน่ง",
-  "transportPickerTooltip": "Mesh / Internet / Auto",
+  "transportPickerTooltip": "ตาข่าย/อินเตอร์เน็ต/ออโต้",
   "onlinePeopleTooltip": "คนออนไลน์",
   "unreadDirectsTooltipEmpty": "ข้อความส่วนตัว",
   "unreadDirectsTooltip": "ข้อความส่วนตัวที่ยังไม่ได้อ่าน {count} ข้อความ",
   "@unreadDirectsTooltip": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "onlinePeopleTitle": "คนออนไลน์",
   "onlinePeopleEmpty": "ยังไม่มีใครออนไลน์ที่นี่",
   "onlinePeopleCount": "ออนไลน์ {count} คน",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "onlinePeopleDirectsChannel": "1:1 · ใกล้ตัว + พื้นที่",
   "peerOnlineMeshTitle": "มีคนออนไลน์บน mesh",
   "peerOnlineMeshBody": "{name} อยู่ใกล้บน mesh",
   "@peerOnlineMeshBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "peerOnlineAreaTitle": "มีคนออนไลน์ในพื้นที่",
   "peerOnlineAreaBody": "{name} ออนไลน์ผ่าน Nostr",
   "@peerOnlineAreaBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "locationSheetTitle": "#ช่องตามตำแหน่ง",
@@ -560,10 +783,24 @@
   "channelUnpinTooltip": "เอาหมุดออก",
   "locationSheetIntro": "คุยกับคนใกล้ตัวผ่าน geohash แบบหยาบ — ไม่ใช่ GPS แม่นยำ Presence บน Internet ใช้นามแฝง Nostr",
   "locationMeshSubtitle": "#bluetooth • ~10–50 ม.",
-  "locationTeleportHint": "#geohash",
+  "locationTeleportHint": "#จีโอฮาช",
   "locationTeleport": "เทเลพอร์ต",
   "homeComposeHint": "ข้อความถึง {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "homeComposePublicHint": "ส่งข้อความถึง {channel} — สาธารณะ",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "messageExpiryTitle": "หมดอายุใน",
   "voiceRecordTapToStart": "แตะเพื่อบันทึกข้อความเสียง",
   "voiceRecordTooShort": "อัดสั้นเกินไป — ลองใหม่",
@@ -583,7 +820,9 @@
   "noticesBackfillLoaded": "ดึงประกาศแล้ว {count} รายการ",
   "@noticesBackfillLoaded": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noticePublishFailed": "โพสต์ประกาศไปกระดานพื้นที่ไม่สำเร็จ ตรวจการเชื่อมต่อ Nostr",
@@ -591,7 +830,9 @@
   "noticeMeshPublishSent": "ส่งประกาศไปยังอุปกรณ์ใกล้เคียง {count} เครื่องผ่าน BLE แล้ว",
   "@noticeMeshPublishSent": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noticeMeshPublishBleFailed": "เห็นวิทยุใกล้ ๆ แต่ส่ง BLE ไม่สำเร็จ เปิดหน้าประกาศทั้งสองเครื่องแล้วลองใหม่ (หรือใช้ ESP32 เป็นตัวกลาง)",
@@ -607,6 +848,13 @@
   "identityCopyHashTooltip": "คัดลอก Public Key Hash",
   "identityMyQrTitle": "QR ของฉัน (id + pubKey + ชื่อ)",
   "identityQrFailed": "สร้าง QR ไม่สำเร็จ\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "identitySaving": "กำลังบันทึก...",
   "identitySaveQr": "บันทึก QR ลงคลังภาพ",
   "identityOpenScanner": "เปิดกล้องสแกน QR",
@@ -685,8 +933,22 @@
   "favoritesEmpty": "ยังไม่มีคนโปรด — กดดาวจากรายชื่อสมาชิก",
   "favoritesNearbyTitle": "คนโปรดอยู่ใกล้",
   "favoritesNearbyBody": "{name} อยู่ใกล้บน mesh",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "favoritesInAreaTitle": "คนโปรดในพื้นที่",
   "favoritesInAreaBody": "{name} ออนไลน์ในพื้นที่นี้",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "topologyTitle": "โทโพโลยี mesh",
   "topologySubtitle": "เพียร์และสถานะการเชื่อมต่อจาก mesh announce (อ่านอย่างเดียว)",
   "topologyConnectedNow": "เชื่อมต่ออยู่ตอนนี้ (BLE)",
@@ -697,8 +959,12 @@
   "topologyStats": "{peers} เพียร์ · {links} ลิงก์",
   "@topologyStats": {
     "placeholders": {
-      "peers": {"type": "int"},
-      "links": {"type": "int"}
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
     }
   },
   "topologyGraphHint": "ประมาณจาก discovery ใกล้เคียง — เครื่องของคุณถูกไฮไลต์ แตะเพียร์เพื่อเปิดแชท",
@@ -707,8 +973,22 @@
   "slashHelpBody": "/help — รายการนี้\n/who — คนออนไลน์ในช่องปัจจุบัน\n/drop <ข้อความ> — ปักโน้ตแบบ sealed ในช่องนี้ (E2EE fan-out)\n\nคู่มือเต็ม: กดเปิดคู่มือด้านล่าง หรือ Settings → คู่มือการใช้งาน",
   "slashWhoEmpty": "ยังไม่มีใครออนไลน์ในช่องนี้",
   "slashWhoTitle": "ออนไลน์ ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "slashDropNeedText": "ใช้แบบ: /drop ข้อความของคุณ",
   "slashDropDone": "ปักโน้ตที่ {channel} แล้ว",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
   "slashUnknown": "ไม่รู้จักคำสั่ง — ลอง /help",
   "announceOpen": "ประกาศ",
   "announceTitle": "ประกาศ",
@@ -726,7 +1006,11 @@
   "announceNeedInternet": "ต้องเชื่อมต่ออินเทอร์เน็ตเพื่อส่งรูปหรือเสียงในประกาศ",
   "announceVoiceFailed": "อัดเสียงไม่สำเร็จ: {error}",
   "@announceVoiceFailed": {
-    "placeholders": { "error": { "type": "String" } }
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   },
   "announceImageTooLarge": "รูปใหญ่เกินไป (สูงสุด ~180 KB)",
   "announcePlayVoice": "เล่นข้อความเสียง",
@@ -757,7 +1041,9 @@
   "announceFollowOkNamed": "ติดตามกระดาน “{title}” แล้ว",
   "@announceFollowOkNamed": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "announceFollowFail": "คำเชิญไม่ถูกต้องหรือเสียหาย",
@@ -769,14 +1055,18 @@
   "peerConfirmAddBody": "เพิ่ม “{name}” พร้อมกุญแจสาธารณะ เพื่อส่งข้อความส่วนตัวได้?",
   "@peerConfirmAddBody": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "peerConfirmAdd": "เพิ่มสมาชิก",
   "peerAddedOk": "เพิ่ม {name} ในสมาชิกเครือข่ายแล้ว",
   "@peerAddedOk": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "peerAddFromCompose": "พบตัวตน / กุญแจสาธารณะในกล่องข้อความ",
@@ -787,7 +1077,9 @@
   "identityInviteSharePreamble": "ตัวตน ResilNet: “{name}”\nเปิดลิงก์หรือวางในแชต → เพิ่มสมาชิก\nหรือสแกน QR ตัวตน",
   "@identityInviteSharePreamble": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "identityShareInvite": "แชร์ลิงก์ตัวตน",
@@ -795,14 +1087,18 @@
   "announceInviteSharePreamble": "คำเชิญเข้ากระดานชุมชน “{title}”\nเปิด ResilNet → กระดานชุมชน → ติดตามจากคำเชิญ\nหรือสแกน QR / แตะลิงก์ด้านล่าง",
   "@announceInviteSharePreamble": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "announceConfirmFollowTitle": "ติดตามกระดานนี้?",
   "announceConfirmFollowBody": "ติดตาม “{title}” จากคำเชิญนี้หรือไม่?",
   "@announceConfirmFollowBody": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "announceConfirmFollow": "ติดตาม"

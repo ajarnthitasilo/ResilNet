@@ -1,0 +1,1105 @@
+{
+  "@@locale": "ms",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "Menyegarkan ResilNet…",
+  "appRefreshed": "Disegarkan semula — radio dan penemuan dimulakan semula",
+  "appRefreshFailed": "Muat semula gagal: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "Ketik dua kali = muat semula lembut. Tekan lama = keras pulih. Ketik tiga kali = lap kecemasan.",
+  "softRefreshTipTitle": "Jika ResilNet terasa tersekat",
+  "softRefreshTipBody": "Ketik dua kali ResilNet (kiri atas) untuk muat semula radio lembut. Jika masih tersekat: tekan lama pada tajuk, gunakan ⋮ → Pulih keras atau Tetapan. Ketik tiga kali ialah lap kecemasan sahaja.",
+  "softRefreshTipGotIt": "faham",
+  "infoSoftRefreshTitle": "Jika apl terasa tersekat",
+  "infoSoftRefreshStepRefresh": "Ketik dua kali ResilNet (kiri atas) → radio segar semula lembut & orang berdekatan",
+  "infoSoftRefreshStepHard": "Masih tersekat? Tekan lama tajuk, atau ⋮ / Tetapan → Pulih keras",
+  "infoSoftRefreshStepWait": "Tunggu hasil snackbar, kemudian cuba lagi. Tetapan semula sesi menyimpan kunci anda.",
+  "infoSoftRefreshStepWipe": "Ketik tiga kali = lap kecemasan (memadam data setempat) — hanya jika disengajakan",
+  "appRecoverySection": "Pemulihan apl",
+  "appRecoverySectionSubtitle": "Gunakan apabila apl terasa beku. Lembut = tajuk dwiketik. Pulih keras lebih kuat. Tetapan semula sesi memulakan semula perkhidmatan tanpa mengelap kekunci.",
+  "appHardRecoverAction": "Sukar pulih",
+  "appHardRecovering": "Sukar pulih…",
+  "appSessionResetAction": "Set semula sesi",
+  "appSessionResetRunning": "Menetapkan semula sesi…",
+  "appSessionResetConfirmTitle": "Set semula sesi?",
+  "appSessionResetConfirmBody": "Memulakan semula perkhidmatan ResilNet pada peranti ini. Kunci identiti anda disimpan.",
+  "appRecoveryBusy": "Pemulihan sudah berjalan…",
+  "appRecoveryOk": "Pemulihan selesai",
+  "appRecoveryPartial": "Pemulihan selesai dengan beberapa langkah dilangkau — cuba lagi jika masih tersekat",
+  "appRecoveryFailed": "Pemulihan gagal — cuba tetapan semula Sesi, atau keluar paksa apl daripada OS",
+  "localWifiTitle": "Setempat Wi‑Fi",
+  "localWifiSubtitle": "Pautkan peranti berdekatan tanpa internet — sama seperti berada di satu LAN.",
+  "localWifiNotGatewayHint": "Bukan gerbang ESP32 LoRa SoftAP. Ini telefon↔telefon / LAN sahaja.",
+  "localWifiUnavailable": "Wi‑Fi setempat belum bersedia — tunggu untuk permulaan apl.",
+  "lxmfBridgeTitle": "Nod rumah",
+  "lxmfBridgeSubtitle": "Mac atau Pi pilihan pada Wi‑Fi anda yang menyampaikan sembang tertutup. Mati secara lalai. Tidak menggantikan penyulitan hujung ke hujung.",
+  "lxmfBridgeEnable": "Gunakan nod rumah",
+  "lxmfBridgeDisabledHint": "Hidupkan hanya apabila apl jambatan berjalan pada Mac atau Pi pada rangkaian ini.",
+  "lxmfBridgeOnline": "Dalam talian — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "Tidak dapat mencapai nod rumah — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Alamat nod rumah",
+  "lxmfBridgeBaseUrlHelper": "IP atau http://IP:port — contoh 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "Peer → LXMF dest (JSON)",
+  "lxmfBridgeRefresh": "Simpan & muat semula status",
+  "lxmfBridgeLabHint": "Lanjutan: makmal/retikulum_lxmf",
+  "lxmfBridgeOpen": "Tetapan nod rumah",
+  "lxmfBridgeCheckConnection": "Semak sambungan",
+  "lxmfBridgeStatusOnline": "Disambungkan ke nod rumah",
+  "lxmfBridgeStatusOffline": "Nod rumah tidak boleh dicapai",
+  "lxmfBridgeYourDest": "Alamat nod ini (kongsi dengan rakan)",
+  "lxmfBridgeCopyDest": "Salin alamat",
+  "lxmfBridgeDestCopied": "Alamat disalin",
+  "lxmfBridgeLinkedPeers": "Rakan yang dipautkan",
+  "lxmfBridgeLinkedPeersHint": "Setiap rakan memerlukan alamat nod rumah mereka sekali. Kemudian sembang tertutup boleh menggunakan laluan ini.",
+  "lxmfBridgeNoLinks": "Belum ada rakan yang dipautkan.",
+  "lxmfBridgeAddLink": "Pautkan rakan",
+  "lxmfBridgePickPeer": "kawan",
+  "lxmfBridgePeerDest": "Alamat nod rumah mereka",
+  "lxmfBridgePeerDestHint": "Kod 32 aksara daripada skrin nod Utama mereka",
+  "lxmfBridgeInvalidDest": "Alamat itu kelihatan tidak sah. Tampalkan kod penuh daripada nod rumah mereka.",
+  "lxmfBridgeRemoveLink": "Nyahpaut",
+  "lxmfBridgeSaveLink": "Jimat",
+  "lxmfBridgeLinkSaved": "Rakan dipautkan",
+  "lxmfBridgeNoPeers": "Tiada kenalan boleh mesej lagi — tambah rakan dahulu.",
+  "lxmfBridgeHelp": "Pastikan jambatan berjalan pada Mac/Pi. Laluan ini kekal pada LAN anda — ia bukan LoRa dan tidak menggantikan Internet atau mesh Bluetooth.",
+  "localWifiModeHotspot": "Berdekatan",
+  "localWifiModeRouter": "Penghala",
+  "localWifiHotspotIntro": "Satu peranti berkongsi Hotspot Peribadi. Orang lain menyertai tempat liputan itu, kemudian ResilNet menemui mereka di rangkaian tempatan.",
+  "localWifiHostAction": "Buat rangkaian (Hos)",
+  "localWifiJoinAction": "Sertai rangkaian",
+  "localWifiHostSteps": "1. Buka Tetapan iOS/Android dan hidupkan Hotspot Peribadi (atau Perkongsian Internet).\n2. Beritahu rakan nama tempat liputan (dan kata laluan).\n3. Kembali ke sini dan ketik “Hotspot dihidupkan — mula menunggu”.",
+  "localWifiHostReady": "Tempat liputan dihidupkan — mula menunggu",
+  "localWifiHostWaiting": "Menunggu rakan-rakan untuk menyertai…",
+  "localWifiJoinSteps": "1. Buka Tetapan sistem dan sertai Hotspot Peribadi rakan anda.\n2. Kembali ke sini dan ketik \"Saya disambungkan — cari\".",
+  "localWifiJoinReady": "Saya disambungkan — cari",
+  "localWifiRouterIntro": "Sambungkan setiap peranti ke Wi‑Fi penghala/AP yang sama. Penghala tidak memerlukan internet — hanya rangkaian tempatan yang dikongsi.",
+  "localWifiRouterSearch": "Cari pada Wi‑Fi ini",
+  "localWifiRefreshNetwork": "Muat semula Wi‑Fi maklumat",
+  "localWifiRouterNoWifiTitle": "Bukan pada Wi‑Fi",
+  "localWifiRouterNoWifiBody": "Sertai penghala Wi‑Fi dalam Tetapan sistem, kemudian cari semula.",
+  "localWifiDiscovering": "Mencari pada Wi‑Fi setempat…",
+  "localWifiPeersFound": "Peranti pada rangkaian ini",
+  "localWifiStop": "Berhenti",
+  "localWifiSsidUnknown": "Nama Wi‑Fi tidak tersedia",
+  "localWifiStubBanner": "Menunggu soket LAN…",
+  "localWifiLiveBanner": "LAN discovery live (UDP) — umumkan + sembang tertutup pada Wi‑Fi ini",
+  "localWifiEmptyHotspot": "Tiada peranti lagi.\nSemak sama ada rakan menyertai hotspot anda dan membenarkan akses Rangkaian Tempatan.",
+  "localWifiEmptyRouter": "Tiada peranti lagi.\nSSID yang sama? Rangkaian Tempatan dibenarkan? Sesetengah penghala menyekat trafik peranti ke peranti (pengasingan AP).",
+  "localWifiIsolationHelp": "Mengapa kita tidak dapat mencari satu sama lain?",
+  "localWifiIsolationTitle": "Penghala boleh mengasingkan pelanggan",
+  "localWifiIsolationBody": "Jika pengasingan AP/Pelanggan (atau rangkaian tetamu) dihidupkan, telefon pada Wi‑Fi yang sama tidak boleh bercakap. Matikan pengasingan, gunakan SSID utama atau tukar kepada mod Berdekatan (Hotspot).",
+  "localWifiPeerReady": "Sedia untuk berbual (ada kunci)",
+  "localWifiPeerNeedKey": "Ditemui — imbas QR untuk menukar kunci",
+  "localWifiErrorTitle": "Ralat Wi‑Fi setempat",
+  "localWifiErrorBody": "Sesuatu telah berlaku. Berhenti dan cuba lagi.",
+  "preparingSystem": "Menyediakan sistem…",
+  "bootFailedTitle": "tidak dapat bermula",
+  "retry": "Cuba lagi",
+  "bootRecoveryAction": "Mulakan identiti baharu (padamkan data setempat)",
+  "bootRecoveryConfirmTitle": "Mulakan identiti baharu?",
+  "bootRecoveryConfirmBody": "Ini akan memadamkan sembang, kunci dan identiti setempat secara kekal pada peranti ini.\nRakan sebaya mesti mengimbas QR anda sekali lagi dengan identiti baharu anda.\nIni tidak boleh dibuat asal.",
+  "bootRecoveryRunning": "Menetapkan semula identiti setempat…",
+  "bootRecoverySuccess": "Penetapan semula identiti setempat selesai",
+  "bootRecoveryFailed": "Tidak dapat menetapkan semula identiti: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Batal",
+  "save": "Jimat",
+  "close": "tutup",
+  "start": "Mulakan",
+  "send": "Hantar",
+  "settings": "tetapan",
+  "language": "Bahasa",
+  "languageSubtitle": "Secara lalai apl mengikut bahasa telefon anda (apabila disokong). Bahasa lain kembali kepada bahasa Inggeris. Anda juga boleh mengunci bahasa di sini.",
+  "languageSystem": "Sistem lalai",
+  "languageThai": "Thai",
+  "languageEnglish": "Inggeris",
+  "notificationsTooltip": "Tetapan pemberitahuan",
+  "enableMessageNotifications": "Dayakan pemberitahuan mesej",
+  "settingsNotificationsSubtitle": "Mesej 1:1 dan orang dalam talian (makluman tempatan)",
+  "networkMembersTooltip": "Ahli rangkaian",
+  "identityQrTooltip": "Identiti / QR",
+  "feedDirects": "Sembang",
+  "feedMesh": "#mesh",
+  "feedGeo": "Kawasan",
+  "feedDirectsSubtitle": "Mesej E2EE peribadi",
+  "feedMeshSubtitle": "Rakan sebaya yang berdekatan (BLE)",
+  "feedGeoSubtitle": "Saluran penemuan Geohash",
+  "peerIdHint": "Tampalkan ID Penerima (Cencangan Kunci Awam) untuk memulakan sembang",
+  "directsEmpty": "Belum ada sembang — imbas QR atau tampal ID Penerima untuk bermula\nMesej dimeterai dengan E2EE sebelum dihantar (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • ketik untuk membuka sembang",
+  "meshIntro": "Rakan sebaya dalam julat BLE — ketik untuk sembang E2EE peribadi (tiada karang awam pada #mesh)\nMenghantar melalui penghala hibrid (BLE + LoRa + Nostr apabila dalam talian)",
+  "meshEmptyRunning": "Belum ada rakan sebaya yang berdekatan — buka apl pada peranti lain dalam lingkungan BLE",
+  "meshEmptyStopped": "BLE tidak berjalan — berikan kebenaran Bluetooth / Lokasi",
+  "meshNearbyPrefix": "Berdekatan",
+  "meshRetentionTitle": "Autopadam mesej",
+  "meshRetentionSubtitle": "Sejarah sembang tempatan lama dialih keluar secara automatik",
+  "meshRetentionKeep": "Simpan",
+  "meshRetention1Day": "1 hari",
+  "meshRetention3Days": "3 hari",
+  "meshRetention7Days": "7 hari",
+  "refreshLocationTooltip": "Muat semula lokasi",
+  "geoIntro": "Orang dalam talian dalam geohash ini boleh dihantar mesej 1:1 atau dengan kawasan awam fan-out (masih dimeterai E2EE setiap rakan sebaya — bukan plaintext)",
+  "geoEmpty": "Tiada sesiapa dalam talian di {channel} lagi\nGunakan Pengangkutan → Internet/Auto, tunggu Nostr, muat semula lokasi",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "Dalam talian dalam {channel} • ketik untuk 1:1 E2EE",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "Berdekatan (menunggu kehadiran kawasan) • ketik untuk 1:1 E2EE",
+  "geoPeerNostrSubtitle": "Dilihat pada Nostr dalam {channel} • penemuan sahaja (warisan)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "Kehadiran tanpa nama lama — tunggu rakan sebaya terikat atau tukar QR",
+  "bleRadioNearbySubtitle": "BLE berdekatan — imbas QR untuk memulakan 1:1 E2EE",
+  "geoInternetDiscoverHint": "Kawasan memerlukan penemuan Internet Nostr disambungkan (Tetapan → Pengangkutan → Internet/Auto)",
+  "geoEmptyNoLocation": "Lokasi belum diselesaikan lagi — benarkan GPS dan muat semula untuk menerbitkan geohash anda pada Nostr",
+  "geoEmptyNeedsPermission": "Kebenaran lokasi ditolak — benarkan ResilNet dalam Tetapan → Privasi → Lokasi",
+  "geoEmptyServicesDisabled": "Perkhidmatan Lokasi dimatikan — hidupkannya dalam Tetapan",
+  "geoEmptyNoGpsFix": "Tidak boleh mendapatkan pembetulan GPS (biasa pada Wi‑Fi iPad) — tetapkan geohash secara manual di bawah",
+  "geoEmptyTeleportHint": "Ketik ikon tempat → masukkan geohash (cth. w5) → Teleport",
+  "geoSetGeohashManually": "Tetapkan geohash",
+  "geoTeleportHint": "Tiada GPS? Masukkan awalan geohash (2–7 aksara, cth. w5) dan ketik Teleport",
+  "geoTeleportInvalid": "Geohash tidak sah — gunakan huruf/nombor asas32 sahaja (cth. w5 atau w5jt8)",
+  "geoTeleportOk": "Kawasan ditetapkan kepada {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "Kawasan manual: {channel} (pemuatan semula GPS akan mengatasi)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr tidak bersedia — ketik Sambung semula (0/0 sehingga init berjaya)",
+  "geoEmptyMeshOnly": "Pengangkutan adalah Mesh sahaja — beralih kepada Internet atau Auto untuk menemui rakan sebaya melebihi Nostr",
+  "geoEmptyWaiting": "Tiada sesiapa dalam {channel} lagi — pastikan Kawasan + Internet terbuka pada kedua-dua peranti dan tunggu ~60s",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#kawasan",
+  "geoRefreshLocation": "Muat semula lokasi",
+  "settingsClearLocationTitle": "Kosongkan lokasi",
+  "settingsClearLocationSubtitle": "Alih keluar GPS / teleport geohash (Kawasan menjadi #—)",
+  "settingsClearLocationConfirmTitle": "Kosongkan lokasi?",
+  "settingsClearLocationConfirmBody": "Memadamkan geohash yang disimpan pada peranti ini. Anda boleh memuat semula GPS atau teleport semula selepas itu.",
+  "settingsClearLocationAction": "Kosongkan lokasi",
+  "settingsClearLocationSnack": "Lokasi dibersihkan",
+  "chatVoiceTooLarge": "Nota suara terlalu besar — ​​maks ~30 saat",
+  "chatVoiceNeedInternet": "Nota suara memerlukan Internet (Nostr) — terlalu besar untuk BLE sahaja",
+  "chatVoiceSentInternet": "Nota suara dihantar melalui Internet",
+  "noticeAnonMention": "menyebut",
+  "noticeAnonDm": "mesej langsung",
+  "noticeAnonHug": "peluk",
+  "noticeAnonSlap": "tampar",
+  "noticeAnonBlock": "blok",
+  "noticeAnonNeedKey": "Belum ada kunci awam — tukar QR dahulu untuk 1:1",
+  "noticeAnonActionSent": "Dihantar",
+  "noticeAnonBlocked": "Disekat {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "*peluk {anon}*",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* tamparan {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Sambung semula Nostr",
+  "nostrSectionTitle": "Nostr geganti",
+  "nostrSectionSubtitle": "Pemesejan Internet dan Penemuan kawasan menggunakan geganti ini. Ketik sambung semula jika status kekal di luar talian.",
+  "nostrStatusOnline": "Disambungkan {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "Luar talian — geganti disenaraikan tetapi tiada bersambung",
+  "nostrStatusNotInit": "Tidak dimulakan (0/0) — ketik Sambung semula untuk memulakan",
+  "nostrReconnectAction": "Sambung semula Nostr",
+  "nostrReconnectOk": "Nostr disambungkan ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "Masih di luar talian — semak Wi‑Fi/selular atau cuba lagi",
+  "nostrReconnectFailedDetail": "Gagal: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Menyambung ke geganti…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "Internet (Nostr) dalam {channel} • sembang tertutup sedia",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "Pengangkutan kawasan",
+  "transportModeSubtitle": "Mesh = BLE berdekatan (radio) apabila tiada Nostr · Internet & Auto = Nostr senarai orang",
+  "transportModeMesh": "mesh",
+  "transportModeInternet": "Internet",
+  "transportModeAuto": "Auto",
+  "geoPublicHint": "Mesej awam kepada semua orang dalam talian di kawasan ini",
+  "geoPublicSend": "Awam",
+  "geoPublicHelp": "Ditutup kipas kepada {count} rakan sebaya dalam talian — masing-masing menerima sampul surat peribadi",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Dihantar kepada {count} rakan sebaya di kawasan ini",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "Tiada rakan sebaya boleh mesej dalam talian — buka Area/Mesh dengan rakan sebaya yang mempunyai kunci, atau tunggu BLE/Nostr",
+  "areaPublicBadge": "Awam kawasan",
+  "geoErrorPermission": "Tidak dapat membaca lokasi — semak kebenaran lokasi",
+  "geoPrecisionRegion": "Wilayah",
+  "geoPrecisionProvince": "Wilayah",
+  "geoPrecisionCity": "Bandar",
+  "geoPrecisionNeighborhood": "Kejiranan",
+  "geoPrecisionBlock": "Sekat",
+  "aliasTitle": "Tetapkan nama panggilan (Hubungi Alias)",
+  "aliasHintBody": "Alias ini disimpan pada peranti ini sahaja (tempatan sahaja)\nIa tidak pernah dihantar dengan trafik E2EE",
+  "aliasLabel": "nama samaran",
+  "aliasHint": "cth. “ketua kampung”, “P’Somchai”…",
+  "settingsDevices": "Peranti",
+  "settingsFirmwareTitle": "Muat turun / kemas kini ESP32 perisian tegar",
+  "settingsFirmwareSubtitle": "Muat turun fail .bin dan kemas kini papan ESP32 melalui OTA",
+  "mtBridgeTitle": "Meshtastic jambatan",
+  "mtBridgeSettingsSubtitle": "Jambatan A/B teks sahaja — bukan ResilNet E2EE",
+  "mtBridgeIntro": "Alihkan teks biasa pendek antara Meshtastic dan ResilNet. Mod A dan B tidak boleh berjalan pada masa yang sama. Ini bukan penyulitan hujung ke hujung.",
+  "mtBridgeModeLabel": "Mod",
+  "mtBridgeModeOff": "Mati",
+  "mtBridgeModeA": "Termakan A",
+  "mtBridgeModeB": "Jalan keluar B",
+  "mtBridgeModeOffShort": "Mati",
+  "mtBridgeModeAShort": "Dalam A",
+  "mtBridgeModeBShort": "Keluar B",
+  "mtBridgeMutexHint": "Memilih mod mematikan mod yang lain secara automatik. A+B serentak tidak disokong.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "Demo (pelog masuk)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "Teks masuk muncul di bawah Notis sebagai #meshtastic. Geganti mesh adalah pilihan (dimatikan secara lalai).",
+  "mtBridgeRelayTitle": "Juga geganti pada ResilNet mesh",
+  "mtBridgeRelayHint": "Apabila dihidupkan, buletin awam yang ditandatangani disiarkan. Mati = Notis telefon ini sahaja.",
+  "mtBridgeSimulateHint": "Mesej demo",
+  "mtBridgeSimulate": "Simulasikan Meshtastic mesej",
+  "mtBridgeIngestOk": "Dimakan ke dalam Notis (#meshtastic)",
+  "mtBridgeEgressWarning": "Amaran: mesej yang dihantar di sini BUKAN ResilNet E2EE. Sesiapa sahaja di laluan Meshtastic boleh membacanya.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "Teks untuk diterbitkan",
+  "mtBridgeSend": "Hantar ke Meshtastic",
+  "mtBridgeEgressOk": "Beratur untuk Meshtastic (lihat log / sejarah)",
+  "mtBridgeLastEgress": "Jalan keluar terakhir",
+  "mtBridgeEgressHistory": "Keluar baru-baru ini",
+  "mtBridgeOffHint": "Hidupkan Ingest (A) atau Egress (B) untuk menggunakan jambatan.",
+  "mtBridgeNoticeBadge": "MESHTASTIK · bukan E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "Gunakan MQTT pengangkutan",
+  "mtBridgeUseMqttHint": "Mati = pengelogan demo sahaja (MQTT masuk diabaikan). Hidup = MQTT untuk pengambilan/keluar apabila disambungkan.",
+  "mtBridgeMqttHost": "Hos broker",
+  "mtBridgeMqttPort": "Pelabuhan",
+  "mtBridgeMqttTls": "Gunakan TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "Port biasa 8883. Menggunakan sijil sistem; gagal lembut pada kesilapan jabat tangan.",
+  "mtBridgeMqttAutoReconnect": "Auto-sambung semula",
+  "mtBridgeMqttAutoReconnectHint": "Apabila dihidupkan, pelanggan cuba menyambung semula selepas terputus. Status menunjukkan Menyambung sehingga dipulihkan.",
+  "mtBridgeMqttTopicHelpers": "Pembantu topik",
+  "mtBridgeMqttRegion": "Awalan wilayah (pilihan)",
+  "mtBridgeMqttRegionHint": "Apabila ditetapkan, Apply membina semula akar sebagai msh/<region>/2/json (mengatasi akar topik).",
+  "mtBridgeMqttTopicRoot": "Akar topik JSON",
+  "mtBridgeMqttDownlinkChannel": "Nama saluran pautan bawah",
+  "mtBridgeMqttApplyTopics": "Gunakan akar → langgan / terbitkan topik",
+  "mtBridgeMqttAdvanced": "Lanjutan MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, sambung semula, topik, bukti kelayakan",
+  "mtBridgeMqttTopicIn": "Langgan topik",
+  "mtBridgeMqttTopicOut": "Terbitkan topik",
+  "mtBridgeMqttGatewayFrom": "Id nod gerbang (daripada)",
+  "mtBridgeMqttGatewayFromHint": "Id perpuluhan atau !hex — diperlukan untuk pautan turun teks hantar",
+  "mtBridgeMqttChannelIndex": "Indeks saluran jaringan (pilihan 0–7)",
+  "mtBridgeMqttUser": "Nama pengguna (pilihan)",
+  "mtBridgeMqttPass": "Kata laluan (pilihan)",
+  "mtBridgeMqttPassStored": "Kata laluan disimpan pada peranti ini (tidak ditunjukkan).",
+  "mtBridgeMqttPassReplace": "Kata laluan baharu (biarkan kosong untuk disimpan)",
+  "mtBridgeMqttPassReplaceHint": "Biarkan kosong untuk menyimpan kata laluan yang disimpan.",
+  "mtBridgeMqttPassClear": "Kosongkan kata laluan",
+  "mtBridgeMqttSave": "Simpan tetapan MQTT",
+  "mtBridgeMqttSaved": "MQTT tetapan disimpan",
+  "mtBridgeMqttConnect": "Sambung",
+  "mtBridgeMqttDisconnect": "Putuskan sambungan",
+  "mtBridgeMqttConnected": "MQTT disambungkan",
+  "mtBridgeMqttConnecting": "MQTT menyambung…",
+  "mtBridgeMqttDisconnected": "MQTT terputus sambungan",
+  "mtBridgeMqttError": "MQTT ralat",
+  "mtBridgeErrModeIngest": "Tukar kepada Ingest (A) dahulu",
+  "mtBridgeErrModeEgress": "Tukar ke Egress (B) dahulu",
+  "mtBridgeErrRate": "Perlahan — kadar terhad",
+  "mtBridgeErrDedupe": "Mesej pendua diabaikan",
+  "mtBridgeErrLoop": "Dijatuhkan untuk mengelakkan gelung jambatan",
+  "mtBridgeErrEmpty": "Mesej kosong",
+  "mtBridgeErrPublish": "Terbitan gagal",
+  "mtBridgeErrNotConnected": "MQTT tidak disambungkan",
+  "mtBridgeErrMissingHost": "Masukkan MQTT hos broker",
+  "mtBridgeErrMissingTopic": "Masukkan topik langgan dan terbitkan",
+  "mtBridgeErrMissingFromNode": "Masukkan id nod get laluan (daripada) untuk teks hantar",
+  "mtBridgeErrConnect": "MQTT sambungan gagal",
+  "mtBridgeErrConnectTls": "MQTT Sambungan TLS gagal",
+  "settingsData": "Data",
+  "settingsDataHint": "Padamkan mesej setempat untuk mengecilkan pangkalan data — identiti, kunci dan rakan sebaya disimpan",
+  "settingsSaveHistoryTitle": "Simpan sejarah mesej",
+  "settingsSaveHistorySubtitle": "Apabila dimatikan, mesej kekal E2EE pada wayar dan disimpan hanya untuk sesi ini (bukan dalam sejarah sembang tempatan). Teks anda sendiri masih dipaparkan sebagai teks biasa pada peranti ini.",
+  "settingsPrivacy": "Privasi",
+  "settingsE2eeTitle": "Penyulitan hujung ke hujung",
+  "settingsE2eeSubtitle": "Sentiasa hidup — mesej dimeterai dengan RSA-OAEP + AES-GCM sebelum dihantar. Relay dan hop berdekatan tidak boleh membaca kandungan.",
+  "settingsScreenshotTitle": "Makluman tangkapan skrin",
+  "settingsScreenshotSubtitle": "Tunjukkan baris sistem dalam sembang apabila peranti ini menangkap skrin",
+  "settingsNostrExpiryTitle": "Nostr mesej kekalkan masa",
+  "settingsNostrExpirySubtitle": "Berapa lama sampul surat yang dimeterai harus kekal secara setempat apabila dalam talian melalui Nostr",
+  "noticeExpiresIn": "tamat tempoh dalam",
+  "noticesTitle": "Notis",
+  "noticesMeshIntro": "Buletin awam — boleh dilihat oleh semua orang dalam julat radio, tidak disulitkan. Ia melompat telefon ke telefon di luar talian dan kotak geganti ResilNet berdekatan menyimpan salinan supaya orang yang tiba kemudian masih melihatnya.",
+  "noticesMeshPublicBadge": "AWAM · tidak disulitkan",
+  "noticesGeoIntro": "Tambahkan nota ringkas untuk tempat ini supaya pelawat lain boleh menemuinya.",
+  "noticesEmpty": "tiada notis lagi",
+  "noticesEmptyHint": "sematkan notis pertama untuk orang di sekitar sini.",
+  "noticesComposeHint": "hantar notis...",
+  "noticesUrgent": "mendesak",
+  "noticesOpen": "Notis",
+  "screenshotTaken": "*anda mengambil tangkapan skrin*",
+  "chatAttachImage": "Lampirkan imej",
+  "chatImageLabel": "Imej",
+  "chatImageTooLarge": "Imej terlalu besar — ​​cuba foto lain",
+  "chatNostrExpiry": "Nostr simpan",
+  "geoPublicComposeHint": "Hantar kepada {channel} — awam",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "Kosongkan semua mesej",
+  "settingsClearSubtitle": "Padamkan semua sembang pada peranti ini",
+  "settingsClearConfirmTitle": "Kosongkan semua mesej?",
+  "settingsClearConfirmBody": "Ini memadamkan semua mesej sembang pada peranti ini.\nRakan sebaya dan nama panggilan tidak dialih keluar.",
+  "settingsClearAction": "Kosongkan data",
+  "settingsClearedSnack": "Data dikosongkan",
+  "settingsVersion": "versi {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: mengimbas nod",
+  "meshBleEsp32Scanning": "ESP32: mencari nod berdekatan",
+  "meshBleSyncing": "BLE: menyegerak dengan ESP32",
+  "meshNostrPublishing": "Nostr: penerbitan",
+  "meshBleIdle": "BLE mesh on — belum ada telefon berdekatan",
+  "meshBlePeersNearby": "BLE mesh — {count} telefon berdekatan",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: kebenaran diperlukan",
+  "meshBlePausedCamera": "BLE dijeda untuk kamera — ketik Mula BLE",
+  "meshBleStopped": "BLE dimatikan — semak Bluetooth dihidupkan, kemudian ketik Mula BLE",
+  "meshBleRestart": "Mulakan BLE",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "Semak kebenaran & mulakan BLE",
+  "meshNostrOffline": "Nostr luar talian",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} rakan sebaya berdekatan • LoRa {lora} • penyegerakan ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "sedia",
+  "meshLoraNotReady": "tidak bersedia",
+  "meshGatewayProgress": "UDP Gerbang: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Gateway UDP: sedia",
+  "permissionTitle": "Benarkan akses untuk memulakan rangkaian mesh BLE",
+  "permissionBody": "Apl ini memerlukan Bluetooth (imbas / sambung / iklan), Lokasi (untuk peranti Android yang lebih lama) dan Mikrofon (untuk nota suara dalam sembang dan pengumuman) untuk pemesejan komuniti.",
+  "permissionE2ee": "Penyulitan Hujung ke Hujung (E2EE)\nNod geganti tidak boleh membaca kandungan mesej",
+  "permissionReady": "Keizinan sedia",
+  "permissionRequest": "Benarkan dan teruskan",
+  "permissionNotReadySnack": "Sistem belum sedia — tunggu sebentar dan cuba lagi",
+  "permissionDeniedSnack": "Kebenaran tidak lengkap — buka Tetapan > ResilNet dan benarkan Bluetooth / Lokasi / Mikrofon",
+  "permissionMicDenied": "Akses mikrofon ditolak — benarkan dalam Tetapan untuk merakam nota suara",
+  "permissionMicOpenSettings": "tetapan",
+  "permissionCameraDenied": "Akses kamera ditolak — benarkan dalam Tetapan untuk mengimbas kod QR",
+  "permissionCameraFailed": "Kebenaran kamera diperlukan untuk mengimbas kod QR",
+  "permissionCameraOpenSettings": "tetapan",
+  "permissionPhotosDenied": "Akses pustaka foto ditolak — benarkan dalam Tetapan untuk menyimpan kod QR anda",
+  "permissionPhotosFailed": "Kebenaran perpustakaan foto diperlukan untuk menyimpan kod QR anda",
+  "permissionPhotosOpenSettings": "tetapan",
+  "permissionFailedSnack": "Permintaan kebenaran gagal: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet Seni Bina • Kedai-dan-Maju Berbilang-hop",
+  "onboardingSkip": "Langkau",
+  "onboardingNext": "Seterusnya",
+  "onboardingStart": "Mulakan",
+  "onboardingWelcomeTitle": "Selamat datang ke ResilNet",
+  "onboardingWelcomeBody": "Sembang di ResilNet melalui rangkaian mesh — walaupun tanpa internet",
+  "onboardingFriendsTitle": "Tambah rakan dengan mudah",
+  "onboardingFriendsBody": "Kongsi QR daripada Identiti, atau imbas QR rakan untuk menukar kunci awam",
+  "onboardingChannelsTitle": "Sembang disulitkan + saluran berdekatan",
+  "onboardingChannelsBody": "Tukar #mesh / Area (geohash) untuk mencari rakan sebaya yang berdekatan — mesej kekal E2EE melebihi BLE mesh dan Nostr",
+  "chatTitle": "Sembang (E2EE)",
+  "chatScanTooltip": "Imbas QR untuk menambah rakan sebaya",
+  "chatBlockTooltip": "Sekat penghantar ini",
+  "chatBlockedSnack": "Disekat: tiada pemberitahuan / tiada geganti",
+  "chatAliasTooltip": "Tetapkan nama panggilan",
+  "chatReceiverPemLabel": "Kunci awam penerima (PEM)",
+  "chatReceiverPemHint": "Tampalkan kunci awam rakan anda (daripada QR / fail kongsi)",
+  "chatNeedPeerKey": "Imbas QR rakan sebaya ini dahulu (kunci awam yang disahkan diperlukan)",
+  "chatPeerKeyMismatch": "Kunci awam yang disimpan tidak sepadan dengan id rakan sebaya ini",
+  "chatVoiceFailed": "Tidak dapat merakam audio: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Tidak dapat memainkan nota suara: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Mainkan nota suara",
+  "chatPauseVoice": "jeda",
+  "chatVoiceLabelSent": "🎤 Nota suara (dimeterai)",
+  "chatVoiceLabel": "🎤 Nota suara",
+  "chatDecryptFailed": "[penyahsulitan gagal]",
+  "chatSentSealed": "[dimeterai • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[dimeterai]",
+  "chatComposeHint": "Taip mesej… (dimeterai pada hantar)",
+  "chatEmptyThread": "Tiada mesej lagi\nTaip di bawah untuk menghantar melalui mesh",
+  "chatLoadFailed": "Tidak dapat memuatkan perbualan: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "Emoji",
+  "statusPending": "Belum selesai",
+  "statusSent": "Dihantar",
+  "statusRelayed": "disampaikan",
+  "statusDelivered": "Dihantar",
+  "statusRead": "Baca",
+  "statusFailed": "gagal",
+  "chatCopy": "salin",
+  "chatDeleteLocal": "Padam pada peranti ini",
+  "chatDeletedLocalSnack": "Dipadamkan pada peranti ini",
+  "chatRetry": "Cuba semula",
+  "chatSendFailed": "Tidak dihantar — ketik Cuba Semula",
+  "chatImageNeedInternet": "Sambung ke Internet untuk menghantar imej",
+  "chatImageTooLargeOnline": "Tidak dapat memampatkan imej secukupnya untuk dihantar",
+  "chatOpenLinkFailed": "Tidak dapat membuka pautan",
+  "identityTitle": "identiti",
+  "identityScanTooltip": "Imbas QR dengan kamera",
+  "identityCopiedHash": "Cincang kunci awam disalin",
+  "identityPeerSaved": "Rakan sebaya disimpan daripada QR",
+  "identityGalleryDenied": "Kebenaran pustaka foto ditolak",
+  "identityQrSaved": "QR disimpan ke pustaka foto",
+  "identityQrSaveFailed": "Tidak dapat menyimpan QR: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Ahli rangkaian",
+  "qrScanTitle": "Imbas QR untuk menambah rakan",
+  "qrInvalid": "Imbasan gagal: QR tidak sah",
+  "qrIdKeyMismatch": "QR ditolak: id tidak sepadan dengan kunci awam",
+  "qrCameraNotReady": "Kamera tidak bersedia",
+  "qrRetrySettings": "Cuba lagi / buka Tetapan",
+  "qrCameraOpenFailed": "Tidak dapat membuka kamera: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "Jajarkan kod QR di dalam bingkai",
+  "firmwareDownloadTitle": "Muat turun ESP32 perisian tegar",
+  "firmwareSourceOnline": "Terkini (dalam talian)",
+  "firmwareSourceCached": "Salinan disimpan (luar talian)",
+  "firmwareSourceBaseline": "Garis dasar yang digabungkan (luar talian)",
+  "firmwareSourceUnavailable": "Tiada perisian tegar tersedia",
+  "firmwareBaselineIncompatible": "Perisian tegar yang digabungkan terlalu lama — sambung ke Internet untuk memuat turun versi yang lebih baharu",
+  "firmwareChecksumFailed": "Perisian tegar gagal semakan integriti — berkelip disekat",
+  "firmwareReadyFromSource": "Perisian tegar sedia: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "Muat semula",
+  "peersBlocked": "Disekat",
+  "peersNearbyBle": "Berdekatan (BLE)",
+  "peersRecentlyOnline": "Baru-baru ini dalam talian",
+  "peersOnlineInArea": "Dalam talian di kawasan",
+  "peersSeenMinutesAgo": "Dilihat {minutes} min yang lalu",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Luar talian",
+  "peersBlockedSnack": "Disekat {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Disekat",
+  "peersEmpty": "Tiada ahli dalam pangkalan data lagi\nImbas QR atau tunggu BLE penemuan mesh",
+  "peersOpenChat": "Buka sembang",
+  "peersBlockAction": "Sekat",
+  "peersUnblockAction": "Nyahsekat",
+  "channelPickerTooltip": "Sembang / #mesh / Kawasan",
+  "locationPickerTooltip": "Saluran lokasi",
+  "transportPickerTooltip": "Mesh / Internet / Auto",
+  "onlinePeopleTooltip": "Orang dalam talian",
+  "unreadDirectsTooltipEmpty": "Mesej peribadi",
+  "unreadDirectsTooltip": "{count} mesej peribadi yang belum dibaca",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "orang ramai",
+  "onlinePeopleEmpty": "Belum ada orang dalam talian di sini",
+  "onlinePeopleCount": "{count} dalam talian",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · berdekatan + kawasan",
+  "peerOnlineMeshTitle": "Seseorang berhampiran pada mesh",
+  "peerOnlineMeshBody": "{name} terletak berdekatan pada mesh",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "Seseorang dalam talian di kawasan itu",
+  "peerOnlineAreaBody": "{name} berada dalam talian melalui Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "saluran #lokasi",
+  "channelPinsTitle": "Disemat",
+  "channelPinsHint": "Sematkan saluran yang sering anda gunakan — ia kekal di bahagian atas",
+  "channelPinTooltip": "Sematkan saluran ini",
+  "channelUnpinTooltip": "Nyahsemat",
+  "locationSheetIntro": "Berbual dengan orang berdekatan menggunakan geohash kasar — ​​GPS tidak tepat. Kehadiran di Internet menggunakan kekunci Nostr tanpa nama.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "Teleport",
+  "homeComposeHint": "Mesej {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "Hantar kepada {channel} — awam",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "tamat tempoh dalam",
+  "voiceRecordTapToStart": "Ketik untuk merakam mesej suara",
+  "voiceRecordTooShort": "Rakaman terlalu pendek — cuba lagi",
+  "voiceRecordFailed": "Tidak dapat menyimpan rakaman — cuba lagi",
+  "voicePttHold": "Tahan untuk merakam",
+  "voicePttRelease": "Keluarkan untuk pratonton",
+  "voicePttRecording": "Rakaman…",
+  "voicePttDraftReady": "Nota suara sedia",
+  "voicePttDiscard": "Buang",
+  "voicePttReRecord": "Rakam semula",
+  "voicePttSend": "Hantar nota suara",
+  "voicePttPlayPreview": "Mainkan pratonton",
+  "voicePttStopPreview": "Hentikan pratonton",
+  "noticesBackfilling": "Memuatkan notis…",
+  "noticesNostrOnline": "Nostr dalam talian",
+  "noticesNostrOffline": "Nostr luar talian — buletin memerlukan Internet",
+  "noticesBackfillLoaded": "Notis {count} dimuatkan",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "Tidak dapat menerbitkan notis kepada papan kawasan. Semak sambungan Nostr.",
+  "noticeMeshPublishNoLink": "Disimpan secara tempatan. Sambung ke radio mesh berdekatan (atau Wi‑Fi get laluan) supaya orang lain boleh menerimanya.",
+  "noticeMeshPublishSent": "Buletin dihantar ke {count} peranti berdekatan melebihi BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Radio berdekatan dilihat, tetapi BLE gagal menulis. Pastikan kedua-dua apl dibuka pada skrin Notis dan cuba lagi (atau gunakan geganti ESP32).",
+  "noticeMeshPublishNoGatt": "Penerima BLE peranti ini belum sedia. Togol Bluetooth dan buka semula Notis.",
+  "noticeDelete": "Padamkan notis",
+  "noticeDeleteConfirmTitle": "Padamkan notis ini?",
+  "noticeDeleteLocalOnlyBody": "Ini mengalih keluarnya hanya pada peranti ini. Orang lain yang sudah menerimanya masih akan melihatnya.",
+  "noticeDeleted": "Notis dipadamkan",
+  "chatNoticeHidden": "Notis kawasan — buka Notis",
+  "identityDisplayNameTitle": "Nama paparan",
+  "identitySaveName": "Simpan nama",
+  "identityUserIdLabel": "ID Pengguna (Cencangan Kunci Awam)",
+  "identityCopyHashTooltip": "Salin cincangan kunci awam",
+  "identityMyQrTitle": "QR saya (id + pubKey + nama)",
+  "identityQrFailed": "Tidak dapat membuat QR\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "Menyimpan…",
+  "identitySaveQr": "Simpan QR ke pustaka foto",
+  "identityOpenScanner": "Buka kamera untuk mengimbas QR",
+  "identityQrHelp": "Minta rakan mengimbas ini untuk menyimpan kunci awam anda dan (jika perlu) tetapkan anda sebagai Pengeluar Disahkan",
+  "identityChatTip": "Petua: anda juga boleh mengimbas QR dalam sembang untuk menambah kunci awam untuk E2EE",
+  "infoOpen": "Perihal / Maklumat",
+  "docsGuideTitle": "Panduan pengguna",
+  "docsGuideSubtitle": "Dibuka dalam penyemak imbas",
+  "docsOpenAction": "Buka panduan",
+  "docsOpenFailed": "Tidak dapat membuka panduan pengguna",
+  "firmwareOtaGuideTitle": "Panduan kilat & protokol OTA",
+  "firmwareOtaGuideSubtitle": "Membuka panduan web — muat turun .bin dan langkah penuh",
+  "firmwareWebDownloadsTitle": "Muat turun perisian tegar di web",
+  "firmwareWebDownloadsSubtitle": "Pautan setiap versi dan jumlah semak pada tapak dokumen",
+  "inviteCopyShortLink": "Salin pautan pendek",
+  "inviteShareLink": "Kongsi pautan",
+  "inviteShowFullLink": "Pautan penuh",
+  "inviteCopyFullLink": "Salin pautan penuh",
+  "inviteLinkCopied": "Pautan disalin",
+  "inviteLongPressHint": "Tekan lama untuk tindakan pautan",
+  "inviteSendInChat": "Hantar dalam ResilNet sembang…",
+  "inviteSendInChatHint": "Hanya orang yang anda sudah mempunyai kunci awam",
+  "inviteSendInChatEmpty": "Tiada sembang boleh mesej lagi.\nImbas QR, buka Area/Mesh atau kongsi pautan di luar apl dahulu.",
+  "inviteSentToChat": "Jemputan dihantar dalam sembang",
+  "infoTabInfo": "info",
+  "infoTabSettingsHint": "Buka Tetapan daripada menu untuk bahasa, E2EE dan alatan data",
+  "infoHowToTitle": "Cara menggunakan",
+  "infoHowToBody": "• Ketik ikon saluran untuk menukar Sembang / #mesh / Kawasan\n• Ketik tempat untuk memilih saiz geohash\n• Ketik orang untuk ahli atau orang dalam talian\n• Buka Identiti/QR daripada ⋮ untuk menukar kunci secara peribadi\n• Kawasan \"awam\" menghantar E2EE yang dimeterai kepada setiap rakan dalam talian — bukan bilik teks biasa",
+  "infoFeaturesTitle": "Ciri-ciri",
+  "infoFeatureOffline": "Pemesejan luar talian melalui Bluetooth Low Energy",
+  "infoFeatureE2ee": "Penyulitan hujung ke hujung dengan RSA-OAEP + AES-GCM (bukan Noise)",
+  "infoFeatureMultihop": "Mesej boleh melompat melalui rakan sebaya yang berdekatan untuk pergi lebih jauh",
+  "infoFeatureBridge": "Jaringan hibrid ↔ internet (Nostr) untuk sampul surat bertutup",
+  "infoFeatureGeo": "Saluran geohash tempatan untuk orang berdekatan (UX penemuan)",
+  "infoFeatureNotices": "Notis dengan tamat tempoh untuk #mesh dan Kawasan",
+  "infoPrivacyTitle": "Privasi",
+  "infoPrivacyNoRoom": "Tiada plaintext kampung / ruang sembang awam pada wayar",
+  "infoPrivacyFanout": "Hantar kawasan = dimeterai 1:1 kipas keluar kepada rakan sebaya dengan kunci awam yang diketahui",
+  "infoPrivacyPresence": "Kehadiran kawasan Internet menggunakan kekunci Nostr fana",
+  "infoSymbolsTitle": "Simbol",
+  "infoSymBle": "Pautan Bluetooth terus",
+  "infoSymMesh": "Boleh dihubungi melalui jaringan (yang lain ke hadapan)",
+  "infoSymInternet": "Melalui internet (Nostr) — sampul surat tertutup",
+  "infoSymBridge": "Tiba melalui mesh↔laluan jambatan internet",
+  "infoSymOffline": "Luar talian — tidak dapat dihubungi sekarang",
+  "infoSymInArea": "Dalam kawasan saluran lokasi ini",
+  "infoSymE2eeOk": "Sesi disulitkan hujung ke hujung",
+  "infoSymE2eeFail": "Penyulitan tidak tersedia — jangan hantar teks sensitif",
+  "infoSymVerified": "Identiti disahkan / kunci diketahui",
+  "infoSymBlocked": "Disekat",
+  "infoSymUnread": "Mesej peribadi yang belum dibaca",
+  "infoEmergencyTitle": "Mod kecemasan",
+  "infoEmergencyBody": "Ketik tiga kali pada tajuk ResilNet pada skrin utama untuk memadam mesej, kekunci dan identiti pada peranti ini.",
+  "infoLegendNote": "Beberapa ikon laluan didokumenkan di sini untuk kejelasan; tanda penghantaran dalam sembang kekal sebagai status penghantaran utama.",
+  "dangerZoneTitle": "Zon bahaya",
+  "dangerZoneSubtitle": "Memadamkan mesej, kunci penyulitan, identiti Nostr, rakan sebaya dan nama panggilan pada peranti ini. Anda akan menyediakan semula.",
+  "panicWipeTitle": "Lap kecemasan",
+  "panicWipeSubtitle": "Padamkan semua yang setempat — sama seperti mengetik tiga kali pada tajuk rumah (ketik dua kali menyegarkan radio)",
+  "panicWipeConfirmTitle": "Padam semua data setempat?",
+  "panicWipeConfirmBody": "Ini memadamkan sembang, kunci dan identiti pada telefon ini secara kekal.\nRakan sebaya mesti menukar semula kunci QR dengan identiti baharu anda.\nIni tidak boleh dibuat asal.",
+  "panicWipeAction": "Lap semua",
+  "panicWipeSnack": "Identiti tempatan dipadamkan — sediakan semula",
+  "panicWipeFailed": "Lap gagal: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "Jambatan jala",
+  "meshBridgeSubtitle": "Apabila dihidupkan (lalai), sampul surat bermeterai boleh menggunakan kedua-dua BLE mesh dan internet (Nostr) bersama-sama supaya pulau mesh berdekatan boleh bersambung. Apabila dimatikan, hantar menggunakan satu laluan sahaja — jangan sekali-kali meletakkan teks biasa pada wayar.",
+  "favoritesTitle": "Kegemaran",
+  "favoritesAdd": "Tambahkan pada kegemaran",
+  "favoritesRemove": "Alih keluar daripada kegemaran",
+  "favoritesEmpty": "Tiada kegemaran lagi — bintangkan rakan sebaya daripada senarai ahli",
+  "favoritesNearbyTitle": "Kegemaran berdekatan",
+  "favoritesNearbyBody": "{name} terletak berdekatan pada mesh",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "Kegemaran di kawasan",
+  "favoritesInAreaBody": "{name} berada dalam talian di kawasan ini",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Topologi jaringan",
+  "topologySubtitle": "Rakan sebaya dan pembayang sambungan daripada pengumuman mesh (baca sahaja)",
+  "topologyConnectedNow": "Disambungkan sekarang (BLE)",
+  "topologyNearby": "Berdekatan (BLE)",
+  "topologyKnown": "Rakan sebaya yang dikenali",
+  "topologyEmpty": "Belum ada rakan sebaya yang belajar — kekal berdekatan dengan BLE dihidupkan",
+  "topologyYou": "awak",
+  "topologyStats": "{peers} rakan sebaya · {links} pautan",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "Dianggarkan daripada penemuan mesh berdekatan — peranti anda diserlahkan. Ketik rakan sebaya untuk membuka sembang.",
+  "topologyOpen": "Topologi jaringan",
+  "slashHelpTitle": "Perintah",
+  "slashHelpBody": "/help — senarai ini\n/siapa — orang dalam talian dalam saluran semasa\n/drop <text> — sematkan notis tertutup di sini (E2EE fan-out)\n\nPanduan penuh: gunakan Buka panduan di bawah, atau Tetapan → Panduan pengguna.",
+  "slashWhoEmpty": "Tiada sesiapa dalam talian dalam saluran ini sekarang",
+  "slashWhoTitle": "Dalam talian ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "Penggunaan: /lepaskan teks nota anda",
+  "slashDropDone": "Notis digugurkan pada {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "Perintah tidak diketahui — cuba /help",
+  "announceOpen": "Pengumuman",
+  "announceTitle": "Pengumuman",
+  "announceEmpty": "Belum ada papan — buat satu untuk menyiarkan notis yang dikunci atau terbuka",
+  "announceCreate": "Buat papan",
+  "announceCreateHint": "Nama lembaga",
+  "announceDefaultTitle": "Lembaga komuniti",
+  "announceSettings": "Tetapan papan",
+  "announceAllowLocked": "Benarkan siaran terkunci (disulitkan).",
+  "announceAllowLockedSub": "Disulitkan ke kunci papan — pembaca memerlukan akses",
+  "announceAllowOpen": "Benarkan siaran terbuka (teks biasa).",
+  "announceAllowOpenSub": "Bukan E2EE — boleh dibaca pada mesh/geganti. Mati secara lalai.",
+  "announceComposeHint": "Tulis pengumuman…",
+  "announceMediaInternetOnly": "Pengumuman foto/suara dihantar melalui internet (bukan BLE)",
+  "announceNeedInternet": "Sambung ke Internet untuk menghantar pengumuman foto atau suara",
+  "announceVoiceFailed": "Tidak dapat merakam suara: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "Imej terlalu besar (maks ~180 KB)",
+  "announcePlayVoice": "Mainkan nota suara",
+  "announceImageLabel": "📷 Imej",
+  "announceAudioLabel": "🎤 Nota suara",
+  "announceModeLocked": "Dikunci",
+  "announceModeOpen": "Buka",
+  "announceOpenBadge": "BUKA · tidak disulitkan",
+  "announceLockedBadge": "Dikunci",
+  "announceLockedPlaceholder": "Disulitkan — minta akses untuk membaca",
+  "announceRequestAccess": "Minta akses",
+  "announceRequestSent": "Permintaan akses dihantar kepada pemilik papan",
+  "announceRequestFailed": "Tidak dapat meminta akses (memerlukan kunci awam pemilik)",
+  "announceOpenConfirmTitle": "Siarkan tanpa penyulitan?",
+  "announceOpenConfirmBody": "Jawatan terbuka bukan E2EE. Sesiapa sahaja di laluan (mesh / relay) boleh membacanya. teruskan?",
+  "announcePostAction": "Pos",
+  "announcePendingRequests": "Permintaan akses",
+  "announceApprove": "Luluskan",
+  "announceDeny": "Nafikan",
+  "announceGranted": "Anda boleh membaca catatan berkunci pada papan ini",
+  "announceOwner": "Anda memiliki papan ini",
+  "announceCopyInvite": "Salin teks jemputan",
+  "announceShowInviteQr": "Tunjukkan QR jemputan",
+  "announceScanInviteQr": "Imbas papan jemputan QR",
+  "announceFollow": "Ikut papan daripada jemputan",
+  "announceFollowHint": "Tampalkan teks jemputan atau pautan ResilNet daripada pemilik",
+  "announceFollowOk": "Mengikut papan",
+  "announceFollowOkNamed": "Sekarang mengikuti \"{title}\"",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "Jemputan tidak sah atau rosak",
+  "announceInviteCopied": "Teks jemputan disalin",
+  "announceInviteSaveQr": "Simpan QR",
+  "announceInviteShare": "Kongsi jemputan",
+  "announceFollowFromCompose": "Jemputan papan dikesan dalam kotak mesej",
+  "peerConfirmAddTitle": "Tambah ahli rangkaian?",
+  "peerConfirmAddBody": "Tambahkan \"{name}\" dengan kunci awam mereka supaya anda boleh menghantar mesej kepada mereka secara peribadi?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "Tambah ahli",
+  "peerAddedOk": "Menambahkan {name} pada ahli rangkaian",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "Identiti / kunci awam dikesan dalam kotak mesej",
+  "peerHashCopied": "Cincang kunci awam disalin",
+  "peerHashOpenChat": "Buka sembang",
+  "peerHashAddHint": "Hash disalin. Minta mereka berkongsi pautan identiti atau QR mereka supaya anda boleh menambah kunci awam penuh untuk E2EE.",
+  "peerQrNoCode": "Tiada ResilNet QR ditemui dalam imej ini",
+  "identityInviteSharePreamble": "ResilNet identiti: “{name}”\nBuka pautan atau tampalkannya dalam sembang → Tambah ahli\nAtau imbas QR identiti.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "Kongsi pautan identiti",
+  "identityInviteCopied": "Pautan identiti disalin",
+  "announceInviteSharePreamble": "Jemputan lembaga: “{title}”\nBuka ResilNet → Papan komuniti → Ikuti daripada jemputan\nAtau imbas QR / ketik pautan di bawah.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "Ikut papan ini?",
+  "announceConfirmFollowBody": "Ikuti “{title}” daripada jemputan ini?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "Ikut"
+}

@@ -9,6 +9,8 @@ ResilNet uses a **hybrid** delivery model:
 Firmware version currently on this site: **1.9.49**  
 (Live values: [manifest.json](https://ajarnthitasilo.github.io/ResilNet/firmware/manifest.json))
 
+> App guide is updated for **1.9.64** (Home node / Local Wi‑Fi). CDN firmware version may lag until the next sync — trust `manifest.json` for `.bin` hashes.
+
 > Download links below are absolute GitHub Pages URLs so browsers fetch `.bin` files directly (Docsify hash routes do not rewrite them).
 
 ## Downloads — 1.9.49 (current)

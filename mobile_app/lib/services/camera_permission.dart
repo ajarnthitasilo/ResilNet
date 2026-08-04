@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../app/glass_overlays.dart';
 
 const cameraPermanentlyDeniedCode = 'CAMERA_PERMANENTLY_DENIED';
 
@@ -28,7 +29,7 @@ void showCameraPermissionError(
 }) {
   if (error is StateError && error.message == cameraPermanentlyDeniedCode) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(deniedMessage),
         action: SnackBarAction(
           label: openSettingsLabel,
@@ -39,6 +40,6 @@ void showCameraPermissionError(
     return;
   }
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(failedMessage)),
+    GlassSnackBar(content: Text(failedMessage)),
   );
 }

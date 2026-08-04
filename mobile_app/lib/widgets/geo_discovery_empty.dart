@@ -8,6 +8,7 @@ import '../models/geo_discovery.dart';
 import '../models/geo_location_result.dart';
 import '../screens/location_channel_sheet.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 /// Empty-state panel for Area / online-people discovery with actionable hints.
 class GeoDiscoveryEmptyPanel extends StatelessWidget {
@@ -138,7 +139,7 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
                               if (!context.mounted) return;
                               final err = s.nostrLastError;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                GlassSnackBar(
                                   content: Text(
                                     ok
                                         ? l10n.nostrReconnectOk(

@@ -6,7 +6,8 @@ Private messages between you and one peer are **sealed** before they leave the p
 
 1. Add a peer (nearby discovery / QR / in-app flows)
 2. Open the chat — text, voice, or images as supported
-3. With internet, delivery often uses **Nostr**; offline, BLE mesh / ESP32 / local queue apply
+3. With internet, delivery often uses **Nostr**; offline, BLE mesh / ESP32 / local queue apply.  
+   On a LAN you may also use **Local Wi‑Fi** or **Home node** if enabled — see [Local Wi‑Fi](local-wifi.md) and [Home node](reticulum-home-node.md).
 
 ## Tick meanings
 
@@ -27,5 +28,6 @@ Private messages between you and one peer are **sealed** before they leave the p
 ## If delivery fails
 
 - Check online path (Nostr) or offline path (BLE range / ESP32 / LoRa)
+- If using Home node: both sides enabled and friends linked?
 - Enable history saving if you need messages after app restart
 - When debugging ticks, look for `[ACK]` logs: enqueue → flush → apply

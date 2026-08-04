@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n_ext.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
+import '../app/glass_overlays.dart';
 
 const double kVoiceRecordPanelHeight = 320;
 
@@ -127,7 +128,7 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
       debugPrint('[PTT] sheet start failed: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
+        GlassSnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
       );
       Navigator.of(context).pop();
     }
@@ -149,7 +150,7 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
 
     if (held < _minMs || bytes == null || bytes.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        GlassSnackBar(
           content: Text(
             held < _minMs
                 ? context.l10n.voiceRecordTooShort
@@ -194,7 +195,7 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
+        GlassSnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
       );
     }
   }

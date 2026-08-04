@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
+import '../app/glass_overlays.dart';
 
 /// ResilNet Docsify site (GitHub Pages). Open in the system browser only.
 class DocsLinks {
@@ -50,7 +51,7 @@ class DocsLinks {
     final ok = await openUserGuide(context);
     if (!ok && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.docsOpenFailed)),
+        GlassSnackBar(content: Text(l10n.docsOpenFailed)),
       );
     }
   }
@@ -65,7 +66,7 @@ class DocsLinks {
     final ok = await openOtaGuide(context);
     if (!ok && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.docsOpenFailed)),
+        GlassSnackBar(content: Text(l10n.docsOpenFailed)),
       );
     }
   }
@@ -80,7 +81,7 @@ class DocsLinks {
     final ok = await openFirmwareGuide(context);
     if (!ok && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.docsOpenFailed)),
+        GlassSnackBar(content: Text(l10n.docsOpenFailed)),
       );
     }
   }

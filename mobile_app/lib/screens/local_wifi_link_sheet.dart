@@ -33,13 +33,13 @@ class _LocalWifiLinkSheet extends StatelessWidget {
     final l10n = context.l10n;
     final height = MediaQuery.sizeOf(context).height * 0.88;
 
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        gradient: ResilNetTheme.scaffoldGradientFor(context),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-      ),
-      child: SafeArea(
+    return ResilNetTheme.glassPanel(
+      context: context,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+      blurSigma: 28,
+      child: SizedBox(
+        height: height,
+        child: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -109,6 +109,7 @@ class _LocalWifiLinkSheet extends StatelessWidget {
                   ],
                 ),
         ),
+      ),
       ),
     );
   }

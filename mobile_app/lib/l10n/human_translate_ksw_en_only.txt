@@ -1,0 +1,689 @@
+ResilNet Karen (ksw) — English source lines only (same order as human_translate_ksw.txt)
+Count: 655
+
+1. ResilNet
+2. ResilNet
+3. Refreshing ResilNet…
+4. Refreshed — radios and discovery restarted
+5. Refresh failed: {error}
+6. Double-tap = soft refresh. Long-press = hard recover. Triple-tap = emergency wipe.
+7. If ResilNet feels stuck
+8. Double-tap ResilNet (top-left) for a soft radio refresh. If still stuck: long-press the title, use ⋮ → Hard recover, or Settings. Triple-tap is emergency wipe only.
+9. Got it
+10. If the app feels stuck
+11. Double-tap ResilNet (top-left) → soft refresh radios & nearby people
+12. Still stuck? Long-press title, or ⋮ / Settings → Hard recover
+13. Wait for the result snackbar, then try again. Session reset keeps your keys.
+14. Triple-tap = emergency wipe (deletes local data) — only if intentional
+15. App recovery
+16. Use when the app feels frozen. Soft = title double-tap. Hard recover is stronger. Session reset restarts services without wiping keys.
+17. Hard recover
+18. Hard recovering…
+19. Reset session
+20. Resetting session…
+21. Reset session?
+22. Restarts ResilNet services on this device. Your identity keys are kept.
+23. Recovery already running…
+24. Recovery finished
+25. Recovery finished with some steps skipped — try again if still stuck
+26. Recovery failed — try Session reset, or force-quit the app from the OS
+27. Local Wi‑Fi
+28. Link nearby devices without the internet — same as being on one LAN.
+29. Not the ESP32 LoRa gateway SoftAP. This is phone↔phone / LAN only.
+30. Local Wi‑Fi is not ready yet — wait for app startup.
+31. Home node
+32. Optional Mac or Pi on your Wi‑Fi that relays sealed chats. Off by default. Does not replace end-to-end encryption.
+33. Use home node
+34. Turn on only when the bridge app is running on a Mac or Pi on this network.
+35. Online — {dest}
+36. Can’t reach home node — {error}
+37. Home node address
+38. IP or http://IP:port — example 192.168.1.10:8766
+39. Peer → LXMF dest (JSON)
+40. Save & refresh status
+41. Advanced: labs/reticulum_lxmf
+42. Home node settings
+43. Check connection
+44. Connected to home node
+45. Home node not reachable
+46. This node’s address (share with friends)
+47. Copy address
+48. Address copied
+49. Linked friends
+50. Each friend needs their home-node address once. Then sealed chats can use this path.
+51. No friends linked yet.
+52. Link a friend
+53. Friend
+54. Their home-node address
+55. 32-character code from their Home node screen
+56. That address doesn’t look valid. Paste the full code from their home node.
+57. Unlink
+58. Save
+59. Friend linked
+60. No messageable contacts yet — add a friend first.
+61. Keep the bridge running on the Mac/Pi. This path stays on your LAN — it is not LoRa and does not replace internet or Bluetooth mesh.
+62. Nearby
+63. Router
+64. One device shares a Personal Hotspot. Others join that hotspot, then ResilNet finds them on the local network.
+65. Create network (Host)
+66. Join network
+67. 1. Open iOS/Android Settings and turn on Personal Hotspot (or Internet Sharing).
+2. Tell friends the hotspot name (and password).
+3. Come back here and tap “Hotspot is on — start waiting”.
+68. Hotspot is on — start waiting
+69. Waiting for friends to join…
+70. 1. Open system Settings and join your friend’s Personal Hotspot.
+2. Return here and tap “I’m connected — search”.
+71. I’m connected — search
+72. Connect every device to the same Wi‑Fi router/AP. The router does not need internet — only a shared local network.
+73. Search on this Wi‑Fi
+74. Refresh Wi‑Fi info
+75. Not on Wi‑Fi
+76. Join the router’s Wi‑Fi in system Settings, then search again.
+77. Searching on local Wi‑Fi…
+78. Devices on this network
+79. Stop
+80. Wi‑Fi name unavailable
+81. Waiting for LAN socket…
+82. LAN discovery live (UDP) — announce + sealed chat on this Wi‑Fi
+83. No devices yet.
+Check that friends joined your hotspot and allowed Local Network access.
+84. No devices yet.
+Same SSID? Local Network allowed? Some routers block device-to-device traffic (AP isolation).
+85. Why can’t we find each other?
+86. Router may isolate clients
+87. If AP/Client isolation (or a guest network) is on, phones on the same Wi‑Fi cannot talk. Turn isolation off, use the main SSID, or switch to Nearby (Hotspot) mode.
+88. Ready to chat (has key)
+89. Found — scan QR to exchange keys
+90. Local Wi‑Fi error
+91. Something went wrong. Stop and try again.
+92. Preparing system…
+93. Could not start
+94. Try again
+95. Start new identity (erase local data)
+96. Start new identity?
+97. This will permanently erase local chats, keys, and identity on this device.
+Peers must scan your QR again with your new identity.
+This cannot be undone.
+98. Resetting local identity…
+99. Local identity reset complete
+100. Could not reset identity: {error}
+101. Cancel
+102. Save
+103. Close
+104. Start
+105. Send
+106. Settings
+107. Language
+108. By default the app follows your phone language (when supported). Other languages fall back to English. You can also lock a language here.
+109. System default
+110. Thai
+111. English
+112. Notification settings
+113. Enable message notifications
+114. 1:1 messages and people online (local alerts)
+115. Network members
+116. Identity / QR
+117. Chat
+118. #mesh
+119. Area
+120. Private E2EE messages
+121. Nearby peers (BLE)
+122. Geohash discovery channel
+123. Paste Receiver ID (Public Key Hash) to start a chat
+124. No chats yet — scan a QR or paste a Receiver ID to start
+Messages are sealed with E2EE before send (BLE / LoRa / Nostr)
+125. E2EE • tap to open chat
+126. Peers in BLE range — tap for a private E2EE chat (no public compose on #mesh)
+Sends via hybrid router (BLE + LoRa + Nostr when online)
+127. No nearby peers yet — open the app on another device within BLE range
+128. BLE is not running — grant Bluetooth / Location permission
+129. Nearby
+130. Auto-delete messages
+131. Older local chat history is removed automatically
+132. Keep
+133. 1 day
+134. 3 days
+135. 7 days
+136. Refresh location
+137. People online in this geohash can be messaged 1:1 or with an area public fan-out (still sealed E2EE per peer — not plaintext)
+138. No one online in {channel} yet
+Use Transport → Internet/Auto, wait for Nostr, refresh location
+139. Online in {channel} • tap for 1:1 E2EE
+140. Nearby (awaiting area presence) • tap for 1:1 E2EE
+141. Seen on Nostr in {channel} • discovery only (legacy)
+142. Legacy anonymous presence — wait for a bound peer or exchange QR
+143. BLE nearby — scan QR to start 1:1 E2EE
+144. Area Internet discovery needs Nostr connected (Settings → Transport → Internet/Auto)
+145. Location not resolved yet — allow GPS and refresh to publish your geohash on Nostr
+146. Location permission denied — allow ResilNet in Settings → Privacy → Location
+147. Location Services are off — turn them on in Settings
+148. Could not get a GPS fix (common on Wi‑Fi iPads) — set geohash manually below
+149. Tap the place icon → enter a geohash (e.g. w5) → Teleport
+150. Set geohash
+151. No GPS? Enter geohash prefix (2–7 chars, e.g. w5) and tap Teleport
+152. Invalid geohash — use base32 letters/numbers only (e.g. w5 or w5jt8)
+153. Area set to {channel}
+154. Manual area: {channel} (GPS refresh will override)
+155. Nostr not ready — tap Reconnect (0/0 until init succeeds)
+156. Transport is Mesh-only — switch to Internet or Auto to discover peers over Nostr
+157. No one in {channel} yet — keep Area + Internet open on both devices and wait ~60s
+158. #area
+159. Refresh location
+160. Clear location
+161. Remove GPS / teleport geohash (Area becomes #—)
+162. Clear location?
+163. Deletes the stored geohash on this device. You can refresh GPS or teleport again afterward.
+164. Clear location
+165. Location cleared
+166. Voice note too large — max ~30 seconds
+167. Voice note needs Internet (Nostr) — too large for BLE alone
+168. Voice note sent via Internet
+169. mention
+170. direct message
+171. hug
+172. slap
+173. block
+174. No public key yet — exchange QR first for 1:1
+175. Sent
+176. Blocked {anon}
+177. * hugs {anon} *
+178. * slaps {anon} *
+179. Reconnect Nostr
+180. Nostr relays
+181. Internet messaging and Area discovery use these relays. Tap reconnect if status stays offline.
+182. Connected {connected}/{total}
+183. Offline — relays listed but none connected
+184. Not started (0/0) — tap Reconnect to initialize
+185. Reconnect Nostr
+186. Nostr connected ({connected}/{total})
+187. Still offline — check Wi‑Fi/cellular or try again
+188. Failed: {error}
+189. Connecting to relays…
+190. {channel} · Nostr {relays}
+191. Internet (Nostr) in {channel} • sealed chat ready
+192. Area transport
+193. Mesh = BLE nearby (radio) when no Nostr · Internet & Auto = Nostr people list
+194. Mesh
+195. Internet
+196. Auto
+197. Public message to everyone online in this area
+198. Public
+199. Sealed fan-out to {count} online peer(s) — each receives a private envelope
+200. Sent to {count} peer(s) in this area
+201. No messageable peers online — open Area/Mesh with peers that have keys, or wait for BLE/Nostr
+202. Area public
+203. Could not read location — check location permission
+204. Region
+205. Province
+206. City
+207. Neighborhood
+208. Block
+209. Set nickname (Contact Alias)
+210. This alias is stored on this device only (local-only)
+It is never sent with E2EE traffic
+211. Nickname
+212. e.g. “village head”, “P’Somchai”…
+213. Devices
+214. Download / update ESP32 firmware
+215. Download .bin files and update the ESP32 board via OTA
+216. Meshtastic bridge
+217. Text-only A/B bridge — not ResilNet E2EE
+218. Move short plaintext between Meshtastic and ResilNet. Modes A and B cannot run at the same time. This is not end-to-end encryption.
+219. Mode
+220. Off
+221. Ingest A
+222. Egress B
+223. Off
+224. In A
+225. Out B
+226. Selecting a mode turns the other off automatically. Simultaneous A+B is not supported.
+227. {mode} · {transport}
+228. Demo (logging)
+229. Meshtastic → ResilNet
+230. Inbound text appears under Notices as #meshtastic. Mesh relay is optional (off by default).
+231. Also relay on ResilNet mesh
+232. When on, signed public bulletins are broadcast. Off = this phone’s Notices only.
+233. Demo message
+234. Simulate Meshtastic message
+235. Ingested into Notices (#meshtastic)
+236. Warning: messages sent here are NOT ResilNet E2EE. Anyone on the Meshtastic path can read them.
+237. ResilNet → Meshtastic
+238. Text to publish
+239. Send to Meshtastic
+240. Queued for Meshtastic (see log / history)
+241. Last egress
+242. Recent egress
+243. Turn on Ingest (A) or Egress (B) to use the bridge.
+244. MESHTASTIC · not E2EE
+245. Meshtastic
+246. Use MQTT transport
+247. Off = demo logging only (MQTT inbound ignored). On = MQTT for ingest/egress when connected.
+248. Broker host
+249. Port
+250. Use TLS (mqtts)
+251. Typical port 8883. Uses system certificates; fails soft on handshake errors.
+252. Auto-reconnect
+253. When on, the client tries to reconnect after drops. Status shows Connecting until restored.
+254. Topic helpers
+255. Region prefix (optional)
+256. When set, Apply rebuilds root as msh/<region>/2/json (overrides topic root).
+257. JSON topic root
+258. Downlink channel name
+259. Apply root → subscribe / publish topics
+260. Advanced MQTT
+261. TLS, reconnect, topics, credentials
+262. Subscribe topic
+263. Publish topic
+264. Gateway node id (from)
+265. Decimal id or !hex — required for sendtext downlink
+266. Mesh channel index (optional 0–7)
+267. Username (optional)
+268. Password (optional)
+269. A password is stored on this device (not shown).
+270. New password (leave blank to keep)
+271. Leave empty to keep the stored password.
+272. Clear password
+273. Save MQTT settings
+274. MQTT settings saved
+275. Connect
+276. Disconnect
+277. MQTT connected
+278. MQTT connecting…
+279. MQTT disconnected
+280. MQTT error
+281. Switch to Ingest (A) first
+282. Switch to Egress (B) first
+283. Slow down — rate limited
+284. Duplicate message ignored
+285. Dropped to prevent a bridge loop
+286. Message is empty
+287. Publish failed
+288. MQTT not connected
+289. Enter MQTT broker host
+290. Enter subscribe and publish topics
+291. Enter gateway node id (from) for sendtext
+292. MQTT connect failed
+293. MQTT TLS connect failed
+294. Data
+295. Delete local messages to shrink the database — identity, keys, and peers are kept
+296. Save message history
+297. When off, messages stay E2EE on the wire and are kept only for this session (not in local chat history). Your own text still shows as plaintext on this device.
+298. Privacy
+299. End-to-end encryption
+300. Always on — messages are sealed with RSA-OAEP + AES-GCM before send. Relays and nearby hops cannot read contents.
+301. Screenshot alerts
+302. Show a system line in chat when this device captures the screen
+303. Nostr message keep time
+304. How long sealed envelopes should remain locally when online via Nostr
+305. expires in
+306. Notices
+307. Public bulletin — visible to everyone in radio range, not encrypted. It hops phone-to-phone offline, and nearby ResilNet relay boxes keep a copy so people who arrive later still see it.
+308. PUBLIC · not encrypted
+309. Add short notes for this place so other visitors can find them.
+310. no notices yet
+311. pin the first notice for people around here.
+312. post a notice...
+313. urgent
+314. Notices
+315. * you took a screenshot *
+316. Attach image
+317. Image
+318. Image too large — try another photo
+319. Nostr keep
+320. Send to {channel} — public
+321. Clear all messages
+322. Delete all chats on this device
+323. Clear all messages?
+324. This deletes all chat messages on this device.
+Peers and nicknames are not removed.
+325. Clear data
+326. Data cleared
+327. version {version}
+328. BLE: scanning for nodes
+329. ESP32: looking for a nearby node
+330. BLE: syncing with ESP32
+331. Nostr: publishing
+332. BLE mesh on — no nearby phones yet
+333. BLE mesh — {count} phone(s) nearby
+334. BLE: permission required
+335. BLE paused for camera — tap Start BLE
+336. BLE is off — check Bluetooth is on, then tap Start BLE
+337. Start BLE
+338. BT {bt} · Loc {loc} · BLE {ble}
+339. Check permissions & start BLE
+340. Nostr offline
+341. Nostr {relays}
+342. {count} nearby peers • LoRa {lora} • sync ~{meters}m
+343. ready
+344. not ready
+345. Gateway UDP: {label}
+346. Gateway UDP: ready
+347. Allow access to start the BLE mesh network
+348. The app needs Bluetooth (scan / connect / advertise), Location (for older Android devices), and Microphone (for voice notes in chat and announcements) for community messaging.
+349. End-to-End Encryption (E2EE)
+Relay nodes cannot read message contents
+350. Permissions ready
+351. Allow and continue
+352. System not ready yet — wait a moment and try again
+353. Permissions incomplete — open Settings > ResilNet and allow Bluetooth / Location / Microphone
+354. Microphone access denied — allow it in Settings to record voice notes
+355. Settings
+356. Camera access denied — allow it in Settings to scan QR codes
+357. Camera permission is required to scan QR codes
+358. Settings
+359. Photo library access denied — allow it in Settings to save your QR code
+360. Photo library permission is required to save your QR code
+361. Settings
+362. Permission request failed: {error}
+363. ResilNet Architecture • Store-and-Forward Multi-hop
+364. Skip
+365. Next
+366. Get started
+367. Welcome to ResilNet
+368. Chat on ResilNet over a mesh network — even without the internet
+369. Add friends easily
+370. Share a QR from Identity, or scan a friend’s QR to exchange public keys
+371. Encrypted chat + nearby channels
+372. Switch #mesh / Area (geohash) to find nearby peers — messages stay E2EE over BLE mesh and Nostr
+373. Chat (E2EE)
+374. Scan QR to add a peer
+375. Block this sender
+376. Blocked: no notifications / no relay
+377. Set nickname
+378. Recipient public key (PEM)
+379. Paste your friend’s public key (from QR / shared file)
+380. Scan this peer's QR first (verified public key required)
+381. Stored public key does not match this peer id
+382. Could not record audio: {error}
+383. Could not play voice note: {error}
+384. Play voice note
+385. Pause
+386. 🎤 Voice note (sealed)
+387. 🎤 Voice note
+388. [decryption failed]
+389. [sealed • ct={preview}]
+390. [sealed]
+391. Type a message… (sealed on send)
+392. No messages yet
+Type below to send over the mesh
+393. Could not load conversation: {error}
+394. Emoji
+395. Pending
+396. Sent
+397. Relayed
+398. Delivered
+399. Read
+400. Failed
+401. Copy
+402. Delete on this device
+403. Deleted on this device
+404. Retry
+405. Not delivered — tap Retry
+406. Connect to the internet to send images
+407. Could not compress image enough to send
+408. Could not open link
+409. Identity
+410. Scan QR with camera
+411. Public key hash copied
+412. Peer saved from QR
+413. Photo library permission denied
+414. QR saved to photo library
+415. Could not save QR: {error}
+416. Network members
+417. Scan QR to add a friend
+418. Scan failed: invalid QR
+419. QR rejected: id does not match public key
+420. Camera not ready
+421. Try again / open Settings
+422. Could not open camera: {error}
+423. Align the QR code inside the frame
+424. Download ESP32 firmware
+425. Latest (online)
+426. Saved copy (offline)
+427. Bundled baseline (offline)
+428. No firmware available
+429. Bundled firmware is too old — connect to the internet to download a newer version
+430. Firmware failed integrity check — flashing blocked
+431. Firmware ready: {source}
+432. Refresh
+433. Blocked
+434. Nearby (BLE)
+435. Recently online
+436. Online in area
+437. Seen {minutes} min ago
+438. Offline
+439. Blocked {id}
+440. Unblocked
+441. No members in the database yet
+Scan a QR or wait for BLE mesh discovery
+442. Open chat
+443. Block
+444. Unblock
+445. Chat / #mesh / Area
+446. Location channel
+447. Mesh / Internet / Auto
+448. People online
+449. Private messages
+450. {count} unread private messages
+451. people
+452. No one online here yet
+453. {count} online
+454. 1:1 · nearby + area
+455. Someone nearby on mesh
+456. {name} is nearby on mesh
+457. Someone online in area
+458. {name} is online via Nostr
+459. #location channels
+460. Pinned
+461. Pin channels you use often — they stay at the top
+462. Pin this channel
+463. Unpin
+464. Chat with people nearby using coarse geohash — not precise GPS. Presence on Internet uses anonymous Nostr keys.
+465. #bluetooth • ~10–50 m
+466. #geohash
+467. Teleport
+468. Message {channel}
+469. Send to {channel} — public
+470. expires in
+471. Tap to record voice message
+472. Recording too short — try again
+473. Could not save recording — try again
+474. Hold to record
+475. Release to preview
+476. Recording…
+477. Voice note ready
+478. Discard
+479. Record again
+480. Send voice note
+481. Play preview
+482. Stop preview
+483. Loading notices…
+484. Nostr online
+485. Nostr offline — bulletin needs Internet
+486. Loaded {count} notices
+487. Could not publish notice to the area board. Check Nostr connection.
+488. Saved locally. Connect to a nearby mesh radio (or Wi‑Fi gateway) so others can receive it.
+489. Bulletin sent to {count} nearby device(s) over BLE.
+490. Nearby radios seen, but BLE write failed. Keep both apps open on the Notices screen and try again (or use an ESP32 relay).
+491. This device’s BLE receiver is not ready. Toggle Bluetooth and reopen Notices.
+492. Delete notice
+493. Delete this notice?
+494. This removes it only on this device. Others who already received it will still see it.
+495. Notice deleted
+496. Area notice — open Notices
+497. Display name
+498. Save name
+499. User ID (Public Key Hash)
+500. Copy public key hash
+501. My QR (id + pubKey + name)
+502. Could not create QR
+{error}
+503. Saving…
+504. Save QR to photo library
+505. Open camera to scan QR
+506. Have a friend scan this to save your public key and (if needed) set you as a Verified Issuer
+507. Tip: you can also scan a QR in chat to add a public key for E2EE
+508. About / Info
+509. User guide
+510. Opens in browser
+511. Open guide
+512. Could not open the user guide
+513. Flash guide & OTA protocol
+514. Opens the web guide — .bin downloads and full steps
+515. Firmware downloads on the web
+516. Per-version links and checksums on the docs site
+517. Copy short link
+518. Share link
+519. Full link
+520. Copy full link
+521. Link copied
+522. Long-press for link actions
+523. Send in ResilNet chat…
+524. Only people you already have a public key for
+525. No messageable chats yet.
+Scan a QR, open Area/Mesh, or share the link outside the app first.
+526. Invite sent in chat
+527. Info
+528. Open Settings from the menu for language, E2EE, and data tools
+529. How to use
+530. • Tap the channel icon to switch Chat / #mesh / Area
+• Tap place to pick geohash size
+• Tap people for members or who’s online
+• Open Identity/QR from ⋮ to exchange keys in person
+• Area “public” sends sealed E2EE to each online peer — not a plaintext room
+531. Features
+532. Offline messaging via Bluetooth Low Energy
+533. End-to-end encryption with RSA-OAEP + AES-GCM (not Noise)
+534. Messages can hop through nearby peers to go farther
+535. Hybrid mesh ↔ internet (Nostr) for sealed envelopes
+536. Local geohash channels for people nearby (discovery UX)
+537. Notices with expiry for #mesh and Area
+538. Privacy
+539. No plaintext village / public chat room on the wire
+540. Area send = sealed 1:1 fan-out to peers with known public keys
+541. Internet area presence uses ephemeral Nostr keys
+542. Symbols
+543. Direct Bluetooth link
+544. Reachable via mesh (others forward)
+545. Via internet (Nostr) — sealed envelopes
+546. Arrived via mesh↔internet bridge path
+547. Offline — not reachable right now
+548. In this location channel’s area
+549. End-to-end encrypted session
+550. Encryption unavailable — do not send sensitive text
+551. Identity verified / known key
+552. Blocked
+553. Unread private message
+554. Emergency mode
+555. Triple-tap the ResilNet title on the home screen to wipe messages, keys, and identity on this device.
+556. Some path icons are documented here for clarity; delivery ticks in chat remain the primary send status.
+557. Danger zone
+558. Deletes messages, encryption keys, Nostr identity, peers, and nicknames on this device. You will set up again.
+559. Emergency wipe
+560. Erase everything local — same as triple-tapping the home title (double-tap refreshes radios)
+561. Wipe all local data?
+562. This permanently deletes chats, keys, and identity on this phone.
+Peers must re-exchange QR keys with your new identity.
+This cannot be undone.
+563. Wipe everything
+564. Local identity wiped — set up again
+565. Wipe failed: {error}
+566. Mesh bridge
+567. When on (default), sealed envelopes may use both BLE mesh and internet (Nostr) together so nearby mesh islands can connect. When off, sends use one path only — never puts plaintext on the wire.
+568. Favorites
+569. Add to favorites
+570. Remove from favorites
+571. No favorites yet — star a peer from the member list
+572. Favorite nearby
+573. {name} is nearby on mesh
+574. Favorite in area
+575. {name} is online in this area
+576. Mesh topology
+577. Peers and connection hints from mesh announce (read-only)
+578. Connected now (BLE)
+579. Nearby (BLE)
+580. Known peers
+581. No peers learned yet — stay nearby with BLE on
+582. you
+583. {peers} peers · {links} links
+584. Estimated from nearby mesh discovery — your device is highlighted. Tap a peer to open chat.
+585. Mesh topology
+586. Commands
+587. /help — this list
+/who — people online in current channel
+/drop <text> — pin a sealed notice here (E2EE fan-out)
+
+Full guide: use Open guide below, or Settings → User guide.
+588. No one online in this channel right now
+589. Online ({count})
+590. Usage: /drop your note text
+591. Dropped notice on {channel}
+592. Unknown command — try /help
+593. Announcements
+594. Announcements
+595. No boards yet — create one to post locked or open notices
+596. Create board
+597. Board name
+598. Community board
+599. Board settings
+600. Allow locked (encrypted) posts
+601. Encrypted to the board key — readers need access
+602. Allow open (plaintext) posts
+603. Not E2EE — readable on mesh/relays. Off by default.
+604. Write an announcement…
+605. Photo/voice announcements send over the internet (not BLE)
+606. Connect to the internet to send photo or voice announcements
+607. Could not record voice: {error}
+608. Image is too large (max ~180 KB)
+609. Play voice note
+610. 📷 Image
+611. 🎤 Voice note
+612. Locked
+613. Open
+614. OPEN · not encrypted
+615. Locked
+616. Encrypted — request access to read
+617. Request access
+618. Access request sent to the board owner
+619. Could not request access (need owner’s public key)
+620. Post without encryption?
+621. Open posts are not E2EE. Anyone on the path (mesh / relays) may read them. Continue?
+622. Post
+623. Access requests
+624. Approve
+625. Deny
+626. You can read locked posts on this board
+627. You own this board
+628. Copy invite text
+629. Show invite QR
+630. Scan board invite QR
+631. Follow board from invite
+632. Paste the invite text or ResilNet link from the owner
+633. Following board
+634. Now following “{title}”
+635. Invite is invalid or damaged
+636. Invite text copied
+637. Save QR
+638. Share invite
+639. Board invite detected in the message box
+640. Add network member?
+641. Add “{name}” with their public key so you can message them privately?
+642. Add member
+643. Added {name} to network members
+644. Identity / public key detected in the message box
+645. Public key hash copied
+646. Open chat
+647. Hash copied. Ask them to share their identity link or QR so you can add the full public key for E2EE.
+648. No ResilNet QR found in this image
+649. ResilNet identity: “{name}”
+Open the link or paste it in chat → Add member
+Or scan the identity QR.
+650. Share identity link
+651. Identity link copied
+652. Board invite: “{title}”
+Open ResilNet → Community boards → Follow from invite
+Or scan the QR / tap the link below.
+653. Follow this board?
+654. Follow “{title}” from this invite?
+655. Follow

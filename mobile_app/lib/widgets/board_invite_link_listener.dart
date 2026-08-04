@@ -9,6 +9,7 @@ import '../l10n/l10n_ext.dart';
 import '../screens/announcements_screen.dart';
 import '../screens/chat_screen.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 /// ฟัง deep link `resilnet://board/invite?...` และ `resilnet://peer/invite?...`
 class BoardInviteLinkListener extends StatefulWidget {
@@ -88,7 +89,7 @@ class _BoardInviteLinkListenerState extends State<BoardInviteLinkListener> {
     final l10n = ctx.l10n;
     final ok = await showDialog<bool>(
       context: ctx,
-      builder: (dialogCtx) => AlertDialog(
+      builder: (dialogCtx) => GlassAlertDialog(
         title: Text(l10n.announceConfirmFollowTitle),
         content: Text(l10n.announceConfirmFollowBody(pending.title)),
         actions: [
@@ -110,7 +111,7 @@ class _BoardInviteLinkListenerState extends State<BoardInviteLinkListener> {
       final navCtx = _navContext;
       if (board != null && navCtx != null && navCtx.mounted) {
         ScaffoldMessenger.of(navCtx).showSnackBar(
-          SnackBar(content: Text(l10n.announceFollowOkNamed(board.title))),
+          GlassSnackBar(content: Text(l10n.announceFollowOkNamed(board.title))),
         );
         unawaited(openAnnouncementsScreen(navCtx));
       }
@@ -130,7 +131,7 @@ class _BoardInviteLinkListenerState extends State<BoardInviteLinkListener> {
         : formatShortPeerId(pending.id);
     final ok = await showDialog<bool>(
       context: ctx,
-      builder: (dialogCtx) => AlertDialog(
+      builder: (dialogCtx) => GlassAlertDialog(
         title: Text(l10n.peerConfirmAddTitle),
         content: Text(l10n.peerConfirmAddBody(label)),
         actions: [
@@ -152,7 +153,7 @@ class _BoardInviteLinkListenerState extends State<BoardInviteLinkListener> {
       final navCtx = _navContext;
       if (peer != null && navCtx != null && navCtx.mounted) {
         ScaffoldMessenger.of(navCtx).showSnackBar(
-          SnackBar(content: Text(l10n.peerAddedOk(label))),
+          GlassSnackBar(content: Text(l10n.peerAddedOk(label))),
         );
         unawaited(
           Navigator.of(navCtx).push(

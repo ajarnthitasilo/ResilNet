@@ -1,0 +1,1105 @@
+{
+  "@@locale": "zh",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "刷新ResilNet...",
+  "appRefreshed": "刷新 - 无线电和发现重新启动",
+  "appRefreshFailed": "刷新失败：{error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "双击=软刷新。长按=硬恢复。三击 = 紧急擦拭。",
+  "softRefreshTipTitle": "如果ResilNet感觉卡住了",
+  "softRefreshTipBody": "双击 ResilNet（左上角）可进行软无线电刷新。如果仍然卡住：长按标题，使用 ⋮ → 硬恢复，或设置。三击仅用于紧急擦除。",
+  "softRefreshTipGotIt": "知道了",
+  "infoSoftRefreshTitle": "如果应用程序感觉卡住了",
+  "infoSoftRefreshStepRefresh": "双击ResilNet（左上角）→软刷新收音机和附近的人",
+  "infoSoftRefreshStepHard": "仍然停滞不前？长按标题，或“设置” “→硬恢复”",
+  "infoSoftRefreshStepWait": "等待结果小吃栏，然后重试。会话重置会保留您的密钥。",
+  "infoSoftRefreshStepWipe": "三击 = 紧急擦除（删除本地数据）——仅在有意情况下",
+  "appRecoverySection": "应用程序恢复",
+  "appRecoverySectionSubtitle": "当应用程序感觉冻结时使用。软=标题双击。硬恢复更强。会话重置会重新启动服务而不擦除密钥。",
+  "appHardRecoverAction": "硬恢复",
+  "appHardRecovering": "硬恢复中…",
+  "appSessionResetAction": "重置用户会话",
+  "appSessionResetRunning": "正在重置会话...",
+  "appSessionResetConfirmTitle": "重置会话？",
+  "appSessionResetConfirmBody": "重新启动该设备上的 ResilNet 服务。您的身份密钥将被保留。",
+  "appRecoveryBusy": "恢复已在运行...",
+  "appRecoveryOk": "恢复完成",
+  "appRecoveryPartial": "恢复已完成，但跳过了一些步骤 - 如果仍然卡住，请重试",
+  "appRecoveryFailed": "恢复失败 - 尝试会话重置，或从操作系统强制退出应用程序",
+  "localWifiTitle": "本地Wi‑Fi",
+  "localWifiSubtitle": "无需互联网即可链接附近的设备 — 与在一个 LAN 上一样。",
+  "localWifiNotGatewayHint": "不是 ESP32 LoRa 网关 SoftAP。这仅是电话↔电话/LAN。",
+  "localWifiUnavailable": "本地 Wi‑Fi 尚未准备好 - 等待应用程序启动。",
+  "lxmfBridgeTitle": "主节点",
+  "lxmfBridgeSubtitle": "Wi‑Fi 上的可选 Mac 或 Pi 可以中继密封聊天。默认关闭。不取代端到端加密。",
+  "lxmfBridgeEnable": "使用主节点",
+  "lxmfBridgeDisabledHint": "仅当桥接应用在此网络上的Mac或Pi上运行时才开启。",
+  "lxmfBridgeOnline": "在线 — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "无法到达主节点 - {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "主节点地址",
+  "lxmfBridgeBaseUrlHelper": "IP 或 http://IP:端口 — 例如 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "对等 → LXMF 目标 (JSON)",
+  "lxmfBridgeRefresh": "保存并刷新状态",
+  "lxmfBridgeLabHint": "高级：labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "主节点设置",
+  "lxmfBridgeCheckConnection": "检查连接",
+  "lxmfBridgeStatusOnline": "连接到主节点",
+  "lxmfBridgeStatusOffline": "主节点不可达",
+  "lxmfBridgeYourDest": "该节点地址（分享给朋友）",
+  "lxmfBridgeCopyDest": "复制地址",
+  "lxmfBridgeDestCopied": "地址已复制",
+  "lxmfBridgeLinkedPeers": "已链接的朋友",
+  "lxmfBridgeLinkedPeersHint": "每个朋友都需要一次他们的主节点地址。那么密封聊天就可以使用这个路径。",
+  "lxmfBridgeNoLinks": "还没有好友建立联系。",
+  "lxmfBridgeAddLink": "链接好友",
+  "lxmfBridgePickPeer": "朋友",
+  "lxmfBridgePeerDest": "他们的主节点地址",
+  "lxmfBridgePeerDestHint": "主节点屏幕上的 32 字符代码",
+  "lxmfBridgeInvalidDest": "该地址看起来无效。粘贴其主节点的完整代码。",
+  "lxmfBridgeRemoveLink": "取消链接",
+  "lxmfBridgeSaveLink": "节省",
+  "lxmfBridgeLinkSaved": "好友已链接",
+  "lxmfBridgeNoPeers": "尚无可发送消息的联系人 - 请先添加好友。",
+  "lxmfBridgeHelp": "保持网桥在 Mac/Pi 上运行。该路径保留在您的 LAN 上 — 它不是 LoRa，也不会取代互联网或蓝牙网状网络。",
+  "localWifiModeHotspot": "附近",
+  "localWifiModeRouter": "路由器",
+  "localWifiHotspotIntro": "一台设备共享一个个人热点。其他人加入该热点，然后 ResilNet 在本地网络上找到他们。",
+  "localWifiHostAction": "创建网络（主机）",
+  "localWifiJoinAction": "加入网络",
+  "localWifiHostSteps": "1. 打开 iOS/Android 设置并打开个人热点（或互联网共享）。\n2. 告诉朋友热点名称（和密码）。\n3. 返回此处并点击“热点已打开 - 开始等待”。",
+  "localWifiHostReady": "热点已开启 — 开始等待",
+  "localWifiHostWaiting": "等待好友加入……",
+  "localWifiJoinSteps": "1. 打开系统设置并加入好友的个人热点。\n2. 返回此处并点击“我已连接 — 搜索”。",
+  "localWifiJoinReady": "我已连接 — 搜索",
+  "localWifiRouterIntro": "将每个设备连接到同一个 Wi‑Fi 路由器/AP。路由器不需要互联网——只需要共享本地网络。",
+  "localWifiRouterSearch": "搜索此 Wi‑Fi",
+  "localWifiRefreshNetwork": "刷新Wi‑Fi信息",
+  "localWifiRouterNoWifiTitle": "不在 Wi‑Fi 上",
+  "localWifiRouterNoWifiBody": "在系统设置中加入路由器的Wi‑Fi，然后再次搜索。",
+  "localWifiDiscovering": "正在本地搜索Wi‑Fi……",
+  "localWifiPeersFound": "该网络上的设备",
+  "localWifiStop": "停止",
+  "localWifiSsidUnknown": "Wi‑Fi 名称不可用",
+  "localWifiStubBanner": "等待 LAN 插座...",
+  "localWifiLiveBanner": "LAN 发现实时 (UDP) — 在此 Wi‑Fi 上宣布 + 密封聊天",
+  "localWifiEmptyHotspot": "还没有设备。\n检查朋友是否加入了您的热点并允许本地网络访问。",
+  "localWifiEmptyRouter": "还没有设备。\n相同的SSID？允许本地网络吗？某些路由器会阻止设备到设备的流量（AP 隔离）。",
+  "localWifiIsolationHelp": "为什么我们找不到彼此？",
+  "localWifiIsolationTitle": "路由器可能会隔离客户端",
+  "localWifiIsolationBody": "如果 AP/客户端隔离（或访客网络）打开，同一 Wi‑Fi 上的电话无法通话。关闭隔离、使用主 SSID 或切换到附近（热点）模式。",
+  "localWifiPeerReady": "准备聊天（有钥匙）",
+  "localWifiPeerNeedKey": "发现 — 扫描二维码交换密钥",
+  "localWifiErrorTitle": "本地 Wi‑Fi 错误",
+  "localWifiErrorBody": "出了点问题。停下来再试一次。",
+  "preparingSystem": "正在准备系统...",
+  "bootFailedTitle": "无法启动",
+  "retry": "再试一次",
+  "bootRecoveryAction": "启动新身份（擦除本地数据）",
+  "bootRecoveryConfirmTitle": "开始新的身份？",
+  "bootRecoveryConfirmBody": "这将永久删除该设备上的本地聊天、密钥和身份。\n同行必须使用您的新身份再次扫描您的二维码。\n此操作无法撤消。",
+  "bootRecoveryRunning": "重置本地身份...",
+  "bootRecoverySuccess": "本地身份重置完成",
+  "bootRecoveryFailed": "无法重置身份：{error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "取消",
+  "save": "节省",
+  "close": "关闭",
+  "start": "开始",
+  "send": "发送",
+  "settings": "设置",
+  "language": "语言",
+  "languageSubtitle": "默认情况下，应用程序遵循您的手机语言（如果支持）。其他语言则回归英语。您还可以在此处锁定语言。",
+  "languageSystem": "系统默认",
+  "languageThai": "泰国",
+  "languageEnglish": "英语",
+  "notificationsTooltip": "通知设置",
+  "enableMessageNotifications": "启用消息通知",
+  "settingsNotificationsSubtitle": "1:1 消息和在线人员（本地警报）",
+  "networkMembersTooltip": "网络成员",
+  "identityQrTooltip": "身份/二维码",
+  "feedDirects": "聊天",
+  "feedMesh": "＃网",
+  "feedGeo": "区域",
+  "feedDirectsSubtitle": "私有E2EE消息",
+  "feedMeshSubtitle": "附近的同行 (BLE)",
+  "feedGeoSubtitle": "Geohash 发现通道",
+  "peerIdHint": "粘贴接收者 ID（公钥哈希）以开始聊天",
+  "directsEmpty": "尚无聊天 — 扫描二维码或粘贴接收者 ID 即可开始\n消息在发送前使用 E2EE 进行密封 (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • 点击即可打开聊天",
+  "meshIntro": "BLE范围内的对等点 - 点击进行私人 E2EE 聊天（#mesh 上没有公开撰写）\n通过混合路由器发送（在线时BLE + LoRa + Nostr）",
+  "meshEmptyRunning": "附近还没有对等点 - 在 BLE 范围内的另一台设备上打开应用程序",
+  "meshEmptyStopped": "BLE 未运行 — 授予蓝牙/位置权限",
+  "meshNearbyPrefix": "附近",
+  "meshRetentionTitle": "自动删除消息",
+  "meshRetentionSubtitle": "较旧的本地聊天记录会自动删除",
+  "meshRetentionKeep": "保持",
+  "meshRetention1Day": "1天",
+  "meshRetention3Days": "3天",
+  "meshRetention7Days": "7天",
+  "refreshLocationTooltip": "刷新位置",
+  "geoIntro": "在此 geohash 中在线的人可以以 1:1 的方式发送消息，或者通过区域公共扇出（每个对等点仍然密封的 E2EE - 非明文）",
+  "geoEmpty": "{channel} 中尚未有人在线\n使用交通工具 → 互联网/汽车，等待 Nostr，刷新位置",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "{channel} 在线 • 点击 1:1 E2EE",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "附近（等待区域存在） • 点击 1:1 E2EE",
+  "geoPeerNostrSubtitle": "在 {channel} 中的 Nostr 上看到 • 仅发现（旧版）",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "传统的匿名存在——等待绑定的对等点或交换 QR",
+  "bleRadioNearbySubtitle": "BLE 附近 — 扫描二维码开始 1:1 E2EE",
+  "geoInternetDiscoverHint": "区域互联网发现需要 Nostr 连接（设置 → 传输 → 互联网/自动）",
+  "geoEmptyNoLocation": "位置尚未解析 - 允许 GPS 并刷新以在 Nostr 上发布您的 geohash",
+  "geoEmptyNeedsPermission": "位置权限被拒绝 — 在“设置”→“隐私”→“位置”中允许 ResilNet",
+  "geoEmptyServicesDisabled": "定位服务已关闭 - 在“设置”中将其打开",
+  "geoEmptyNoGpsFix": "无法获取 GPS 修复（在 Wi‑Fi iPad 上常见）- 在下面手动设置 geohash",
+  "geoEmptyTeleportHint": "点击地点图标→输入geohash（例如w5）→传送",
+  "geoSetGeohashManually": "设置地理哈希值",
+  "geoTeleportHint": "没有GPS？输入 geohash 前缀（2–7 个字符，例如 w5）并点击 Teleport",
+  "geoTeleportInvalid": "无效的 geohash — 仅使用 base32 字母/数字（例如 w5 或 w5jt8）",
+  "geoTeleportOk": "区域设置为{channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "手动区域：{channel}（GPS刷新将覆盖）",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr 未准备好 — 点击“重新连接”（0/0 直到初始化成功）",
+  "geoEmptyMeshOnly": "传输仅限网状 - 切换到互联网或自动以发现 Nostr 上的对等点",
+  "geoEmptyWaiting": "{channel} 中尚未有人 - 在两台设备上保持区域 + 互联网打开并等待约 60 秒",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "＃区域",
+  "geoRefreshLocation": "刷新位置",
+  "settingsClearLocationTitle": "清晰的位置",
+  "settingsClearLocationSubtitle": "删除 GPS/传送 geohash（区域变为#—）",
+  "settingsClearLocationConfirmTitle": "位置明确吗？",
+  "settingsClearLocationConfirmBody": "删除此设备上存储的 geohash。之后您可以再次刷新 GPS 或传送。",
+  "settingsClearLocationAction": "清晰的位置",
+  "settingsClearLocationSnack": "位置已清除",
+  "chatVoiceTooLarge": "语音注释太大 - 最多约 30 秒",
+  "chatVoiceNeedInternet": "语音笔记需要互联网 (Nostr) — 对于单独的 BLE 来说太大",
+  "chatVoiceSentInternet": "通过互联网发送语音留言",
+  "noticeAnonMention": "提到",
+  "noticeAnonDm": "直接留言",
+  "noticeAnonHug": "拥抱",
+  "noticeAnonSlap": "拍击",
+  "noticeAnonBlock": "堵塞",
+  "noticeAnonNeedKey": "还没有公钥——先用二维码进行1:1交换",
+  "noticeAnonActionSent": "发送",
+  "noticeAnonBlocked": "已阻止 {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "*拥抱{anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* 打 {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "重新连接Nostr",
+  "nostrSectionTitle": "Nostr继电器",
+  "nostrSectionSubtitle": "互联网消息传递和区域发现使用这些中继。如果状态保持离线，请点击重新连接。",
+  "nostrStatusOnline": "已连接 {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "离线 — 已列出继电器但未连接",
+  "nostrStatusNotInit": "未开始 (0/0) — 点击重新连接进行初始化",
+  "nostrReconnectAction": "重新连接Nostr",
+  "nostrReconnectOk": "Nostr 已连接 ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "仍处于离线状态 — 检查 Wi‑Fi/cellular 或重试",
+  "nostrReconnectFailedDetail": "失败：{error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "连接到继电器...",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "{channel} 中的互联网 (Nostr) • 密封聊天就绪",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "区域交通",
+  "transportModeSubtitle": "网格 = BLE 附近（无线电），当没有 Nostr 时 · 互联网和汽车 = Nostr 人员列表",
+  "transportModeMesh": "网",
+  "transportModeInternet": "互联网",
+  "transportModeAuto": "汽车",
+  "geoPublicHint": "向该领域的所有人在线公开消息",
+  "geoPublicSend": "民众",
+  "geoPublicHelp": "密封扇出到 {count} 在线对等点 - 每个人都会收到一个私人信封",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "发送至该区域中的 {count} 对等点",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "没有在线可发送消息的对等点 — 与拥有密钥的对等点打开区域/网格，或者等待 BLE/Nostr",
+  "areaPublicBadge": "区域公共",
+  "geoErrorPermission": "无法读取位置 - 检查位置权限",
+  "geoPrecisionRegion": "地区",
+  "geoPrecisionProvince": "省",
+  "geoPrecisionCity": "城市",
+  "geoPrecisionNeighborhood": "邻里",
+  "geoPrecisionBlock": "堵塞",
+  "aliasTitle": "设置昵称（联系人别名）",
+  "aliasHintBody": "此别名仅存储在此设备上（仅限本地）\n它永远不会与 E2EE 流量一起发送",
+  "aliasLabel": "昵称",
+  "aliasHint": "例如“村长”、“P'Somchai”……",
+  "settingsDevices": "设备",
+  "settingsFirmwareTitle": "下载/更新ESP32固件",
+  "settingsFirmwareSubtitle": "下载.bin文件并通过OTA更新ESP32板",
+  "mtBridgeTitle": "Meshtastic桥",
+  "mtBridgeSettingsSubtitle": "纯文本 A/B 桥 — 不是 ResilNet E2EE",
+  "mtBridgeIntro": "在 Meshtastic 和 ResilNet 之间移动短明文。模式A和B不能同时运行。这不是端到端加密。",
+  "mtBridgeModeLabel": "模式",
+  "mtBridgeModeOff": "离开",
+  "mtBridgeModeA": "摄取A",
+  "mtBridgeModeB": "出口B",
+  "mtBridgeModeOffShort": "离开",
+  "mtBridgeModeAShort": "在A",
+  "mtBridgeModeBShort": "输出B",
+  "mtBridgeMutexHint": "选择一种模式会自动关闭另一种模式。不支持同时 A+B。",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "演示（记录）",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "入站文本在“通知”下显示为#meshtastic。网状中继是可选的（默认情况下关闭）。",
+  "mtBridgeRelayTitle": "还中继 ResilNet 网格",
+  "mtBridgeRelayHint": "启用后，将广播签名的公共公告。关 = 仅此手机的通知。",
+  "mtBridgeSimulateHint": "演示消息",
+  "mtBridgeSimulate": "模拟Meshtastic消息",
+  "mtBridgeIngestOk": "纳入通知（#meshtastic）",
+  "mtBridgeEgressWarning": "警告：此处发送的消息不是 ResilNet E2EE。 Meshtastic 路径上的任何人都可以阅读它们。",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "待发布文本",
+  "mtBridgeSend": "发送至Meshtastic",
+  "mtBridgeEgressOk": "排队等候Meshtastic（查看日志/历史记录）",
+  "mtBridgeLastEgress": "最后出口",
+  "mtBridgeEgressHistory": "最近外出",
+  "mtBridgeOffHint": "打开 Ingest (A) 或 Egress (B) 以使用网桥。",
+  "mtBridgeNoticeBadge": "MESHASTIC · 不是 E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "使用MQTT传输",
+  "mtBridgeUseMqttHint": "关闭 = 仅演示日志记录（MQTT 入站被忽略）。 On = MQTT 用于连接时的入口/出口。",
+  "mtBridgeMqttHost": "代理主机",
+  "mtBridgeMqttPort": "港口",
+  "mtBridgeMqttTls": "使用 TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "典型端口8883。使用系统证书；握手错误时软失败。",
+  "mtBridgeMqttAutoReconnect": "自动重新连接",
+  "mtBridgeMqttAutoReconnectHint": "启用后，客户端会在断开后尝试重新连接。状态显示正在连接直至恢复。",
+  "mtBridgeMqttTopicHelpers": "主题助手",
+  "mtBridgeMqttRegion": "区域前缀（可选）",
+  "mtBridgeMqttRegionHint": "设置后，Apply 将根重建为 msh/<region>/2/json （覆盖主题根）。",
+  "mtBridgeMqttTopicRoot": "JSON 主题根",
+  "mtBridgeMqttDownlinkChannel": "下行通道名称",
+  "mtBridgeMqttApplyTopics": "申请root→订阅/发布主题",
+  "mtBridgeMqttAdvanced": "高级 MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS、重新连接、主题、凭据",
+  "mtBridgeMqttTopicIn": "订阅主题",
+  "mtBridgeMqttTopicOut": "发布主题",
+  "mtBridgeMqttGatewayFrom": "网关节点id（来自）",
+  "mtBridgeMqttGatewayFromHint": "十进制 ID 或 !hex — sendtext 下行链路所需",
+  "mtBridgeMqttChannelIndex": "网状通道索引（可选 0–7）",
+  "mtBridgeMqttUser": "用户名（可选）",
+  "mtBridgeMqttPass": "密码（可选）",
+  "mtBridgeMqttPassStored": "密码存储在该设备上（未显示）。",
+  "mtBridgeMqttPassReplace": "新密码（留空保留）",
+  "mtBridgeMqttPassReplaceHint": "留空以保留存储的密码。",
+  "mtBridgeMqttPassClear": "清除密码",
+  "mtBridgeMqttSave": "保存 MQTT 设置",
+  "mtBridgeMqttSaved": "MQTT 设置已保存",
+  "mtBridgeMqttConnect": "连接",
+  "mtBridgeMqttDisconnect": "断开",
+  "mtBridgeMqttConnected": "MQTT已连接",
+  "mtBridgeMqttConnecting": "MQTT正在连接...",
+  "mtBridgeMqttDisconnected": "MQTT已断开连接",
+  "mtBridgeMqttError": "MQTT错误",
+  "mtBridgeErrModeIngest": "首先切换到摄取 (A)",
+  "mtBridgeErrModeEgress": "首先切换到出口 (B)",
+  "mtBridgeErrRate": "放慢速度——速率有限",
+  "mtBridgeErrDedupe": "重复消息被忽略",
+  "mtBridgeErrLoop": "丢弃以防止桥接环路",
+  "mtBridgeErrEmpty": "留言内容为空",
+  "mtBridgeErrPublish": "发布失败",
+  "mtBridgeErrNotConnected": "MQTT未连接",
+  "mtBridgeErrMissingHost": "输入MQTT代理主机",
+  "mtBridgeErrMissingTopic": "输入订阅和发布主题",
+  "mtBridgeErrMissingFromNode": "输入 sendtext 的网关节点 ID（来自）",
+  "mtBridgeErrConnect": "MQTT 连接失败",
+  "mtBridgeErrConnectTls": "MQTT TLS 连接失败",
+  "settingsData": "数据",
+  "settingsDataHint": "删除本地消息以缩小数据库——保留身份、密钥和对等点",
+  "settingsSaveHistoryTitle": "保存消息历史记录",
+  "settingsSaveHistorySubtitle": "关闭时，消息将保留在 E2EE 线路上，并且仅保留此会话（不在本地聊天历史记录中）。您自己的文本在此设备上仍显示为纯文本。",
+  "settingsPrivacy": "隐私",
+  "settingsE2eeTitle": "端到端加密",
+  "settingsE2eeSubtitle": "始终开启 — 消息在发送前使用 RSA-OAEP + AES-GCM 进行密封。中继和附近的跃点无法读取内容。",
+  "settingsScreenshotTitle": "截图提醒",
+  "settingsScreenshotSubtitle": "当该设备捕获屏幕时，在聊天中显示系统线路",
+  "settingsNostrExpiryTitle": "Nostr消息保持时间",
+  "settingsNostrExpirySubtitle": "通过 Nostr 在线时，密封信封应在本地保留多长时间",
+  "noticeExpiresIn": "到期于",
+  "noticesTitle": "通知",
+  "noticesMeshIntro": "公共公告——无线电范围内的每个人都可以看到，未加密。它会在电话到电话之间进行离线连接，并且附近的 ResilNet 中继盒会保留一份副本，以便后来到达的人仍然可以看到它。",
+  "noticesMeshPublicBadge": "公开 · 未加密",
+  "noticesGeoIntro": "添加此地点的简短注释，以便其他访客可以找到它们。",
+  "noticesEmpty": "还没有通知",
+  "noticesEmptyHint": "为附近的人钉上第一个通知。",
+  "noticesComposeHint": "发布通知...",
+  "noticesUrgent": "紧迫的",
+  "noticesOpen": "通知",
+  "screenshotTaken": "*你截图了*",
+  "chatAttachImage": "附上图片",
+  "chatImageLabel": "图像",
+  "chatImageTooLarge": "图片太大 - 尝试另一张照片",
+  "chatNostrExpiry": "Nostr 保留",
+  "geoPublicComposeHint": "发送至 {channel} — 公开",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "清除所有消息",
+  "settingsClearSubtitle": "删除该设备上的所有聊天记录",
+  "settingsClearConfirmTitle": "清除所有消息？",
+  "settingsClearConfirmBody": "这将删除该设备上的所有聊天消息。\n同伴和昵称不会被删除。",
+  "settingsClearAction": "清除数据",
+  "settingsClearedSnack": "数据已清除",
+  "settingsVersion": "版本{version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE：扫描节点",
+  "meshBleEsp32Scanning": "ESP32：寻找附近的节点",
+  "meshBleSyncing": "BLE：与ESP32同步",
+  "meshNostrPublishing": "Nostr：发布",
+  "meshBleIdle": "BLE 网络已开启 — 附近还没有手机",
+  "meshBlePeersNearby": "BLE 网格 — {count} 附近的手机",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE：需要许可",
+  "meshBlePausedCamera": "BLE 暂停拍照 — 点击开始 BLE",
+  "meshBleStopped": "BLE 已关闭 — 检查蓝牙是否已打开，然后点击开始 BLE",
+  "meshBleRestart": "开始 BLE",
+  "meshBleStatusDetail": "BT {bt} · 本地 {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "检查权限并启动 BLE",
+  "meshNostrOffline": "Nostr离线",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} 附近的对等点 • LoRa {lora} • 同步 ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "准备好",
+  "meshLoraNotReady": "还没准备好",
+  "meshGatewayProgress": "网关 UDP：{label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "网关 UDP：准备就绪",
+  "permissionTitle": "允许访问启动 BLE 网状网络",
+  "permissionBody": "该应用程序需要蓝牙（扫描/连接/广告）、位置（适用于较旧的 Android 设备）和麦克风（用于聊天和公告中的语音注释）来进行社区消息传递。",
+  "permissionE2ee": "端到端加密 (E2EE)\n中继节点无法读取消息内容",
+  "permissionReady": "权限准备就绪",
+  "permissionRequest": "允许并继续",
+  "permissionNotReadySnack": "系统尚未准备好 — 稍等片刻，然后重试",
+  "permissionDeniedSnack": "权限不完整 — 打开“设置”> ResilNet 并允许蓝牙/位置/麦克风",
+  "permissionMicDenied": "麦克风访问被拒绝 - 在“设置”中允许其录制语音笔记",
+  "permissionMicOpenSettings": "设置",
+  "permissionCameraDenied": "相机访问被拒绝 - 在“设置”中允许其扫描二维码",
+  "permissionCameraFailed": "扫描二维码需要相机权限",
+  "permissionCameraOpenSettings": "设置",
+  "permissionPhotosDenied": "照片库访问被拒绝 — 在“设置”中允许它保存您的二维码",
+  "permissionPhotosFailed": "需要照片库权限才能保存您的二维码",
+  "permissionPhotosOpenSettings": "设置",
+  "permissionFailedSnack": "权限请求失败：{error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet 架构 • 存储转发多跳",
+  "onboardingSkip": "跳过",
+  "onboardingNext": "下一个",
+  "onboardingStart": "开始使用",
+  "onboardingWelcomeTitle": "欢迎来到ResilNet",
+  "onboardingWelcomeBody": "通过网状网络在 ResilNet 上聊天 — 即使没有互联网",
+  "onboardingFriendsTitle": "轻松添加好友",
+  "onboardingFriendsBody": "分享来自 Identity 的 QR，或扫描朋友的 QR 来交换公钥",
+  "onboardingChannelsTitle": "加密聊天+附近频道",
+  "onboardingChannelsBody": "切换 #mesh / Area (geohash) 以查找附近的对等点 - 消息通过 BLE 网格和 Nostr 保持 E2EE",
+  "chatTitle": "聊天（E2EE）",
+  "chatScanTooltip": "扫描二维码添加好友",
+  "chatBlockTooltip": "阻止该发件人",
+  "chatBlockedSnack": "被阻止：没有通知/没有中继",
+  "chatAliasTooltip": "设置昵称",
+  "chatReceiverPemLabel": "收件人公钥 (PEM)",
+  "chatReceiverPemHint": "粘贴您朋友的公钥（来自二维码/共享文件）",
+  "chatNeedPeerKey": "首先扫描该节点的二维码（需要经过验证的公钥）",
+  "chatPeerKeyMismatch": "存储的公钥与此对等点 ID 不匹配",
+  "chatVoiceFailed": "无法录制音频：{error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "无法播放语音注释：{error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "播放语音笔记",
+  "chatPauseVoice": "暂停",
+  "chatVoiceLabelSent": "🎤 语音留言（密封）",
+  "chatVoiceLabel": "语音便笺",
+  "chatDecryptFailed": "[解密失败]",
+  "chatSentSealed": "[密封•ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[密封]",
+  "chatComposeHint": "输入消息...（发送时密封）",
+  "chatEmptyThread": "还没有消息\n输入以下内容以通过网格发送",
+  "chatLoadFailed": "无法加载对话：{error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "表情符号",
+  "statusPending": "待办的",
+  "statusSent": "发送",
+  "statusRelayed": "中继",
+  "statusDelivered": "发表",
+  "statusRead": "读",
+  "statusFailed": "失败的",
+  "chatCopy": "复制",
+  "chatDeleteLocal": "在此设备上删除",
+  "chatDeletedLocalSnack": "已在此设备上删除",
+  "chatRetry": "重试",
+  "chatSendFailed": "未送达 — 点击“重试”",
+  "chatImageNeedInternet": "连接到互联网以发送图像",
+  "chatImageTooLargeOnline": "无法将图像压缩到足以发送的程度",
+  "chatOpenLinkFailed": "无法打开链接",
+  "identityTitle": "身份",
+  "identityScanTooltip": "用相机扫描二维码",
+  "identityCopiedHash": "已复制公钥哈希",
+  "identityPeerSaved": "通过 QR 保存的对等点",
+  "identityGalleryDenied": "照片库权限被拒绝",
+  "identityQrSaved": "二维码已保存至照片库",
+  "identityQrSaveFailed": "无法保存二维码：{error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "网络成员",
+  "qrScanTitle": "扫描二维码添加好友",
+  "qrInvalid": "扫描失败：二维码无效",
+  "qrIdKeyMismatch": "QR 被拒绝：id 与公钥不匹配",
+  "qrCameraNotReady": "相机未准备好",
+  "qrRetrySettings": "重试/打开设置",
+  "qrCameraOpenFailed": "无法打开相机：{error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "将二维码对齐框内",
+  "firmwareDownloadTitle": "下载ESP32固件",
+  "firmwareSourceOnline": "最新（在线）",
+  "firmwareSourceCached": "保存的副本（离线）",
+  "firmwareSourceBaseline": "捆绑基线（离线）",
+  "firmwareSourceUnavailable": "无可用固件",
+  "firmwareBaselineIncompatible": "捆绑固件太旧 - 连接到互联网下载更新版本",
+  "firmwareChecksumFailed": "固件完整性检查失败 — 闪烁被阻止",
+  "firmwareReadyFromSource": "固件就绪：{source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "刷新",
+  "peersBlocked": "被阻止",
+  "peersNearbyBle": "附近 (BLE)",
+  "peersRecentlyOnline": "最近上线",
+  "peersOnlineInArea": "区域内在线",
+  "peersSeenMinutesAgo": "浏览时间 {minutes} 分钟前",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "离线",
+  "peersBlockedSnack": "已阻止 {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "畅通",
+  "peersEmpty": "数据库中还没有成员\n扫描二维码或等待 BLE 网格发现",
+  "peersOpenChat": "打开聊天",
+  "peersBlockAction": "堵塞",
+  "peersUnblockAction": "解锁",
+  "channelPickerTooltip": "聊天/#mesh/区域",
+  "locationPickerTooltip": "定位通道",
+  "transportPickerTooltip": "网状/互联网/汽车",
+  "onlinePeopleTooltip": "在线人数",
+  "unreadDirectsTooltipEmpty": "私信",
+  "unreadDirectsTooltip": "{count}未读私信",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "人们",
+  "onlinePeopleEmpty": "这里还没有人在线",
+  "onlinePeopleCount": "{count}在线",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1·附近+区域",
+  "peerOnlineMeshTitle": "附近有人在网格上",
+  "peerOnlineMeshBody": "{name} 位于网格附近",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "该地区有人在线",
+  "peerOnlineAreaBody": "{name} 通过 Nostr 在线",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#位置频道",
+  "channelPinsTitle": "已固定",
+  "channelPinsHint": "固定您经常使用的频道 - 它们位于顶部",
+  "channelPinTooltip": "固定此频道",
+  "channelUnpinTooltip": "取消固定",
+  "locationSheetIntro": "使用粗略的 geohash（而不是精确的 GPS）与附近的人聊天。 Internet 上的存在使用匿名 Nostr 密钥。",
+  "locationMeshSubtitle": "#蓝牙 • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "传送",
+  "homeComposeHint": "消息{channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "发送至 {channel} — 公开",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "到期于",
+  "voiceRecordTapToStart": "点击即可录制语音消息",
+  "voiceRecordTooShort": "录音太短 - 请重试",
+  "voiceRecordFailed": "无法保存录音 - 请重试",
+  "voicePttHold": "按住录音",
+  "voicePttRelease": "释放以预览",
+  "voicePttRecording": "记录…",
+  "voicePttDraftReady": "语音留言准备就绪",
+  "voicePttDiscard": "丢弃",
+  "voicePttReRecord": "再次录制",
+  "voicePttSend": "发送语音留言",
+  "voicePttPlayPreview": "播放预览",
+  "voicePttStopPreview": "停止预览",
+  "noticesBackfilling": "正在加载通知...",
+  "noticesNostrOnline": "Nostr在线",
+  "noticesNostrOffline": "Nostr 离线 — 公告需要互联网",
+  "noticesBackfillLoaded": "已加载 {count} 通知",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "无法向地区委员会发布通知。检查Nostr连接。",
+  "noticeMeshPublishNoLink": "保存在本地。连接到附近的网状无线电（或 Wi‑Fi 网关），以便其他人可以接收它。",
+  "noticeMeshPublishSent": "公告已通过 BLE 发送到附近的 {count} 设备。",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "已看到附近的无线电，但 BLE 写入失败。让两个应用程序在“通知”屏幕上保持打开状态，然后重试（或使用 ESP32 中继）。",
+  "noticeMeshPublishNoGatt": "该设备的BLE接收器未准备好。切换蓝牙并重新打开通知。",
+  "noticeDelete": "删除通知",
+  "noticeDeleteConfirmTitle": "删除这个通知吗？",
+  "noticeDeleteLocalOnlyBody": "这仅在此设备上删除它。其他已经收到它的人仍然会看到它。",
+  "noticeDeleted": "通知已删除",
+  "chatNoticeHidden": "区域通知 — 开放通知",
+  "identityDisplayNameTitle": "显示名称",
+  "identitySaveName": "保存名称",
+  "identityUserIdLabel": "用户 ID（公钥哈希）",
+  "identityCopyHashTooltip": "复制公钥哈希",
+  "identityMyQrTitle": "我的二维码（id + pubKey + 姓名）",
+  "identityQrFailed": "无法创建二维码\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "保存…",
+  "identitySaveQr": "将二维码保存到照片库",
+  "identityOpenScanner": "打开相机扫描二维码",
+  "identityQrHelp": "让朋友扫描此信息以保存您的公钥并（如果需要）将您设置为已验证的发行人",
+  "identityChatTip": "提示：您也可以在聊天中扫描二维码添加E2EE公钥",
+  "infoOpen": "关于/信息",
+  "docsGuideTitle": "用户指南",
+  "docsGuideSubtitle": "在浏览器中打开",
+  "docsOpenAction": "打开指南",
+  "docsOpenFailed": "无法打开用户指南",
+  "firmwareOtaGuideTitle": "Flash指南&OTA协议",
+  "firmwareOtaGuideSubtitle": "打开网络指南 — .bin 下载和完整步骤",
+  "firmwareWebDownloadsTitle": "在网络上下载固件",
+  "firmwareWebDownloadsSubtitle": "文档站点上的每个版本链接和校验和",
+  "inviteCopyShortLink": "复制短链接",
+  "inviteShareLink": "分享链接",
+  "inviteShowFullLink": "完整链接",
+  "inviteCopyFullLink": "复制完整链接",
+  "inviteLinkCopied": "链接已复制",
+  "inviteLongPressHint": "长按可进行链接操作",
+  "inviteSendInChat": "发送 ResilNet 聊天...",
+  "inviteSendInChatHint": "仅适用于您已拥有公钥的人",
+  "inviteSendInChatEmpty": "还没有可发送消息的聊天。\n首先扫描二维码、打开区域/网格或在应用程序外部共享链接。",
+  "inviteSentToChat": "邀请已在聊天中发送",
+  "infoTabInfo": "信息",
+  "infoTabSettingsHint": "从语言、E2EE 和数据工具的菜单中打开“设置”",
+  "infoHowToTitle": "如何使用",
+  "infoHowToBody": "• 点击频道图标可切换聊天/#mesh/区域\n• 点击地点选择 geohash 大小\n• 点击人员以查找成员或在线人员\n• 从 ⋮ 开放身份/二维码以亲自交换密钥\n•“公共”区域向每个在线对等方发送密封的 E2EE——而不是明文房间",
+  "infoFeaturesTitle": "特征",
+  "infoFeatureOffline": "通过低功耗蓝牙进行离线消息传递",
+  "infoFeatureE2ee": "使用 RSA-OAEP + AES-GCM 进行端到端加密（非噪声）",
+  "infoFeatureMultihop": "消息可以通过附近的对等点传输到更远的地方",
+  "infoFeatureBridge": "用于密封信封的混合网格 ↔ 互联网 (Nostr)",
+  "infoFeatureGeo": "附近人的本地 geohash 频道（发现 UX）",
+  "infoFeatureNotices": "#mesh 和 Area 过期的通知",
+  "infoPrivacyTitle": "隐私",
+  "infoPrivacyNoRoom": "网络上没有明文村庄/公共聊天室",
+  "infoPrivacyFanout": "区域发送 = 密封 1:1 扇出到具有已知公钥的对等方",
+  "infoPrivacyPresence": "互联网区域存在使用临时 Nostr 密钥",
+  "infoSymbolsTitle": "符号",
+  "infoSymBle": "直接蓝牙链接",
+  "infoSymMesh": "可通过网状网络到达（其他转发）",
+  "infoSymInternet": "通过互联网 (Nostr) — 密封信封",
+  "infoSymBridge": "通过网状网↔互联网桥路径到达",
+  "infoSymOffline": "离线 — 目前无法访问",
+  "infoSymInArea": "在此位置通道区域",
+  "infoSymE2eeOk": "端到端加密会话",
+  "infoSymE2eeFail": "加密不可用——不要发送敏感文本",
+  "infoSymVerified": "身份验证/已知密钥",
+  "infoSymBlocked": "被阻止",
+  "infoSymUnread": "未读私信",
+  "infoEmergencyTitle": "紧急模式",
+  "infoEmergencyBody": "连按三次主屏幕上的 ResilNet 标题可擦除该设备上的消息、密钥和身份信息。",
+  "infoLegendNote": "为了清楚起见，此处记录了一些路径图标；聊天中的传递标记仍然是主要发送状态。",
+  "dangerZoneTitle": "危险区域",
+  "dangerZoneSubtitle": "删除该设备上的消息、加密密钥、Nostr 身份、对等点和昵称。您将再次设置。",
+  "panicWipeTitle": "紧急擦拭",
+  "panicWipeSubtitle": "擦除本地所有内容 - 与三次点击主页标题相同（双击刷新收音机）",
+  "panicWipeConfirmTitle": "清除所有本地数据？",
+  "panicWipeConfirmBody": "这将永久删除此手机上的聊天记录、密钥和身份信息。\n同行必须用您的新身份重新交换二维码密钥。\n此操作无法撤消。",
+  "panicWipeAction": "擦拭一切",
+  "panicWipeSnack": "本地身份已擦除 — 重新设置",
+  "panicWipeFailed": "擦除失败：{error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "网桥",
+  "meshBridgeSubtitle": "启用（默认）后，密封信封可以同时使用 BLE 网格和互联网 (Nostr)，以便附近的网格岛可以连接。关闭时，仅使用一条路径发送 — 绝不将明文传输到线路上。",
+  "favoritesTitle": "收藏夹",
+  "favoritesAdd": "添加到收藏夹",
+  "favoritesRemove": "从收藏夹中删除",
+  "favoritesEmpty": "尚未收藏 — 从成员列表中为同行加注星标",
+  "favoritesNearbyTitle": "附近最喜欢的",
+  "favoritesNearbyBody": "{name} 位于网格附近",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "最喜欢的地区",
+  "favoritesInAreaBody": "{name}在此区域在线",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "网状拓扑",
+  "topologySubtitle": "来自网格公告的对等点和连接提示（只读）",
+  "topologyConnectedNow": "现已连接 (BLE)",
+  "topologyNearby": "附近 (BLE)",
+  "topologyKnown": "已知同行",
+  "topologyEmpty": "尚未有同伴获悉 - 留在附近并开启 BLE",
+  "topologyYou": "你",
+  "topologyStats": "{peers} 同行 · {links} 链接",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "根据附近的网格发现估算 - 您的设备突出显示。点击同伴即可打开聊天。",
+  "topologyOpen": "网状拓扑",
+  "slashHelpTitle": "命令",
+  "slashHelpBody": "/help — 此列表\n/who — 当前频道中在线的人\n/drop <text> — 在此处固定密封通知（E2EE 扇出）\n\n完整指南：使用下面的打开指南，或设置 → 用户指南。",
+  "slashWhoEmpty": "目前该频道无人在线",
+  "slashWhoTitle": "在线 ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "用法：/删除您的注释文本",
+  "slashDropDone": "已在 {channel} 上删除通知",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "未知命令 — 尝试 /help",
+  "announceOpen": "公告",
+  "announceTitle": "公告",
+  "announceEmpty": "还没有留言板 — 创建一个留言板来发布锁定或开放的通知",
+  "announceCreate": "创建板",
+  "announceCreateHint": "董事会名称",
+  "announceDefaultTitle": "社区委员会",
+  "announceSettings": "董事会设置",
+  "announceAllowLocked": "允许锁定（加密）的帖子",
+  "announceAllowLockedSub": "加密到板密钥 - 读者需要访问",
+  "announceAllowOpen": "允许公开（明文）帖子",
+  "announceAllowOpenSub": "不是 E2EE — 在网状网络/继电器上可读。默认关闭。",
+  "announceComposeHint": "写一个公告...",
+  "announceMediaInternetOnly": "通过互联网发送照片/语音通知（不是 BLE）",
+  "announceNeedInternet": "连接到互联网发送照片或语音通知",
+  "announceVoiceFailed": "无法录制语音：{error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "图像太大（最大 ~180 KB）",
+  "announcePlayVoice": "播放语音笔记",
+  "announceImageLabel": "📷 图片",
+  "announceAudioLabel": "🎤 语音留言",
+  "announceModeLocked": "锁定",
+  "announceModeOpen": "打开",
+  "announceOpenBadge": "开放·未加密",
+  "announceLockedBadge": "锁定",
+  "announceLockedPlaceholder": "加密 — 请求访问读取",
+  "announceRequestAccess": "请求访问权限",
+  "announceRequestSent": "发送给版块所有者的访问请求",
+  "announceRequestFailed": "无法请求访问（需要所有者的公钥）",
+  "announceOpenConfirmTitle": "发帖不加密？",
+  "announceOpenConfirmBody": "开放帖子不是 E2EE。路径上的任何人（网格/中继）都可以读取它们。继续？",
+  "announcePostAction": "邮政",
+  "announcePendingRequests": "访问请求",
+  "announceApprove": "批准",
+  "announceDeny": "否定",
+  "announceGranted": "您可以阅读此板上的锁定帖子",
+  "announceOwner": "您拥有该板",
+  "announceCopyInvite": "复制邀请文本",
+  "announceShowInviteQr": "显示邀请二维码",
+  "announceScanInviteQr": "扫一扫邀请码",
+  "announceFollow": "通过邀请关注董事会",
+  "announceFollowHint": "粘贴来自所有者的邀请文本或 ResilNet 链接",
+  "announceFollowOk": "跟随板",
+  "announceFollowOkNamed": "现在正在关注“{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "邀请无效或已损坏",
+  "announceInviteCopied": "邀请文本已复制",
+  "announceInviteSaveQr": "保存二维码",
+  "announceInviteShare": "分享邀请",
+  "announceFollowFromCompose": "在消息框中检测到论坛邀请",
+  "peerConfirmAddTitle": "添加网络成员？",
+  "peerConfirmAddBody": "添加“{name}”及其公钥，以便您可以私下向他们发送消息？",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "添加会员",
+  "peerAddedOk": "将 {name} 添加到网络成员",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "在消息框中检测到身份/公钥",
+  "peerHashCopied": "已复制公钥哈希",
+  "peerHashOpenChat": "打开聊天",
+  "peerHashAddHint": "已复制哈希值。请他们分享他们的身份链接或 QR，以便您可以添加 E2EE 的完整公钥。",
+  "peerQrNoCode": "此图片中未找到 ResilNet 二维码",
+  "identityInviteSharePreamble": "ResilNet身份：“{name}”\n打开链接或将其粘贴到聊天中 → 添加成员\n或扫描身份二维码。",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "分享身份链接",
+  "identityInviteCopied": "已复制身份链接",
+  "announceInviteSharePreamble": "董事会邀请：“{title}”\n打开 ResilNet → 社区委员会 → 通过邀请关注\n或扫描二维码/点击下面的链接。",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "关注这个板块？",
+  "announceConfirmFollowBody": "关注此邀请中的“{title}”吗？",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "跟随"
+}

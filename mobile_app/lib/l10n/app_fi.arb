@@ -1,0 +1,1105 @@
+{
+  "@@locale": "fi",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "Päivitetään ResilNet…",
+  "appRefreshed": "Päivitetty – radiot ja etsintä käynnistetty uudelleen",
+  "appRefreshFailed": "Päivitys epäonnistui: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "Kaksoisnapautus = pehmeä virkistys. Pitkä painallus = kova palautus. Kolmoisnapautus = hätäpyyhintä.",
+  "softRefreshTipTitle": "Jos ResilNet tuntuu jumissa",
+  "softRefreshTipBody": "Kaksoisnapauta ResilNet (ylävasen) saadaksesi pehmeän radion päivityksen. Jos edelleen jumissa: paina otsikkoa pitkään, käytä ⋮ → Hard Recovery tai Asetukset. Kolmoisnapautus on vain hätäpyyhintä.",
+  "softRefreshTipGotIt": "Selvä",
+  "infoSoftRefreshTitle": "Jos sovellus tuntuu jumissa",
+  "infoSoftRefreshStepRefresh": "Kaksoisnapauta ResilNet (ylävasen) → pehmeä virkistysradiot ja lähellä olevat ihmiset",
+  "infoSoftRefreshStepHard": "Vieläkö jumissa? Paina otsikkoa pitkään tai ⋮ / Asetukset → Kova palautus",
+  "infoSoftRefreshStepWait": "Odota välipalapalkin tulosta ja yritä sitten uudelleen. Istunnon nollaus säilyttää avaimesi.",
+  "infoSoftRefreshStepWipe": "Kolmoisnapautus = hätäpyyhintä (poistaa paikalliset tiedot) – vain jos se on tarkoituksellista",
+  "appRecoverySection": "Sovelluksen palautus",
+  "appRecoverySectionSubtitle": "Käytä, kun sovellus tuntuu jäätyneeltä. Pehmeä = otsikon kaksoisnapautus. Kova palautuminen on vahvempaa. Istunnon nollaus käynnistää palvelut uudelleen pyyhkimättä avaimia.",
+  "appHardRecoverAction": "Kova toipuminen",
+  "appHardRecovering": "Vaikea toipuminen…",
+  "appSessionResetAction": "Nollaa istunto",
+  "appSessionResetRunning": "Nollataan istuntoa…",
+  "appSessionResetConfirmTitle": "Nollataanko istunto?",
+  "appSessionResetConfirmBody": "Käynnistää ResilNet palvelut uudelleen tällä laitteella. Identiteettiavaimesi säilytetään.",
+  "appRecoveryBusy": "Palautus on jo käynnissä…",
+  "appRecoveryOk": "Toipuminen päättynyt",
+  "appRecoveryPartial": "Palautus päättyi, ja jotkut vaiheet ohitettiin – yritä uudelleen, jos se on edelleen jumissa",
+  "appRecoveryFailed": "Palautus epäonnistui – kokeile istunnon nollausta tai pakota sovellus poistumaan käyttöjärjestelmästä",
+  "localWifiTitle": "Paikallinen Wi‑Fi",
+  "localWifiSubtitle": "Yhdistä lähellä olevat laitteet ilman Internetiä – sama kuin olisit yhdessä lähiverkossa.",
+  "localWifiNotGatewayHint": "Ei ESP32 LoRa -yhdyskäytävä SoftAP. Tämä on vain puhelin↔puhelin / LAN.",
+  "localWifiUnavailable": "Paikallinen Wi‑Fi ei ole vielä valmis – odota sovelluksen käynnistymistä.",
+  "lxmfBridgeTitle": "Kotisolmu",
+  "lxmfBridgeSubtitle": "Valinnainen Mac tai Pi Wi‑Fi-laitteellasi, joka välittää sinetöityjä keskusteluja. Oletuksena pois päältä. Ei korvaa päästä päähän -salausta.",
+  "lxmfBridgeEnable": "Käytä kotisolmua",
+  "lxmfBridgeDisabledHint": "Ota käyttöön vain, kun siltasovellus on käynnissä Mac- tai Pi-tietokoneessa tässä verkossa.",
+  "lxmfBridgeOnline": "Online - {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "Kotisolmuun ei saada yhteyttä — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Kotisolmun osoite",
+  "lxmfBridgeBaseUrlHelper": "IP tai http://IP:portti – esimerkki 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "Vertaistuki → LXMF kohde (JSON)",
+  "lxmfBridgeRefresh": "Tallenna ja päivitä tila",
+  "lxmfBridgeLabHint": "Lisäasetukset: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "Kotisolmun asetukset",
+  "lxmfBridgeCheckConnection": "Tarkista yhteys",
+  "lxmfBridgeStatusOnline": "Yhdistetty kotisolmuun",
+  "lxmfBridgeStatusOffline": "Kotisolmu ei tavoitettavissa",
+  "lxmfBridgeYourDest": "Tämän solmun osoite (jaa ystävien kanssa)",
+  "lxmfBridgeCopyDest": "Kopioi osoite",
+  "lxmfBridgeDestCopied": "Osoite kopioitu",
+  "lxmfBridgeLinkedPeers": "Yhdistetyt ystävät",
+  "lxmfBridgeLinkedPeersHint": "Jokainen ystävä tarvitsee kotisolmuosoitteensa kerran. Sitten suljetut keskustelut voivat käyttää tätä polkua.",
+  "lxmfBridgeNoLinks": "Ystäviä ei ole vielä linkitetty.",
+  "lxmfBridgeAddLink": "Linkitä ystäväsi",
+  "lxmfBridgePickPeer": "ystävä",
+  "lxmfBridgePeerDest": "Heidän kotisolmuosoitteensa",
+  "lxmfBridgePeerDestHint": "32-merkkinen koodi heidän aloitussolmunäytöstään",
+  "lxmfBridgeInvalidDest": "Osoite ei näytä kelvolliselta. Liitä koko koodi heidän kotisolmuksestaan.",
+  "lxmfBridgeRemoveLink": "Poista linkitys",
+  "lxmfBridgeSaveLink": "Tallentaa",
+  "lxmfBridgeLinkSaved": "Ystävä linkitetty",
+  "lxmfBridgeNoPeers": "Ei vielä lähetettäviä yhteystietoja – lisää ensin ystävä.",
+  "lxmfBridgeHelp": "Pidä silta käynnissä Mac/Pi:ssä. Tämä polku pysyy lähiverkossasi – se ei ole LoRa eikä korvaa Internetiä tai Bluetooth-verkkoa.",
+  "localWifiModeHotspot": "Lähistöllä",
+  "localWifiModeRouter": "Reititin",
+  "localWifiHotspotIntro": "Yksi laite jakaa henkilökohtaisen yhteyspisteen. Muut liittyvät tähän hotspotiin ja sitten ResilNet löytää heidät paikallisesta verkosta.",
+  "localWifiHostAction": "Luo verkko (isäntä)",
+  "localWifiJoinAction": "Liity verkkoon",
+  "localWifiHostSteps": "1. Avaa iOS/Android-asetukset ja ota käyttöön Personal Hotspot (tai Internet Sharing).\n2. Kerro ystäville hotspotin nimi (ja salasana).\n3. Palaa tänne ja napauta \"Hotspot on päällä - aloita odottaminen\".",
+  "localWifiHostReady": "Hotspot on päällä – ala odottaa",
+  "localWifiHostWaiting": "Odotetaan ystävien liittymistä…",
+  "localWifiJoinSteps": "1. Avaa järjestelmän asetukset ja liity ystäväsi henkilökohtaiseen yhteyspisteeseen.\n2. Palaa tähän ja napauta \"Olen yhteydessä - etsi\".",
+  "localWifiJoinReady": "Olen yhteydessä – hae",
+  "localWifiRouterIntro": "Yhdistä kaikki laitteet samaan Wi‑Fi-reitittimeen/tukiasemaan. Reititin ei tarvitse Internetiä - vain jaettua paikallisverkkoa.",
+  "localWifiRouterSearch": "Hae tästä Wi‑Fi",
+  "localWifiRefreshNetwork": "Päivitä Wi‑Fi tiedot",
+  "localWifiRouterNoWifiTitle": "Ei käytössä Wi‑Fi",
+  "localWifiRouterNoWifiBody": "Liity reitittimen Wi‑Fi-kohtaan järjestelmäasetuksissa ja etsi sitten uudelleen.",
+  "localWifiDiscovering": "Haetaan paikallisesta Wi‑Fi…",
+  "localWifiPeersFound": "Tämän verkon laitteet",
+  "localWifiStop": "Stop",
+  "localWifiSsidUnknown": "Wi‑Fi nimi ei ole käytettävissä",
+  "localWifiStubBanner": "Odotetaan LAN-liitäntää…",
+  "localWifiLiveBanner": "LAN-etsintä livenä (UDP) — ilmoita + suljettu chat tällä Wi‑Fi",
+  "localWifiEmptyHotspot": "Ei vielä laitteita.\nTarkista, että ystävät liittyivät hotspot-pisteeseesi ja sallivat pääsyn paikallisverkkoon.",
+  "localWifiEmptyRouter": "Ei vielä laitteita.\nSama SSID? Paikallinen verkko sallittu? Jotkut reitittimet estävät laitteiden välisen liikenteen (AP-eristys).",
+  "localWifiIsolationHelp": "Miksi emme löydä toisiamme?",
+  "localWifiIsolationTitle": "Reititin voi eristää asiakkaat",
+  "localWifiIsolationBody": "Jos tukiaseman/asiakkaan eristys (tai vierasverkko) on käytössä, samassa Wi‑Fi-puhelimet eivät voi puhua. Poista eristys käytöstä, käytä pää-SSID:tä tai vaihda Nearby (Hotspot) -tilaan.",
+  "localWifiPeerReady": "Valmiina chattiin (on avain)",
+  "localWifiPeerNeedKey": "Löytyi – skannaa QR vaihtaaksesi avaimia",
+  "localWifiErrorTitle": "Paikallinen Wi‑Fi-virhe",
+  "localWifiErrorBody": "Jotain meni pieleen. Pysäytä ja yritä uudelleen.",
+  "preparingSystem": "Valmistellaan järjestelmää…",
+  "bootFailedTitle": "Ei voitu käynnistää",
+  "retry": "Yritä uudelleen",
+  "bootRecoveryAction": "Aloita uusi identiteetti (poista paikalliset tiedot)",
+  "bootRecoveryConfirmTitle": "Aloita uusi identiteetti?",
+  "bootRecoveryConfirmBody": "Tämä poistaa pysyvästi paikalliset keskustelut, avaimet ja identiteetin tältä laitteelta.\nKavereiden on skannattava QR-koodisi uudelleen uudella henkilöllisyytesi kanssa.\nTätä ei voi kumota.",
+  "bootRecoveryRunning": "Nollataan paikallista identiteettiä…",
+  "bootRecoverySuccess": "Paikallisen identiteetin palautus valmis",
+  "bootRecoveryFailed": "Identiteettiä ei voitu nollata: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Peruuttaa",
+  "save": "Tallentaa",
+  "close": "Lähellä",
+  "start": "Aloita",
+  "send": "Lähetä",
+  "settings": "Asetukset",
+  "language": "Kieli",
+  "languageSubtitle": "Oletuksena sovellus noudattaa puhelimen kieltä (jos tuettu). Muut kielet palaavat englanniksi. Voit myös lukita kielen tähän.",
+  "languageSystem": "Järjestelmän oletus",
+  "languageThai": "thaimaalainen",
+  "languageEnglish": "englanti",
+  "notificationsTooltip": "Ilmoitusasetukset",
+  "enableMessageNotifications": "Ota viesti-ilmoitukset käyttöön",
+  "settingsNotificationsSubtitle": "1:1 viestit ja ihmiset verkossa (paikalliset hälytykset)",
+  "networkMembersTooltip": "Verkoston jäseniä",
+  "identityQrTooltip": "Identiteetti / QR",
+  "feedDirects": "Chat",
+  "feedMesh": "#verkko",
+  "feedGeo": "Alue",
+  "feedDirectsSubtitle": "Yksityiset E2EE viestit",
+  "feedMeshSubtitle": "Läheiset kumppanit (BLE)",
+  "feedGeoSubtitle": "Geohash-löytökanava",
+  "peerIdHint": "Liitä vastaanottajan tunnus (Public Key Hash) aloittaaksesi keskustelun",
+  "directsEmpty": "Ei vielä keskusteluja – skannaa QR-koodi tai liitä vastaanottajan tunnus aloittaaksesi\nViestit sinetöidään E2EE:llä ennen lähettämistä (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • napauta avataksesi chatin",
+  "meshIntro": "Vertaisalueet BLE – napauta yksityiseen E2EE-chattiin (ei julkista kirjoitusta #meshissä)\nLähettää hybridireitittimen kautta (BLE + LoRa + Nostr online-tilassa)",
+  "meshEmptyRunning": "Ei vielä lähistöllä olevia vastaavia – avaa sovellus toisella laitteella BLE kantaman sisällä",
+  "meshEmptyStopped": "BLE ei ole käynnissä – anna Bluetooth-/sijaintilupa",
+  "meshNearbyPrefix": "Lähistöllä",
+  "meshRetentionTitle": "Poista viestit automaattisesti",
+  "meshRetentionSubtitle": "Vanhempi paikallinen chat-historia poistetaan automaattisesti",
+  "meshRetentionKeep": "Pitää",
+  "meshRetention1Day": "1 päivä",
+  "meshRetention3Days": "3 päivää",
+  "meshRetention7Days": "7 päivää",
+  "refreshLocationTooltip": "Päivitä sijainti",
+  "geoIntro": "Tässä geohashissa verkossa oleville ihmisille voidaan lähettää viestejä 1:1 tai alueen julkisella tuulettimella (sinetöity E2EE vertaiskohtaisesti – ei pelkkä teksti)",
+  "geoEmpty": "Kukaan ei ole vielä online-tilassa kohteessa {channel}\nValitse Liikenne → Internet/Auto, odota Nostr, päivitä sijainti",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "Online-tilassa {channel} • napauta saadaksesi 1:1 E2EE:n",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "Lähistöllä (odottaa läsnäoloa alueella) • napauta saadaksesi 1:1 E2EE",
+  "geoPeerNostrSubtitle": "Nähty Nostr vuonna {channel} • vain löytö (vanha)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "Vanha anonyymi läsnäolo – odota sidottua vertaista tai vaihda QR-koodi",
+  "bleRadioNearbySubtitle": "BLE lähellä – skannaa QR aloittaaksesi 1:1 E2EE",
+  "geoInternetDiscoverHint": "Alueen Internet-etsintä vaatii Nostr yhteyden (Asetukset → Liikenne → Internet/Auto)",
+  "geoEmptyNoLocation": "Sijaintia ei ole vielä ratkaistu – anna GPS:n ja päivitysohjelman julkaista geohash osoitteessa Nostr",
+  "geoEmptyNeedsPermission": "Sijaintilupa estetty — salli ResilNet kohdassa Asetukset → Tietosuoja → Sijainti",
+  "geoEmptyServicesDisabled": "Sijaintipalvelut ovat pois päältä – ota ne käyttöön asetuksista",
+  "geoEmptyNoGpsFix": "GPS-korjausta ei saatu (yleistä Wi‑Fi iPadeissa) – aseta geohash manuaalisesti alla",
+  "geoEmptyTeleportHint": "Napauta paikkakuvaketta → anna geohash (esim. w5) → Teleport",
+  "geoSetGeohashManually": "Aseta geohash",
+  "geoTeleportHint": "Ei GPS:ää? Kirjoita geohash-etuliite (2–7 merkkiä, esim. w5) ja napauta Teleport",
+  "geoTeleportInvalid": "Virheellinen geohash – käytä vain base32-kirjaimia/numeroita (esim. w5 tai w5jt8)",
+  "geoTeleportOk": "Alueeksi asetettu {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "Manuaalinen alue: {channel} (GPS-päivitys ohittaa)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr ei ole valmis – napauta Yhdistä uudelleen (0/0, kunnes aloitus onnistuu)",
+  "geoEmptyMeshOnly": "Kuljetus on vain mesh-verkkoa – vaihda Internetiin tai Automaattiseen löytääksesi vertaisia ​​yli Nostr",
+  "geoEmptyWaiting": "Ei vielä ketään alueella {channel} – pidä alue + Internet auki molemmilla laitteilla ja odota noin 60 sekuntia",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#alue",
+  "geoRefreshLocation": "Päivitä sijainti",
+  "settingsClearLocationTitle": "Selkeä sijainti",
+  "settingsClearLocationSubtitle": "Poista GPS / teleportoi geohash (alueesta tulee #—)",
+  "settingsClearLocationConfirmTitle": "Tyhjennä sijainti?",
+  "settingsClearLocationConfirmBody": "Poistaa tallennetun geohashin tälle laitteelle. Voit päivittää GPS:n tai teleportoida uudelleen myöhemmin.",
+  "settingsClearLocationAction": "Selkeä sijainti",
+  "settingsClearLocationSnack": "Sijainti tyhjennetty",
+  "chatVoiceTooLarge": "Äänimuistiinpano liian suuri – enintään ~30 sekuntia",
+  "chatVoiceNeedInternet": "Äänimuistiinpano tarvitsee Internetin (Nostr) – liian suuri yksinään BLE:lle",
+  "chatVoiceSentInternet": "Internetin kautta lähetetty äänimuistiinpano",
+  "noticeAnonMention": "mainita",
+  "noticeAnonDm": "suora viesti",
+  "noticeAnonHug": "halata",
+  "noticeAnonSlap": "isku",
+  "noticeAnonBlock": "lohko",
+  "noticeAnonNeedKey": "Ei vielä julkista avainta – vaihda QR ensin 1:1:een",
+  "noticeAnonActionSent": "Lähetetty",
+  "noticeAnonBlocked": "Estetty {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* halaukset {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* iskuja {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Yhdistä uudelleen Nostr",
+  "nostrSectionTitle": "Nostr releet",
+  "nostrSectionSubtitle": "Internet-viestit ja alueetsintä käyttävät näitä välityksiä. Napauta yhdistä uudelleen, jos tila pysyy offline-tilassa.",
+  "nostrStatusOnline": "Yhdistetty {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "Offline – releet luetellaan, mutta niitä ei ole kytketty",
+  "nostrStatusNotInit": "Ei aloitettu (0/0) — napauta Yhdistä uudelleen alustaaksesi",
+  "nostrReconnectAction": "Yhdistä uudelleen Nostr",
+  "nostrReconnectOk": "Nostr yhdistetty ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "Edelleen offline-tilassa – tarkista Wi‑Fi/cellular tai yritä uudelleen",
+  "nostrReconnectFailedDetail": "Epäonnistui: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Yhdistetään releisiin…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "Internet (Nostr) kohteessa {channel} • suljettu chat valmis",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "Alueellinen kuljetus",
+  "transportModeSubtitle": "Mesh = BLE lähellä (radio), kun ei Nostr · Internet & Auto = Nostr henkilöluettelo",
+  "transportModeMesh": "Mesh",
+  "transportModeInternet": "Internet",
+  "transportModeAuto": "Auto",
+  "geoPublicHint": "Julkinen viesti kaikille verkossa tällä alueella",
+  "geoPublicSend": "Julkinen",
+  "geoPublicHelp": "Suljettu tuuletus {count} verkkokumppanille – jokainen saa yksityisen kirjekuoren",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Lähetetty {count} kumppanille tällä alueella",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "Ei viestittäviä vertaisia ​​verkossa – avaa Area/Mesh ystäville, joilla on avaimet, tai odota BLE/Nostr",
+  "areaPublicBadge": "Alue julkinen",
+  "geoErrorPermission": "Sijaintia ei voitu lukea – tarkista sijainnin käyttöoikeus",
+  "geoPrecisionRegion": "Alue",
+  "geoPrecisionProvince": "maakunta",
+  "geoPrecisionCity": "Kaupunki",
+  "geoPrecisionNeighborhood": "Naapurustossa",
+  "geoPrecisionBlock": "Lohko",
+  "aliasTitle": "Aseta lempinimi (yhteyshenkilön alias)",
+  "aliasHintBody": "Tämä alias on tallennettu vain tälle laitteelle (vain paikallinen)\nSitä ei koskaan lähetetä E2EE-liikenteen mukana",
+  "aliasLabel": "Lempinimi",
+  "aliasHint": "esim. \"kylän pää\", \"P'Somchai\"…",
+  "settingsDevices": "Laitteet",
+  "settingsFirmwareTitle": "Lataa / päivitä ESP32 laiteohjelmisto",
+  "settingsFirmwareSubtitle": "Lataa .bin-tiedostoja ja päivitä ESP32-kortti OTA:n kautta",
+  "mtBridgeTitle": "Meshtastic silta",
+  "mtBridgeSettingsSubtitle": "Vain teksti A/B-silta – ei ResilNet E2EE",
+  "mtBridgeIntro": "Siirrä lyhyt selkeä teksti välillä Meshtastic ja ResilNet. Tilat A ja B eivät voi toimia samanaikaisesti. Tämä ei ole päästä päähän -salausta.",
+  "mtBridgeModeLabel": "tila",
+  "mtBridgeModeOff": "Pois",
+  "mtBridgeModeA": "Ota A",
+  "mtBridgeModeB": "Lähtö B",
+  "mtBridgeModeOffShort": "Pois",
+  "mtBridgeModeAShort": "Kirjassa A",
+  "mtBridgeModeBShort": "Ulos B",
+  "mtBridgeMutexHint": "Tilan valitseminen sammuttaa toisen automaattisesti. Samanaikaista A+B:tä ei tueta.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "Demo (lokikirjaus)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "Saapuva teksti näkyy Ilmoitukset-kohdassa muodossa #meshtastic. Verkkorele on valinnainen (oletusarvoisesti pois päältä).",
+  "mtBridgeRelayTitle": "Myös rele verkkoon ResilNet",
+  "mtBridgeRelayHint": "Kun käytössä, allekirjoitetut julkiset tiedotteet lähetetään. Pois päältä = vain tämän puhelimen ilmoitukset.",
+  "mtBridgeSimulateHint": "Demo viesti",
+  "mtBridgeSimulate": "Simuloi Meshtastic viesti",
+  "mtBridgeIngestOk": "Sisältyy ilmoituksiin (#meshtastic)",
+  "mtBridgeEgressWarning": "Varoitus: tänne lähetetyt viestit EIVÄT ole ResilNet E2EE. Kuka tahansa polulla Meshtastic voi lukea ne.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "Teksti julkaistavaksi",
+  "mtBridgeSend": "Lähetä osoitteeseen Meshtastic",
+  "mtBridgeEgressOk": "Jonossa Meshtastic (katso loki / historia)",
+  "mtBridgeLastEgress": "Viimeinen ulostulo",
+  "mtBridgeEgressHistory": "Viimeaikainen ulospääsy",
+  "mtBridgeOffHint": "Ota sisäänotto (A) tai poisto (B) käyttöön käyttääksesi siltaa.",
+  "mtBridgeNoticeBadge": "MESHTASTIC · ei E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "Käytä MQTT-kuljetusta",
+  "mtBridgeUseMqttHint": "Pois = vain esittelyloki (MQTT saapuvaa ei huomioida). Päällä = MQTT sisään-/ulostulolle, kun yhteys on muodostettu.",
+  "mtBridgeMqttHost": "Välittäjäisäntä",
+  "mtBridgeMqttPort": "Portti",
+  "mtBridgeMqttTls": "Käytä TLS:ää (mqtts)",
+  "mtBridgeMqttTlsHint": "Tyypillinen portti 8883. Käyttää järjestelmävarmenteita; epäonnistuu pehmeästi kättelyvirheissä.",
+  "mtBridgeMqttAutoReconnect": "Yhdistä automaattisesti",
+  "mtBridgeMqttAutoReconnectHint": "Kun se on päällä, asiakas yrittää muodostaa yhteyden uudelleen katkeamisen jälkeen. Tila näyttää Yhdistetään, kunnes palautetaan.",
+  "mtBridgeMqttTopicHelpers": "Aiheen auttajia",
+  "mtBridgeMqttRegion": "Alueen etuliite (valinnainen)",
+  "mtBridgeMqttRegionHint": "Kun asetus on asetettu, Apply rakentaa uudelleen juuren muodossa msh/<region>/2/json (ohittaa aiheen juuren).",
+  "mtBridgeMqttTopicRoot": "JSON-aiheen juuri",
+  "mtBridgeMqttDownlinkChannel": "Downlink-kanavan nimi",
+  "mtBridgeMqttApplyTopics": "Käytä root → tilaa / julkaise aiheita",
+  "mtBridgeMqttAdvanced": "Lisäasetukset MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, yhdistä uudelleen, aiheet, tunnistetiedot",
+  "mtBridgeMqttTopicIn": "Tilaa aihe",
+  "mtBridgeMqttTopicOut": "Julkaise aihe",
+  "mtBridgeMqttGatewayFrom": "Yhdyskäytäväsolmun tunnus (alkaen)",
+  "mtBridgeMqttGatewayFromHint": "Desimaalitunnus tai !hex — vaaditaan sendtextin alaslinkille",
+  "mtBridgeMqttChannelIndex": "Verkkokanavaindeksi (valinnainen 0–7)",
+  "mtBridgeMqttUser": "Käyttäjätunnus (valinnainen)",
+  "mtBridgeMqttPass": "Salasana (valinnainen)",
+  "mtBridgeMqttPassStored": "Salasana on tallennettu tähän laitteeseen (ei näy).",
+  "mtBridgeMqttPassReplace": "Uusi salasana (jätä tyhjäksi säilyttääksesi)",
+  "mtBridgeMqttPassReplaceHint": "Jätä tyhjäksi säilyttääksesi tallennettu salasana.",
+  "mtBridgeMqttPassClear": "Tyhjennä salasana",
+  "mtBridgeMqttSave": "Tallenna MQTT-asetukset",
+  "mtBridgeMqttSaved": "MQTT asetukset tallennettu",
+  "mtBridgeMqttConnect": "Yhdistä",
+  "mtBridgeMqttDisconnect": "Katkaise yhteys",
+  "mtBridgeMqttConnected": "MQTT yhdistetty",
+  "mtBridgeMqttConnecting": "MQTT yhdistetään…",
+  "mtBridgeMqttDisconnected": "MQTT yhteys katkennut",
+  "mtBridgeMqttError": "MQTT virhe",
+  "mtBridgeErrModeIngest": "Vaihda ensin sisäänotto-tilaan (A).",
+  "mtBridgeErrModeEgress": "Vaihda ensin ulostuloon (B).",
+  "mtBridgeErrRate": "Hidasta - nopeus rajoitettu",
+  "mtBridgeErrDedupe": "Päällekkäinen viesti ohitettu",
+  "mtBridgeErrLoop": "Pudotettu silmukan estämiseksi",
+  "mtBridgeErrEmpty": "Viesti on tyhjä",
+  "mtBridgeErrPublish": "Julkaiseminen epäonnistui",
+  "mtBridgeErrNotConnected": "MQTT ei yhdistetty",
+  "mtBridgeErrMissingHost": "Anna MQTT välittäjäisäntä",
+  "mtBridgeErrMissingTopic": "Kirjoita tilaa ja julkaise aiheita",
+  "mtBridgeErrMissingFromNode": "Syötä yhdyskäytävän solmun tunnus (from) lähetettäväksi tekstiksi",
+  "mtBridgeErrConnect": "MQTT yhdistäminen epäonnistui",
+  "mtBridgeErrConnectTls": "MQTT TLS-yhteys epäonnistui",
+  "settingsData": "Data",
+  "settingsDataHint": "Poista paikalliset viestit pienentääksesi tietokantaa – identiteetti, avaimet ja vertaiset säilytetään",
+  "settingsSaveHistoryTitle": "Tallenna viestihistoria",
+  "settingsSaveHistorySubtitle": "Kun se ei ole käytössä, viestit pysyvät E2EE-yhteydessä ja säilytetään vain tämän istunnon ajan (ei paikallisessa chat-historiassa). Oma tekstisi näkyy edelleen pelkkänä tekstinä tällä laitteella.",
+  "settingsPrivacy": "Yksityisyys",
+  "settingsE2eeTitle": "Päästä päähän -salaus",
+  "settingsE2eeSubtitle": "Aina päällä — viestit sinetöidään RSA-OAEP + AES-GCM:llä ennen lähettämistä. Releet ja lähellä olevat humalat eivät voi lukea sisältöä.",
+  "settingsScreenshotTitle": "Screenshot-hälytykset",
+  "settingsScreenshotSubtitle": "Näytä järjestelmälinja chatissa, kun tämä laite kaappaa näytön",
+  "settingsNostrExpiryTitle": "Nostr viestin säilytysaika",
+  "settingsNostrExpirySubtitle": "Kuinka kauan sinetöityjen kirjekuorten tulee pysyä paikallisesti verkossa osoitteessa Nostr",
+  "noticeExpiresIn": "päättyy vuonna",
+  "noticesTitle": "Ilmoitukset",
+  "noticesMeshIntro": "Julkinen tiedote – näkyy kaikille radioalueella, ei salattu. Se siirtyy puhelimesta puhelimeen offline-tilassa, ja lähellä olevat ResilNet välityslaatikot säilyttävät kopion, jotta myöhemmin saapuvat ihmiset näkevät sen silti.",
+  "noticesMeshPublicBadge": "JULKINEN · ei salattu",
+  "noticesGeoIntro": "Lisää tästä paikasta lyhyitä muistiinpanoja, jotta muut vierailijat voivat löytää ne.",
+  "noticesEmpty": "ei vielä ilmoituksia",
+  "noticesEmptyHint": "kiinnitä ensimmäinen ilmoitus ihmisille täällä.",
+  "noticesComposeHint": "laita ilmoitus...",
+  "noticesUrgent": "kiireellinen",
+  "noticesOpen": "Ilmoitukset",
+  "screenshotTaken": "*otit kuvakaappauksen*",
+  "chatAttachImage": "Liitä kuva",
+  "chatImageLabel": "Kuva",
+  "chatImageTooLarge": "Kuva liian suuri – kokeile toista valokuvaa",
+  "chatNostrExpiry": "Nostr säilytä",
+  "geoPublicComposeHint": "Lähetä osoitteeseen {channel} – julkinen",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "Tyhjennä kaikki viestit",
+  "settingsClearSubtitle": "Poista kaikki keskustelut tällä laitteella",
+  "settingsClearConfirmTitle": "Tyhjennä kaikki viestit?",
+  "settingsClearConfirmBody": "Tämä poistaa kaikki chat-viestit tältä laitteelta.\nPeers ja lempinimiä ei poisteta.",
+  "settingsClearAction": "Tyhjennä tiedot",
+  "settingsClearedSnack": "Tiedot tyhjennetty",
+  "settingsVersion": "versio {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: etsitään solmuja",
+  "meshBleEsp32Scanning": "ESP32: etsitään lähellä olevaa solmua",
+  "meshBleSyncing": "BLE: synkronoidaan kanssa ESP32",
+  "meshNostrPublishing": "Nostr: julkaiseminen",
+  "meshBleIdle": "BLE mesh päällä – ei vielä lähellä olevia puhelimia",
+  "meshBlePeersNearby": "BLE mesh – {count} puhelinta lähellä",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: vaaditaan lupa",
+  "meshBlePausedCamera": "BLE keskeytetty kameralle — napauta Käynnistä BLE",
+  "meshBleStopped": "BLE on pois päältä – tarkista, että Bluetooth on päällä, ja napauta sitten Käynnistä BLE",
+  "meshBleRestart": "Aloita BLE",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "Tarkista käyttöoikeudet ja aloita BLE",
+  "meshNostrOffline": "Nostr offline-tilassa",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} lähellä olevat vertaiset • LoRa {lora} • synkronointi ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "valmis",
+  "meshLoraNotReady": "ei ole valmis",
+  "meshGatewayProgress": "Yhdyskäytävän UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Yhdyskäytävä UDP: valmis",
+  "permissionTitle": "Salli pääsy käynnistääksesi BLE mesh-verkon",
+  "permissionBody": "Sovellus tarvitsee Bluetoothin (skannaa / yhdistä / mainosta), sijainnin (vanhemmille Android-laitteille) ja mikrofonin (äänimuistiinpanoja varten chatissa ja ilmoituksissa) yhteisön viestejä varten.",
+  "permissionE2ee": "Päästä päähän -salaus (E2EE)\nVälityssolmut eivät voi lukea viestien sisältöä",
+  "permissionReady": "Käyttöoikeudet valmiina",
+  "permissionRequest": "Salli ja jatka",
+  "permissionNotReadySnack": "Järjestelmä ei ole vielä valmis – odota hetki ja yritä uudelleen",
+  "permissionDeniedSnack": "Käyttöoikeudet keskeneräiset — avaa Asetukset > ResilNet ja salli Bluetooth / Sijainti / mikrofoni",
+  "permissionMicDenied": "Mikrofonin käyttö estetty – salli sen äänittää äänimuistiinpanoja asetuksissa",
+  "permissionMicOpenSettings": "Asetukset",
+  "permissionCameraDenied": "Kameran käyttö estetty – salli sen skannata QR-koodeja asetuksissa",
+  "permissionCameraFailed": "QR-koodien skannaamiseen tarvitaan kameran lupa",
+  "permissionCameraOpenSettings": "Asetukset",
+  "permissionPhotosDenied": "Valokuvakirjaston käyttö estetty – salli sen tallentaa QR-koodisi asetuksissa",
+  "permissionPhotosFailed": "QR-koodin tallentamiseen tarvitaan valokuvakirjaston lupa",
+  "permissionPhotosOpenSettings": "Asetukset",
+  "permissionFailedSnack": "Lupapyyntö epäonnistui: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet Arkkitehtuuri • Tallenna ja välitä Multi-hop",
+  "onboardingSkip": "Ohita",
+  "onboardingNext": "Seuraavaksi",
+  "onboardingStart": "Aloita",
+  "onboardingWelcomeTitle": "Tervetuloa ResilNet-palveluun",
+  "onboardingWelcomeBody": "Keskustele verkossa ResilNet mesh-verkon kautta – jopa ilman Internetiä",
+  "onboardingFriendsTitle": "Lisää ystäviä helposti",
+  "onboardingFriendsBody": "Jaa QR-koodi Identitystä tai skannaa ystäväsi QR vaihtaaksesi julkisia avaimia",
+  "onboardingChannelsTitle": "Salattu chat + lähellä olevat kanavat",
+  "onboardingChannelsBody": "Vaihda #mesh / Area (geohash) löytääksesi lähellä olevat vertaiset – viestit pysyvät E2EE yli BLE mesh ja Nostr",
+  "chatTitle": "Chat (E2EE)",
+  "chatScanTooltip": "Skannaa QR lisätäksesi vertaisen",
+  "chatBlockTooltip": "Estä tämä lähettäjä",
+  "chatBlockedSnack": "Estetty: ei ilmoituksia / ei välitystä",
+  "chatAliasTooltip": "Aseta lempinimi",
+  "chatReceiverPemLabel": "Vastaanottajan julkinen avain (PEM)",
+  "chatReceiverPemHint": "Liitä ystäväsi julkinen avain (QR:sta / jaetusta tiedostosta)",
+  "chatNeedPeerKey": "Skannaa ensin tämän vertaiskumppanin QR (vahvistettu julkinen avain vaaditaan)",
+  "chatPeerKeyMismatch": "Tallennettu julkinen avain ei vastaa tätä vertaistunnusta",
+  "chatVoiceFailed": "Ääntä ei voitu tallentaa: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Äänimuistiinpanoa ei voitu toistaa: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Toista äänimuistiinpano",
+  "chatPauseVoice": "Tauko",
+  "chatVoiceLabelSent": "🎤 Ääniviesti (sinetöity)",
+  "chatVoiceLabel": "🎤 Äänimuistiinpano",
+  "chatDecryptFailed": "[salauksen purku epäonnistui]",
+  "chatSentSealed": "[sinetöity • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[sinetöity]",
+  "chatComposeHint": "Kirjoita viesti… (suljettu lähetyksen yhteydessä)",
+  "chatEmptyThread": "Ei viestejä vielä\nKirjoita alle lähettääksesi meshin kautta",
+  "chatLoadFailed": "Keskustelua ei voitu ladata: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "Emoji",
+  "statusPending": "Odottaa",
+  "statusSent": "Lähetetty",
+  "statusRelayed": "Välitetty",
+  "statusDelivered": "Toimitettu",
+  "statusRead": "Lukea",
+  "statusFailed": "Epäonnistui",
+  "chatCopy": "Kopioida",
+  "chatDeleteLocal": "Poista tältä laitteelta",
+  "chatDeletedLocalSnack": "Poistettu tältä laitteelta",
+  "chatRetry": "Yritä uudelleen",
+  "chatSendFailed": "Ei toimitettu — napauta Yritä uudelleen",
+  "chatImageNeedInternet": "Muodosta yhteys Internetiin lähettääksesi kuvia",
+  "chatImageTooLargeOnline": "Kuvaa ei voitu pakata tarpeeksi lähetettäväksi",
+  "chatOpenLinkFailed": "Linkkiä ei voitu avata",
+  "identityTitle": "Identiteetti",
+  "identityScanTooltip": "Skannaa QR kameralla",
+  "identityCopiedHash": "Julkisen avaimen hash kopioitu",
+  "identityPeerSaved": "Vertaistuki tallennettu QR:sta",
+  "identityGalleryDenied": "Kuvakirjaston lupa evätty",
+  "identityQrSaved": "QR tallennettu valokuvakirjastoon",
+  "identityQrSaveFailed": "QR-koodia ei voitu tallentaa: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Verkoston jäseniä",
+  "qrScanTitle": "Skannaa QR lisätäksesi kaverin",
+  "qrInvalid": "Skannaus epäonnistui: virheellinen QR",
+  "qrIdKeyMismatch": "QR hylätty: tunnus ei vastaa julkista avainta",
+  "qrCameraNotReady": "Kamera ei ole valmis",
+  "qrRetrySettings": "Yritä uudelleen / avaa Asetukset",
+  "qrCameraOpenFailed": "Kameraa ei voitu avata: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "Kohdista QR-koodi kehyksen sisään",
+  "firmwareDownloadTitle": "Lataa ESP32 laiteohjelmisto",
+  "firmwareSourceOnline": "Uusin (verkossa)",
+  "firmwareSourceCached": "Tallennettu kopio (offline)",
+  "firmwareSourceBaseline": "Niputettu lähtötaso (offline)",
+  "firmwareSourceUnavailable": "Laiteohjelmistoa ei ole saatavilla",
+  "firmwareBaselineIncompatible": "Mukana oleva laiteohjelmisto on liian vanha – muodosta yhteys Internetiin ladataksesi uudemman version",
+  "firmwareChecksumFailed": "Laiteohjelmiston eheyden tarkistus epäonnistui – vilkkuminen estetty",
+  "firmwareReadyFromSource": "Laiteohjelmisto valmis: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "Päivitä",
+  "peersBlocked": "Estetty",
+  "peersNearbyBle": "Lähistöllä (BLE)",
+  "peersRecentlyOnline": "Äskettäin verkossa",
+  "peersOnlineInArea": "Netissä alueella",
+  "peersSeenMinutesAgo": "Nähty {minutes} min sitten",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Offline-tilassa",
+  "peersBlockedSnack": "Estetty {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Esto kumottu",
+  "peersEmpty": "Tietokannassa ei ole vielä jäseniä\nSkannaa QR tai odota BLE mesh-löydystä",
+  "peersOpenChat": "Avaa chat",
+  "peersBlockAction": "Lohko",
+  "peersUnblockAction": "Kumoa esto",
+  "channelPickerTooltip": "Chat / #verkko / Alue",
+  "locationPickerTooltip": "Sijaintikanava",
+  "transportPickerTooltip": "Verkko / Internet / Auto",
+  "onlinePeopleTooltip": "Ihmiset verkossa",
+  "unreadDirectsTooltipEmpty": "Yksityisviestit",
+  "unreadDirectsTooltip": "{count} lukematonta yksityisviestiä",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "ihmiset",
+  "onlinePeopleEmpty": "Täällä ei ole vielä ketään verkossa",
+  "onlinePeopleCount": "{count} verkossa",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · lähialue + alue",
+  "peerOnlineMeshTitle": "Joku lähistöllä meshissä",
+  "peerOnlineMeshBody": "{name} on lähellä meshissä",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "Joku verkossa alueella",
+  "peerOnlineAreaBody": "{name} on online-tilassa Nostr:n kautta",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#sijaintikanavat",
+  "channelPinsTitle": "Kiinnitetty",
+  "channelPinsHint": "Kiinnitä usein käyttämäsi kanavat – ne pysyvät yläreunassa",
+  "channelPinTooltip": "Kiinnitä tämä kanava",
+  "channelUnpinTooltip": "Irrota kiinnitys",
+  "locationSheetIntro": "Keskustele lähellä olevien ihmisten kanssa käyttämällä karkeaa geohashia – ei tarkkaa GPS:ää. Internet-läsnäolo käyttää anonyymejä Nostr-näppäimiä.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "Teleportoi",
+  "homeComposeHint": "Viesti {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "Lähetä osoitteeseen {channel} – julkinen",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "päättyy vuonna",
+  "voiceRecordTapToStart": "Napauta äänittääksesi ääniviestin",
+  "voiceRecordTooShort": "Tallennus liian lyhyt – yritä uudelleen",
+  "voiceRecordFailed": "Tallennusta ei voitu tallentaa – yritä uudelleen",
+  "voicePttHold": "Pidä painettuna tallentaaksesi",
+  "voicePttRelease": "Vapauta esikatseluun",
+  "voicePttRecording": "Tallennetaan…",
+  "voicePttDraftReady": "Äänimuistiinpano valmis",
+  "voicePttDiscard": "Hävitä",
+  "voicePttReRecord": "Äänitä uudelleen",
+  "voicePttSend": "Lähetä äänimuistiinpano",
+  "voicePttPlayPreview": "Toista esikatselu",
+  "voicePttStopPreview": "Lopeta esikatselu",
+  "noticesBackfilling": "Ladataan ilmoituksia…",
+  "noticesNostrOnline": "Nostr verkossa",
+  "noticesNostrOffline": "Nostr offline-tilassa – tiedote tarvitsee Internetin",
+  "noticesBackfillLoaded": "Ladattu {count} ilmoituksia",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "Ilmoitusta aluehallitukselle ei voitu julkaista. Tarkista Nostr-yhteys.",
+  "noticeMeshPublishNoLink": "Tallennettu paikallisesti. Yhdistä läheiseen mesh-radioon (tai Wi‑Fi-yhdyskäytävään), jotta muut voivat vastaanottaa sen.",
+  "noticeMeshPublishSent": "Tiedote lähetetty {count} lähellä olevalle laitteelle yli BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Läheiset radiot nähty, mutta BLE kirjoitus epäonnistui. Pidä molemmat sovellukset auki Ilmoitukset-näytössä ja yritä uudelleen (tai käytä ESP32-relettä).",
+  "noticeMeshPublishNoGatt": "Tämän laitteen BLE-vastaanotin ei ole valmis. Kytke Bluetooth päälle ja avaa Ilmoitukset uudelleen.",
+  "noticeDelete": "Poista ilmoitus",
+  "noticeDeleteConfirmTitle": "Poistetaanko tämä ilmoitus?",
+  "noticeDeleteLocalOnlyBody": "Tämä poistaa sen vain tältä laitteelta. Muut, jotka ovat jo saaneet sen, näkevät sen edelleen.",
+  "noticeDeleted": "Ilmoitus poistettu",
+  "chatNoticeHidden": "Alueilmoitus — avaa Ilmoitukset",
+  "identityDisplayNameTitle": "Näyttönimi",
+  "identitySaveName": "Tallenna nimi",
+  "identityUserIdLabel": "Käyttäjätunnus (julkisen avaimen hajautus)",
+  "identityCopyHashTooltip": "Kopioi julkisen avaimen hash",
+  "identityMyQrTitle": "Oma QR (tunnus + pubKey + nimi)",
+  "identityQrFailed": "QR-koodia ei voitu luoda\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "Tallennetaan…",
+  "identitySaveQr": "Tallenna QR valokuvakirjastoon",
+  "identityOpenScanner": "Avaa kamera QR-koodin skannaamiseksi",
+  "identityQrHelp": "Pyydä ystävääsi skannaamaan tämä tallentaaksesi julkisen avaimesi ja (tarvittaessa) asettaaksesi sinut vahvistetuksi myöntäjäksi",
+  "identityChatTip": "Vinkki: voit myös skannata QR-koodin chatissa lisätäksesi julkisen avaimen E2EE:lle",
+  "infoOpen": "Tietoja / Tietoja",
+  "docsGuideTitle": "Käyttöopas",
+  "docsGuideSubtitle": "Avautuu selaimessa",
+  "docsOpenAction": "Avaa opas",
+  "docsOpenFailed": "Käyttöopasta ei voitu avata",
+  "firmwareOtaGuideTitle": "Flash-opas ja OTA-protokolla",
+  "firmwareOtaGuideSubtitle": "Avaa verkkooppaan – .bin-lataukset ja täydelliset vaiheet",
+  "firmwareWebDownloadsTitle": "Laiteohjelmiston lataukset verkosta",
+  "firmwareWebDownloadsSubtitle": "Versiokohtaiset linkit ja tarkistussummat asiakirjasivustolla",
+  "inviteCopyShortLink": "Kopioi lyhyt linkki",
+  "inviteShareLink": "Jaa linkki",
+  "inviteShowFullLink": "Täysi linkki",
+  "inviteCopyFullLink": "Kopioi koko linkki",
+  "inviteLinkCopied": "Linkki kopioitu",
+  "inviteLongPressHint": "Paina pitkään linkin toimintoja varten",
+  "inviteSendInChat": "Lähetä ResilNet chatissa…",
+  "inviteSendInChatHint": "Vain henkilöt, joille sinulla on jo julkinen avain",
+  "inviteSendInChatEmpty": "Ei vielä viestittäviä keskusteluja.\nSkannaa QR, avaa Area/Mesh tai jaa linkki ensin sovelluksen ulkopuolelle.",
+  "inviteSentToChat": "Kutsu lähetetty chatissa",
+  "infoTabInfo": "Tiedot",
+  "infoTabSettingsHint": "Avaa Asetukset valikosta kieli-, E2EE- ja datatyökaluja varten",
+  "infoHowToTitle": "Kuinka käyttää",
+  "infoHowToBody": "• Napauta kanavakuvaketta vaihtaaksesi Chat / #mesh / Area\n• Napauta paikkaa valitaksesi geohash-koon\n• Napauta ihmisiä jäsenille tai online-tilassa oleville\n• Avaa Identity/QR kohdasta ⋮ vaihtaaksesi avaimia henkilökohtaisesti\n• Alue \"julkinen\" lähettää suljetun E2EE:n jokaiselle online-vertaiselle – ei tavalliselle tekstihuoneelle",
+  "infoFeaturesTitle": "Ominaisuudet",
+  "infoFeatureOffline": "Offline-viestintä Bluetooth Low Energyn kautta",
+  "infoFeatureE2ee": "Päästä päähän -salaus RSA-OAEP:llä + AES-GCM:llä (ei kohinaa)",
+  "infoFeatureMultihop": "Viestit voivat hypätä läheisten vertaisten kautta päästäkseen pidemmälle",
+  "infoFeatureBridge": "Hybridiverkko ↔ internet (Nostr) suljetuille kirjekuorille",
+  "infoFeatureGeo": "Paikalliset geohash-kanavat lähellä oleville ihmisille (discovery UX)",
+  "infoFeatureNotices": "Ilmoitukset voimassaoloajan päättymisestä koskien #mesh ja Area",
+  "infoPrivacyTitle": "Yksityisyys",
+  "infoPrivacyNoRoom": "Ei selväkielistä kylää/julkista chat-huonetta",
+  "infoPrivacyFanout": "Aluelähetys = sinetöity 1:1 fan-out ystäville tunnetuilla julkisilla avaimilla",
+  "infoPrivacyPresence": "Internet-alueen läsnäolo käyttää lyhytaikaisia ​​Nostr-näppäimiä",
+  "infoSymbolsTitle": "Symbolit",
+  "infoSymBle": "Suora Bluetooth-yhteys",
+  "infoSymMesh": "Tavoitettavissa verkon kautta (muut eteenpäin)",
+  "infoSymInternet": "Internetin kautta (Nostr) – suljetut kirjekuoret",
+  "infoSymBridge": "Saapui mesh↔internet-siltapolun kautta",
+  "infoSymOffline": "Offline – ei tavoitettavissa juuri nyt",
+  "infoSymInArea": "Tämän sijaintikanavan alueella",
+  "infoSymE2eeOk": "Päästä päähän salattu istunto",
+  "infoSymE2eeFail": "Salaus ei ole käytettävissä — älä lähetä arkaluonteista tekstiä",
+  "infoSymVerified": "Identiteetti vahvistettu / tunnettu avain",
+  "infoSymBlocked": "Estetty",
+  "infoSymUnread": "Lukematon yksityisviesti",
+  "infoEmergencyTitle": "Hätätila",
+  "infoEmergencyBody": "Pyyhi viestit, avaimet ja henkilöllisyys tällä laitteella kolmesti napauttamalla aloitusnäytön ResilNet otsikkoa.",
+  "infoLegendNote": "Jotkut polkukuvakkeet on dokumentoitu tähän selvyyden vuoksi; chatissa olevat toimitusmerkit pysyvät ensisijaisena lähetystilana.",
+  "dangerZoneTitle": "Vaaravyöhyke",
+  "dangerZoneSubtitle": "Poistaa tämän laitteen viestit, salausavaimet, Nostr-identiteetin, kumppanit ja lempinimet. Määrität uudelleen.",
+  "panicWipeTitle": "Hätäpyyhe",
+  "panicWipeSubtitle": "Tyhjennä kaikki paikallinen – sama kuin kolminkertainen kotiotsikon napauttaminen (kaksoisnapautus päivittää radiot)",
+  "panicWipeConfirmTitle": "Pyyhikö kaikki paikalliset tiedot?",
+  "panicWipeConfirmBody": "Tämä poistaa pysyvästi keskustelut, avaimet ja henkilöllisyyden tästä puhelimesta.\nVertaisten on vaihdettava QR-avaimet uudelleen uudella henkilöllisyytesi kanssa.\nTätä ei voi kumota.",
+  "panicWipeAction": "Pyyhi kaikki",
+  "panicWipeSnack": "Paikallinen identiteetti tyhjennetty – määritä uudelleen",
+  "panicWipeFailed": "Pyyhintä epäonnistui: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "Verkkosilta",
+  "meshBridgeSubtitle": "Kun käytössä (oletus), suljetut kirjekuoret voivat käyttää sekä BLE meshiä että Internetiä (Nostr), jotta läheiset verkkosaarekkeet voivat muodostaa yhteyden. Kun se on pois päältä, lähetykset käyttävät vain yhtä polkua – ei koskaan laita johtoon pelkkää tekstiä.",
+  "favoritesTitle": "Suosikit",
+  "favoritesAdd": "Lisää suosikkeihin",
+  "favoritesRemove": "Poista suosikeista",
+  "favoritesEmpty": "Ei vielä suosikkeja – merkitse jäsenluettelosta vertaiskuva",
+  "favoritesNearbyTitle": "Suosikki lähellä",
+  "favoritesNearbyBody": "{name} on lähellä meshissä",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "Suosikki alueella",
+  "favoritesInAreaBody": "{name} on online-tilassa tällä alueella",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Verkkotopologia",
+  "topologySubtitle": "Mesh-ilmoituksen vertaiset ja yhteysvinkit (vain luku)",
+  "topologyConnectedNow": "Yhdistetty nyt (BLE)",
+  "topologyNearby": "Lähistöllä (BLE)",
+  "topologyKnown": "Tunnetut vertaiset",
+  "topologyEmpty": "Ei vielä oppineita vertaisia ​​– pysy lähellä BLE päällä",
+  "topologyYou": "sinä",
+  "topologyStats": "{peers} vertaista · {links} linkkiä",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "Arvioitu lähistöllä olevan mesh-löydön perusteella – laitteesi on korostettuna. Avaa chat napauttamalla vertaista.",
+  "topologyOpen": "Verkkotopologia",
+  "slashHelpTitle": "komennot",
+  "slashHelpBody": "/help - tämä luettelo\n/who — ihmiset online-tilassa nykyisellä kanavalla\n/drop <teksti> — kiinnitä sinetöity ilmoitus tähän (E2EE fan-out)\n\nTäydellinen opas: käytä Avaa opas alla tai Asetukset → Käyttöopas.",
+  "slashWhoEmpty": "Tällä kanavalla ei ole tällä hetkellä ketään verkossa",
+  "slashWhoTitle": "Online ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "Käyttö: /pudota muistiinpanosi teksti",
+  "slashDropDone": "Ilmoitus poistettiin {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "Tuntematon komento - kokeile /help",
+  "announceOpen": "Ilmoitukset",
+  "announceTitle": "Ilmoitukset",
+  "announceEmpty": "Ei vielä tauluja – luo sellainen lähettääksesi lukittuja tai avoimia ilmoituksia",
+  "announceCreate": "Luo taulu",
+  "announceCreateHint": "Hallituksen nimi",
+  "announceDefaultTitle": "yhteisön hallitus",
+  "announceSettings": "Taulukon asetukset",
+  "announceAllowLocked": "Salli lukitut (salatut) viestit",
+  "announceAllowLockedSub": "Salattu kortin avaimeen – lukijat tarvitsevat pääsyn",
+  "announceAllowOpen": "Salli avoimet (selkoteksti) viestit",
+  "announceAllowOpenSub": "Ei E2EE — luettavissa meshissä/releissä. Oletuksena pois päältä.",
+  "announceComposeHint": "Kirjoita ilmoitus…",
+  "announceMediaInternetOnly": "Internetin kautta lähetettävät valokuva-/ääni-ilmoitukset (ei BLE)",
+  "announceNeedInternet": "Yhdistä Internetiin lähettääksesi kuva- tai ääniilmoituksia",
+  "announceVoiceFailed": "Ääntä ei voitu tallentaa: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "Kuva on liian suuri (enintään ~180 kt)",
+  "announcePlayVoice": "Toista äänimuistiinpano",
+  "announceImageLabel": "📷 Kuva",
+  "announceAudioLabel": "🎤 Äänimuistiinpano",
+  "announceModeLocked": "Lukittu",
+  "announceModeOpen": "Avata",
+  "announceOpenBadge": "OPEN · ei salattu",
+  "announceLockedBadge": "Lukittu",
+  "announceLockedPlaceholder": "Salattu — pyydä lukemista",
+  "announceRequestAccess": "Pyydä käyttöoikeutta",
+  "announceRequestSent": "Pääsypyyntö lähetetty hallituksen omistajalle",
+  "announceRequestFailed": "Käyttöoikeutta ei voitu pyytää (tarvitaan omistajan julkinen avain)",
+  "announceOpenConfirmTitle": "Postataanko ilman salausta?",
+  "announceOpenConfirmBody": "Avoimet viestit eivät ole E2EE. Kuka tahansa polulla oleva (verkko / releet) voi lukea ne. Jatkaa?",
+  "announcePostAction": "Lähettää",
+  "announcePendingRequests": "Pääsypyynnöt",
+  "announceApprove": "Hyväksyä",
+  "announceDeny": "Kiellä",
+  "announceGranted": "Voit lukea lukittuja viestejä tällä palstalla",
+  "announceOwner": "Omistat tämän taulun",
+  "announceCopyInvite": "Kopioi kutsuteksti",
+  "announceShowInviteQr": "Näytä kutsun QR",
+  "announceScanInviteQr": "Scan board kutsu QR",
+  "announceFollow": "Seuraa taulua kutsusta",
+  "announceFollowHint": "Liitä kutsuteksti tai ResilNet-linkki omistajalta",
+  "announceFollowOk": "Lautan perässä",
+  "announceFollowOkNamed": "Seurataan nyt “{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "Kutsu on virheellinen tai vahingoittunut",
+  "announceInviteCopied": "Kutsuteksti kopioitu",
+  "announceInviteSaveQr": "Tallenna QR",
+  "announceInviteShare": "Jaa kutsu",
+  "announceFollowFromCompose": "Hallituskutsu havaittiin viestilaatikossa",
+  "peerConfirmAddTitle": "Lisätäänkö verkoston jäsen?",
+  "peerConfirmAddBody": "Lisätäänkö \"{name}\" heidän julkiseen avaimensa, jotta voit lähettää heille yksityisviestin?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "Lisää jäsen",
+  "peerAddedOk": "{name} lisätty verkoston jäseniin",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "Identiteetti / julkinen avain havaittu viestilaatikossa",
+  "peerHashCopied": "Julkisen avaimen hash kopioitu",
+  "peerHashOpenChat": "Avaa chat",
+  "peerHashAddHint": "Hash kopioitu. Pyydä heitä jakamaan identiteettilinkkinsä tai QR-koodinsa, jotta voit lisätä E2EE:n täyden julkisen avaimen.",
+  "peerQrNoCode": "Tästä kuvasta ei löydy ResilNet QR-koodia",
+  "identityInviteSharePreamble": "ResilNet identiteetti: \"{name}\"\nAvaa linkki tai liitä se chatiin → Lisää jäsen\nTai skannaa henkilöllisyyden QR-koodi.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "Jaa identiteettilinkki",
+  "identityInviteCopied": "Identiteettilinkki kopioitu",
+  "announceInviteSharePreamble": "Hallituksen kutsu: \"{title}\"\nAvaa ResilNet → Yhteisökeskustelut → Seuraa kutsusta\nTai skannaa QR / napauta alla olevaa linkkiä.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "Seuraatko tätä taulua?",
+  "announceConfirmFollowBody": "Seuraatko tämän kutsun \"{title}\"?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "Seuraa"
+}

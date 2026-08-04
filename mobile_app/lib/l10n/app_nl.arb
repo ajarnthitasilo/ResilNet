@@ -1,0 +1,1105 @@
+{
+  "@@locale": "nl",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "Vernieuwen ResilNet…",
+  "appRefreshed": "Vernieuwd: radio's en ontdekking zijn opnieuw gestart",
+  "appRefreshFailed": "Vernieuwen mislukt: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "Dubbeltikken = zacht vernieuwen. Lang indrukken = moeilijk herstellen. Driemaal tikken = noodvegen.",
+  "softRefreshTipTitle": "Als ResilNet vastzit",
+  "softRefreshTipBody": "Dubbeltik op ResilNet (linksboven) voor een zachte radiovernieuwing. Als het nog steeds vastzit: druk lang op de titel, gebruik ⋮ → Hard herstellen of Instellingen. Drie keer tikken is alleen voor noodgevallen.",
+  "softRefreshTipGotIt": "Ik heb het",
+  "infoSoftRefreshTitle": "Als de app vastloopt",
+  "infoSoftRefreshStepRefresh": "Dubbeltik op ResilNet (linksboven) → radio's en mensen in de buurt zacht vernieuwen",
+  "infoSoftRefreshStepHard": "Zit je nog steeds vast? Druk lang op de titel, of ⋮ / Instellingen → Hard herstellen",
+  "infoSoftRefreshStepWait": "Wacht op het resultaat van de snackbar en probeer het opnieuw. Sessiereset behoudt uw sleutels.",
+  "infoSoftRefreshStepWipe": "Driemaal tikken = wissen in noodgevallen (verwijdert lokale gegevens) – alleen als dit opzettelijk is gedaan",
+  "appRecoverySection": "App-herstel",
+  "appRecoverySectionSubtitle": "Gebruik wanneer de app bevroren aanvoelt. Zacht = titel dubbeltikken. Hard herstel is sterker. Sessiereset start de services opnieuw zonder sleutels te wissen.",
+  "appHardRecoverAction": "Moeilijk herstellen",
+  "appHardRecovering": "Moeilijk herstellen…",
+  "appSessionResetAction": "Sessie opnieuw instellen",
+  "appSessionResetRunning": "Sessie resetten…",
+  "appSessionResetConfirmTitle": "Sessie resetten?",
+  "appSessionResetConfirmBody": "Start ResilNet services opnieuw op dit apparaat. Uw identiteitssleutels worden bewaard.",
+  "appRecoveryBusy": "Herstel is al actief...",
+  "appRecoveryOk": "Herstel voltooid",
+  "appRecoveryPartial": "Herstel voltooid, waarbij enkele stappen zijn overgeslagen. Probeer het opnieuw als het nog steeds vastzit",
+  "appRecoveryFailed": "Herstel mislukt. Probeer Sessie opnieuw in te stellen of sluit de app geforceerd af vanuit het besturingssysteem",
+  "localWifiTitle": "Lokaal Wi‑Fi",
+  "localWifiSubtitle": "Koppel apparaten in de buurt zonder internet, net alsof u zich op één LAN bevindt.",
+  "localWifiNotGatewayHint": "Niet de ESP32 LoRa-gateway SoftAP. Dit is alleen telefoon↔telefoon/LAN.",
+  "localWifiUnavailable": "Lokaal Wi‑Fi is nog niet gereed. Wacht tot de app is opgestart.",
+  "lxmfBridgeTitle": "Thuisknooppunt",
+  "lxmfBridgeSubtitle": "Optionele Mac of Pi op je Wi‑Fi die verzegelde chats doorstuurt. Standaard uitgeschakeld. Vervangt geen end-to-end-encryptie.",
+  "lxmfBridgeEnable": "Gebruik het thuisknooppunt",
+  "lxmfBridgeDisabledHint": "Schakel deze alleen in als de bridge-app op een Mac of Pi in dit netwerk draait.",
+  "lxmfBridgeOnline": "Online — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "Kan thuisknooppunt niet bereiken: {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Thuisknooppuntadres",
+  "lxmfBridgeBaseUrlHelper": "IP of http://IP:port — bijvoorbeeld 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "Peer → LXMF bestemming (JSON)",
+  "lxmfBridgeRefresh": "Status opslaan en vernieuwen",
+  "lxmfBridgeLabHint": "Geavanceerd: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "Instellingen voor het thuisknooppunt",
+  "lxmfBridgeCheckConnection": "Controleer de verbinding",
+  "lxmfBridgeStatusOnline": "Verbonden met het thuisknooppunt",
+  "lxmfBridgeStatusOffline": "Thuisknooppunt niet bereikbaar",
+  "lxmfBridgeYourDest": "Het adres van dit knooppunt (deel met vrienden)",
+  "lxmfBridgeCopyDest": "Kopieer adres",
+  "lxmfBridgeDestCopied": "Adres gekopieerd",
+  "lxmfBridgeLinkedPeers": "Gekoppelde vrienden",
+  "lxmfBridgeLinkedPeersHint": "Elke vriend heeft één keer zijn thuisknooppuntadres nodig. Dan kunnen verzegelde chats dit pad gebruiken.",
+  "lxmfBridgeNoLinks": "Er zijn nog geen vrienden gekoppeld.",
+  "lxmfBridgeAddLink": "Koppel een vriend",
+  "lxmfBridgePickPeer": "Vriend",
+  "lxmfBridgePeerDest": "Hun thuisknooppuntadres",
+  "lxmfBridgePeerDestHint": "Code van 32 tekens uit hun thuisknooppuntscherm",
+  "lxmfBridgeInvalidDest": "Dat adres lijkt niet geldig. Plak de volledige code van hun thuisknooppunt.",
+  "lxmfBridgeRemoveLink": "Ontkoppelen",
+  "lxmfBridgeSaveLink": "Redden",
+  "lxmfBridgeLinkSaved": "Vriend gekoppeld",
+  "lxmfBridgeNoPeers": "Nog geen contactpersonen die een bericht kunnen sturen. Voeg eerst een vriend toe.",
+  "lxmfBridgeHelp": "Houd de bridge actief op de Mac/Pi. Dit pad blijft op uw LAN; het is niet LoRa en vervangt internet of Bluetooth-mesh niet.",
+  "localWifiModeHotspot": "In de buurt",
+  "localWifiModeRouter": "Router",
+  "localWifiHotspotIntro": "Eén apparaat deelt een persoonlijke hotspot. Anderen sluiten zich aan bij die hotspot en ResilNet vindt ze vervolgens op het lokale netwerk.",
+  "localWifiHostAction": "Netwerk maken (host)",
+  "localWifiJoinAction": "Sluit je aan bij netwerk",
+  "localWifiHostSteps": "1. Open iOS/Android-instellingen en schakel Persoonlijke hotspot (of internet delen) in.\n2. Vertel vrienden de hotspotnaam (en wachtwoord).\n3. Kom hier terug en tik op 'Hotspot is aan - begin met wachten'.",
+  "localWifiHostReady": "Hotspot is ingeschakeld, wacht maar",
+  "localWifiHostWaiting": "Wachten tot vrienden lid worden...",
+  "localWifiJoinSteps": "1. Open systeeminstellingen en word lid van de persoonlijke hotspot van uw vriend.\n2. Keer hier terug en tik op “Ik ben verbonden – zoeken”.",
+  "localWifiJoinReady": "Ik ben verbonden - zoek",
+  "localWifiRouterIntro": "Verbind elk apparaat met dezelfde Wi‑Fi router/AP. De router heeft geen internet nodig, alleen een gedeeld lokaal netwerk.",
+  "localWifiRouterSearch": "Zoek op deze Wi‑Fi",
+  "localWifiRefreshNetwork": "Ververs Wi‑Fi informatie",
+  "localWifiRouterNoWifiTitle": "Niet op Wi‑Fi",
+  "localWifiRouterNoWifiBody": "Voeg de Wi‑Fi van de router toe in de systeeminstellingen en zoek vervolgens opnieuw.",
+  "localWifiDiscovering": "Zoeken op lokaal Wi‑Fi…",
+  "localWifiPeersFound": "Apparaten op dit netwerk",
+  "localWifiStop": "Stop",
+  "localWifiSsidUnknown": "Wi‑Fi naam niet beschikbaar",
+  "localWifiStubBanner": "Wachten op LAN-aansluiting…",
+  "localWifiLiveBanner": "LAN-detectie live (UDP) — kondig + verzegelde chat aan op deze Wi‑Fi",
+  "localWifiEmptyHotspot": "Nog geen apparaten.\nControleer of vrienden zich bij uw hotspot hebben aangesloten en toegang tot het lokale netwerk hebben toegestaan.",
+  "localWifiEmptyRouter": "Nog geen apparaten.\nZelfde SSID? Lokaal netwerk toegestaan? Sommige routers blokkeren apparaat-naar-apparaat-verkeer (AP-isolatie).",
+  "localWifiIsolationHelp": "Waarom kunnen we elkaar niet vinden?",
+  "localWifiIsolationTitle": "Router kan clients isoleren",
+  "localWifiIsolationBody": "Als AP/Client-isolatie (of een gastnetwerk) is ingeschakeld, kunnen telefoons op dezelfde Wi‑Fi niet praten. Schakel de isolatie uit, gebruik de hoofd-SSID of schakel over naar de modus Dichtbij (Hotspot).",
+  "localWifiPeerReady": "Klaar om te chatten (heeft sleutel)",
+  "localWifiPeerNeedKey": "Gevonden: scan QR om sleutels uit te wisselen",
+  "localWifiErrorTitle": "Lokale Wi‑Fi-fout",
+  "localWifiErrorBody": "Er is iets misgegaan. Stop en probeer het opnieuw.",
+  "preparingSystem": "Systeem voorbereiden…",
+  "bootFailedTitle": "Kon niet starten",
+  "retry": "Probeer het opnieuw",
+  "bootRecoveryAction": "Nieuwe identiteit starten (lokale gegevens wissen)",
+  "bootRecoveryConfirmTitle": "Nieuwe identiteit starten?",
+  "bootRecoveryConfirmBody": "Hierdoor worden lokale chats, sleutels en identiteit op dit apparaat permanent gewist.\nPeers moeten uw QR opnieuw scannen met uw nieuwe identiteit.\nDit kan niet ongedaan worden gemaakt.",
+  "bootRecoveryRunning": "Lokale identiteit opnieuw instellen…",
+  "bootRecoverySuccess": "Reset van lokale identiteit voltooid",
+  "bootRecoveryFailed": "Kan identiteit niet resetten: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Annuleren",
+  "save": "Redden",
+  "close": "Dichtbij",
+  "start": "Start",
+  "send": "Versturen",
+  "settings": "Instellingen",
+  "language": "Taal",
+  "languageSubtitle": "Standaard volgt de app de taal van uw telefoon (indien ondersteund). Andere talen vallen terug op het Engels. U kunt hier ook een taal vergrendelen.",
+  "languageSystem": "Systeemstandaard",
+  "languageThai": "Thais",
+  "languageEnglish": "Engels",
+  "notificationsTooltip": "Meldingsinstellingen",
+  "enableMessageNotifications": "Schakel berichtmeldingen in",
+  "settingsNotificationsSubtitle": "1:1 berichten en mensen online (lokale waarschuwingen)",
+  "networkMembersTooltip": "Netwerk leden",
+  "identityQrTooltip": "Identiteit / QR",
+  "feedDirects": "Chat",
+  "feedMesh": "#gaas",
+  "feedGeo": "Gebied",
+  "feedDirectsSubtitle": "Privé E2EE-berichten",
+  "feedMeshSubtitle": "Collega's in de buurt (BLE)",
+  "feedGeoSubtitle": "Geohash-ontdekkingskanaal",
+  "peerIdHint": "Plak de ontvanger-ID (Public Key Hash) om een ​​chat te starten",
+  "directsEmpty": "Nog geen chats: scan een QR of plak een ontvanger-ID om te beginnen\nBerichten worden vóór verzending verzegeld met E2EE (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • tik om de chat te openen",
+  "meshIntro": "Peers in BLE bereik: tik voor een privé E2EE-chat (geen openbare compositie op #mesh)\nVerzendt via hybride router (BLE + LoRa + Nostr wanneer online)",
+  "meshEmptyRunning": "Nog geen peers in de buurt: open de app op een ander apparaat binnen BLE bereik",
+  "meshEmptyStopped": "BLE is niet actief: verleen toestemming voor Bluetooth/Locatie",
+  "meshNearbyPrefix": "In de buurt",
+  "meshRetentionTitle": "Berichten automatisch verwijderen",
+  "meshRetentionSubtitle": "Oudere lokale chatgeschiedenis wordt automatisch verwijderd",
+  "meshRetentionKeep": "Houden",
+  "meshRetention1Day": "1 dag",
+  "meshRetention3Days": "3 dagen",
+  "meshRetention7Days": "7 dagen",
+  "refreshLocationTooltip": "Locatie vernieuwen",
+  "geoIntro": "Mensen online in deze geohash kunnen 1:1 worden bericht of met een openbare fan-out (nog steeds verzegelde E2EE per peer - geen platte tekst)",
+  "geoEmpty": "Nog niemand online in {channel}\nGebruik Transport → Internet/Auto, wacht op Nostr, vernieuw locatie",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "Online in {channel} • tik voor 1:1 E2EE",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "In de buurt (in afwachting van aanwezigheid in het gebied) • tik voor 1:1 E2EE",
+  "geoPeerNostrSubtitle": "Gezien op Nostr in {channel} • alleen ontdekking (verouderd)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "Legacy anonieme aanwezigheid - wacht op een gebonden peer of wissel QR uit",
+  "bleRadioNearbySubtitle": "BLE in de buurt: scan QR om 1:1 E2EE te starten",
+  "geoInternetDiscoverHint": "Gebied Internetdetectie vereist Nostr verbonden (Instellingen → Transport → Internet/Auto)",
+  "geoEmptyNoLocation": "Locatie nog niet opgelost: sta GPS toe en vernieuw om je geohash op Nostr te publiceren",
+  "geoEmptyNeedsPermission": "Locatietoestemming geweigerd: sta ResilNet toe in Instellingen → Privacy → Locatie",
+  "geoEmptyServicesDisabled": "Locatieservices zijn uitgeschakeld. Schakel ze in via Instellingen",
+  "geoEmptyNoGpsFix": "Kan geen GPS-fix krijgen (gebruikelijk op Wi‑Fi iPads) — stel geohash hieronder handmatig in",
+  "geoEmptyTeleportHint": "Tik op het plaatspictogram → voer een geohash in (bijvoorbeeld w5) → Teleport",
+  "geoSetGeohashManually": "Geohash instellen",
+  "geoTeleportHint": "Geen GPS? Voer het geohash-voorvoegsel in (2-7 tekens, bijvoorbeeld w5) en tik op Teleport",
+  "geoTeleportInvalid": "Ongeldige geohash — gebruik alleen base32-letters/cijfers (bijvoorbeeld w5 of w5jt8)",
+  "geoTeleportOk": "Gebied ingesteld op {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "Handmatig gebied: {channel} (GPS-vernieuwing heeft voorrang)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr niet klaar: tik op Opnieuw verbinden (0/0 totdat de init slaagt)",
+  "geoEmptyMeshOnly": "Transport is alleen Mesh: schakel over naar Internet of Auto om peers via Nostr te ontdekken",
+  "geoEmptyWaiting": "Nog niemand in {channel}: houd Area + Internet open op beide apparaten en wacht ~60s",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#gebied",
+  "geoRefreshLocation": "Locatie vernieuwen",
+  "settingsClearLocationTitle": "Duidelijke locatie",
+  "settingsClearLocationSubtitle": "GPS verwijderen / geohash teleporteren (gebied wordt #—)",
+  "settingsClearLocationConfirmTitle": "Locatie wissen?",
+  "settingsClearLocationConfirmBody": "Verwijdert de opgeslagen geohash op dit apparaat. U kunt daarna de GPS vernieuwen of opnieuw teleporteren.",
+  "settingsClearLocationAction": "Duidelijke locatie",
+  "settingsClearLocationSnack": "Locatie gewist",
+  "chatVoiceTooLarge": "Spraaknoot te groot: maximaal ~30 seconden",
+  "chatVoiceNeedInternet": "Spraaknotitie heeft internet nodig (Nostr). Te groot voor BLE alleen",
+  "chatVoiceSentInternet": "Spraaknotitie verzonden via internet",
+  "noticeAnonMention": "noemen",
+  "noticeAnonDm": "directe boodschap",
+  "noticeAnonHug": "knuffel",
+  "noticeAnonSlap": "klap",
+  "noticeAnonBlock": "blok",
+  "noticeAnonNeedKey": "Nog geen publieke sleutel – wissel eerst QR in voor 1:1",
+  "noticeAnonActionSent": "Verstuurd",
+  "noticeAnonBlocked": "Geblokkeerd {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* knuffels {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* slaat {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Maak opnieuw verbinding Nostr",
+  "nostrSectionTitle": "Nostr relais",
+  "nostrSectionSubtitle": "Internetberichten en gebiedsdetectie maken gebruik van deze relais. Tik op Opnieuw verbinden als de status offline blijft.",
+  "nostrStatusOnline": "Verbonden {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "Offline: relais vermeld, maar geen aangesloten",
+  "nostrStatusNotInit": "Niet gestart (0/0) — tik op Opnieuw verbinden om te initialiseren",
+  "nostrReconnectAction": "Maak opnieuw verbinding Nostr",
+  "nostrReconnectOk": "Nostr verbonden ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "Nog steeds offline: controleer Wi‑Fi/cellulair of probeer het opnieuw",
+  "nostrReconnectFailedDetail": "Mislukt: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Verbinding maken met relais…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "Internet (Nostr) in {channel} • verzegelde chat gereed",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "Vervoer in de omgeving",
+  "transportModeSubtitle": "Mesh = BLE dichtbij (radio) wanneer geen Nostr · Internet & Auto = Nostr mensenlijst",
+  "transportModeMesh": "Gaas",
+  "transportModeInternet": "Internet",
+  "transportModeAuto": "Auto",
+  "geoPublicHint": "Openbaar bericht aan iedereen online op dit gebied",
+  "geoPublicSend": "Openbaar",
+  "geoPublicHelp": "Verzegelde fan-out naar {count} online peer(s) — elk ontvangt een privé-envelop",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Verzonden naar {count} peer(s) in dit gebied",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "Geen online peers die berichten kunnen sturen: open Area/Mesh met peers die sleutels hebben, of wacht op BLE/Nostr",
+  "areaPublicBadge": "Gebied openbaar",
+  "geoErrorPermission": "Kon de locatie niet lezen. Controleer de locatietoestemming",
+  "geoPrecisionRegion": "Regio",
+  "geoPrecisionProvince": "Provincie",
+  "geoPrecisionCity": "Stad",
+  "geoPrecisionNeighborhood": "Buurt",
+  "geoPrecisionBlock": "Blok",
+  "aliasTitle": "Bijnaam instellen (contactalias)",
+  "aliasHintBody": "Deze alias wordt alleen op dit apparaat opgeslagen (alleen lokaal)\nHet wordt nooit verzonden met E2EE-verkeer",
+  "aliasLabel": "Bijnaam",
+  "aliasHint": "bijv. “dorpshoofd”, “P’Somchai”…",
+  "settingsDevices": "Apparaten",
+  "settingsFirmwareTitle": "Download/update ESP32-firmware",
+  "settingsFirmwareSubtitle": "Download .bin-bestanden en update het ESP32-bord via OTA",
+  "mtBridgeTitle": "Meshtastic brug",
+  "mtBridgeSettingsSubtitle": "A/B-bridge met alleen tekst — niet ResilNet E2EE",
+  "mtBridgeIntro": "Verplaats korte platte tekst tussen Meshtastic en ResilNet. Modus A en B kunnen niet tegelijkertijd werken. Dit is geen end-to-end-encryptie.",
+  "mtBridgeModeLabel": "Modus",
+  "mtBridgeModeOff": "Uit",
+  "mtBridgeModeA": "Neem A in",
+  "mtBridgeModeB": "Uitgang B",
+  "mtBridgeModeOffShort": "Uit",
+  "mtBridgeModeAShort": "In A",
+  "mtBridgeModeBShort": "Uit B",
+  "mtBridgeMutexHint": "Als u een modus selecteert, wordt de andere automatisch uitgeschakeld. Gelijktijdig A+B wordt niet ondersteund.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "Demo (loggen)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "Inkomende tekst wordt onder Mededelingen weergegeven als #meshtastic. Mesh-relais is optioneel (standaard uitgeschakeld).",
+  "mtBridgeRelayTitle": "Ook doorgeven op ResilNet mesh",
+  "mtBridgeRelayHint": "Wanneer deze optie is ingeschakeld, worden ondertekende openbare bulletins uitgezonden. Uit = alleen de mededelingen van deze telefoon.",
+  "mtBridgeSimulateHint": "Demobericht",
+  "mtBridgeSimulate": "Simuleer het Meshtastic bericht",
+  "mtBridgeIngestOk": "Opgenomen in mededelingen (#meshtastic)",
+  "mtBridgeEgressWarning": "Waarschuwing: berichten die hier worden verzonden, zijn NIET ResilNet E2EE. Iedereen op het pad Meshtastic kan ze lezen.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "Tekst om te publiceren",
+  "mtBridgeSend": "Verzenden naar Meshtastic",
+  "mtBridgeEgressOk": "In wachtrij voor Meshtastic (zie log / geschiedenis)",
+  "mtBridgeLastEgress": "Laatste uitgang",
+  "mtBridgeEgressHistory": "Recente uitgang",
+  "mtBridgeOffHint": "Schakel Ingest (A) of Egress (B) in om de brug te gebruiken.",
+  "mtBridgeNoticeBadge": "MESHTASISCH · niet E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "Gebruik MQTT transport",
+  "mtBridgeUseMqttHint": "Uit = alleen demoregistratie (MQTT inkomend genegeerd). Aan = MQTT voor in-/uitgaan bij verbinding.",
+  "mtBridgeMqttHost": "Makelaar gastheer",
+  "mtBridgeMqttPort": "Haven",
+  "mtBridgeMqttTls": "Gebruik TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "Typische poort 8883. Gebruikt systeemcertificaten; faalt zacht bij handdrukfouten.",
+  "mtBridgeMqttAutoReconnect": "Automatisch opnieuw verbinden",
+  "mtBridgeMqttAutoReconnectHint": "Indien ingeschakeld, probeert de client opnieuw verbinding te maken na een onderbreking. Status toont Verbinden totdat hersteld.",
+  "mtBridgeMqttTopicHelpers": "Onderwerp helpers",
+  "mtBridgeMqttRegion": "Regiovoorvoegsel (optioneel)",
+  "mtBridgeMqttRegionHint": "Indien ingesteld, wordt met Apply de root opnieuw opgebouwd als msh/<region>/2/json (overschrijft de hoofdmap van het onderwerp).",
+  "mtBridgeMqttTopicRoot": "JSON-onderwerphoofdmap",
+  "mtBridgeMqttDownlinkChannel": "Downlink-kanaalnaam",
+  "mtBridgeMqttApplyTopics": "Pas root toe → abonneer / publiceer onderwerpen",
+  "mtBridgeMqttAdvanced": "Geavanceerd MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, opnieuw verbinding maken, onderwerpen, inloggegevens",
+  "mtBridgeMqttTopicIn": "Onderwerp abonneren",
+  "mtBridgeMqttTopicOut": "Onderwerp publiceren",
+  "mtBridgeMqttGatewayFrom": "Gateway-knooppunt-ID (van)",
+  "mtBridgeMqttGatewayFromHint": "Decimale id of !hex — vereist voor sendtext-downlink",
+  "mtBridgeMqttChannelIndex": "Mesh-kanaalindex (optioneel 0–7)",
+  "mtBridgeMqttUser": "Gebruikersnaam (optioneel)",
+  "mtBridgeMqttPass": "Wachtwoord (optioneel)",
+  "mtBridgeMqttPassStored": "Op dit apparaat is een wachtwoord opgeslagen (niet weergegeven).",
+  "mtBridgeMqttPassReplace": "Nieuw wachtwoord (leeg laten om te bewaren)",
+  "mtBridgeMqttPassReplaceHint": "Laat dit leeg om het opgeslagen wachtwoord te behouden.",
+  "mtBridgeMqttPassClear": "Wachtwoord wissen",
+  "mtBridgeMqttSave": "Sla MQTT instellingen op",
+  "mtBridgeMqttSaved": "MQTT instellingen opgeslagen",
+  "mtBridgeMqttConnect": "Verbinden",
+  "mtBridgeMqttDisconnect": "Verbreek de verbinding",
+  "mtBridgeMqttConnected": "MQTT verbonden",
+  "mtBridgeMqttConnecting": "MQTT verbinden…",
+  "mtBridgeMqttDisconnected": "MQTT verbinding verbroken",
+  "mtBridgeMqttError": "MQTT fout",
+  "mtBridgeErrModeIngest": "Schakel eerst over naar Inslikken (A).",
+  "mtBridgeErrModeEgress": "Schakel eerst over naar Egress (B).",
+  "mtBridgeErrRate": "Vertragen – snelheid beperkt",
+  "mtBridgeErrDedupe": "Dubbel bericht genegeerd",
+  "mtBridgeErrLoop": "Gelaten om een ​​bruglus te voorkomen",
+  "mtBridgeErrEmpty": "Bericht is leeg",
+  "mtBridgeErrPublish": "Publiceren is mislukt",
+  "mtBridgeErrNotConnected": "MQTT niet verbonden",
+  "mtBridgeErrMissingHost": "Voer MQTT brokerhost in",
+  "mtBridgeErrMissingTopic": "Voer abonnementen in en publiceer onderwerpen",
+  "mtBridgeErrMissingFromNode": "Voer de gateway-knooppunt-ID (van) in voor sendtext",
+  "mtBridgeErrConnect": "MQTT verbinden mislukt",
+  "mtBridgeErrConnectTls": "MQTT TLS-verbinding mislukt",
+  "settingsData": "Gegevens",
+  "settingsDataHint": "Verwijder lokale berichten om de database te verkleinen: identiteit, sleutels en peers blijven behouden",
+  "settingsSaveHistoryTitle": "Berichtgeschiedenis opslaan",
+  "settingsSaveHistorySubtitle": "Als deze optie is uitgeschakeld, blijven berichten E2EE op de draad en worden ze alleen voor deze sessie bewaard (niet in de lokale chatgeschiedenis). Uw eigen tekst wordt nog steeds als leesbare tekst weergegeven op dit apparaat.",
+  "settingsPrivacy": "Privacy",
+  "settingsE2eeTitle": "End-to-end-codering",
+  "settingsE2eeSubtitle": "Altijd aan: berichten worden vóór verzending verzegeld met RSA-OAEP + AES-GCM. Relays en nabijgelegen hops kunnen de inhoud niet lezen.",
+  "settingsScreenshotTitle": "Schermafbeeldingwaarschuwingen",
+  "settingsScreenshotSubtitle": "Toon een systeemregel in de chat wanneer dit apparaat het scherm vastlegt",
+  "settingsNostrExpiryTitle": "Nostr bericht houdt de tijd bij",
+  "settingsNostrExpirySubtitle": "Hoe lang verzegelde enveloppen lokaal moeten blijven als ze online zijn via Nostr",
+  "noticeExpiresIn": "verloopt over",
+  "noticesTitle": "Mededelingen",
+  "noticesMeshIntro": "Openbaar bulletin — zichtbaar voor iedereen binnen het radiobereik, niet gecodeerd. Het schakelt offline van telefoon naar telefoon en in de nabijgelegen ResilNet-relaisboxen wordt een kopie bewaard, zodat mensen die later arriveren deze nog steeds kunnen zien.",
+  "noticesMeshPublicBadge": "OPENBAAR · niet gecodeerd",
+  "noticesGeoIntro": "Voeg korte notities toe voor deze plaats, zodat andere bezoekers deze kunnen vinden.",
+  "noticesEmpty": "nog geen mededelingen",
+  "noticesEmptyHint": "pin het eerste bericht voor mensen hier in de buurt.",
+  "noticesComposeHint": "plaats een bericht...",
+  "noticesUrgent": "dringend",
+  "noticesOpen": "Mededelingen",
+  "screenshotTaken": "*je hebt een screenshot gemaakt*",
+  "chatAttachImage": "Afbeelding bijvoegen",
+  "chatImageLabel": "Afbeelding",
+  "chatImageTooLarge": "Afbeelding te groot. Probeer een andere foto",
+  "chatNostrExpiry": "Nostr behouden",
+  "geoPublicComposeHint": "Verzenden naar {channel} — openbaar",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "Wis alle berichten",
+  "settingsClearSubtitle": "Verwijder alle chats op dit apparaat",
+  "settingsClearConfirmTitle": "Alle berichten wissen?",
+  "settingsClearConfirmBody": "Hiermee worden alle chatberichten op dit apparaat verwijderd.\nPeers en bijnamen worden niet verwijderd.",
+  "settingsClearAction": "Gegevens wissen",
+  "settingsClearedSnack": "Gegevens gewist",
+  "settingsVersion": "versie {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: scannen naar knooppunten",
+  "meshBleEsp32Scanning": "ESP32: zoekt naar een knooppunt in de buurt",
+  "meshBleSyncing": "BLE: synchroniseren met ESP32",
+  "meshNostrPublishing": "Nostr: publiceren",
+  "meshBleIdle": "BLE mesh aan: nog geen telefoons in de buurt",
+  "meshBlePeersNearby": "BLE mesh — {count} telefoon(s) in de buurt",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: toestemming vereist",
+  "meshBlePausedCamera": "BLE gepauzeerd voor camera: tik op Start BLE",
+  "meshBleStopped": "BLE is uitgeschakeld: controleer of Bluetooth is ingeschakeld en tik vervolgens op Start BLE",
+  "meshBleRestart": "Begin BLE",
+  "meshBleStatusDetail": "BT {bt} · Lokalisatie {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "Controleer de rechten en start BLE",
+  "meshNostrOffline": "Nostr offline",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} collega's in de buurt • LoRa {lora} • synchroniseren ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "klaar",
+  "meshLoraNotReady": "niet klaar",
+  "meshGatewayProgress": "Gateway-UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Gateway-UDP: gereed",
+  "permissionTitle": "Geef toegang om het BLE mesh-netwerk te starten",
+  "permissionBody": "De app heeft Bluetooth (scannen / verbinden / adverteren), Locatie (voor oudere Android-apparaten) en Microfoon (voor spraaknotities in chat en aankondigingen) nodig voor community-berichten.",
+  "permissionE2ee": "End-to-End-codering (E2EE)\nRelay-knooppunten kunnen de inhoud van berichten niet lezen",
+  "permissionReady": "Machtigingen gereed",
+  "permissionRequest": "Toestaan ​​en doorgaan",
+  "permissionNotReadySnack": "Systeem is nog niet gereed. Wacht even en probeer het opnieuw",
+  "permissionDeniedSnack": "Machtigingen onvolledig: open Instellingen > ResilNet en sta Bluetooth / Locatie / Microfoon toe",
+  "permissionMicDenied": "Microfoontoegang geweigerd: geef toestemming via Instellingen om spraaknotities op te nemen",
+  "permissionMicOpenSettings": "Instellingen",
+  "permissionCameraDenied": "Cameratoegang geweigerd: geef toestemming via Instellingen om QR-codes te scannen",
+  "permissionCameraFailed": "Voor het scannen van QR-codes is cameratoestemming vereist",
+  "permissionCameraOpenSettings": "Instellingen",
+  "permissionPhotosDenied": "Toegang tot de fotobibliotheek geweigerd: sta dit toe in Instellingen om uw QR-code op te slaan",
+  "permissionPhotosFailed": "Er is toestemming voor de fotobibliotheek vereist om uw QR-code op te slaan",
+  "permissionPhotosOpenSettings": "Instellingen",
+  "permissionFailedSnack": "Toestemmingsverzoek mislukt: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet Architectuur • Multi-hop opslaan en doorsturen",
+  "onboardingSkip": "Overslaan",
+  "onboardingNext": "Volgende",
+  "onboardingStart": "Ga aan de slag",
+  "onboardingWelcomeTitle": "Welkom bij ResilNet",
+  "onboardingWelcomeBody": "Chat op ResilNet via een mesh-netwerk, zelfs zonder internet",
+  "onboardingFriendsTitle": "Voeg eenvoudig vrienden toe",
+  "onboardingFriendsBody": "Deel een QR vanuit Identity of scan de QR van een vriend om openbare sleutels uit te wisselen",
+  "onboardingChannelsTitle": "Versleutelde chat + kanalen in de buurt",
+  "onboardingChannelsBody": "Schakel #mesh / Area (geohash) om collega's in de buurt te vinden - berichten blijven E2EE over BLE mesh en Nostr",
+  "chatTitle": "Chatten (E2EE)",
+  "chatScanTooltip": "Scan de QR om een ​​peer toe te voegen",
+  "chatBlockTooltip": "Blokkeer deze afzender",
+  "chatBlockedSnack": "Geblokkeerd: geen meldingen / geen relais",
+  "chatAliasTooltip": "Bijnaam instellen",
+  "chatReceiverPemLabel": "Openbare sleutel van ontvanger (PEM)",
+  "chatReceiverPemHint": "Plak de openbare sleutel van je vriend (uit QR/gedeeld bestand)",
+  "chatNeedPeerKey": "Scan eerst de QR van deze peer (geverifieerde openbare sleutel vereist)",
+  "chatPeerKeyMismatch": "De opgeslagen openbare sleutel komt niet overeen met deze peer-ID",
+  "chatVoiceFailed": "Kan geen audio opnemen: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Kan spraaknotitie niet afspelen: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Spraaknotitie afspelen",
+  "chatPauseVoice": "Pauze",
+  "chatVoiceLabelSent": "🎤 Spraaknotitie (verzegeld)",
+  "chatVoiceLabel": "🎤 Spraaknotitie",
+  "chatDecryptFailed": "[decodering mislukt]",
+  "chatSentSealed": "[verzegeld • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[verzegeld]",
+  "chatComposeHint": "Typ een bericht... (verzegeld bij verzending)",
+  "chatEmptyThread": "Nog geen berichten\nTyp hieronder om de mesh te verzenden",
+  "chatLoadFailed": "Kan gesprek niet laden: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "Emoji",
+  "statusPending": "In behandeling",
+  "statusSent": "Verstuurd",
+  "statusRelayed": "doorgegeven",
+  "statusDelivered": "Afgeleverd",
+  "statusRead": "Lezen",
+  "statusFailed": "Mislukt",
+  "chatCopy": "Kopiëren",
+  "chatDeleteLocal": "Verwijder op dit apparaat",
+  "chatDeletedLocalSnack": "Verwijderd op dit apparaat",
+  "chatRetry": "Opnieuw proberen",
+  "chatSendFailed": "Niet afgeleverd: tik op Opnieuw",
+  "chatImageNeedInternet": "Maak verbinding met internet om afbeeldingen te verzenden",
+  "chatImageTooLargeOnline": "Kan de afbeelding niet voldoende comprimeren om te verzenden",
+  "chatOpenLinkFailed": "Kan link niet openen",
+  "identityTitle": "Identiteit",
+  "identityScanTooltip": "QR scannen met camera",
+  "identityCopiedHash": "Hash van openbare sleutel gekopieerd",
+  "identityPeerSaved": "Peer opgeslagen van QR",
+  "identityGalleryDenied": "Toestemming voor fotobibliotheek geweigerd",
+  "identityQrSaved": "QR opgeslagen in fotobibliotheek",
+  "identityQrSaveFailed": "Kan QR: {error} niet opslaan",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Netwerk leden",
+  "qrScanTitle": "Scan QR om een ​​vriend toe te voegen",
+  "qrInvalid": "Scan mislukt: ongeldige QR",
+  "qrIdKeyMismatch": "QR afgewezen: ID komt niet overeen met de openbare sleutel",
+  "qrCameraNotReady": "Camera niet gereed",
+  "qrRetrySettings": "Probeer het opnieuw/open Instellingen",
+  "qrCameraOpenFailed": "Kan camera niet openen: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "Lijn de QR-code uit binnen het frame",
+  "firmwareDownloadTitle": "Download ESP32-firmware",
+  "firmwareSourceOnline": "Nieuwste (online)",
+  "firmwareSourceCached": "Opgeslagen kopie (offline)",
+  "firmwareSourceBaseline": "Gebundelde basislijn (offline)",
+  "firmwareSourceUnavailable": "Geen firmware beschikbaar",
+  "firmwareBaselineIncompatible": "De meegeleverde firmware is te oud. Maak verbinding met internet om een ​​nieuwere versie te downloaden",
+  "firmwareChecksumFailed": "Firmware mislukte integriteitscontrole - knipperen geblokkeerd",
+  "firmwareReadyFromSource": "Firmware gereed: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "Vernieuwen",
+  "peersBlocked": "Geblokkeerd",
+  "peersNearbyBle": "Dichtbij (BLE)",
+  "peersRecentlyOnline": "Sinds kort online",
+  "peersOnlineInArea": "Online in de regio",
+  "peersSeenMinutesAgo": "{minutes} min geleden gezien",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Offline",
+  "peersBlockedSnack": "Geblokkeerd {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Gedeblokkeerd",
+  "peersEmpty": "Nog geen leden in de database\nScan een QR of wacht tot BLE mesh-detectie",
+  "peersOpenChat": "Chat openen",
+  "peersBlockAction": "Blok",
+  "peersUnblockAction": "Deblokkeren",
+  "channelPickerTooltip": "Chat / #mesh / Gebied",
+  "locationPickerTooltip": "Locatie kanaal",
+  "transportPickerTooltip": "Mesh / Internet / Automatisch",
+  "onlinePeopleTooltip": "Mensen online",
+  "unreadDirectsTooltipEmpty": "Privéberichten",
+  "unreadDirectsTooltip": "{count} ongelezen privéberichten",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "mensen",
+  "onlinePeopleEmpty": "Hier is nog niemand online",
+  "onlinePeopleCount": "{count} online",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · dichtbij + gebied",
+  "peerOnlineMeshTitle": "Iemand in de buurt op mesh",
+  "peerOnlineMeshBody": "{name} is dichtbij op mesh",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "Iemand online in de regio",
+  "peerOnlineAreaBody": "{name} is online via Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#locatiekanalen",
+  "channelPinsTitle": "Vastgezet",
+  "channelPinsHint": "Zet kanalen vast die je vaak gebruikt: ze blijven bovenaan staan",
+  "channelPinTooltip": "Zet dit kanaal vast",
+  "channelUnpinTooltip": "Losmaken",
+  "locationSheetIntro": "Chat met mensen in de buurt met behulp van grove geohash - geen nauwkeurige GPS. Aanwezigheid op internet maakt gebruik van anonieme Nostr-sleutels.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 m",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "Teleporteren",
+  "homeComposeHint": "Bericht {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "Verzenden naar {channel} — openbaar",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "verloopt over",
+  "voiceRecordTapToStart": "Tik om een ​​spraakbericht op te nemen",
+  "voiceRecordTooShort": "Opname te kort. Probeer het opnieuw",
+  "voiceRecordFailed": "Kan opname niet opslaan. Probeer het opnieuw",
+  "voicePttHold": "Houd ingedrukt om op te nemen",
+  "voicePttRelease": "Laat los om een ​​voorbeeld te bekijken",
+  "voicePttRecording": "Opnemen…",
+  "voicePttDraftReady": "Spraaknotitie gereed",
+  "voicePttDiscard": "Weggooien",
+  "voicePttReRecord": "Neem opnieuw op",
+  "voicePttSend": "Spraaknotitie verzenden",
+  "voicePttPlayPreview": "Speel voorbeeld af",
+  "voicePttStopPreview": "Voorbeeld stoppen",
+  "noticesBackfilling": "Mededelingen laden…",
+  "noticesNostrOnline": "Nostr online",
+  "noticesNostrOffline": "Nostr offline: het bulletin heeft internet nodig",
+  "noticesBackfillLoaded": "{count} mededelingen geladen",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "Kan bericht niet publiceren op het gebiedsbestuur. Controleer de Nostr-verbinding.",
+  "noticeMeshPublishNoLink": "Lokaal opgeslagen. Maak verbinding met een nabijgelegen mesh-radio (of Wi‑Fi gateway) zodat anderen deze kunnen ontvangen.",
+  "noticeMeshPublishSent": "Bulletin verzonden naar {count} apparaten in de buurt via BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Radio's in de buurt gezien, maar schrijven BLE mislukt. Houd beide apps open op het scherm Meldingen en probeer het opnieuw (of gebruik een ESP32 relay).",
+  "noticeMeshPublishNoGatt": "De BLE-ontvanger van dit apparaat is niet gereed. Schakel Bluetooth in en open Kennisgevingen opnieuw.",
+  "noticeDelete": "Bericht verwijderen",
+  "noticeDeleteConfirmTitle": "Deze melding verwijderen?",
+  "noticeDeleteLocalOnlyBody": "Hierdoor wordt het alleen op dit apparaat verwijderd. Anderen die het al hebben ontvangen, zullen het nog steeds zien.",
+  "noticeDeleted": "Kennisgeving verwijderd",
+  "chatNoticeHidden": "Gebiedsmededeling - open mededelingen",
+  "identityDisplayNameTitle": "Weergavenaam",
+  "identitySaveName": "Naam opslaan",
+  "identityUserIdLabel": "Gebruikers-ID (hash van openbare sleutel)",
+  "identityCopyHashTooltip": "Kopieer de hash van de openbare sleutel",
+  "identityMyQrTitle": "Mijn QR (id + pubKey + naam)",
+  "identityQrFailed": "Kan geen QR maken\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "Besparing…",
+  "identitySaveQr": "Sla QR op in de fotobibliotheek",
+  "identityOpenScanner": "Open de camera om QR te scannen",
+  "identityQrHelp": "Laat een vriend dit scannen om uw openbare sleutel op te slaan en (indien nodig) u in te stellen als een geverifieerde uitgever",
+  "identityChatTip": "Tip: je kunt ook een QR scannen in de chat om een ​​publieke sleutel voor E2EE toe te voegen",
+  "infoOpen": "Over / Info",
+  "docsGuideTitle": "Gebruikershandleiding",
+  "docsGuideSubtitle": "Opent in browser",
+  "docsOpenAction": "Gids openen",
+  "docsOpenFailed": "Kan de gebruikershandleiding niet openen",
+  "firmwareOtaGuideTitle": "Flitsgids en OTA-protocol",
+  "firmwareOtaGuideSubtitle": "Opent de webgids — .bin-downloads en volledige stappen",
+  "firmwareWebDownloadsTitle": "Firmwaredownloads op internet",
+  "firmwareWebDownloadsSubtitle": "Links en controlesommen per versie op de documentatiesite",
+  "inviteCopyShortLink": "Kopieer korte link",
+  "inviteShareLink": "Deel link",
+  "inviteShowFullLink": "Volledige link",
+  "inviteCopyFullLink": "Kopieer volledige link",
+  "inviteLinkCopied": "Link gekopieerd",
+  "inviteLongPressHint": "Houd ingedrukt voor koppelingsacties",
+  "inviteSendInChat": "Stuur een ResilNet chat in…",
+  "inviteSendInChatHint": "Alleen mensen voor wie je al een publieke sleutel hebt",
+  "inviteSendInChatEmpty": "Nog geen berichtbare chats.\nScan een QR, open Area/Mesh of deel de link eerst buiten de app.",
+  "inviteSentToChat": "Uitnodiging verzonden in chat",
+  "infoTabInfo": "Info",
+  "infoTabSettingsHint": "Open Instellingen in het menu voor taal, E2EE en datatools",
+  "infoHowToTitle": "Hoe te gebruiken",
+  "infoHowToBody": "• Tik op het kanaalpictogram om te wisselen tussen Chat / #mesh / Area\n• Tik op de plaats om de geohash-grootte te kiezen\n• Tik op mensen voor leden of wie online is\n• Open Identity/QR vanaf ⋮ om persoonlijk sleutels uit te wisselen\n• Gebied 'openbaar' verzendt verzegelde E2EE naar elke online peer - niet naar een ruimte in platte tekst",
+  "infoFeaturesTitle": "Functies",
+  "infoFeatureOffline": "Offline berichten versturen via Bluetooth Low Energy",
+  "infoFeatureE2ee": "End-to-end-codering met RSA-OAEP + AES-GCM (geen ruis)",
+  "infoFeatureMultihop": "Berichten kunnen door peers in de buurt springen om verder te gaan",
+  "infoFeatureBridge": "Hybride mesh ↔ internet (Nostr) voor verzegelde enveloppen",
+  "infoFeatureGeo": "Lokale geohash-kanalen voor mensen in de buurt (discovery UX)",
+  "infoFeatureNotices": "Kennisgevingen met vervaldatum voor #mesh en Area",
+  "infoPrivacyTitle": "Privacy",
+  "infoPrivacyNoRoom": "Geen dorp/openbare chatroom in platte tekst op de draad",
+  "infoPrivacyFanout": "Gebiedsverzending = verzegelde 1:1 fan-out naar peers met bekende openbare sleutels",
+  "infoPrivacyPresence": "Voor de aanwezigheid op het internet worden kortstondige Nostr-sleutels gebruikt",
+  "infoSymbolsTitle": "Symbolen",
+  "infoSymBle": "Directe Bluetooth-verbinding",
+  "infoSymMesh": "Bereikbaar via mesh (anderen naar voren)",
+  "infoSymInternet": "Via internet (Nostr) — verzegelde enveloppen",
+  "infoSymBridge": "Aangekomen via mesh↔internetbrugpad",
+  "infoSymOffline": "Offline — momenteel niet bereikbaar",
+  "infoSymInArea": "In het gebied van dit locatiekanaal",
+  "infoSymE2eeOk": "End-to-end gecodeerde sessie",
+  "infoSymE2eeFail": "Versleuteling niet beschikbaar: stuur geen gevoelige tekst",
+  "infoSymVerified": "Identiteit geverifieerd / bekende sleutel",
+  "infoSymBlocked": "Geblokkeerd",
+  "infoSymUnread": "Ongelezen privébericht",
+  "infoEmergencyTitle": "Noodmodus",
+  "infoEmergencyBody": "Tik driemaal op de titel ResilNet op het startscherm om berichten, sleutels en identiteit op dit apparaat te wissen.",
+  "infoLegendNote": "Voor de duidelijkheid zijn hier enkele padpictogrammen gedocumenteerd; bezorgingstekens in de chat blijven de primaire verzendstatus.",
+  "dangerZoneTitle": "Gevarenzone",
+  "dangerZoneSubtitle": "Verwijdert berichten, coderingssleutels, Nostr-identiteit, peers en bijnamen op dit apparaat. Je gaat opnieuw instellen.",
+  "panicWipeTitle": "Noodveeg",
+  "panicWipeSubtitle": "Wis alles lokaal - hetzelfde als driemaal tikken op de thuistitel (dubbeltikken vernieuwt radio's)",
+  "panicWipeConfirmTitle": "Alle lokale gegevens wissen?",
+  "panicWipeConfirmBody": "Hierdoor worden chats, sleutels en identiteit op deze telefoon permanent verwijderd.\nPeers moeten QR-sleutels opnieuw uitwisselen met uw nieuwe identiteit.\nDit kan niet ongedaan worden gemaakt.",
+  "panicWipeAction": "Veeg alles af",
+  "panicWipeSnack": "Lokale identiteit gewist en opnieuw ingesteld",
+  "panicWipeFailed": "Wissen mislukt: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "Mesh-brug",
+  "meshBridgeSubtitle": "Indien ingeschakeld (standaard), kunnen verzegelde enveloppen zowel BLE mesh als internet (Nostr) samen gebruiken, zodat nabijgelegen mesh-eilanden verbinding kunnen maken. Als deze optie is uitgeschakeld, gebruiken verzendingen slechts één pad; er wordt nooit platte tekst op de draad geplaatst.",
+  "favoritesTitle": "Favorieten",
+  "favoritesAdd": "Toevoegen aan favorieten",
+  "favoritesRemove": "Verwijderen uit favorieten",
+  "favoritesEmpty": "Nog geen favorieten: geef een ster uit de ledenlijst een ster",
+  "favoritesNearbyTitle": "Favoriet in de buurt",
+  "favoritesNearbyBody": "{name} is dichtbij op mesh",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "Favoriet in de omgeving",
+  "favoritesInAreaBody": "{name} is online in dit gebied",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Mesh-topologie",
+  "topologySubtitle": "Peers en verbindingstips van mesh-aankondiging (alleen-lezen)",
+  "topologyConnectedNow": "Nu verbonden (BLE)",
+  "topologyNearby": "Dichtbij (BLE)",
+  "topologyKnown": "Bekende leeftijdsgenoten",
+  "topologyEmpty": "Nog geen peers geleerd: blijf in de buurt met BLE ingeschakeld",
+  "topologyYou": "Jij",
+  "topologyStats": "{peers} peers · {links} links",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "Geschat op basis van mesh-detectie in de buurt: uw apparaat is gemarkeerd. Tik op een peer om de chat te openen.",
+  "topologyOpen": "Mesh-topologie",
+  "slashHelpTitle": "Commando's",
+  "slashHelpBody": "/help — deze lijst\n/who — mensen online in het huidige kanaal\n/drop <text> — plaats hier een verzegelde mededeling (E2EE fan-out)\n\nVolledige gids: gebruik Gids openen hieronder, of Instellingen → Gebruikershandleiding.",
+  "slashWhoEmpty": "Er is momenteel niemand online op dit kanaal",
+  "slashWhoTitle": "Online ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "Gebruik: /plaats uw notitietekst",
+  "slashDropDone": "Bericht verwijderd op {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "Onbekend commando - probeer /help",
+  "announceOpen": "Aankondigingen",
+  "announceTitle": "Aankondigingen",
+  "announceEmpty": "Nog geen borden: maak er een om vergrendelde of open mededelingen te plaatsen",
+  "announceCreate": "Bord maken",
+  "announceCreateHint": "Naam van het bord",
+  "announceDefaultTitle": "Gemeenschapsbord",
+  "announceSettings": "Bordinstellingen",
+  "announceAllowLocked": "Sta vergrendelde (gecodeerde) berichten toe",
+  "announceAllowLockedSub": "Gecodeerd met de bordsleutel: lezers hebben toegang nodig",
+  "announceAllowOpen": "Sta open (platte tekst) berichten toe",
+  "announceAllowOpenSub": "Niet E2EE — leesbaar op mesh/relais. Standaard uitgeschakeld.",
+  "announceComposeHint": "Schrijf een aankondiging...",
+  "announceMediaInternetOnly": "Foto-/stemaankondigingen verzonden via internet (niet BLE)",
+  "announceNeedInternet": "Maak verbinding met internet om foto- of spraakaankondigingen te verzenden",
+  "announceVoiceFailed": "Kan stem niet opnemen: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "Afbeelding is te groot (max. ~180 KB)",
+  "announcePlayVoice": "Spraaknotitie afspelen",
+  "announceImageLabel": "📷 Afbeelding",
+  "announceAudioLabel": "🎤 Spraaknotitie",
+  "announceModeLocked": "Vergrendeld",
+  "announceModeOpen": "Open",
+  "announceOpenBadge": "OPEN · niet gecodeerd",
+  "announceLockedBadge": "Vergrendeld",
+  "announceLockedPlaceholder": "Gecodeerd: vraag toegang om te lezen",
+  "announceRequestAccess": "Toegang aanvragen",
+  "announceRequestSent": "Toegangsverzoek verzonden naar de eigenaar van het bord",
+  "announceRequestFailed": "Kan geen toegang aanvragen (openbare sleutel van de eigenaar nodig)",
+  "announceOpenConfirmTitle": "Posten zonder encryptie?",
+  "announceOpenConfirmBody": "Open berichten zijn geen E2EE. Iedereen op het pad (mesh/relais) mag ze lezen. Doorgaan?",
+  "announcePostAction": "Na",
+  "announcePendingRequests": "Toegangsverzoeken",
+  "announceApprove": "Goedkeuren",
+  "announceDeny": "Ontkennen",
+  "announceGranted": "Je kunt vergrendelde berichten op dit bord lezen",
+  "announceOwner": "Jij bent eigenaar van dit bord",
+  "announceCopyInvite": "Kopieer de uitnodigingstekst",
+  "announceShowInviteQr": "QR-uitnodiging tonen",
+  "announceScanInviteQr": "Scan borduitnodiging QR",
+  "announceFollow": "Volg het bord vanaf de uitnodiging",
+  "announceFollowHint": "Plak de uitnodigingstekst of de ResilNet-link van de eigenaar",
+  "announceFollowOk": "Volgend bord",
+  "announceFollowOkNamed": "Volg nu “{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "De uitnodiging is ongeldig of beschadigd",
+  "announceInviteCopied": "Uitnodigingstekst gekopieerd",
+  "announceInviteSaveQr": "QR opslaan",
+  "announceInviteShare": "Deel uitnodiging",
+  "announceFollowFromCompose": "Board-uitnodiging gedetecteerd in het berichtenvenster",
+  "peerConfirmAddTitle": "Netwerklid toevoegen?",
+  "peerConfirmAddBody": "Voeg “{name}” toe met hun publieke sleutel, zodat je ze privé een bericht kunt sturen?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "Lid toevoegen",
+  "peerAddedOk": "{name} toegevoegd aan netwerkleden",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "Identiteit/openbare sleutel gedetecteerd in het berichtenvenster",
+  "peerHashCopied": "Hash van openbare sleutel gekopieerd",
+  "peerHashOpenChat": "Chat openen",
+  "peerHashAddHint": "Hash gekopieerd. Vraag hen om hun identiteitslink of QR te delen, zodat u de volledige openbare sleutel voor E2EE kunt toevoegen.",
+  "peerQrNoCode": "Geen ResilNet QR gevonden in deze afbeelding",
+  "identityInviteSharePreamble": "ResilNet identiteit: “{name}”\nOpen de link of plak deze in de chat → Lid toevoegen\nOf scan de identiteits-QR.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "Deel identiteitslink",
+  "identityInviteCopied": "Identiteitslink gekopieerd",
+  "announceInviteSharePreamble": "Bestuursuitnodiging: “{title}”\nOpen ResilNet → Communityborden → Volg vanaf uitnodiging\nOf scan de QR / tik op de onderstaande link.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "Dit bord volgen?",
+  "announceConfirmFollowBody": "“{title}” van deze uitnodiging volgen?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "Volgen"
+}

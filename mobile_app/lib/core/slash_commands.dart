@@ -6,6 +6,7 @@ import '../models/notice_expiry.dart';
 import '../state/app_state.dart';
 import 'docs_links.dart';
 import 'peer_id.dart';
+import '../app/glass_overlays.dart';
 
 /// Result of intercepting a leading `/` compose command.
 class SlashHandleResult {
@@ -124,7 +125,7 @@ class SlashCommands {
     if (feedback == null || feedback.isEmpty) return;
     showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.slashHelpTitle),
         content: SingleChildScrollView(child: Text(feedback)),
         actions: [

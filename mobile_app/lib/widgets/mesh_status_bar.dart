@@ -8,6 +8,7 @@ import '../core/resilnet_protocol.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/ble_radio_state.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 /// แถบสถานะ BLE + LoRa + Nostr relays
 class MeshStatusBar extends StatelessWidget {
@@ -57,7 +58,7 @@ class MeshStatusBar extends StatelessWidget {
     if (!context.mounted) return;
     final err = s.nostrLastError;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      GlassSnackBar(
         content: Text(
           ok
               ? l10n.nostrReconnectOk(

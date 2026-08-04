@@ -1,0 +1,1105 @@
+{
+  "@@locale": "ar",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "جارٍ التحديث ResilNet...",
+  "appRefreshed": "تم التحديث - تم إعادة تشغيل أجهزة الراديو والاكتشاف",
+  "appRefreshFailed": "فشل التحديث: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "النقر المزدوج = التحديث الناعم. الضغط لفترة طويلة = استرداد صعب. النقر الثلاثي = مسح الطوارئ.",
+  "softRefreshTipTitle": "إذا شعر ResilNet بأنه عالق",
+  "softRefreshTipBody": "انقر نقرًا مزدوجًا فوق ResilNet (أعلى اليسار) لتحديث الراديو بشكل بسيط. إذا كان لا يزال عالقًا: اضغط لفترة طويلة على العنوان أو استخدم ⋮ → Hard Recovery أو الإعدادات. النقر الثلاثي هو مسح للطوارئ فقط.",
+  "softRefreshTipGotIt": "فهمتها",
+  "infoSoftRefreshTitle": "إذا كان التطبيق عالقًا",
+  "infoSoftRefreshStepRefresh": "انقر نقرًا مزدوجًا على ResilNet (أعلى اليسار) ← تحديث بسيط لأجهزة الراديو والأشخاص القريبين",
+  "infoSoftRefreshStepHard": "لا تزال عالقة؟ اضغط لفترة طويلة على العنوان، أو ⋮ / الإعدادات → استرداد القرص الصلب",
+  "infoSoftRefreshStepWait": "انتظر نتيجة الوجبات الخفيفة، ثم حاول مرة أخرى. إعادة ضبط الجلسة تحافظ على مفاتيحك.",
+  "infoSoftRefreshStepWipe": "النقر الثلاثي = مسح الطوارئ (يحذف البيانات المحلية) — فقط إذا كان مقصودًا",
+  "appRecoverySection": "استرداد التطبيق",
+  "appRecoverySectionSubtitle": "يُستخدم عندما يشعر التطبيق بالتجميد. Soft = النقر المزدوج على العنوان. التعافي الصعب أقوى. تؤدي إعادة تعيين الجلسة إلى إعادة تشغيل الخدمات دون مسح المفاتيح.",
+  "appHardRecoverAction": "التعافي الصعب",
+  "appHardRecovering": "التعافي صعب…",
+  "appSessionResetAction": "إعادة تعيين الجلسة",
+  "appSessionResetRunning": "جارٍ إعادة ضبط الجلسة...",
+  "appSessionResetConfirmTitle": "إعادة ضبط الجلسة؟",
+  "appSessionResetConfirmBody": "إعادة تشغيل خدمات ResilNet على هذا الجهاز. يتم الاحتفاظ بمفاتيح الهوية الخاصة بك.",
+  "appRecoveryBusy": "الاسترداد قيد التشغيل بالفعل...",
+  "appRecoveryOk": "انتهى الاسترداد",
+  "appRecoveryPartial": "انتهت عملية الاسترداد مع تخطي بعض الخطوات - حاول مرة أخرى إذا كنت لا تزال عالقًا",
+  "appRecoveryFailed": "فشل الاسترداد - حاول إعادة ضبط الجلسة، أو قم بإنهاء التطبيق من نظام التشغيل بالقوة",
+  "localWifiTitle": "محلي Wi‑Fi",
+  "localWifiSubtitle": "قم بربط الأجهزة القريبة بدون الإنترنت — تمامًا كما لو كنت متصلاً بشبكة LAN واحدة.",
+  "localWifiNotGatewayHint": "ليست البوابة ESP32 LoRa SoftAP. هذا هو الهاتف↔الهاتف/الشبكة المحلية فقط.",
+  "localWifiUnavailable": "المحلي Wi‑Fi ليس جاهزًا بعد - انتظر بدء تشغيل التطبيق.",
+  "lxmfBridgeTitle": "العقدة الرئيسية",
+  "lxmfBridgeSubtitle": "جهاز Mac أو Pi اختياري على جهاز Wi‑Fi الذي ينقل الدردشات المغلقة. إيقاف بشكل افتراضي. لا يحل محل التشفير من طرف إلى طرف.",
+  "lxmfBridgeEnable": "استخدم العقدة الرئيسية",
+  "lxmfBridgeDisabledHint": "يتم تشغيله فقط عند تشغيل تطبيق Bridge على جهاز Mac أو Pi على هذه الشبكة.",
+  "lxmfBridgeOnline": "متصل بالإنترنت - {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "لا يمكن الوصول إلى عقدة الصفحة الرئيسية — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "عنوان العقدة الرئيسية",
+  "lxmfBridgeBaseUrlHelper": "IP أو http://IP:port — مثال 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "النظير → LXMF الوجهة (JSON)",
+  "lxmfBridgeRefresh": "حفظ وتحديث الحالة",
+  "lxmfBridgeLabHint": "متقدم: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "إعدادات العقدة الرئيسية",
+  "lxmfBridgeCheckConnection": "تحقق من الاتصال",
+  "lxmfBridgeStatusOnline": "متصل بالعقدة الرئيسية",
+  "lxmfBridgeStatusOffline": "العقدة الرئيسية غير قابلة للوصول",
+  "lxmfBridgeYourDest": "عنوان هذه العقدة (مشاركتها مع الأصدقاء)",
+  "lxmfBridgeCopyDest": "انسخ العنوان",
+  "lxmfBridgeDestCopied": "تم نسخ العنوان",
+  "lxmfBridgeLinkedPeers": "أصدقاء مرتبطون",
+  "lxmfBridgeLinkedPeersHint": "يحتاج كل صديق إلى عنوان عقدة المنزل الخاص به مرة واحدة. ثم يمكن للدردشات المختومة استخدام هذا المسار.",
+  "lxmfBridgeNoLinks": "لم يتم ربط أي أصدقاء حتى الآن.",
+  "lxmfBridgeAddLink": "ربط صديق",
+  "lxmfBridgePickPeer": "صديق",
+  "lxmfBridgePeerDest": "عنوان عقدة منزلهم",
+  "lxmfBridgePeerDestHint": "رمز مكون من 32 حرفًا من شاشة العقدة الرئيسية الخاصة بهم",
+  "lxmfBridgeInvalidDest": "لا يبدو هذا العنوان صالحًا. الصق الكود الكامل من العقدة الرئيسية الخاصة بهم.",
+  "lxmfBridgeRemoveLink": "إلغاء الارتباط",
+  "lxmfBridgeSaveLink": "يحفظ",
+  "lxmfBridgeLinkSaved": "صديق مرتبط",
+  "lxmfBridgeNoPeers": "لا توجد جهات اتصال قابلة للمراسلة حتى الآن — قم بإضافة صديق أولاً.",
+  "lxmfBridgeHelp": "استمر في تشغيل الجسر على جهاز Mac/Pi. يبقى هذا المسار على شبكة LAN الخاصة بك — فهو ليس LoRa ولا يحل محل الإنترنت أو شبكة Bluetooth.",
+  "localWifiModeHotspot": "قريب",
+  "localWifiModeRouter": "جهاز التوجيه",
+  "localWifiHotspotIntro": "يشترك أحد الأجهزة في نقطة اتصال شخصية. ينضم الآخرون إلى نقطة الاتصال تلك، ثم يجدهم ResilNet على الشبكة المحلية.",
+  "localWifiHostAction": "إنشاء شبكة (مضيف)",
+  "localWifiJoinAction": "الانضمام إلى الشبكة",
+  "localWifiHostSteps": "1. افتح إعدادات iOS/Android وقم بتشغيل نقطة الاتصال الشخصية (أو مشاركة الإنترنت).\n2. أخبر الأصدقاء باسم نقطة الاتصال (وكلمة المرور).\n3. عد إلى هنا وانقر على \"نقطة الاتصال قيد التشغيل - ابدأ الانتظار\".",
+  "localWifiHostReady": "نقطة الاتصال قيد التشغيل - ابدأ الانتظار",
+  "localWifiHostWaiting": "في انتظار انضمام الأصدقاء...",
+  "localWifiJoinSteps": "1. افتح إعدادات النظام وانضم إلى نقطة الاتصال الشخصية لصديقك.\n2. ارجع إلى هنا وانقر على \"أنا متصل - بحث\".",
+  "localWifiJoinReady": "أنا متصل – ابحث",
+  "localWifiRouterIntro": "قم بتوصيل كل جهاز بنفس جهاز التوجيه/نقطة الوصول Wi‑Fi. لا يحتاج جهاز التوجيه إلى الإنترنت، بل يحتاج فقط إلى شبكة محلية مشتركة.",
+  "localWifiRouterSearch": "ابحث في هذا Wi‑Fi",
+  "localWifiRefreshNetwork": "قم بتحديث معلومات Wi‑Fi",
+  "localWifiRouterNoWifiTitle": "ليس على Wi‑Fi",
+  "localWifiRouterNoWifiBody": "انضم إلى Wi‑Fi الخاص بالموجه في إعدادات النظام، ثم ابحث مرة أخرى.",
+  "localWifiDiscovering": "البحث على Wi‑Fi المحلي...",
+  "localWifiPeersFound": "الأجهزة الموجودة على هذه الشبكة",
+  "localWifiStop": "قف",
+  "localWifiSsidUnknown": "اسم Wi‑Fi غير متاح",
+  "localWifiStubBanner": "في انتظار مقبس LAN...",
+  "localWifiLiveBanner": "اكتشاف LAN المباشر (UDP) - الإعلان عن الدردشة المختومة على هذا Wi‑Fi",
+  "localWifiEmptyHotspot": "لا توجد أجهزة حتى الآن.\nتأكد من انضمام الأصدقاء إلى نقطة الاتصال الخاصة بك والسماح لهم بالوصول إلى الشبكة المحلية.",
+  "localWifiEmptyRouter": "لا توجد أجهزة حتى الآن.\nنفس SSID؟ الشبكة المحلية مسموح بها؟ تقوم بعض أجهزة التوجيه بحظر حركة المرور من جهاز إلى جهاز (عزل AP).",
+  "localWifiIsolationHelp": "لماذا لا نستطيع أن نجد بعضنا البعض؟",
+  "localWifiIsolationTitle": "قد يقوم جهاز التوجيه بعزل العملاء",
+  "localWifiIsolationBody": "إذا كان عزل نقطة الوصول/العميل (أو شبكة الضيف) قيد التشغيل، فلن تتمكن الهواتف الموجودة على نفس Wi‑Fi من التحدث. قم بإيقاف تشغيل العزل، أو استخدم SSID الرئيسي، أو قم بالتبديل إلى الوضع القريب (نقطة الاتصال).",
+  "localWifiPeerReady": "جاهز للدردشة (لديه مفتاح)",
+  "localWifiPeerNeedKey": "تم العثور عليه - قم بمسح QR لتبادل المفاتيح",
+  "localWifiErrorTitle": "خطأ Wi‑Fi محلي",
+  "localWifiErrorBody": "حدث خطأ ما. توقف وحاول مرة أخرى.",
+  "preparingSystem": "تحضير النظام…",
+  "bootFailedTitle": "لا يمكن البدء",
+  "retry": "حاول ثانية",
+  "bootRecoveryAction": "بدء هوية جديدة (محو البيانات المحلية)",
+  "bootRecoveryConfirmTitle": "بدء هوية جديدة؟",
+  "bootRecoveryConfirmBody": "سيؤدي هذا إلى مسح الدردشات المحلية والمفاتيح والهوية الموجودة على هذا الجهاز بشكل دائم.\nيجب على الزملاء مسح QR الخاص بك مرة أخرى باستخدام هويتك الجديدة.\nلا يمكن التراجع عن هذا.",
+  "bootRecoveryRunning": "إعادة ضبط الهوية المحلية...",
+  "bootRecoverySuccess": "اكتملت إعادة تعيين الهوية المحلية",
+  "bootRecoveryFailed": "تعذر إعادة تعيين الهوية: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "يلغي",
+  "save": "يحفظ",
+  "close": "يغلق",
+  "start": "يبدأ",
+  "send": "يرسل",
+  "settings": "إعدادات",
+  "language": "لغة",
+  "languageSubtitle": "افتراضيًا، يتبع التطبيق لغة هاتفك (عندما يكون مدعومًا). اللغات الأخرى تعود إلى اللغة الإنجليزية. يمكنك أيضًا قفل اللغة هنا.",
+  "languageSystem": "الافتراضي للنظام",
+  "languageThai": "التايلاندية",
+  "languageEnglish": "إنجليزي",
+  "notificationsTooltip": "إعدادات الإخطار",
+  "enableMessageNotifications": "تمكين إشعارات الرسائل",
+  "settingsNotificationsSubtitle": "رسائل 1:1 والأشخاص عبر الإنترنت (التنبيهات المحلية)",
+  "networkMembersTooltip": "أعضاء الشبكة",
+  "identityQrTooltip": "الهوية / QR",
+  "feedDirects": "محادثة",
+  "feedMesh": "#شبكة",
+  "feedGeo": "منطقة",
+  "feedDirectsSubtitle": "رسائل E2EE الخاصة",
+  "feedMeshSubtitle": "النظراء القريبون (BLE)",
+  "feedGeoSubtitle": "قناة اكتشاف جيوهاش",
+  "peerIdHint": "الصق معرف المتلقي (تجزئة المفتاح العام) لبدء الدردشة",
+  "directsEmpty": "لا توجد محادثات حتى الآن - قم بمسح QR أو لصق معرف المتلقي للبدء\nيتم ختم الرسائل بـ E2EE قبل إرسالها (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • انقر لفتح الدردشة",
+  "meshIntro": "النظراء في النطاق BLE - انقر لإجراء محادثة E2EE خاصة (لا توجد إمكانية إنشاء عامة على #mesh)\nيتم الإرسال عبر جهاز التوجيه المختلط (BLE + LoRa + Nostr عند الاتصال بالإنترنت)",
+  "meshEmptyRunning": "لا يوجد أقران قريبون حتى الآن - افتح التطبيق على جهاز آخر ضمن نطاق BLE",
+  "meshEmptyStopped": "BLE لا يعمل - امنح إذن Bluetooth / الموقع",
+  "meshNearbyPrefix": "قريب",
+  "meshRetentionTitle": "الحذف التلقائي للرسائل",
+  "meshRetentionSubtitle": "تتم إزالة سجل الدردشة المحلي الأقدم تلقائيًا",
+  "meshRetentionKeep": "يحفظ",
+  "meshRetention1Day": "يوم واحد",
+  "meshRetention3Days": "3 أيام",
+  "meshRetention7Days": "7 أيام",
+  "refreshLocationTooltip": "تحديث الموقع",
+  "geoIntro": "يمكن مراسلة الأشخاص المتصلين بالإنترنت في هذا Geohash 1: 1 أو مع منطقة عامة منتشرة (لا تزال مختومة E2EE لكل نظير - وليس نصًا عاديًا)",
+  "geoEmpty": "لا يوجد أحد متصل في {channel} حتى الآن\nاستخدم النقل → الإنترنت/السيارات، انتظر Nostr، وقم بتحديث الموقع",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "متصل بالإنترنت في {channel} • اضغط على 1:1 E2EE",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "قريب (في انتظار التواجد في المنطقة) • انقر لـ 1:1 E2EE",
+  "geoPeerNostrSubtitle": "تمت مشاهدته على Nostr في {channel} • الاكتشاف فقط (قديم)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "الحضور المجهول القديم - انتظر نظيرًا مقيدًا أو استبدل QR",
+  "bleRadioNearbySubtitle": "BLE قريب — امسح QR ضوئيًا لبدء 1:1 E2EE",
+  "geoInternetDiscoverHint": "يحتاج اكتشاف الإنترنت في المنطقة إلى اتصال Nostr (الإعدادات ← النقل ← الإنترنت/التلقائي)",
+  "geoEmptyNoLocation": "لم يتم حل الموقع بعد - اسمح لنظام تحديد المواقع العالمي (GPS) وقم بالتحديث لنشر Geohash الخاص بك على Nostr",
+  "geoEmptyNeedsPermission": "تم رفض إذن الموقع - اسمح بـ ResilNet في الإعدادات ← الخصوصية ← الموقع",
+  "geoEmptyServicesDisabled": "خدمات الموقع متوقفة - قم بتشغيلها في الإعدادات",
+  "geoEmptyNoGpsFix": "تعذر الحصول على إصلاح GPS (شائع في أجهزة iPad Wi‑Fi) - قم بتعيين Geohash يدويًا أدناه",
+  "geoEmptyTeleportHint": "اضغط على أيقونة المكان ← أدخل Geohash (على سبيل المثال، W5) ← النقل الفوري",
+  "geoSetGeohashManually": "تعيين جيوهاش",
+  "geoTeleportHint": "لا يوجد نظام تحديد المواقع؟ أدخل بادئة Geohash (2–7 أحرف، على سبيل المثال w5) ثم انقر فوق النقل الآني",
+  "geoTeleportInvalid": "Geohash غير صالح - استخدم الأحرف/الأرقام الأساسية 32 فقط (على سبيل المثال، w5 أو w5jt8)",
+  "geoTeleportOk": "تم ضبط المنطقة على {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "المنطقة اليدوية: {channel} (سيتم تجاوز تحديث GPS)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr غير جاهز — انقر فوق إعادة الاتصال (0/0 حتى ينجح الحرف الأول)",
+  "geoEmptyMeshOnly": "النقل عبارة عن شبكة فقط - قم بالتبديل إلى الإنترنت أو التلقائي لاكتشاف الأقران عبر Nostr",
+  "geoEmptyWaiting": "لا يوجد أحد في {channel} حتى الآن — اترك المنطقة + الإنترنت مفتوحًا على كلا الجهازين وانتظر حوالي 60 ثانية",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#منطقة",
+  "geoRefreshLocation": "تحديث الموقع",
+  "settingsClearLocationTitle": "موقع واضح",
+  "settingsClearLocationSubtitle": "إزالة GPS / النقل الفضائي Geohash (تصبح المنطقة #—)",
+  "settingsClearLocationConfirmTitle": "هل تريد مسح الموقع؟",
+  "settingsClearLocationConfirmBody": "يحذف Geohash المخزنة على هذا الجهاز. يمكنك تحديث نظام تحديد المواقع العالمي (GPS) أو النقل الفوري مرة أخرى بعد ذلك.",
+  "settingsClearLocationAction": "موقع واضح",
+  "settingsClearLocationSnack": "تم محو الموقع",
+  "chatVoiceTooLarge": "الملاحظة الصوتية كبيرة جدًا - بحد أقصى 30 ثانية تقريبًا",
+  "chatVoiceNeedInternet": "تحتاج الملاحظة الصوتية إلى الإنترنت (Nostr) — وهي كبيرة جدًا بالنسبة لـ BLE وحده",
+  "chatVoiceSentInternet": "ملاحظة صوتية تم إرسالها عبر الإنترنت",
+  "noticeAnonMention": "يذكر",
+  "noticeAnonDm": "رسالة مباشرة",
+  "noticeAnonHug": "حضن",
+  "noticeAnonSlap": "يصفع",
+  "noticeAnonBlock": "حاجز",
+  "noticeAnonNeedKey": "لا يوجد مفتاح عام حتى الآن — استبدل QR أولاً بـ 1:1",
+  "noticeAnonActionSent": "مرسل",
+  "noticeAnonBlocked": "تم حظر {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* العناق {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* الصفعات {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "أعد الاتصال Nostr",
+  "nostrSectionTitle": "Nostr المرحلات",
+  "nostrSectionSubtitle": "تستخدم رسائل الإنترنت واكتشاف المنطقة هذه المرحلات. انقر فوق إعادة الاتصال إذا ظلت الحالة غير متصلة بالإنترنت.",
+  "nostrStatusOnline": "متصل {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "غير متصل - المرحلات مدرجة ولكن لا يوجد شيء متصل",
+  "nostrStatusNotInit": "لم يبدأ (0/0) — انقر فوق إعادة الاتصال للتهيئة",
+  "nostrReconnectAction": "أعد الاتصال Nostr",
+  "nostrReconnectOk": "Nostr متصل ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "لا يزال غير متصل بالإنترنت - تحقق من Wi‑Fi/cello أو حاول مرة أخرى",
+  "nostrReconnectFailedDetail": "فشل: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "الاتصال بالمرحلات…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "الانترنت (Nostr) في {channel} • الدردشة المختومة جاهزة",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "النقل بالمنطقة",
+  "transportModeSubtitle": "الشبكة = BLE قريب (الراديو) عند عدم وجود Nostr · الإنترنت والتلقائي = Nostr قائمة الأشخاص",
+  "transportModeMesh": "مش",
+  "transportModeInternet": "إنترنت",
+  "transportModeAuto": "آلي",
+  "geoPublicHint": "رسالة عامة إلى الجميع على الانترنت في هذا المجال",
+  "geoPublicSend": "عام",
+  "geoPublicHelp": "توزيع مغلق إلى {count} الأقران عبر الإنترنت — يتلقى كل منهم مظروفًا خاصًا",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "تم الإرسال إلى {count} النظير(النظراء) في هذه المنطقة",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "لا يوجد أقران يمكن مراسلتهم عبر الإنترنت — افتح المنطقة/الشبكة مع الأقران الذين لديهم مفاتيح، أو انتظر BLE/Nostr",
+  "areaPublicBadge": "المنطقة عامة",
+  "geoErrorPermission": "تعذرت قراءة الموقع — تحقق من إذن الموقع",
+  "geoPrecisionRegion": "منطقة",
+  "geoPrecisionProvince": "مقاطعة",
+  "geoPrecisionCity": "مدينة",
+  "geoPrecisionNeighborhood": "حيّ",
+  "geoPrecisionBlock": "حاجز",
+  "aliasTitle": "تعيين اللقب (الاسم المستعار لجهة الاتصال)",
+  "aliasHintBody": "يتم تخزين هذا الاسم المستعار على هذا الجهاز فقط (محلي فقط)\nولا يتم إرساله مطلقًا مع حركة مرور E2EE",
+  "aliasLabel": "كنية",
+  "aliasHint": "على سبيل المثال \"رئيس القرية\"، \"بسومتشاي\"...",
+  "settingsDevices": "الأجهزة",
+  "settingsFirmwareTitle": "تنزيل/تحديث البرنامج الثابت ESP32",
+  "settingsFirmwareSubtitle": "قم بتنزيل ملفات .bin وقم بتحديث لوحة ESP32 عبر OTA",
+  "mtBridgeTitle": "Meshtastic الجسر",
+  "mtBridgeSettingsSubtitle": "جسر A/B للنص فقط — وليس ResilNet E2EE",
+  "mtBridgeIntro": "انقل النص العادي القصير بين Meshtastic وResilNet. لا يمكن تشغيل الوضعين A وB في نفس الوقت. هذا ليس تشفيرًا من طرف إلى طرف.",
+  "mtBridgeModeLabel": "وضع",
+  "mtBridgeModeOff": "عن",
+  "mtBridgeModeA": "استيعاب أ",
+  "mtBridgeModeB": "الخروج ب",
+  "mtBridgeModeOffShort": "عن",
+  "mtBridgeModeAShort": "في أ",
+  "mtBridgeModeBShort": "خارج ب",
+  "mtBridgeMutexHint": "يؤدي تحديد أحد الأوضاع إلى إيقاف تشغيل الوضع الآخر تلقائيًا. لا يتم دعم A+B المتزامن.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "العرض التوضيحي (التسجيل)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "يظهر النص الوارد ضمن الإشعارات باسم #meshtastic. يعد تتابع الشبكة اختياريًا (يتم إيقاف تشغيله افتراضيًا).",
+  "mtBridgeRelayTitle": "قم بالترحيل أيضًا على شبكة ResilNet",
+  "mtBridgeRelayHint": "عند التشغيل، يتم بث النشرات العامة الموقعة. إيقاف = إشعارات هذا الهاتف فقط.",
+  "mtBridgeSimulateHint": "رسالة تجريبية",
+  "mtBridgeSimulate": "محاكاة رسالة Meshtastic",
+  "mtBridgeIngestOk": "تم استيعابها في الإشعارات (#meshtastic)",
+  "mtBridgeEgressWarning": "تحذير: الرسائل المرسلة هنا ليست ResilNet E2EE. يمكن لأي شخص على المسار Meshtastic قراءتها.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "نص للنشر",
+  "mtBridgeSend": "أرسل إلى Meshtastic",
+  "mtBridgeEgressOk": "في قائمة الانتظار لـ Meshtastic (راجع السجل/السجل)",
+  "mtBridgeLastEgress": "الخروج الأخير",
+  "mtBridgeEgressHistory": "الخروج الأخير",
+  "mtBridgeOffHint": "قم بتشغيل الإدخال (A) أو الخروج (B) لاستخدام الجسر.",
+  "mtBridgeNoticeBadge": "MESHTASTIC · ليس E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "استخدم النقل MQTT",
+  "mtBridgeUseMqttHint": "إيقاف = التسجيل التجريبي فقط (تم تجاهل MQTT الوارد). On = MQTT للدخول/الخروج عند الاتصال.",
+  "mtBridgeMqttHost": "مضيف الوسيط",
+  "mtBridgeMqttPort": "ميناء",
+  "mtBridgeMqttTls": "استخدم TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "المنفذ النموذجي 8883. يستخدم شهادات النظام؛ فشل في أخطاء المصافحة.",
+  "mtBridgeMqttAutoReconnect": "إعادة الاتصال التلقائي",
+  "mtBridgeMqttAutoReconnectHint": "عند التشغيل، يحاول العميل إعادة الاتصال بعد انقطاع الاتصال. تظهر الحالة جاري الاتصال حتى يتم استعادته.",
+  "mtBridgeMqttTopicHelpers": "مساعدين الموضوع",
+  "mtBridgeMqttRegion": "بادئة المنطقة (اختياري)",
+  "mtBridgeMqttRegionHint": "عند التعيين، يؤدي تطبيق إلى إعادة بناء الجذر كـ msh/<region>/2/json (يتجاوز جذر الموضوع).",
+  "mtBridgeMqttTopicRoot": "جذر موضوع JSON",
+  "mtBridgeMqttDownlinkChannel": "اسم قناة الوصلة الهابطة",
+  "mtBridgeMqttApplyTopics": "تطبيق الجذر → الاشتراك / نشر المواضيع",
+  "mtBridgeMqttAdvanced": "متقدم MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS، إعادة الاتصال، المواضيع، بيانات الاعتماد",
+  "mtBridgeMqttTopicIn": "موضوع الاشتراك",
+  "mtBridgeMqttTopicOut": "نشر الموضوع",
+  "mtBridgeMqttGatewayFrom": "معرف عقدة البوابة (من)",
+  "mtBridgeMqttGatewayFromHint": "المعرف العشري أو !hex — مطلوب للوصلة الهابطة sendtext",
+  "mtBridgeMqttChannelIndex": "مؤشر قناة الشبكة (اختياري 0-7)",
+  "mtBridgeMqttUser": "اسم المستخدم (اختياري)",
+  "mtBridgeMqttPass": "كلمة المرور (اختيارية)",
+  "mtBridgeMqttPassStored": "يتم تخزين كلمة المرور على هذا الجهاز (غير موضحة).",
+  "mtBridgeMqttPassReplace": "كلمة المرور الجديدة (اتركها فارغة للاحتفاظ بها)",
+  "mtBridgeMqttPassReplaceHint": "اتركه فارغًا للاحتفاظ بكلمة المرور المخزنة.",
+  "mtBridgeMqttPassClear": "مسح كلمة المرور",
+  "mtBridgeMqttSave": "احفظ إعدادات MQTT",
+  "mtBridgeMqttSaved": "تم حفظ إعدادات MQTT",
+  "mtBridgeMqttConnect": "يتصل",
+  "mtBridgeMqttDisconnect": "قطع الاتصال",
+  "mtBridgeMqttConnected": "MQTT متصل",
+  "mtBridgeMqttConnecting": "MQTT جارٍ الاتصال...",
+  "mtBridgeMqttDisconnected": "MQTT غير متصل",
+  "mtBridgeMqttError": "خطأ MQTT",
+  "mtBridgeErrModeIngest": "قم بالتبديل إلى Ingest (A) أولاً",
+  "mtBridgeErrModeEgress": "قم بالتبديل إلى الخروج (B) أولاً",
+  "mtBridgeErrRate": "أبطئ — المعدل محدود",
+  "mtBridgeErrDedupe": "تم تجاهل الرسالة المكررة",
+  "mtBridgeErrLoop": "أسقطت لمنع حلقة الجسر",
+  "mtBridgeErrEmpty": "الرسالة فارغة",
+  "mtBridgeErrPublish": "فشل النشر",
+  "mtBridgeErrNotConnected": "MQTT غير متصل",
+  "mtBridgeErrMissingHost": "أدخل مضيف الوسيط MQTT",
+  "mtBridgeErrMissingTopic": "أدخل الاشتراك ونشر المواضيع",
+  "mtBridgeErrMissingFromNode": "أدخل معرف عقدة البوابة (من) لـ sendtext",
+  "mtBridgeErrConnect": "فشل الاتصال MQTT",
+  "mtBridgeErrConnectTls": "MQTT فشل اتصال TLS",
+  "settingsData": "بيانات",
+  "settingsDataHint": "احذف الرسائل المحلية لتقليص قاعدة البيانات - يتم الاحتفاظ بالهوية والمفاتيح والأقران",
+  "settingsSaveHistoryTitle": "حفظ سجل الرسائل",
+  "settingsSaveHistorySubtitle": "عند إيقاف التشغيل، تظل الرسائل E2EE على السلك ويتم الاحتفاظ بها لهذه الجلسة فقط (وليس في سجل الدردشة المحلي). لا يزال النص الخاص بك يظهر كنص عادي على هذا الجهاز.",
+  "settingsPrivacy": "خصوصية",
+  "settingsE2eeTitle": "التشفير من النهاية إلى النهاية",
+  "settingsE2eeSubtitle": "قيد التشغيل دائمًا — يتم ختم الرسائل باستخدام RSA-OAEP + AES-GCM قبل إرسالها. لا تستطيع المرحلات والقفزات القريبة قراءة المحتويات.",
+  "settingsScreenshotTitle": "تنبيهات لقطة الشاشة",
+  "settingsScreenshotSubtitle": "إظهار خط النظام في الدردشة عندما يلتقط هذا الجهاز الشاشة",
+  "settingsNostrExpiryTitle": "Nostr رسالة الحفاظ على الوقت",
+  "settingsNostrExpirySubtitle": "المدة التي يجب أن تظل فيها المظاريف المختومة محليًا عند الاتصال بالإنترنت عبر Nostr",
+  "noticeExpiresIn": "تنتهي في",
+  "noticesTitle": "إشعارات",
+  "noticesMeshIntro": "النشرة العامة — مرئية للجميع في نطاق الراديو، وليست مشفرة. فهو ينتقل من هاتف إلى هاتف في وضع عدم الاتصال، وتحتفظ صناديق الترحيل ResilNet القريبة بنسخة حتى يتمكن الأشخاص الذين يصلون لاحقًا من رؤيتها.",
+  "noticesMeshPublicBadge": "عامة · غير مشفرة",
+  "noticesGeoIntro": "أضف ملاحظات قصيرة لهذا المكان حتى يتمكن الزوار الآخرون من العثور عليها.",
+  "noticesEmpty": "لا إشعارات حتى الآن",
+  "noticesEmptyHint": "قم بتثبيت الإشعار الأول للأشخاص الموجودين هنا.",
+  "noticesComposeHint": "نشر إشعار...",
+  "noticesUrgent": "عاجل",
+  "noticesOpen": "إشعارات",
+  "screenshotTaken": "* لقد التقطت لقطة شاشة *",
+  "chatAttachImage": "إرفاق الصورة",
+  "chatImageLabel": "صورة",
+  "chatImageTooLarge": "الصورة كبيرة جدًا — حاول استخدام صورة أخرى",
+  "chatNostrExpiry": "Nostr احتفظ به",
+  "geoPublicComposeHint": "أرسل إلى {channel} - عام",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "مسح كافة الرسائل",
+  "settingsClearSubtitle": "احذف جميع الدردشات الموجودة على هذا الجهاز",
+  "settingsClearConfirmTitle": "مسح كافة الرسائل؟",
+  "settingsClearConfirmBody": "يؤدي هذا إلى حذف جميع رسائل الدردشة على هذا الجهاز.\nلا تتم إزالة الأقران والألقاب.",
+  "settingsClearAction": "مسح البيانات",
+  "settingsClearedSnack": "تم مسح البيانات",
+  "settingsVersion": "الإصدار {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: البحث عن العقد",
+  "meshBleEsp32Scanning": "ESP32: البحث عن عقدة قريبة",
+  "meshBleSyncing": "BLE: المزامنة مع ESP32",
+  "meshNostrPublishing": "Nostr: النشر",
+  "meshBleIdle": "شبكة BLE قيد التشغيل — لا توجد هواتف قريبة حتى الآن",
+  "meshBlePeersNearby": "شبكة BLE — هاتف (هواتف) {count} مجاورة",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: الإذن مطلوب",
+  "meshBlePausedCamera": "تم إيقاف BLE مؤقتًا للكاميرا — انقر فوق ابدأ BLE",
+  "meshBleStopped": "تم إيقاف تشغيل BLE — تحقق من تشغيل Bluetooth، ثم انقر فوق ابدأ BLE",
+  "meshBleRestart": "ابدأ BLE",
+  "meshBleStatusDetail": "BT {bt} · الموقع {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "تحقق من الأذونات وابدأ BLE",
+  "meshNostrOffline": "Nostr غير متصل",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} الأقران القريبون • LoRa {lora} • المزامنة ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "مستعد",
+  "meshLoraNotReady": "غير جاهز",
+  "meshGatewayProgress": "بوابة UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "بوابة UDP: جاهزة",
+  "permissionTitle": "السماح بالوصول لبدء الشبكة المتداخلة BLE",
+  "permissionBody": "يحتاج التطبيق إلى تقنية Bluetooth (المسح / الاتصال / الإعلان)، والموقع (لأجهزة Android الأقدم)، والميكروفون (للملاحظات الصوتية في الدردشة والإعلانات) لمراسلة المجتمع.",
+  "permissionE2ee": "التشفير الشامل (E2EE)\nلا تستطيع عقد الترحيل قراءة محتويات الرسالة",
+  "permissionReady": "الأذونات جاهزة",
+  "permissionRequest": "السماح والمتابعة",
+  "permissionNotReadySnack": "النظام ليس جاهزًا بعد - انتظر لحظة وحاول مرة أخرى",
+  "permissionDeniedSnack": "الأذونات غير مكتملة — افتح الإعدادات > ResilNet واسمح بالبلوتوث / الموقع / الميكروفون",
+  "permissionMicDenied": "تم رفض الوصول إلى الميكروفون - اسمح له في الإعدادات بتسجيل الملاحظات الصوتية",
+  "permissionMicOpenSettings": "إعدادات",
+  "permissionCameraDenied": "تم رفض الوصول إلى الكاميرا - اسمح لها في الإعدادات بمسح رموز QR ضوئيًا",
+  "permissionCameraFailed": "مطلوب إذن الكاميرا لمسح رموز QR",
+  "permissionCameraOpenSettings": "إعدادات",
+  "permissionPhotosDenied": "تم رفض الوصول إلى مكتبة الصور - اسمح بذلك في الإعدادات لحفظ رمز الاستجابة السريعة الخاص بك",
+  "permissionPhotosFailed": "مطلوب إذن مكتبة الصور لحفظ رمز الاستجابة السريعة الخاص بك",
+  "permissionPhotosOpenSettings": "إعدادات",
+  "permissionFailedSnack": "فشل طلب الإذن: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet الهندسة المعمارية • القفزات المتعددة للتخزين وإعادة التوجيه",
+  "onboardingSkip": "يتخطى",
+  "onboardingNext": "التالي",
+  "onboardingStart": "ابدأ",
+  "onboardingWelcomeTitle": "مرحبًا بك في ResilNet",
+  "onboardingWelcomeBody": "قم بالدردشة على ResilNet عبر شبكة متداخلة — حتى بدون الاتصال بالإنترنت",
+  "onboardingFriendsTitle": "أضف أصدقاء بسهولة",
+  "onboardingFriendsBody": "قم بمشاركة QR من Identity، أو قم بمسح QR الخاص بصديق لتبادل المفاتيح العامة",
+  "onboardingChannelsTitle": "دردشة مشفرة + القنوات القريبة",
+  "onboardingChannelsBody": "قم بتبديل #mesh / Area (geohash) للعثور على أقران قريبين - تظل الرسائل E2EE عبر شبكة BLE وNostr",
+  "chatTitle": "الدردشة (E2EE)",
+  "chatScanTooltip": "مسح QR لإضافة نظير",
+  "chatBlockTooltip": "حظر هذا المرسل",
+  "chatBlockedSnack": "محظور: لا توجد إخطارات / لا يوجد ترحيل",
+  "chatAliasTooltip": "تعيين اللقب",
+  "chatReceiverPemLabel": "المفتاح العام للمستلم (PEM)",
+  "chatReceiverPemHint": "الصق المفتاح العام لصديقك (من ملف QR / المشترك)",
+  "chatNeedPeerKey": "قم بمسح QR الخاص بهذا النظير أولاً (يتطلب المفتاح العام الذي تم التحقق منه)",
+  "chatPeerKeyMismatch": "المفتاح العام المخزن لا يتطابق مع معرف النظير هذا",
+  "chatVoiceFailed": "تعذر تسجيل الصوت: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "تعذر تشغيل الملاحظة الصوتية: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "تشغيل الملاحظة الصوتية",
+  "chatPauseVoice": "يوقف",
+  "chatVoiceLabelSent": "🎤 ملاحظة صوتية (مختومة)",
+  "chatVoiceLabel": "🎤 ملاحظة صوتية",
+  "chatDecryptFailed": "[فشل فك التشفير]",
+  "chatSentSealed": "[مختومة • قيراط={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[مختوم]",
+  "chatComposeHint": "اكتب رسالة... (مختومة عند الإرسال)",
+  "chatEmptyThread": "لا توجد رسائل حتى الآن\nاكتب أدناه لإرسال عبر الشبكة",
+  "chatLoadFailed": "تعذر تحميل المحادثة: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "الرموز التعبيرية",
+  "statusPending": "قيد الانتظار",
+  "statusSent": "مرسل",
+  "statusRelayed": "ترحيل",
+  "statusDelivered": "تم التوصيل",
+  "statusRead": "يقرأ",
+  "statusFailed": "فشل",
+  "chatCopy": "ينسخ",
+  "chatDeleteLocal": "الحذف على هذا الجهاز",
+  "chatDeletedLocalSnack": "تم الحذف على هذا الجهاز",
+  "chatRetry": "أعد المحاولة",
+  "chatSendFailed": "لم يتم التسليم — اضغط على إعادة المحاولة",
+  "chatImageNeedInternet": "اتصل بالإنترنت لإرسال الصور",
+  "chatImageTooLargeOnline": "لا يمكن ضغط الصورة بدرجة كافية لإرسالها",
+  "chatOpenLinkFailed": "لا يمكن فتح الرابط",
+  "identityTitle": "هوية",
+  "identityScanTooltip": "مسح QR بالكاميرا",
+  "identityCopiedHash": "تم نسخ تجزئة المفتاح العام",
+  "identityPeerSaved": "تم حفظ النظير من QR",
+  "identityGalleryDenied": "تم رفض إذن مكتبة الصور",
+  "identityQrSaved": "تم حفظ QR في مكتبة الصور",
+  "identityQrSaveFailed": "تعذر حفظ QR: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "أعضاء الشبكة",
+  "qrScanTitle": "مسح QR لإضافة صديق",
+  "qrInvalid": "فشل المسح: QR غير صالح",
+  "qrIdKeyMismatch": "تم رفض QR: المعرف لا يتطابق مع المفتاح العام",
+  "qrCameraNotReady": "الكاميرا غير جاهزة",
+  "qrRetrySettings": "حاول مرة أخرى / افتح الإعدادات",
+  "qrCameraOpenFailed": "تعذر فتح الكاميرا: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "قم بمحاذاة رمز الاستجابة السريعة داخل الإطار",
+  "firmwareDownloadTitle": "قم بتنزيل البرنامج الثابت ESP32",
+  "firmwareSourceOnline": "الأحدث (عبر الإنترنت)",
+  "firmwareSourceCached": "نسخة محفوظة (غير متصل)",
+  "firmwareSourceBaseline": "خط الأساس المجمع (غير متصل)",
+  "firmwareSourceUnavailable": "لا توجد برامج ثابتة متاحة",
+  "firmwareBaselineIncompatible": "البرامج الثابتة المجمعة قديمة جدًا — اتصل بالإنترنت لتنزيل إصدار أحدث",
+  "firmwareChecksumFailed": "فشل التحقق من سلامة البرامج الثابتة — تم حظر الوميض",
+  "firmwareReadyFromSource": "البرامج الثابتة جاهزة: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "ينعش",
+  "peersBlocked": "محظور",
+  "peersNearbyBle": "قريب (BLE)",
+  "peersRecentlyOnline": "مؤخرا على الانترنت",
+  "peersOnlineInArea": "اون لاين في المنطقة",
+  "peersSeenMinutesAgo": "تمت المشاهدة منذ {minutes} دقيقة",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "غير متصل",
+  "peersBlockedSnack": "تم حظر {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "غير محظور",
+  "peersEmpty": "لا يوجد أعضاء في قاعدة البيانات حتى الآن\nقم بمسح QR ضوئيًا أو انتظر اكتشاف الشبكة BLE",
+  "peersOpenChat": "افتح الدردشة",
+  "peersBlockAction": "حاجز",
+  "peersUnblockAction": "إلغاء الحظر",
+  "channelPickerTooltip": "دردشة / #شبكة / منطقة",
+  "locationPickerTooltip": "قناة الموقع",
+  "transportPickerTooltip": "شبكة / إنترنت / تلقائي",
+  "onlinePeopleTooltip": "الناس على الانترنت",
+  "unreadDirectsTooltipEmpty": "رسائل خاصة",
+  "unreadDirectsTooltip": "{count} الرسائل الخاصة غير المقروءة",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "الناس",
+  "onlinePeopleEmpty": "لا يوجد أحد هنا على الإنترنت حتى الآن",
+  "onlinePeopleCount": "{count} متصل",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · قريب + منطقة",
+  "peerOnlineMeshTitle": "شخص قريب على الشبكة",
+  "peerOnlineMeshBody": "{name} قريب على الشبكة",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "شخص ما على الإنترنت في المنطقة",
+  "peerOnlineAreaBody": "{name} متصل عبر Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#قنوات الموقع",
+  "channelPinsTitle": "مثبت",
+  "channelPinsHint": "قم بتثبيت القنوات التي تستخدمها كثيرًا، حيث تظل في الأعلى",
+  "channelPinTooltip": "ثبت هذه القناة",
+  "channelUnpinTooltip": "إزالة التثبيت",
+  "locationSheetIntro": "قم بالدردشة مع الأشخاص القريبين باستخدام Geohash الخشن - وليس نظام تحديد المواقع العالمي (GPS) الدقيق. يستخدم التواجد على الإنترنت مفاتيح Nostr مجهولة.",
+  "locationMeshSubtitle": "#بلوتوث • ~10-50 م",
+  "locationTeleportHint": "#جيوهاش",
+  "locationTeleport": "النقل الفوري",
+  "homeComposeHint": "الرسالة {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "أرسل إلى {channel} - عام",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "تنتهي في",
+  "voiceRecordTapToStart": "انقر لتسجيل الرسالة الصوتية",
+  "voiceRecordTooShort": "التسجيل قصير جدًا — حاول مرة أخرى",
+  "voiceRecordFailed": "تعذر حفظ التسجيل - حاول مرة أخرى",
+  "voicePttHold": "اضغط للتسجيل",
+  "voicePttRelease": "الافراج عن المعاينة",
+  "voicePttRecording": "تسجيل…",
+  "voicePttDraftReady": "مذكرة صوتية جاهزة",
+  "voicePttDiscard": "ينبذ",
+  "voicePttReRecord": "سجل مرة أخرى",
+  "voicePttSend": "أرسل ملاحظة صوتية",
+  "voicePttPlayPreview": "تشغيل المعاينة",
+  "voicePttStopPreview": "إيقاف المعاينة",
+  "noticesBackfilling": "جارٍ تحميل الإشعارات…",
+  "noticesNostrOnline": "Nostr متصل",
+  "noticesNostrOffline": "Nostr غير متصل — تحتاج النشرة إلى الإنترنت",
+  "noticesBackfillLoaded": "تم تحميل إشعارات {count}",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "لا يمكن نشر إشعار إلى مجلس المنطقة. تحقق من اتصال Nostr.",
+  "noticeMeshPublishNoLink": "تم الحفظ محليًا. اتصل بجهاز راديو شبكي قريب (أو بوابة Wi‑Fi) حتى يتمكن الآخرون من استقباله.",
+  "noticeMeshPublishSent": "تم إرسال النشرة إلى {count} جهاز (أجهزة) مجاورة عبر BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "تمت رؤية أجهزة الراديو القريبة، ولكن فشلت الكتابة BLE. اترك كلا التطبيقين مفتوحين على شاشة الإشعارات وحاول مرة أخرى (أو استخدم مرحل ESP32).",
+  "noticeMeshPublishNoGatt": "جهاز الاستقبال BLE لهذا الجهاز غير جاهز. قم بتبديل البلوتوث وإعادة فتح الإشعارات.",
+  "noticeDelete": "حذف الإشعار",
+  "noticeDeleteConfirmTitle": "هل تريد حذف هذا الإشعار؟",
+  "noticeDeleteLocalOnlyBody": "يؤدي هذا إلى إزالته فقط على هذا الجهاز. وسيظل بإمكان الآخرين الذين استلموها بالفعل رؤيتها.",
+  "noticeDeleted": "تم حذف الإشعار",
+  "chatNoticeHidden": "إشعار المنطقة - الإشعارات المفتوحة",
+  "identityDisplayNameTitle": "اسم العرض",
+  "identitySaveName": "حفظ الاسم",
+  "identityUserIdLabel": "معرف المستخدم (تجزئة المفتاح العام)",
+  "identityCopyHashTooltip": "انسخ تجزئة المفتاح العام",
+  "identityMyQrTitle": "QR الخاص بي (المعرف + pubKey + الاسم)",
+  "identityQrFailed": "لا يمكن إنشاء QR\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "توفير…",
+  "identitySaveQr": "حفظ QR إلى مكتبة الصور",
+  "identityOpenScanner": "افتح الكاميرا لمسح QR",
+  "identityQrHelp": "اطلب من صديق أن يقوم بمسح هذا ضوئيًا لحفظ مفتاحك العام و(إذا لزم الأمر) تعيينك كمصدر معتمد",
+  "identityChatTip": "نصيحة: يمكنك أيضًا مسح QR في الدردشة لإضافة مفتاح عام لـ E2EE",
+  "infoOpen": "حول / معلومات",
+  "docsGuideTitle": "دليل المستخدم",
+  "docsGuideSubtitle": "يفتح في المتصفح",
+  "docsOpenAction": "دليل مفتوح",
+  "docsOpenFailed": "لا يمكن فتح دليل المستخدم",
+  "firmwareOtaGuideTitle": "دليل الفلاش وبروتوكول OTA",
+  "firmwareOtaGuideSubtitle": "يفتح دليل الويب - تنزيلات .bin والخطوات الكاملة",
+  "firmwareWebDownloadsTitle": "تنزيلات البرامج الثابتة على الويب",
+  "firmwareWebDownloadsSubtitle": "الروابط والمجاميع الاختبارية لكل إصدار على موقع المستندات",
+  "inviteCopyShortLink": "انسخ الرابط القصير",
+  "inviteShareLink": "مشاركة الرابط",
+  "inviteShowFullLink": "الرابط الكامل",
+  "inviteCopyFullLink": "انسخ الرابط كاملا",
+  "inviteLinkCopied": "تم نسخ الرابط",
+  "inviteLongPressHint": "اضغط لفترة طويلة لإجراءات الارتباط",
+  "inviteSendInChat": "إرسال في دردشة ResilNet...",
+  "inviteSendInChatHint": "فقط الأشخاص الذين لديك بالفعل مفتاح عام لهم",
+  "inviteSendInChatEmpty": "لا توجد محادثات قابلة للمراسلة حتى الآن.\nامسح QR ضوئيًا، أو افتح المنطقة/الشبكة، أو شارك الرابط خارج التطبيق أولاً.",
+  "inviteSentToChat": "تم إرسال الدعوة في الدردشة",
+  "infoTabInfo": "معلومات",
+  "infoTabSettingsHint": "افتح الإعدادات من القائمة الخاصة بأدوات اللغة وE2EE والبيانات",
+  "infoHowToTitle": "كيفية الاستخدام",
+  "infoHowToBody": "• اضغط على أيقونة القناة لتبديل الدردشة / #mesh / المنطقة\n• اضغط على المكان لاختيار حجم Geohash\n• اضغط على الأشخاص للأعضاء أو المتصلين بالإنترنت\n• افتح Identity/QR من ⋮ لتبادل المفاتيح شخصيًا\n• تقوم المنطقة \"العامة\" بإرسال E2EE مختومًا إلى كل نظير عبر الإنترنت - وليس غرفة نص عادي",
+  "infoFeaturesTitle": "سمات",
+  "infoFeatureOffline": "المراسلة دون اتصال بالإنترنت عبر تقنية Bluetooth منخفضة الطاقة",
+  "infoFeatureE2ee": "التشفير من طرف إلى طرف باستخدام RSA-OAEP + AES-GCM (بدون ضوضاء)",
+  "infoFeatureMultihop": "يمكن للرسائل أن تنتقل عبر أقرانها القريبين لتذهب أبعد",
+  "infoFeatureBridge": "شبكة هجينة ↔ إنترنت (Nostr) للأظرف المختومة",
+  "infoFeatureGeo": "قنوات Geohash المحلية للأشخاص القريبين (discovery UX)",
+  "infoFeatureNotices": "إشعارات بانتهاء صلاحية #الشبكة والمنطقة",
+  "infoPrivacyTitle": "خصوصية",
+  "infoPrivacyNoRoom": "لا توجد قرية نصية / غرفة دردشة عامة على السلك",
+  "infoPrivacyFanout": "إرسال المنطقة = توزيع موسع بنسبة 1:1 إلى النظراء الذين لديهم مفاتيح عامة معروفة",
+  "infoPrivacyPresence": "يستخدم التواجد في منطقة الإنترنت مفاتيح Nostr المؤقتة",
+  "infoSymbolsTitle": "الرموز",
+  "infoSymBle": "رابط بلوتوث مباشر",
+  "infoSymMesh": "يمكن الوصول إليه عبر الشبكة (الآخرون للأمام)",
+  "infoSymInternet": "عبر الإنترنت (Nostr) — مظاريف مختومة",
+  "infoSymBridge": "وصلت عبر مسار جسر شبكة الإنترنت",
+  "infoSymOffline": "غير متصل - لا يمكن الوصول إليه الآن",
+  "infoSymInArea": "في منطقة قناة الموقع هذا",
+  "infoSymE2eeOk": "جلسة مشفرة من طرف إلى طرف",
+  "infoSymE2eeFail": "التشفير غير متاح — لا ترسل نصًا حساسًا",
+  "infoSymVerified": "مفتاح تم التحقق من الهوية/ معروف",
+  "infoSymBlocked": "محظور",
+  "infoSymUnread": "رسالة خاصة غير مقروءة",
+  "infoEmergencyTitle": "وضع الطوارئ",
+  "infoEmergencyBody": "انقر ثلاث مرات على العنوان ResilNet على الشاشة الرئيسية لمسح الرسائل والمفاتيح والهوية على هذا الجهاز.",
+  "infoLegendNote": "تم توثيق بعض أيقونات المسار هنا من أجل الوضوح؛ تظل علامات التسليم في الدردشة هي حالة الإرسال الأساسية.",
+  "dangerZoneTitle": "منطقة الخطر",
+  "dangerZoneSubtitle": "يحذف الرسائل ومفاتيح التشفير وهوية Nostr والأقران والألقاب الموجودة على هذا الجهاز. سوف تقوم بالإعداد مرة أخرى.",
+  "panicWipeTitle": "مسح الطوارئ",
+  "panicWipeSubtitle": "مسح كل شيء محليًا - مثل النقر الثلاثي على عنوان المنزل (النقر المزدوج لتحديث أجهزة الراديو)",
+  "panicWipeConfirmTitle": "هل تريد مسح جميع البيانات المحلية؟",
+  "panicWipeConfirmBody": "يؤدي هذا إلى حذف الدردشات والمفاتيح والهوية الموجودة على هذا الهاتف نهائيًا.\nيجب على الزملاء إعادة استبدال مفاتيح QR بهويتك الجديدة.\nلا يمكن التراجع عن هذا.",
+  "panicWipeAction": "امسح كل شيء",
+  "panicWipeSnack": "تم مسح الهوية المحلية — تم الإعداد مرة أخرى",
+  "panicWipeFailed": "فشل المسح: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "جسر شبكي",
+  "meshBridgeSubtitle": "عند التشغيل (افتراضي)، قد تستخدم الأظرف المختومة كلاً من الشبكة BLE والإنترنت (Nostr) معًا حتى تتمكن الجزر الشبكية القريبة من الاتصال. عند إيقاف التشغيل، يستخدم الإرسال مسارًا واحدًا فقط - ولا يضع نصًا عاديًا على السلك مطلقًا.",
+  "favoritesTitle": "المفضلة",
+  "favoritesAdd": "أضف إلى المفضلة",
+  "favoritesRemove": "إزالة من المفضلة",
+  "favoritesEmpty": "لا توجد مفضلات بعد - قم بتمييز أحد الأقران من قائمة الأعضاء",
+  "favoritesNearbyTitle": "المفضلة القريبة",
+  "favoritesNearbyBody": "{name} قريب على الشبكة",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "المفضلة في المنطقة",
+  "favoritesInAreaBody": "{name} موجود في هذه المنطقة",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "طوبولوجيا الشبكة",
+  "topologySubtitle": "تلميحات الأقران والاتصال من شبكة الإعلان (للقراءة فقط)",
+  "topologyConnectedNow": "متصل الآن (BLE)",
+  "topologyNearby": "قريب (BLE)",
+  "topologyKnown": "أقرانهم المعروفون",
+  "topologyEmpty": "لم يتعلم أي أقران حتى الآن — ابق على مقربة منك مع تشغيل BLE",
+  "topologyYou": "أنت",
+  "topologyStats": "{peers} أقران · روابط {links}",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "تم تقديره من خلال اكتشاف الشبكات القريبة — يتم تمييز جهازك. اضغط على أحد الأقران لفتح الدردشة.",
+  "topologyOpen": "طوبولوجيا الشبكة",
+  "slashHelpTitle": "الأوامر",
+  "slashHelpBody": "/ مساعدة - هذه القائمة\n/ من — الأشخاص المتصلين بالإنترنت في القناة الحالية\n/drop <text> - قم بتثبيت إشعار مختوم هنا (مروحة E2EE)\n\nالدليل الكامل: استخدم الدليل المفتوح أدناه، أو الإعدادات → دليل المستخدم.",
+  "slashWhoEmpty": "لا يوجد أحد متواجد في هذه القناة الآن",
+  "slashWhoTitle": "متصل بالإنترنت ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "الاستخدام: / قم بإسقاط نص الملاحظة الخاصة بك",
+  "slashDropDone": "تم إسقاط الإشعار على {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "أمر غير معروف - حاول / مساعدة",
+  "announceOpen": "إعلانات",
+  "announceTitle": "الإعلانات",
+  "announceEmpty": "لا توجد لوحات حتى الآن — أنشئ واحدة لنشر الإشعارات المقفلة أو المفتوحة",
+  "announceCreate": "إنشاء لوحة",
+  "announceCreateHint": "اسم المجلس",
+  "announceDefaultTitle": "مجلس المجتمع",
+  "announceSettings": "إعدادات اللوحة",
+  "announceAllowLocked": "السماح بالمشاركات المقفلة (المشفرة).",
+  "announceAllowLockedSub": "مشفر بمفتاح اللوحة - يحتاج القراء إلى الوصول",
+  "announceAllowOpen": "السماح بالمشاركات المفتوحة (النص العادي).",
+  "announceAllowOpenSub": "ليس E2EE - يمكن قراءته على الشبكة/المرحلات. إيقاف بشكل افتراضي.",
+  "announceComposeHint": "أكتب إعلان...",
+  "announceMediaInternetOnly": "يتم إرسال الإعلانات المصورة/الصوتية عبر الإنترنت (وليس BLE)",
+  "announceNeedInternet": "اتصل بالإنترنت لإرسال إعلانات الصور أو الصوت",
+  "announceVoiceFailed": "تعذر تسجيل الصوت: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "الصورة كبيرة جدًا (الحد الأقصى ~180 كيلوبايت)",
+  "announcePlayVoice": "تشغيل الملاحظة الصوتية",
+  "announceImageLabel": "📷 صورة",
+  "announceAudioLabel": "🎤 ملاحظة صوتية",
+  "announceModeLocked": "مغلق",
+  "announceModeOpen": "يفتح",
+  "announceOpenBadge": "مفتوح · غير مشفر",
+  "announceLockedBadge": "مغلق",
+  "announceLockedPlaceholder": "مشفرة - طلب الوصول للقراءة",
+  "announceRequestAccess": "طلب الوصول",
+  "announceRequestSent": "تم إرسال طلب الوصول إلى مالك اللوحة",
+  "announceRequestFailed": "تعذر طلب الوصول (بحاجة إلى المفتاح العام للمالك)",
+  "announceOpenConfirmTitle": "هل تريد النشر بدون تشفير؟",
+  "announceOpenConfirmBody": "المشاركات المفتوحة ليست E2EE. يمكن لأي شخص على المسار (الشبكة/المرحلات) قراءتها. يكمل؟",
+  "announcePostAction": "بريد",
+  "announcePendingRequests": "طلبات الوصول",
+  "announceApprove": "يعتمد",
+  "announceDeny": "ينكر",
+  "announceGranted": "يمكنك قراءة المشاركات المقفلة في هذا المنتدى",
+  "announceOwner": "أنت تملك هذا المجلس",
+  "announceCopyInvite": "انسخ نص الدعوة",
+  "announceShowInviteQr": "إظهار دعوة QR",
+  "announceScanInviteQr": "مسح لوحة دعوة QR",
+  "announceFollow": "متابعة اللوحة من الدعوة",
+  "announceFollowHint": "الصق نص الدعوة أو الرابط ResilNet من المالك",
+  "announceFollowOk": "المجلس التالي",
+  "announceFollowOkNamed": "أتابع الآن \"{title}\"",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "الدعوة غير صالحة أو تالفة",
+  "announceInviteCopied": "تم نسخ نص الدعوة",
+  "announceInviteSaveQr": "حفظ ريال قطري",
+  "announceInviteShare": "مشاركة الدعوة",
+  "announceFollowFromCompose": "تم اكتشاف دعوة مجلس الإدارة في مربع الرسالة",
+  "peerConfirmAddTitle": "إضافة عضو في الشبكة؟",
+  "peerConfirmAddBody": "هل ترغب في إضافة \"{name}\" مع مفتاحهم العام حتى تتمكن من مراسلتهم بشكل خاص؟",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "إضافة عضو",
+  "peerAddedOk": "تمت إضافة {name} إلى أعضاء الشبكة",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "تم اكتشاف الهوية/المفتاح العام في مربع الرسالة",
+  "peerHashCopied": "تم نسخ تجزئة المفتاح العام",
+  "peerHashOpenChat": "افتح الدردشة",
+  "peerHashAddHint": "تم نسخ التجزئة. اطلب منهم مشاركة رابط هويتهم أو QR حتى تتمكن من إضافة المفتاح العام الكامل لـ E2EE.",
+  "peerQrNoCode": "لم يتم العثور على ResilNet QR في هذه الصورة",
+  "identityInviteSharePreamble": "هوية ResilNet: \"{name}\"\nافتح الرابط أو الصقه في الدردشة → إضافة عضو\nأو مسح الهوية QR.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "مشاركة رابط الهوية",
+  "identityInviteCopied": "تم نسخ رابط الهوية",
+  "announceInviteSharePreamble": "دعوة مجلس الإدارة: \"{title}\"\nافتح ResilNet → لوحات المجتمع → متابعة من الدعوة\nأو قم بمسح QR / اضغط على الرابط أدناه.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "اتبع هذا المجلس؟",
+  "announceConfirmFollowBody": "هل تريد متابعة \"{title}\" من هذه الدعوة؟",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "يتبع"
+}

@@ -135,7 +135,7 @@
   "send": "Send",
   "settings": "Settings",
   "language": "Language",
-  "languageSubtitle": "Follow the device language when Thai or English; other system languages use English. Or lock Thai / English here.",
+  "languageSubtitle": "By default the app follows your phone language (when supported). Other languages fall back to English. You can also lock a language here.",
   "languageSystem": "System default",
   "languageThai": "Thai",
   "languageEnglish": "English",
@@ -204,13 +204,17 @@
   "geoTeleportOk": "Area set to {channel}",
   "@geoTeleportOk": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "geoManualActive": "Manual area: {channel} (GPS refresh will override)",
   "@geoManualActive": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "geoEmptyNoNostr": "Nostr not ready — tap Reconnect (0/0 until init succeeds)",
@@ -218,7 +222,9 @@
   "geoEmptyWaiting": "No one in {channel} yet — keep Area + Internet open on both devices and wait ~60s",
   "@geoEmptyWaiting": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "geoChannelFallback": "#area",
@@ -242,19 +248,25 @@
   "noticeAnonBlocked": "Blocked {anon}",
   "@noticeAnonBlocked": {
     "placeholders": {
-      "anon": { "type": "String" }
+      "anon": {
+        "type": "String"
+      }
     }
   },
   "noticeAnonHugMessage": "* hugs {anon} *",
   "@noticeAnonHugMessage": {
     "placeholders": {
-      "anon": { "type": "String" }
+      "anon": {
+        "type": "String"
+      }
     }
   },
   "noticeAnonSlapMessage": "* slaps {anon} *",
   "@noticeAnonSlapMessage": {
     "placeholders": {
-      "anon": { "type": "String" }
+      "anon": {
+        "type": "String"
+      }
     }
   },
   "geoReconnectNostr": "Reconnect Nostr",
@@ -263,8 +275,12 @@
   "nostrStatusOnline": "Connected {connected}/{total}",
   "@nostrStatusOnline": {
     "placeholders": {
-      "connected": { "type": "int" },
-      "total": { "type": "int" }
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "nostrStatusOffline": "Offline — relays listed but none connected",
@@ -273,29 +289,41 @@
   "nostrReconnectOk": "Nostr connected ({connected}/{total})",
   "@nostrReconnectOk": {
     "placeholders": {
-      "connected": { "type": "int" },
-      "total": { "type": "int" }
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "nostrReconnectFailed": "Still offline — check Wi‑Fi/cellular or try again",
   "nostrReconnectFailedDetail": "Failed: {error}",
   "@nostrReconnectFailedDetail": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "nostrReconnecting": "Connecting to relays…",
   "geoDiscoveryStatus": "{channel} · Nostr {relays}",
   "@geoDiscoveryStatus": {
     "placeholders": {
-      "channel": { "type": "String" },
-      "relays": { "type": "String" }
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
     }
   },
   "geoPeerInternetSubtitle": "Internet (Nostr) in {channel} • sealed chat ready",
   "@geoPeerInternetSubtitle": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "transportModeTitle": "Area transport",
@@ -350,8 +378,12 @@
   "mtBridgeStatusLine": "{mode} · {transport}",
   "@mtBridgeStatusLine": {
     "placeholders": {
-      "mode": { "type": "String" },
-      "transport": { "type": "String" }
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
     }
   },
   "mtBridgeTransportDemo": "Demo (logging)",
@@ -449,7 +481,9 @@
   "geoPublicComposeHint": "Send to {channel} — public",
   "@geoPublicComposeHint": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "settingsClearTitle": "Clear all messages",
@@ -474,7 +508,9 @@
   "meshBlePeersNearby": "BLE mesh — {count} phone(s) nearby",
   "@meshBlePeersNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "meshBleNeedsPermission": "BLE: permission required",
@@ -484,9 +520,15 @@
   "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
   "@meshBleStatusDetail": {
     "placeholders": {
-      "bt": { "type": "String" },
-      "loc": { "type": "String" },
-      "ble": { "type": "String" }
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
     }
   },
   "meshBleEnsureAction": "Check permissions & start BLE",
@@ -601,7 +643,9 @@
   "chatLoadFailed": "Could not load conversation: {error}",
   "@chatLoadFailed": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "chatEmojiTooltip": "Emoji",
@@ -680,7 +724,9 @@
   "peersBlockedSnack": "Blocked {id}",
   "@peersBlockedSnack": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "peersUnblockedSnack": "Unblocked",
@@ -696,7 +742,9 @@
   "unreadDirectsTooltip": "{count} unread private messages",
   "@unreadDirectsTooltip": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "onlinePeopleTitle": "people",
@@ -704,7 +752,9 @@
   "onlinePeopleCount": "{count} online",
   "@onlinePeopleCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "onlinePeopleDirectsChannel": "1:1 · nearby + area",
@@ -712,14 +762,18 @@
   "peerOnlineMeshBody": "{name} is nearby on mesh",
   "@peerOnlineMeshBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "peerOnlineAreaTitle": "Someone online in area",
   "peerOnlineAreaBody": "{name} is online via Nostr",
   "@peerOnlineAreaBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "locationSheetTitle": "#location channels",
@@ -734,13 +788,17 @@
   "homeComposeHint": "Message {channel}",
   "@homeComposeHint": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "homeComposePublicHint": "Send to {channel} — public",
   "@homeComposePublicHint": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "messageExpiryTitle": "expires in",
@@ -762,7 +820,9 @@
   "noticesBackfillLoaded": "Loaded {count} notices",
   "@noticesBackfillLoaded": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noticePublishFailed": "Could not publish notice to the area board. Check Nostr connection.",
@@ -770,7 +830,9 @@
   "noticeMeshPublishSent": "Bulletin sent to {count} nearby device(s) over BLE.",
   "@noticeMeshPublishSent": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noticeMeshPublishBleFailed": "Nearby radios seen, but BLE write failed. Keep both apps open on the Notices screen and try again (or use an ESP32 relay).",
@@ -788,7 +850,9 @@
   "identityQrFailed": "Could not create QR\n{error}",
   "@identityQrFailed": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "identitySaving": "Saving…",
@@ -871,14 +935,18 @@
   "favoritesNearbyBody": "{name} is nearby on mesh",
   "@favoritesNearbyBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "favoritesInAreaTitle": "Favorite in area",
   "favoritesInAreaBody": "{name} is online in this area",
   "@favoritesInAreaBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "topologyTitle": "Mesh topology",
@@ -891,8 +959,12 @@
   "topologyStats": "{peers} peers · {links} links",
   "@topologyStats": {
     "placeholders": {
-      "peers": {"type": "int"},
-      "links": {"type": "int"}
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
     }
   },
   "topologyGraphHint": "Estimated from nearby mesh discovery — your device is highlighted. Tap a peer to open chat.",
@@ -903,14 +975,18 @@
   "slashWhoTitle": "Online ({count})",
   "@slashWhoTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "slashDropNeedText": "Usage: /drop your note text",
   "slashDropDone": "Dropped notice on {channel}",
   "@slashDropDone": {
     "placeholders": {
-      "channel": { "type": "String" }
+      "channel": {
+        "type": "String"
+      }
     }
   },
   "slashUnknown": "Unknown command — try /help",
@@ -930,7 +1006,11 @@
   "announceNeedInternet": "Connect to the internet to send photo or voice announcements",
   "announceVoiceFailed": "Could not record voice: {error}",
   "@announceVoiceFailed": {
-    "placeholders": { "error": { "type": "String" } }
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   },
   "announceImageTooLarge": "Image is too large (max ~180 KB)",
   "announcePlayVoice": "Play voice note",
@@ -961,7 +1041,9 @@
   "announceFollowOkNamed": "Now following “{title}”",
   "@announceFollowOkNamed": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "announceFollowFail": "Invite is invalid or damaged",
@@ -973,14 +1055,18 @@
   "peerConfirmAddBody": "Add “{name}” with their public key so you can message them privately?",
   "@peerConfirmAddBody": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "peerConfirmAdd": "Add member",
   "peerAddedOk": "Added {name} to network members",
   "@peerAddedOk": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "peerAddFromCompose": "Identity / public key detected in the message box",
@@ -991,7 +1077,9 @@
   "identityInviteSharePreamble": "ResilNet identity: “{name}”\nOpen the link or paste it in chat → Add member\nOr scan the identity QR.",
   "@identityInviteSharePreamble": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "identityShareInvite": "Share identity link",
@@ -999,14 +1087,18 @@
   "announceInviteSharePreamble": "Board invite: “{title}”\nOpen ResilNet → Community boards → Follow from invite\nOr scan the QR / tap the link below.",
   "@announceInviteSharePreamble": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "announceConfirmFollowTitle": "Follow this board?",
   "announceConfirmFollowBody": "Follow “{title}” from this invite?",
   "@announceConfirmFollowBody": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "announceConfirmFollow": "Follow"

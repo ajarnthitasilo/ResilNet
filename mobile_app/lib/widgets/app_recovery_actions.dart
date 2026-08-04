@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/app_recovery.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 /// Run Soft / Hard / Session recovery with a blocking progress dialog.
 Future<void> runAppRecoveryAction(
@@ -15,7 +16,7 @@ Future<void> runAppRecoveryAction(
   final l10n = context.l10n;
   if (s.recovering) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.appRecoveryBusy)),
+      GlassSnackBar(content: Text(l10n.appRecoveryBusy)),
     );
     return;
   }
@@ -42,7 +43,7 @@ Future<void> runAppRecoveryAction(
     builder: (ctx) {
       return PopScope(
         canPop: false,
-        child: AlertDialog(
+        child: GlassAlertDialog(
           content: Row(
             children: [
               const SizedBox(
@@ -80,7 +81,7 @@ Future<void> runAppRecoveryAction(
     AppRecoveryOutcome.failed => l10n.appRecoveryFailed,
   };
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
+    GlassSnackBar(
       content: Text(message),
       duration: const Duration(seconds: 3),
     ),

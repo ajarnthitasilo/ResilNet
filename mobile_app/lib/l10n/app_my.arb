@@ -1,0 +1,1105 @@
+{
+  "@@locale": "my",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "ပြန်လည်စတင်နေသည် ResilNet…",
+  "appRefreshed": "ပြန်လည်စတင်သည် — ရေဒီယိုများနှင့် ရှာဖွေတွေ့ရှိမှု ပြန်လည်စတင်ခဲ့သည်။",
+  "appRefreshFailed": "ပြန်လည်စတင်ခြင်း မအောင်မြင်ပါ- {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "နှစ်ချက်တို့ပါ = ပျော့ပျောင်းသော ပြန်လည်စတင်ခြင်း။ Long-press = ခက်ခက်ခဲခဲ ပြန်လည်ရယူသည်။ Triple-tap = အရေးပေါ် သုတ်ခြင်း။",
+  "softRefreshTipTitle": "အကယ်၍ ResilNet သည် ပိတ်မိနေသည်ဟု ခံစားရသည်။",
+  "softRefreshTipBody": "ပျော့ပျောင်းသောရေဒီယို ResilNet refresh အတွက်နှစ်ချက်ထိပုတ်ပါ (ဘယ်ဘက်ထိပ်) ။ ပိတ်ဆို့နေဆဲဖြစ်ပါက: ခေါင်းစဉ်ကိုကြာမြင့်စွာနှိပ်ပါ ၊ ခက်ခဲသောပြန်လည်နာလန်ထူမှု (→သို့) Settings ကိုသုံးပါ ။ သုံးချက်နှိပ်ခြင်းသည် အရေးပေါ်သုတ်ခြင်းသာဖြစ်သည် ။",
+  "softRefreshTipGotIt": "နားလည်ပြီ",
+  "infoSoftRefreshTitle": "အက်ပ်သည် ကပ်ငြိနေပါက၊",
+  "infoSoftRefreshStepRefresh": "ResilNet (အပေါ်-ဘယ်) ကို နှစ်ချက်တို့ပြီး → နူးညံ့သော ပြန်လည်ဆန်းသစ်သော ရေဒီယိုများနှင့် အနီးနားရှိ လူများ",
+  "infoSoftRefreshStepHard": "ကပ်နေသေးလား။ ခေါင်းစဉ်ကို ကြာရှည်စွာ နှိပ်ပါ သို့မဟုတ် ⋮ / ဆက်တင်များ → ခက်ခဲစွာ ပြန်လည်ရယူပါ။",
+  "infoSoftRefreshStepWait": "ရလဒ် snackbar ကို စောင့်ပါ၊ ထို့နောက် ထပ်လုပ်ကြည့်ပါ။ ဆက်ရှင်ပြန်လည်သတ်မှတ်ခြင်းသည် သင့်သော့များကို သိမ်းဆည်းထားသည်။",
+  "infoSoftRefreshStepWipe": "Triple-tap = အရေးပေါ် သုတ်ခြင်း (ဒေသခံ ဒေတာကို ဖျက်သည်) — ရည်ရွယ်ချက်ရှိမှသာလျှင်",
+  "appRecoverySection": "အက်ပ်ပြန်လည်ရယူခြင်း။",
+  "appRecoverySectionSubtitle": "အက်ပ်ကို အေးခဲသွားသည်ဟု ခံစားရသည့်အခါ သုံးပါ။ Soft = ခေါင်းစဉ်ကို နှစ်ချက်တို့ပါ။ Hard recover က ပိုအားကောင်းတယ်။ စက်ရှင်ပြန်လည်သတ်မှတ်ခြင်းသည် သော့များကို ဖျက်ခြင်းမရှိဘဲ ဝန်ဆောင်မှုများကို ပြန်လည်စတင်သည်။",
+  "appHardRecoverAction": "ခက်ခက်ခဲခဲ ပြန်လည်ရယူပါ။",
+  "appHardRecovering": "ပြန်လည်ရယူရန်ခက်ခဲသည်...",
+  "appSessionResetAction": "သတ်မှတ်ချိန်ကို ပြန်လည်သတ်မှတ်ပါ။",
+  "appSessionResetRunning": "စက်ရှင်ကို ပြန်လည်သတ်မှတ်နေသည်...",
+  "appSessionResetConfirmTitle": "စက်ရှင်ကို ပြန်လည်သတ်မှတ်မလား။",
+  "appSessionResetConfirmBody": "ဤစက်ပစ္စည်းပေါ်ရှိ ResilNet ဝန်ဆောင်မှုများကို ပြန်လည်စတင်သည်။ သင်၏အထောက်အထားသော့များကို သိမ်းဆည်းထားသည်။",
+  "appRecoveryBusy": "ပြန်လည်ရယူရေး လုပ်ဆောင်နေပြီ…",
+  "appRecoveryOk": "ပြန်လည်ရယူခြင်း ပြီးပါပြီ။",
+  "appRecoveryPartial": "ပြန်လည်ရယူခြင်းသည် အချို့သောအဆင့်များကို ကျော်သွားသဖြင့် ပြီးသွားသည် — ပိတ်ထားပါက ထပ်စမ်းကြည့်ပါ။",
+  "appRecoveryFailed": "ပြန်လည်ရယူခြင်း မအောင်မြင်ပါ — Session reset လုပ်ကြည့်ပါ သို့မဟုတ် OS မှ အက်ပ်ကို အတင်းပိတ်ပါ။",
+  "localWifiTitle": "ဒေသဆိုင်ရာ Wi‑Fi",
+  "localWifiSubtitle": "အင်တာနက်မပါဘဲ အနီးနားရှိ စက်များကို လင့်ခ်ချိတ်ပါ — LAN တစ်ခုတွင် ရှိနေသကဲ့သို့ပင်။",
+  "localWifiNotGatewayHint": "ESP32 LoRa ဂိတ်ဝ SoftAP မဟုတ်ပါ။ ၎င်းသည် phone↔phone/LAN သာဖြစ်သည်။",
+  "localWifiUnavailable": "Local Wi‑Fi သည် အဆင်သင့်မဖြစ်သေးပါ — အက်ပ်စတင်ခြင်းကို စောင့်ပါ။",
+  "lxmfBridgeTitle": "Home node",
+  "lxmfBridgeSubtitle": "အလုံပိတ်ချတ်များကို ထပ်ဆင့်ပို့သော သင်၏ Wi‑Fi တွင် ရွေးချယ်နိုင်သော Mac သို့မဟုတ် Pi။ မူရင်းအတိုင်း ပိတ်ပါ။ အဆုံးမှ အဆုံး ကုဒ်ဝှက်ခြင်းကို အစားမထိုးပါ။",
+  "lxmfBridgeEnable": "home node ကိုသုံးပါ။",
+  "lxmfBridgeDisabledHint": "Bridge အက်ပ်ကို ဤကွန်ရက်ပေါ်တွင် Mac သို့မဟုတ် Pi ပေါ်တွင် လုပ်ဆောင်နေမှသာ ဖွင့်ပါ။",
+  "lxmfBridgeOnline": "အွန်လိုင်း — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "home node သို့ မရောက်နိုင်ပါ — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Home node လိပ်စာ",
+  "lxmfBridgeBaseUrlHelper": "အိုင်ပီသို့မဟုတ် http://အိုင်ပီ:port ကို — ဥပမာ 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "ရွယ်တူချင်း → LXMF dest (JSON)",
+  "lxmfBridgeRefresh": "အခြေအနေကို သိမ်းဆည်းပြီး ပြန်လည်စတင်ပါ။",
+  "lxmfBridgeLabHint": "အဆင့်မြင့်- labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "Home node ဆက်တင်များ",
+  "lxmfBridgeCheckConnection": "ချိတ်ဆက်မှုကို စစ်ဆေးပါ။",
+  "lxmfBridgeStatusOnline": "home node သို့ ချိတ်ဆက်ထားသည်။",
+  "lxmfBridgeStatusOffline": "Home node ကို ဆက်သွယ်၍မရပါ။",
+  "lxmfBridgeYourDest": "ဤ node ၏လိပ်စာ (သူငယ်ချင်းများနှင့်မျှဝေပါ)",
+  "lxmfBridgeCopyDest": "လိပ်စာကို ကူးယူပါ။",
+  "lxmfBridgeDestCopied": "လိပ်စာ ကူးယူထားပါသည်။",
+  "lxmfBridgeLinkedPeers": "ချိတ်ဆက်ထားသော သူငယ်ချင်းများ",
+  "lxmfBridgeLinkedPeersHint": "သူငယ်ချင်းတစ်ဦးစီသည် ၎င်းတို့၏ အိမ်လိပ်စာ တစ်ကြိမ် လိုအပ်ပါသည်။ ထို့နောက် အလုံပိတ်ချတ်များသည် ဤလမ်းကြောင်းကို အသုံးပြုနိုင်သည်။",
+  "lxmfBridgeNoLinks": "သူငယ်ချင်းများနှင့် ချိတ်ဆက်ထားခြင်း မရှိသေးပါ။",
+  "lxmfBridgeAddLink": "သူငယ်ချင်းတစ်ယောက်နဲ့ ချိတ်ဆက်ပါ။",
+  "lxmfBridgePickPeer": "သူငယ်ချင်း",
+  "lxmfBridgePeerDest": "သူတို့ရဲ့ home-node လိပ်စာ",
+  "lxmfBridgePeerDestHint": "၎င်းတို့၏ Home node မျက်နှာပြင်မှ စာလုံး ၃၂ လုံးပါသော ကုဒ်",
+  "lxmfBridgeInvalidDest": "ထိုလိပ်စာသည် တရားဝင်ပုံမပေါ်ပါ။ ၎င်းတို့၏ home node မှ ကုဒ်အပြည့်အစုံကို ကူးထည့်ပါ။",
+  "lxmfBridgeRemoveLink": "လင့်ခ်ဖြုတ်ပါ။",
+  "lxmfBridgeSaveLink": "သိမ်းဆည်းပါ။",
+  "lxmfBridgeLinkSaved": "သူငယ်ချင်းက ချိတ်ထားတယ်။",
+  "lxmfBridgeNoPeers": "စာတိုပေးပို့နိုင်သော အဆက်အသွယ်များ မရှိသေးပါ — မိတ်ဆွေတစ်ဦးဦးစွာ ပေါင်းထည့်ပါ။",
+  "lxmfBridgeHelp": "တံတားကို Mac/Pi ပေါ်တွင် လည်ပတ်နေပါစေ။ ဤလမ်းကြောင်းသည် သင့် LAN တွင်ရှိနေသည် — ၎င်းသည် LoRa မဟုတ်ဘဲ အင်တာနက် သို့မဟုတ် ဘလူးတုသ်ကွက်ကို အစားထိုးမည်မဟုတ်ပါ။",
+  "localWifiModeHotspot": "အနီးနား",
+  "localWifiModeRouter": "Router ပါ။",
+  "localWifiHotspotIntro": "စက်တစ်ခုသည် Personal Hotspot ကို မျှဝေသည်။ အခြားသူများသည် ထိုဟော့စပေါ့တွင် ပါဝင်ကြပြီး၊ ထို့နောက် ResilNet သည် ၎င်းတို့ကို ဒေသတွင်း ကွန်ရက်တွင် တွေ့ရှိသည်။",
+  "localWifiHostAction": "ကွန်ရက် (Host) ဖန်တီးပါ",
+  "localWifiJoinAction": "ကွန်ရက်ချိတ်ဆက်ပါ။",
+  "localWifiHostSteps": "1. iOS/Android ဆက်တင်များကိုဖွင့်ပြီး Personal Hotspot (သို့မဟုတ် Internet Sharing) ကိုဖွင့်ပါ။\n2. သူငယ်ချင်းများကို ဟော့စပေါ့အမည် (နှင့် စကားဝှက်) ကို ပြောပြပါ။\n3. ဤနေရာကိုပြန်လာပြီး “ဟော့စပေါ့ဖွင့်ထားသည် — စတင်စောင့်ဆိုင်းပါ” ကိုနှိပ်ပါ။",
+  "localWifiHostReady": "ဟော့စပေါ့ဖွင့်ထားသည် — စတင်စောင့်ဆိုင်းပါ။",
+  "localWifiHostWaiting": "ပါဝင်မည့်သူငယ်ချင်းများကို စောင့်နေသည်...",
+  "localWifiJoinSteps": "1. စနစ်ဆက်တင်များကိုဖွင့်ပြီး သင့်သူငယ်ချင်း၏ Personal Hotspot သို့ ဝင်ရောက်ပါ။\n2. ဤနေရာကိုပြန်လာပြီး “ကျွန်တော်ချိတ်ဆက်ထားသည် — ရှာဖွေရန်” ကိုနှိပ်ပါ။",
+  "localWifiJoinReady": "ငါချိတ်ဆက်နေသည် — ရှာဖွေမှု",
+  "localWifiRouterIntro": "စက်ပစ္စည်းတိုင်းကို တူညီသော Wi‑Fi router/AP သို့ ချိတ်ဆက်ပါ။ Router သည် အင်တာနက် မလိုအပ်ပါ — မျှဝေထားသော ဒေသတွင်း ကွန်ရက်တစ်ခုသာ ဖြစ်သည်။",
+  "localWifiRouterSearch": "ဤ Wi‑Fi တွင် ရှာပါ။",
+  "localWifiRefreshNetwork": "Wi‑Fi အချက်အလက်ကို ပြန်လည်စတင်ပါ။",
+  "localWifiRouterNoWifiTitle": "Wi‑Fi တွင် မရှိပါ။",
+  "localWifiRouterNoWifiBody": "စနစ်ဆက်တင်များတွင် router ၏ Wi‑Fi နှင့် ချိတ်ဆက်ပြီး ထပ်မံရှာဖွေပါ။",
+  "localWifiDiscovering": "ဒေသတွင်း Wi‑Fi တွင် ရှာဖွေနေသည်…",
+  "localWifiPeersFound": "ဤကွန်ရက်ရှိ စက်ပစ္စည်းများ",
+  "localWifiStop": "ရပ်",
+  "localWifiSsidUnknown": "Wi‑Fi အမည်ကို မရနိုင်ပါ။",
+  "localWifiStubBanner": "LAN ပေါက်ပေါက်ကို စောင့်နေသည်...",
+  "localWifiLiveBanner": "LAN ရှာဖွေတွေ့ရှိမှု တိုက်ရိုက်ထုတ်လွှင့်ခြင်း (UDP) — ဤ Wi‑Fi တွင် ကြေငြာ + အလုံပိတ်ချတ်လုပ်ပါ။",
+  "localWifiEmptyHotspot": "စက်များ မရှိသေးပါ။\nသူငယ်ချင်းများသည် သင့်ဟော့စပေါ့တွင် ပါဝင်ပြီး Local Network အသုံးပြုခွင့်ကို ခွင့်ပြုထားကြောင်း စစ်ဆေးပါ။",
+  "localWifiEmptyRouter": "စက်များ မရှိသေးပါ။\nSSID အတူတူလား။ Local Network ကို ခွင့်ပြုမလား။ အချို့သော router များသည် device-to-device traffic (AP isolation) ကို ပိတ်ဆို့ထားသည်။",
+  "localWifiIsolationHelp": "ငါတို့ဘာလို့ တစ်ယောက်နဲ့တစ်ယောက်မတွေ့နိုင်ရတာလဲ။",
+  "localWifiIsolationTitle": "Router သည် client များကို သီးခြားခွဲထုတ်နိုင်သည်။",
+  "localWifiIsolationBody": "AP/Client isolation (သို့မဟုတ် Guest network) ကိုဖွင့်ထားပါက၊ တူညီသော Wi‑Fi မှ ဖုန်းများသည် စကားမပြောနိုင်ပါ။ အထီးကျန်မှုကို ပိတ်ပါ၊ ပင်မ SSID ကို အသုံးပြုပါ သို့မဟုတ် အနီးနား (ဟော့စပေါ့) မုဒ်သို့ ပြောင်းပါ။",
+  "localWifiPeerReady": "စကားပြောရန်အဆင်သင့် (သော့ပါရှိသည်)",
+  "localWifiPeerNeedKey": "တွေ့ရှိသည် — သော့လဲလှယ်ရန် QR စကင်န်ဖတ်ပါ။",
+  "localWifiErrorTitle": "စက်တွင်း Wi‑Fi အမှား",
+  "localWifiErrorBody": "တစ်ခုခုမှားသွားသည်။ ရပ်ပြီး ထပ်စမ်းကြည့်ပါ။",
+  "preparingSystem": "စနစ်ပြင်ဆင်နေသည်…",
+  "bootFailedTitle": "မစတင်နိုင်ခဲ့ပါ။",
+  "retry": "ထပ်ကြိုးစားပါ။",
+  "bootRecoveryAction": "အထောက်အထားအသစ်ကို စတင်ပါ (ဒေသခံဒေတာကို ဖျက်ပါ)",
+  "bootRecoveryConfirmTitle": "အထောက်အထားအသစ်ကို စတင်မလား။",
+  "bootRecoveryConfirmBody": "၎င်းက ဤစက်ပစ္စည်းပေါ်ရှိ စက်တွင်းရှိ ချတ်များ၊ သော့များနှင့် အထောက်အထားများကို အပြီးအပိုင် ဖျက်လိုက်ပါမည်။\nရွယ်တူများသည် သင်၏အထောက်အထားအသစ်ဖြင့် သင်၏ QR ကို ထပ်မံစကင်န်ဖတ်ရပါမည်။\nဒါကို ပြန်ပြင်လို့ မရပါဘူး။",
+  "bootRecoveryRunning": "ဒေသဆိုင်ရာအထောက်အထားကို ပြန်လည်သတ်မှတ်နေသည်...",
+  "bootRecoverySuccess": "ဒေသတွင်း အထောက်အထား ပြန်လည်သတ်မှတ်မှု ပြီးပါပြီ။",
+  "bootRecoveryFailed": "အထောက်အထားကို ပြန်လည်သတ်မှတ်၍မရပါ- {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "မလုပ်တော့",
+  "save": "သိမ်းဆည်းပါ။",
+  "close": "ပိတ်လိုက်",
+  "start": "စတင်ပါ။",
+  "send": "ပို့ပါ။",
+  "settings": "ဆက်တင်များ",
+  "language": "ဘာသာစကား",
+  "languageSubtitle": "ပုံမှန်အားဖြင့် အက်ပ်သည် သင့်ဖုန်းဘာသာစကားကို လိုက်နာသည် (ပံ့ပိုးပေးသောအခါ)။ အခြားဘာသာစကားများကို အင်္ဂလိပ်ဘာသာသို့ ပြန်ပြောင်းသည်။ ဤနေရာတွင် ဘာသာစကားတစ်ခုကိုလည်း လော့ခ်ချနိုင်သည်။",
+  "languageSystem": "စနစ် ပုံသေ",
+  "languageThai": "ထိုင်း",
+  "languageEnglish": "အင်္ဂလိပ်စာ",
+  "notificationsTooltip": "အကြောင်းကြားချက် ဆက်တင်များ",
+  "enableMessageNotifications": "မက်ဆေ့ဂျ် အသိပေးချက်များကို ဖွင့်ပါ။",
+  "settingsNotificationsSubtitle": "1:1 မက်ဆေ့ဂျ်များနှင့် အွန်လိုင်းရှိလူများ (ဒေသခံသတိပေးချက်များ)",
+  "networkMembersTooltip": "ကွန်ရက်အဖွဲ့ဝင်များ",
+  "identityQrTooltip": "အထောက်အထား / QR",
+  "feedDirects": "စကားစမြည်",
+  "feedMesh": "#ကွက်",
+  "feedGeo": "ဧရိယာ",
+  "feedDirectsSubtitle": "သီးသန့် E2EE မက်ဆေ့ဂျ်များ",
+  "feedMeshSubtitle": "အနီးနားရှိ ရွယ်တူများ (BLE)",
+  "feedGeoSubtitle": "Geohash ရှာဖွေတွေ့ရှိမှုချန်နယ်",
+  "peerIdHint": "ချတ်စတင်ရန် လက်ခံသူ ID (အများပြည်သူကီး ဟက်ရှ်) ကို ကူးထည့်ပါ။",
+  "directsEmpty": "ချတ်လုပ်ခြင်းမရှိသေးပါ — စတင်ရန် QR ကို စကင်န်ဖတ်ပါ သို့မဟုတ် လက်ခံသူ ID ကို ကူးထည့်ပါ။\nမက်ဆေ့ဂျ်များကို မပို့မီ E2EE ဖြင့် တံဆိပ်ခတ်ထားပါသည် (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • ချတ်ဖွင့်ရန် တို့ပါ။",
+  "meshIntro": "BLE အပိုင်းအခြားရှိ ရွယ်တူများ — သီးသန့် E2EE ချတ်အတွက် တို့ပါ ( #mesh တွင် အများသူငှာ မရေးပါနှင့်)\nဟိုက်ဘရစ်ရောက်တာမှတဆင့် ပို့သည် (BLE + LoRa + Nostr)",
+  "meshEmptyRunning": "အနီးနားရှိ ရွယ်တူများ မရှိသေးပါ — BLE အပိုင်းအခြားအတွင်း အခြားစက်ပစ္စည်းပေါ်တွင် အက်ပ်ကိုဖွင့်ပါ။",
+  "meshEmptyStopped": "BLE သည် အလုပ်မလုပ်ပါ — Bluetooth / တည်နေရာခွင့်ပြုချက်ပေးပါ။",
+  "meshNearbyPrefix": "အနီးနား",
+  "meshRetentionTitle": "မက်ဆေ့ဂျ်များကို အလိုအလျောက်ဖျက်ပါ။",
+  "meshRetentionSubtitle": "ဒေသတွင်း ချတ်မှတ်တမ်းဟောင်းကို အလိုအလျောက် ဖယ်ရှားသည်။",
+  "meshRetentionKeep": "စောင့်ရှောက်ပါ။",
+  "meshRetention1Day": "၁ ရက်",
+  "meshRetention3Days": "၃ ရက်",
+  "meshRetention7Days": "၇ ရက်",
+  "refreshLocationTooltip": "တည်နေရာကို ပြန်လည်စတင်ပါ။",
+  "geoIntro": "ဤ geohash ရှိ အွန်လိုင်းလူများအား 1:1 သို့မဟုတ် ဧရိယာ အများသူငှာ အားပေးသူထံ မက်ဆေ့ချ်ပို့နိုင်သည် (ရွယ်တူတစ်ဦးလျှင် E2EE တံဆိပ်ခတ်ထားဆဲဖြစ်သည် — စာသားမပါ)",
+  "geoEmpty": "{channel} တွင် မည်သူမျှ အွန်လိုင်းမရသေးပါ။\nသယ်ယူပို့ဆောင်ရေး → အင်တာနက်/အလိုအလျောက်သုံးပါ၊ Nostr ကိုစောင့်ပါ၊ တည်နေရာကို ပြန်လည်စတင်ပါ။",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "{channel} တွင် အွန်လိုင်း • 1:1 E2EE အတွက် တို့ပါ။",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "အနီးနားရှိ (ဧရိယာတည်ရှိမှုကို စောင့်ဆိုင်းနေသည်) • 1:1 E2EE အတွက် နှိပ်ပါ။",
+  "geoPeerNostrSubtitle": "Nostr တွင် {channel} တွင် တွေ့ရသည် • ရှာဖွေတွေ့ရှိမှုသာ (အမွေအနှစ်)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "အမွေအနှစ်အမည်မသိရှိခြင်း — နှောင်ဖွဲ့ထားသည့်ရွယ်တူ သို့မဟုတ် QR လဲလှယ်မှုကို စောင့်ပါ။",
+  "bleRadioNearbySubtitle": "အနီးနားရှိ BLE — 1:1 E2EE စတင်ရန် QR ကို စကင်န်ဖတ်ပါ။",
+  "geoInternetDiscoverHint": "ဧရိယာအင်တာနက်ရှာဖွေတွေ့ရှိမှုသည် Nostr လိုအပ်သည် (ဆက်တင်များ → သယ်ယူပို့ဆောင်ရေး → အင်တာနက်/ အလိုအလျောက်)",
+  "geoEmptyNoLocation": "တည်နေရာကို မဖြေရှင်းရသေးပါ — သင်၏ geohash ကို Nostr တွင် ထုတ်ဝေရန် GPS ကို ခွင့်ပြုပြီး ပြန်လည်စတင်ပါ။",
+  "geoEmptyNeedsPermission": "တည်နေရာခွင့်ပြုချက်ကို ငြင်းပယ်ထားသည် — ဆက်တင်များ → ကိုယ်ရေးကိုယ်တာ → တည်နေရာတွင် ResilNet ကို ခွင့်ပြုပါ။",
+  "geoEmptyServicesDisabled": "တည်နေရာဝန်ဆောင်မှုများကို ပိတ်ထားသည် — ဆက်တင်များတွင် ၎င်းတို့ကို ဖွင့်ပါ။",
+  "geoEmptyNoGpsFix": "GPS ပြုပြင်ခြင်း ( Wi‑Fi> iPads များတွင် အဖြစ်များသည်) — အောက်တွင် geohash ကို ကိုယ်တိုင်သတ်မှတ်ပါ။",
+  "geoEmptyTeleportHint": "နေရာ အိုင်ကွန်ကို နှိပ်ပါ → geohash (ဥပမာ w5) → တယ်လီပို့ကို ရိုက်ထည့်ပါ။",
+  "geoSetGeohashManually": "geohash သတ်မှတ်ပါ။",
+  "geoTeleportHint": "GPS မရှိဘူးလား? geohash ရှေ့စာလုံး (၂-၇ လုံး၊ ဥပမာ w5) ကို ရိုက်ထည့်ပြီး တယ်လီပို့ကို နှိပ်ပါ။",
+  "geoTeleportInvalid": "မမှန်ကန်သော geohash — အခြေခံ 32 စာလုံး/နံပါတ်များကိုသာ အသုံးပြုပါ (ဥပမာ w5 သို့မဟုတ် w5jt8)",
+  "geoTeleportOk": "ဧရိယာကို {channel} ဟု သတ်မှတ်ထားသည်။",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "လူကိုယ်တိုင် ဧရိယာ- {channel} (GPS ပြန်လည်ဆန်းသစ်မှုကို အစားထိုးမည်)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr အဆင်သင့်မဖြစ်သေး — ပြန်လည်ချိတ်ဆက်ပါ (0/0 init အောင်မြင်သည်အထိ) ကိုနှိပ်ပါ။",
+  "geoEmptyMeshOnly": "သယ်ယူပို့ဆောင်ရေးသည် မက်ရှ်-သာဖြစ်သည် — Nostr နှင့် ရွယ်တူများကို ရှာဖွေရန် အင်တာနက် သို့မဟုတ် အော်တိုသို့ ပြောင်းပါ။",
+  "geoEmptyWaiting": "{channel} တွင် မည်သူမျှ မရှိသေးပါ — Area + Internet ကို စက်နှစ်ခုလုံးတွင် ဖွင့်ထားပြီး ~60s စောင့်ပါ။",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#ဧရိယာ",
+  "geoRefreshLocation": "တည်နေရာကို ပြန်လည်စတင်ပါ။",
+  "settingsClearLocationTitle": "တည်နေရာကို ရှင်းလင်းပါ။",
+  "settingsClearLocationSubtitle": "GPS / teleport geohash ကို ဖယ်ရှားပါ (ဧရိယာ #—)",
+  "settingsClearLocationConfirmTitle": "တည်နေရာကို ရှင်းမလား။",
+  "settingsClearLocationConfirmBody": "ဤစက်တွင် သိမ်းဆည်းထားသော geohash ကို ဖျက်သည်။ သင်သည် GPS ကို ပြန်လည်စတင်နိုင်သည် သို့မဟုတ် တယ်လီပို့တ်ပြီးနောက်တွင် ထပ်မံလုပ်ဆောင်နိုင်သည်။",
+  "settingsClearLocationAction": "တည်နေရာကို ရှင်းလင်းပါ။",
+  "settingsClearLocationSnack": "တည်နေရာကို ရှင်းလင်းထားသည်။",
+  "chatVoiceTooLarge": "အသံမှတ်စု ကြီးလွန်းသည် — အများဆုံး စက္ကန့် ၃၀",
+  "chatVoiceNeedInternet": "အသံမှတ်စုသည် အင်တာနက် (Nostr) လိုအပ်သည် — BLE တစ်ခုတည်းအတွက် အလွန်ကြီးမားသည်။",
+  "chatVoiceSentInternet": "အသံမှတ်စုကို အင်တာနက်မှတစ်ဆင့် ပေးပို့ခဲ့သည်။",
+  "noticeAnonMention": "ဖော်ပြခြင်း။",
+  "noticeAnonDm": "တိုက်ရိုက်သတင်းစကား",
+  "noticeAnonHug": "ပွေ့ဖက်",
+  "noticeAnonSlap": "ပါးရိုက်",
+  "noticeAnonBlock": "ဘလောက်",
+  "noticeAnonNeedKey": "အများသူငှာသော့မရှိသေးပါ — QR ကို 1:1 အတွက် ဦးစွာလဲလှယ်ပါ။",
+  "noticeAnonActionSent": "ပို့လိုက်ပါတယ်။",
+  "noticeAnonBlocked": "{anon} ကို ပိတ်ဆို့ထားသည်။",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* ပွေ့ဖက် {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "*ပါးရိုက်ခြင်း {anon}*",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Nostr ကို ပြန်လည်ချိတ်ဆက်ပါ။",
+  "nostrSectionTitle": "Nostr ထပ်ဆင့်များ",
+  "nostrSectionSubtitle": "အင်တာနက် စာတိုပေးပို့ခြင်း နှင့် ဧရိယာ ရှာဖွေတွေ့ရှိမှု တို့သည် ဤထပ်ဆင့်လွှင့်မှုများကို အသုံးပြုသည်။ အခြေအနေ အော့ဖ်လိုင်းဖြစ်နေပါက ပြန်လည်ချိတ်ဆက်ပါ ကိုနှိပ်ပါ။",
+  "nostrStatusOnline": "ချိတ်ဆက်ထားသည် {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "အော့ဖ်လိုင်း — relay များကို စာရင်းပြုစုထားသော်လည်း ချိတ်ဆက်ထားခြင်းမရှိပါ။",
+  "nostrStatusNotInit": "မစတင်ပါ (0/0) — စတင်ရန် ပြန်လည်ချိတ်ဆက်ရန် ကိုနှိပ်ပါ။",
+  "nostrReconnectAction": "Nostr ကို ပြန်လည်ချိတ်ဆက်ပါ။",
+  "nostrReconnectOk": "Nostr ချိတ်ဆက်ထားသည် ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "အော့ဖ်လိုင်းဖြစ်နေဆဲ — Wi‑Fi/cellular ကိုစစ်ဆေးပါ သို့မဟုတ် ထပ်စမ်းကြည့်ပါ။",
+  "nostrReconnectFailedDetail": "မအောင်မြင်ပါ- {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Relay များနှင့် ချိတ်ဆက်နေသည်...",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "{channel} ရှိ အင်တာနက် (Nostr) • အလုံပိတ်ချတ် အဆင်သင့်ဖြစ်ပါပြီ။",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "ဧရိယာသယ်ယူပို့ဆောင်ရေး",
+  "transportModeSubtitle": "Mesh = BLE အနီးနားရှိ (ရေဒီယို) Nostr · အင်တာနက် & အော်တို = Nostr လူများစာရင်း",
+  "transportModeMesh": "ကွက်",
+  "transportModeInternet": "အင်တာနက်",
+  "transportModeAuto": "အော်တို",
+  "geoPublicHint": "ဤဧရိယာရှိ အွန်လိုင်းရှိ လူတိုင်းထံ အများသူငှာ မက်ဆေ့ချ်",
+  "geoPublicSend": "အများသူငှာ",
+  "geoPublicHelp": "{count} အွန်လိုင်းမှ သက်တူရွယ်တူ(များ)ထံ ပန်ကာအပိတ်ခံထားရသည် — တစ်ဦးစီသည် သီးသန့်စာအိတ်ကို ရရှိသည်။",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "ဤဧရိယာရှိ {count} ရွယ်တူ(များ)ထံ ပို့လိုက်သည်။",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "အွန်လိုင်းတွင် စာတိုပေးပို့နိုင်သော ရွယ်တူများ မရှိပါ — သော့ပါသော လုပ်ဖော်ကိုင်ဖက်များနှင့် Area/Mesh ကိုဖွင့်ပါ၊ သို့မဟုတ် BLE/Nostr ကို စောင့်ပါ။",
+  "areaPublicBadge": "နယ်မြေလူထု",
+  "geoErrorPermission": "တည်နေရာကို ဖတ်၍မရပါ — တည်နေရာခွင့်ပြုချက်ကို စစ်ဆေးပါ။",
+  "geoPrecisionRegion": "တိုင်းဒေသကြီး",
+  "geoPrecisionProvince": "ပြည်နယ်",
+  "geoPrecisionCity": "မြို",
+  "geoPrecisionNeighborhood": "ရပ်ကွက်ထဲ",
+  "geoPrecisionBlock": "ပိတ်ဆို့သည်။",
+  "aliasTitle": "အမည်ပြောင် သတ်မှတ်ပါ (အဆက်အသွယ်အမည်များ)",
+  "aliasHintBody": "ဤအမည်နာမကို ဤစက်ပစ္စည်းပေါ်တွင်သာ သိမ်းဆည်းထားပါသည် (စက်တွင်းသီးသန့်)\n၎င်းကို E2EE အသွားအလာဖြင့် ဘယ်သောအခါမှ မပို့ပါ။",
+  "aliasLabel": "နာမည်ပြောင်",
+  "aliasHint": "ဥပမာ \"ရွာခေါင်း\" \"P'Somchai\"...",
+  "settingsDevices": "စက်များ",
+  "settingsFirmwareTitle": "ဒေါင်းလုဒ်လုပ်/အပ်ဒိတ် ESP32 ဖိုင်းဝဲ",
+  "settingsFirmwareSubtitle": ".bin ဖိုင်များကိုဒေါင်းလုဒ်လုပ်ပြီး OTA မှတစ်ဆင့် ESP32 ဘုတ်ကို အပ်ဒိတ်လုပ်ပါ။",
+  "mtBridgeTitle": "Meshtastic တံတား",
+  "mtBridgeSettingsSubtitle": "စာသားသီးသန့် A/B တံတား — ResilNet E2EE မဟုတ်ပါ။",
+  "mtBridgeIntro": "Meshtastic နှင့် ResilNet ကြားတွင် တိုတောင်းသော စာသားကို ရွှေ့ပါ။ မုဒ် A နှင့် B သည် တစ်ချိန်တည်းတွင် မလည်ပတ်နိုင်ပါ။ ၎င်းသည် အဆုံးမှ အဆုံး ကုဒ်ဝှက်ခြင်းမဟုတ်ပါ။",
+  "mtBridgeModeLabel": "မုဒ်",
+  "mtBridgeModeOff": "ပိတ်သည်။",
+  "mtBridgeModeA": "စားသုံးရန် A",
+  "mtBridgeModeB": "Egress B",
+  "mtBridgeModeOffShort": "ပိတ်သည်။",
+  "mtBridgeModeAShort": "Aတွ၊",
+  "mtBridgeModeBShort": "အဲ B",
+  "mtBridgeMutexHint": "မုဒ်တစ်ခုကို ရွေးချယ်ခြင်းသည် အခြားတစ်ခုကို အလိုအလျောက် ပိတ်သွားစေသည်။ တစ်ပြိုင်နက် A+B ကို မပံ့ပိုးပါ။",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "ဒီမို (မှတ်တမ်း)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "#meshtastic အဖြစ် Notices အောက်တွင် Inbound စာသားပေါ်လာပါသည်။ Mesh relay သည် ရွေးချယ်နိုင်သည် (ပုံမှန်အားဖြင့် ပိတ်သည်)။",
+  "mtBridgeRelayTitle": "ResilNet ကွက်ပေါ်တွင်လည်း ထပ်ဆင့်လွှင့်ပါ။",
+  "mtBridgeRelayHint": "ဖွင့်သည့်အခါတွင် လက်မှတ်ရေးထိုးထားသော အများသူငှာ စာစောင်များကို ထုတ်လွှင့်သည်။ ပိတ် = ဤဖုန်း၏ သတိပေးချက်များသာ။",
+  "mtBridgeSimulateHint": "ဒီမို မက်ဆေ့ချ်",
+  "mtBridgeSimulate": "Meshtastic မက်ဆေ့ဂျ်ကို ပုံစံတူလုပ်ပါ။",
+  "mtBridgeIngestOk": "သတိပေးချက်များ (#meshtastic) တွင် ထည့်သွင်းထားသည်",
+  "mtBridgeEgressWarning": "သတိပေးချက်- ဤနေရာတွင် ပေးပို့ထားသော စာများသည် ResilNet E2EE မဟုတ်ပါ။ Meshtastic လမ်းကြောင်းရှိ မည်သူမဆို ၎င်းတို့ကို ဖတ်နိုင်သည်။",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "ထုတ်ဝေရန် စာသား",
+  "mtBridgeSend": "Meshtastic သို့ ပို့ပါ။",
+  "mtBridgeEgressOk": "Meshtastic အတွက် တန်းစီထားသည် (မှတ်တမ်း/မှတ်တမ်းကို ကြည့်ပါ)",
+  "mtBridgeLastEgress": "နောက်ဆုံးထွက်",
+  "mtBridgeEgressHistory": "မကြာသေးမီက ထွက်ခွာခဲ့သည်။",
+  "mtBridgeOffHint": "တံတားကိုအသုံးပြုရန် Ingest (A) သို့မဟုတ် Egress (B) ကိုဖွင့်ပါ။",
+  "mtBridgeNoticeBadge": "MESHTASTIC · E2EE မဟုတ်ပါ။",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "MQTT သယ်ယူပို့ဆောင်ရေးကို အသုံးပြုပါ။",
+  "mtBridgeUseMqttHint": "Off = ဒီမို လော့ဂ်အင်ဂရန် (MQTT အတွင်းဘက်သို့ လျစ်လျူရှုထားသည်)။ ချိတ်ဆက်ထားသောအခါတွင် ထည့်သွင်းခြင်း/egress အတွက် = MQTT ကို ဖွင့်သည်။",
+  "mtBridgeMqttHost": "ပွဲစားအိမ်ရှင်",
+  "mtBridgeMqttPort": "ဆိပ်ကမ်း",
+  "mtBridgeMqttTls": "TLS (mqtts) ကိုသုံးပါ",
+  "mtBridgeMqttTlsHint": "ပုံမှန် port 8883. စနစ်လက်မှတ်များကိုအသုံးပြုသည်; ပျော့ပျောင်းသော လက်ဆွဲခြင်း အမှားအယွင်းများ အဆင်မပြေပါ။",
+  "mtBridgeMqttAutoReconnect": "အလိုအလျောက် ပြန်လည်ချိတ်ဆက်ပါ။",
+  "mtBridgeMqttAutoReconnectHint": "ဖွင့်သောအခါတွင်၊ လိုင်းကျသွားပြီးနောက် ပြန်လည်ချိတ်ဆက်ရန် ကြိုးစားသည်။ အခြေအနေကို ပြန်လည်ရယူသည်အထိ ချိတ်ဆက်ခြင်းကို ပြသသည်။",
+  "mtBridgeMqttTopicHelpers": "ခေါင်းစဉ်ထောက်များ",
+  "mtBridgeMqttRegion": "ဒေသရှေ့ဆက် (ချန်လှပ်ထားနိုင်သည်)",
+  "mtBridgeMqttRegionHint": "သတ်မှတ်သည့်အခါ၊ msh/<region>/2/json အဖြစ် အမြစ်ကို ပြန်လည်တည်ဆောက်ပါ (ခေါင်းစဉ်ကို အစားထိုးသည်)။",
+  "mtBridgeMqttTopicRoot": "JSON ခေါင်းစဉ် root",
+  "mtBridgeMqttDownlinkChannel": "Downlink ချန်နယ်အမည်",
+  "mtBridgeMqttApplyTopics": "root → စာရင်းသွင်း/ထုတ်ဝေခြင်း အကြောင်းအရာများကို အသုံးပြုပါ။",
+  "mtBridgeMqttAdvanced": "အဆင့်မြင့် MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS၊ ပြန်လည်ချိတ်ဆက်ရန်၊ အကြောင်းအရာများ၊ အထောက်အထားများ",
+  "mtBridgeMqttTopicIn": "ခေါင်းစဉ်စာရင်းသွင်းပါ။",
+  "mtBridgeMqttTopicOut": "အကြောင်းအရာကို ထုတ်ဝေပါ။",
+  "mtBridgeMqttGatewayFrom": "Gateway node id (မှ)",
+  "mtBridgeMqttGatewayFromHint": "ဒဿမ အိုင်ဒီ သို့မဟုတ် !hex — ပေးပို့သည့် စာသားဒေါင်းလုပ်လင့်ခ်အတွက် လိုအပ်သည်။",
+  "mtBridgeMqttChannelIndex": "Mesh ချန်နယ်ညွှန်းကိန်း (ချန်နယ် 0–7)",
+  "mtBridgeMqttUser": "အသုံးပြုသူအမည် (ချန်လှပ်ထားနိုင်သည်)",
+  "mtBridgeMqttPass": "စကားဝှက် (ချန်လှပ်ထားနိုင်သည်)",
+  "mtBridgeMqttPassStored": "စကားဝှက်ကို ဤစက်ပစ္စည်းတွင် သိမ်းဆည်းထားပါသည် (မပြပါ)။",
+  "mtBridgeMqttPassReplace": "စကားဝှက်အသစ် (သိမ်းဆည်းရန် ကွက်လပ်ထားခဲ့ပါ)",
+  "mtBridgeMqttPassReplaceHint": "သိမ်းဆည်းထားသော စကားဝှက်ကို သိမ်းဆည်းရန် ဗလာချန်ထားပါ။",
+  "mtBridgeMqttPassClear": "စကားဝှက်ကို ရှင်းလင်းပါ။",
+  "mtBridgeMqttSave": "MQTT ဆက်တင်များကို သိမ်းဆည်းပါ။",
+  "mtBridgeMqttSaved": "MQTT ဆက်တင်များကို သိမ်းဆည်းပြီးပါပြီ။",
+  "mtBridgeMqttConnect": "ချိတ်ဆက်ပါ။",
+  "mtBridgeMqttDisconnect": "အဆက်အသွယ်ဖြတ်ပါ။",
+  "mtBridgeMqttConnected": "MQTT ချိတ်ဆက်ထားသည်။",
+  "mtBridgeMqttConnecting": "MQTT ချိတ်ဆက်နေသည်…",
+  "mtBridgeMqttDisconnected": "MQTT ကို ချိတ်ဆက်မှု ဖြတ်ထားသည်။",
+  "mtBridgeMqttError": "MQTT အမှား",
+  "mtBridgeErrModeIngest": "ပထမဆုံး Ingest (A) သို့ပြောင်းပါ။",
+  "mtBridgeErrModeEgress": "ဦးစွာ Egress (B) သို့ပြောင်းပါ။",
+  "mtBridgeErrRate": "နှေးကွေးသည် — နှုန်းထားကန့်သတ်ထားသည်။",
+  "mtBridgeErrDedupe": "ပွားနေသည့် မက်ဆေ့ဂျ်ကို လျစ်လျူရှုထားသည်။",
+  "mtBridgeErrLoop": "တံတားကွင်းကို တားဆီးရန် ရေစက်",
+  "mtBridgeErrEmpty": "Message သည် ဗလာဖြစ်နေသည်။",
+  "mtBridgeErrPublish": "ထုတ်ဝေမှု မအောင်မြင်ပါ။",
+  "mtBridgeErrNotConnected": "MQTT မချိတ်ဆက်ပါ။",
+  "mtBridgeErrMissingHost": "MQTT ပွဲစားအိမ်ရှင်ကို ထည့်ပါ။",
+  "mtBridgeErrMissingTopic": "စာရင်းသွင်းပြီး အကြောင်းအရာများကို ထည့်သွင်းပါ။",
+  "mtBridgeErrMissingFromNode": "ပေးပို့စာအတွက် gateway node id (မှ) ထည့်ပါ။",
+  "mtBridgeErrConnect": "MQTT ချိတ်ဆက်မှု မအောင်မြင်ပါ။",
+  "mtBridgeErrConnectTls": "MQTT TLS ချိတ်ဆက်မှု မအောင်မြင်ပါ။",
+  "settingsData": "ဒေ",
+  "settingsDataHint": "ဒေတာဘေ့စ်ကို ကျုံ့ရန် ပြည်တွင်းစာများကို ဖျက်ပါ — အထောက်အထား၊ သော့များနှင့် ရွယ်တူများကို သိမ်းဆည်းထားသည်။",
+  "settingsSaveHistoryTitle": "မက်ဆေ့ဂျ်မှတ်တမ်းကို သိမ်းဆည်းပါ။",
+  "settingsSaveHistorySubtitle": "ပိတ်ထားသည့်အခါ၊ မက်ဆေ့ချ်များသည် E2EE ဝိုင်ယာကြိုးပေါ်တွင် ရှိနေပြီး ဤစက်ရှင်အတွက်သာ (ဒေသတွင်း ချတ်မှတ်တမ်းတွင် မဟုတ်ပါ)။ သင့်ကိုယ်ပိုင်စာသားကို ဤစက်ပစ္စည်းပေါ်တွင် ရိုးရိုးစာသားအဖြစ် ပြသနေဆဲဖြစ်သည်။",
+  "settingsPrivacy": "ကိုယ်ရေးကိုယ်တာ",
+  "settingsE2eeTitle": "အဆုံးမှ အဆုံးထိ ကုဒ်ဝှက်ခြင်း",
+  "settingsE2eeSubtitle": "အမြဲတမ်းဖွင့်ထားသည် — မက်ဆေ့ဂျ်များကို မပို့မီ RSA-OAEP + AES-GCM ဖြင့် တံဆိပ်ခတ်ထားသည်။ Relay များနှင့် အနီးနားရှိ ဟော့စ်များသည် အကြောင်းအရာများကို ဖတ်၍မရပါ။",
+  "settingsScreenshotTitle": "ဖန်သားပြင်ဓာတ်ပုံ သတိပေးချက်များ",
+  "settingsScreenshotSubtitle": "ဤစက်သည် မျက်နှာပြင်ကို ဖမ်းယူသောအခါ ချတ်တွင် စနစ်လိုင်းတစ်ခုကို ပြပါ။",
+  "settingsNostrExpiryTitle": "Nostr မက်ဆေ့ခ်ျကို အချိန်ပေးပါ။",
+  "settingsNostrExpirySubtitle": "Nostr မှတစ်ဆင့် အွန်လိုင်းတွင် အလုံပိတ်စာအိတ်များသည် ပြည်တွင်း၌ မည်မျှကြာကြာ ရှိနေသင့်သည်။",
+  "noticeExpiresIn": "သက်တမ်းကုန်ဆုံးသည်။",
+  "noticesTitle": "သတိပေးချက်များ",
+  "noticesMeshIntro": "အများသူငှာ စာစောင် — ကုဒ်ဝှက်မထားဘဲ ရေဒီယိုအကွာအဝေးရှိ လူတိုင်းမြင်နိုင်သည်။ ၎င်းသည် ဖုန်းမှဖုန်းသို့ အော့ဖ်လိုင်း ခုန်တက်လာပြီး အနီးနားရှိ ResilNet relay box တွင် မိတ္တူကို သိမ်းဆည်းထားသောကြောင့် နောက်မှရောက်လာသူများသည် ၎င်းကိုမြင်နိုင်ဆဲဖြစ်သည်။",
+  "noticesMeshPublicBadge": "PUBLIC · ကုဒ်ဝှက်မထားပါ။",
+  "noticesGeoIntro": "အခြားဧည့်သည်များ ၎င်းတို့ကို ရှာဖွေနိုင်စေရန် ဤနေရာအတွက် မှတ်စုတိုများကို ထည့်ပါ။",
+  "noticesEmpty": "သတိပေးချက်မရှိသေးပါ။",
+  "noticesEmptyHint": "ဤနေရာရှိလူများအတွက် ပထမဆုံးသတိပေးချက်ကို ချိတ်ပါ။",
+  "noticesComposeHint": "သတိပေးချက်တင်ပါ...",
+  "noticesUrgent": "အရေးတကြီး",
+  "noticesOpen": "သတိပေးချက်များ",
+  "screenshotTaken": "* မင်း စခရင်ရှော့ရိုက်ထားတာ *",
+  "chatAttachImage": "ပုံကို ပူးတွဲပါ။",
+  "chatImageLabel": "ပုံ",
+  "chatImageTooLarge": "ပုံကြီးလွန်းသည် — အခြားဓာတ်ပုံကို စမ်းကြည့်ပါ။",
+  "chatNostrExpiry": "Nostr ထားပါ။",
+  "geoPublicComposeHint": "{channel} — အများသူငှာ ပေးပို့ပါ။",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "မက်ဆေ့ဂျ်အားလုံးကို ရှင်းလင်းပါ။",
+  "settingsClearSubtitle": "ဤစက်ပစ္စည်းပေါ်ရှိ ချတ်အားလုံးကို ဖျက်ပါ။",
+  "settingsClearConfirmTitle": "မက်ဆေ့ဂျ်အားလုံးကို ရှင်းမလား။",
+  "settingsClearConfirmBody": "၎င်းသည် ဤစက်ပစ္စည်းပေါ်ရှိ ချတ်စာများအားလုံးကို ဖျက်ပစ်သည်။\nရွယ်တူများနှင့် နာမည်ပြောင်များကို မဖယ်ရှားပါ။",
+  "settingsClearAction": "ဒေတာရှင်းလင်းပါ။",
+  "settingsClearedSnack": "ဒေတာရှင်းပြီးပါပြီ။",
+  "settingsVersion": "ဗားရှင်း {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE- nodes အတွက် စကင်န်ဖတ်ခြင်း။",
+  "meshBleEsp32Scanning": "ESP32- အနီးနားရှိ node ကို ရှာနေပါသည်။",
+  "meshBleSyncing": "BLE- ESP32 နှင့် စင့်ခ်လုပ်နေသည်။",
+  "meshNostrPublishing": "Nostr- ထုတ်ဝေခြင်း။",
+  "meshBleIdle": "BLE mesh ဖွင့်ထားသည် — အနီးနားရှိ ဖုန်းများ မရှိသေးပါ။",
+  "meshBlePeersNearby": "BLE ကွက် — {count} ဖုန်း(များ) အနီးတဝိုက်",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE- ခွင့်ပြုချက် လိုအပ်သည်။",
+  "meshBlePausedCamera": "ကင်မရာအတွက် BLE ခေတ္တရပ်ထားသည် — Start BLE ကိုနှိပ်ပါ။",
+  "meshBleStopped": "BLE ကို ပိတ်ထားသည် — ဘလူးတုသ်ကိုဖွင့်ထားကြောင်း စစ်ဆေးပါ၊ ထို့နောက် Start BLE ကိုနှိပ်ပါ။",
+  "meshBleRestart": "BLE ကို စတင်ပါ။",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "ခွင့်ပြုချက်များကို စစ်ဆေးပြီး BLE စတင်ပါ။",
+  "meshNostrOffline": "Nostr အော့ဖ်လိုင်း",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} အနီးတဝိုက်ရှိ သက်တူရွယ်တူ • LoRa {lora} • စင့်ခ်လုပ်ခြင်း ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "အဆင်သင့်",
+  "meshLoraNotReady": "အဆင်သင့်မဖြစ်သေးပါ။",
+  "meshGatewayProgress": "ဂိတ်ဝေး UDP- {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Gateway UDP- အဆင်သင့်ဖြစ်ပါပြီ။",
+  "permissionTitle": "BLE mesh ကွန်ရက်ကို စတင်ရန် ဝင်ရောက်ခွင့်ပြုပါ။",
+  "permissionBody": "အပလီကေးရှင်းသည် ရပ်ရွာစာတိုပေးပို့ခြင်းအတွက် Bluetooth (စကင်န်ဖတ်/ချိတ်ဆက်/ကြော်ငြာ)၊ တည်နေရာ (Android စက်အဟောင်းများအတွက်) နှင့် မိုက်ခရိုဖုန်း (ချတ်နှင့် ကြေညာချက်များတွင် အသံမှတ်စုများအတွက်) လိုအပ်ပါသည်။",
+  "permissionE2ee": "End-to-End ကုဒ်ဝှက်ခြင်း (E2EE)\nRelay node များသည် မက်ဆေ့ချ် အကြောင်းအရာများကို မဖတ်နိုင်ပါ။",
+  "permissionReady": "ခွင့်ပြုချက်များ အဆင်သင့်ဖြစ်နေပါပြီ။",
+  "permissionRequest": "ခွင့်ပြုပြီး ဆက်လုပ်ပါ။",
+  "permissionNotReadySnack": "စနစ် အဆင်သင့်မဖြစ်သေးပါ — ခဏစောင့်ပြီး ထပ်စမ်းကြည့်ပါ။",
+  "permissionDeniedSnack": "ခွင့်ပြုချက်များ မပြည့်စုံပါ — ဆက်တင်များ > ResilNet ကိုဖွင့်ပြီး Bluetooth / တည်နေရာ / မိုက်ခရိုဖုန်းကို ခွင့်ပြုပါ။",
+  "permissionMicDenied": "မိုက်ခရိုဖုန်းအသုံးပြုခွင့်ကို ငြင်းပယ်လိုက်သည် — ၎င်းကို ဆက်တင်များတွင် အသံမှတ်စုများ မှတ်တမ်းတင်ခွင့်ပြုပါ။",
+  "permissionMicOpenSettings": "ဆက်တင်များ",
+  "permissionCameraDenied": "ကင်မရာအသုံးပြုခွင့်ကို ငြင်းပယ်ထားသည် — ချိန်ညှိချက်များတွင် QR ကုဒ်များကို စကင်န်ဖတ်ခွင့်ပြုပါ။",
+  "permissionCameraFailed": "QR ကုဒ်များကို စကင်န်ဖတ်ရန် ကင်မရာခွင့်ပြုချက် လိုအပ်ပါသည်။",
+  "permissionCameraOpenSettings": "ဆက်တင်များ",
+  "permissionPhotosDenied": "ဓာတ်ပုံဒစ်ဂျစ်တိုက်အသုံးပြုခွင့်ကို ငြင်းဆိုထားသည် — သင့် QR ကုဒ်ကို သိမ်းဆည်းရန် ဆက်တင်များတွင် ခွင့်ပြုပါ။",
+  "permissionPhotosFailed": "သင်၏ QR ကုဒ်ကိုသိမ်းဆည်းရန် ဓာတ်ပုံဒစ်ဂျစ်တိုက်ခွင့်ပြုချက် လိုအပ်သည်။",
+  "permissionPhotosOpenSettings": "ဆက်တင်များ",
+  "permissionFailedSnack": "ခွင့်ပြုချက်တောင်းခံမှု မအောင်မြင်ပါ- {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet ဗိသုကာ • Store-and-Forward Multi-hop",
+  "onboardingSkip": "ကျော်သွားပါ။",
+  "onboardingNext": "နောက်တစ်ခု",
+  "onboardingStart": "စတင်လိုက်ပါ။",
+  "onboardingWelcomeTitle": "ResilNet မှကြိုဆိုပါသည်။",
+  "onboardingWelcomeBody": "အင်တာနက်မရှိသော်လည်း mesh ကွန်ရက်မှတဆင့် ResilNet တွင် ချတ်လုပ်ပါ။",
+  "onboardingFriendsTitle": "သူငယ်ချင်းများကို အလွယ်တကူထည့်ပါ။",
+  "onboardingFriendsBody": "Identity မှ QR တစ်ခုကို မျှဝေပါ သို့မဟုတ် အများသူငှာသော့များလဲလှယ်ရန် သူငယ်ချင်းတစ်ဦး၏ QR ကို စကင်န်ဖတ်ပါ။",
+  "onboardingChannelsTitle": "ကုဒ်ဝှက်ထားသော ချတ် + အနီးနားရှိ ချန်နယ်များ",
+  "onboardingChannelsBody": "အနီးနားရှိရွယ်တူများကိုရှာရန် #mesh / Area (geohash) သို့ပြောင်းပါ — မက်ဆေ့ချ်များသည် E2EE တွင် BLE mesh နှင့် Nostr တွင်ရှိနေသည်",
+  "chatTitle": "ချတ် (E2EE)",
+  "chatScanTooltip": "ရွယ်တူတစ်ဦးထည့်ရန် QR စကန်ဖတ်ပါ။",
+  "chatBlockTooltip": "ဤပေးပို့သူကို ပိတ်ပါ။",
+  "chatBlockedSnack": "ပိတ်ဆို့ထားသည်- အကြောင်းကြားချက်မရှိ/ ထပ်ဆင့်လွှင့်ခြင်း မရှိပါ။",
+  "chatAliasTooltip": "အမည်ပြောင် သတ်မှတ်ပါ။",
+  "chatReceiverPemLabel": "လက်ခံသူ အများသူငှာသော့ (PEM)",
+  "chatReceiverPemHint": "သင့်သူငယ်ချင်း၏ အများသူငှာသော့ကို ကူးထည့်ပါ (QR / မျှဝေထားသောဖိုင်မှ)",
+  "chatNeedPeerKey": "ဤရွယ်တူ၏ QR ကို ဦးစွာစကင်န်ဖတ်ပါ (အတည်ပြုထားသော အများသူငှာသော့ လိုအပ်သည်)",
+  "chatPeerKeyMismatch": "သိမ်းဆည်းထားသော အများသူငှာသော့သည် ဤမျိုးတူ ID နှင့် မကိုက်ညီပါ။",
+  "chatVoiceFailed": "အသံကို မှတ်တမ်းတင်၍မရပါ- {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "အသံမှတ်စုကို ဖွင့်၍မရပါ- {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "အသံမှတ်စုကို ဖွင့်ပါ။",
+  "chatPauseVoice": "ခဏရပ်ပါ။",
+  "chatVoiceLabelSent": "🎤 အသံမှတ်စု (အလုံပိတ်)",
+  "chatVoiceLabel": "🎤 အသံမှတ်စု",
+  "chatDecryptFailed": "[ကုဒ်ဝှက်ခြင်း မအောင်မြင်ပါ]",
+  "chatSentSealed": "[အလုံပိတ် • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[အလုံပိတ်]",
+  "chatComposeHint": "မက်ဆေ့ချ်ကို ရိုက်ထည့်ပါ… (ပို့သည့်အခါတွင် ချိတ်ပိတ်ထားသည်)",
+  "chatEmptyThread": "မက်ဆေ့ချ်များ မရှိသေးပါ။\nကွက်ကျော်ပေးပို့ရန် အောက်တွင် ရိုက်ထည့်ပါ။",
+  "chatLoadFailed": "စကားဝိုင်းကို တင်၍မရပါ- {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "အီမိုဂျီ",
+  "statusPending": "ဆိုင်းငံ့ထားသည်။",
+  "statusSent": "ပို့လိုက်ပါတယ်။",
+  "statusRelayed": "လက်ဆင့်ကမ်း",
+  "statusDelivered": "ပေးပို့ခဲ့သည်။",
+  "statusRead": "ဖတ်ပါ။",
+  "statusFailed": "မအောင်မြင်ပါ။",
+  "chatCopy": "ကော်ပီ",
+  "chatDeleteLocal": "ဤစက်ပစ္စည်းပေါ်တွင် ဖျက်ပါ။",
+  "chatDeletedLocalSnack": "ဤစက်ပစ္စည်းတွင် ဖျက်လိုက်သည်",
+  "chatRetry": "ပြန်ကြိုးစားပါ။",
+  "chatSendFailed": "မပို့ပေးပါ — ထပ်စမ်းကြည့်ပါ ကိုနှိပ်ပါ။",
+  "chatImageNeedInternet": "ပုံများပေးပို့ရန် အင်တာနက်သို့ ချိတ်ဆက်ပါ။",
+  "chatImageTooLargeOnline": "ပုံပို့ရန် လုံလောက်အောင် မချုံ့နိုင်ပါ။",
+  "chatOpenLinkFailed": "လင့်ခ်ကို ဖွင့်၍မရပါ။",
+  "identityTitle": "အထောက်အထား",
+  "identityScanTooltip": "ကင်မရာဖြင့် QR စကင်န်ဖတ်ပါ။",
+  "identityCopiedHash": "အများသူငှာသော့ hash ကို ကူးယူထားသည်။",
+  "identityPeerSaved": "ရွယ်တူများကို QR မှ သိမ်းဆည်းထားသည်။",
+  "identityGalleryDenied": "ဓာတ်ပုံစာကြည့်တိုက်ခွင့်ပြုချက်ကို ငြင်းဆိုထားသည်။",
+  "identityQrSaved": "QR ကို ဓာတ်ပုံဒစ်ဂျစ်တိုက်တွင် သိမ်းဆည်းထားသည်။",
+  "identityQrSaveFailed": "QR: {error} ကို မသိမ်းဆည်းနိုင်ပါ။",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "ကွန်ရက်အဖွဲ့ဝင်များ",
+  "qrScanTitle": "သူငယ်ချင်းတစ်ဦးထည့်ရန် QR စကင်န်ဖတ်ပါ။",
+  "qrInvalid": "စကင်န်မအောင်မြင်ပါ- မမှန်ကန်သော QR",
+  "qrIdKeyMismatch": "QR ငြင်းဆိုထားသည်- ID သည် အများသူငှာသော့နှင့် မကိုက်ညီပါ။",
+  "qrCameraNotReady": "ကင်မရာ အဆင်သင့် မဖြစ်သေးပါ။",
+  "qrRetrySettings": "ထပ်စမ်းကြည့်ပါ / ဆက်တင်များကိုဖွင့်ပါ။",
+  "qrCameraOpenFailed": "ကင်မရာကို ဖွင့်၍မရပါ- {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "ဘောင်အတွင်းရှိ QR ကုဒ်ကို ချိန်ညှိပါ။",
+  "firmwareDownloadTitle": "ESP32 Firmware ကိုဒေါင်းလုဒ်လုပ်ပါ။",
+  "firmwareSourceOnline": "နောက်ဆုံး (အွန်လိုင်း)",
+  "firmwareSourceCached": "သိမ်းဆည်းထားသောမိတ္တူ (အော့ဖ်လိုင်း)",
+  "firmwareSourceBaseline": "စုစည်းထားသော အခြေခံလိုင်း (အော့ဖ်လိုင်း)",
+  "firmwareSourceUnavailable": "Firmware မရနိုင်ပါ။",
+  "firmwareBaselineIncompatible": "စုစည်းထားသော ဆော့ဖ်ဝဲသည် ဟောင်းလွန်းသည် — ဗားရှင်းအသစ်ကို ဒေါင်းလုဒ်လုပ်ရန် အင်တာနက်သို့ ချိတ်ဆက်ပါ။",
+  "firmwareChecksumFailed": "Firmware ၏ ခိုင်မာမှုကို စစ်ဆေးခြင်း မအောင်မြင်ပါ — မှိတ်တုတ်မှိတ်တုတ် ပိတ်ဆို့ထားသည်။",
+  "firmwareReadyFromSource": "ဖမ်ဝဲအဆင်သင့်ဖြစ်ပြီ- {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "ပြန်လည်စတင်ပါ။",
+  "peersBlocked": "ပိတ်ဆို့ထားသည်။",
+  "peersNearbyBle": "အနီးနား (BLE)",
+  "peersRecentlyOnline": "မကြာသေးမီက အွန်လိုင်း",
+  "peersOnlineInArea": "အွန်လိုင်းဧရိယာ",
+  "peersSeenMinutesAgo": "လွန်ခဲ့သော {minutes} မိနစ်က တွေ့ခဲ့သည်။",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "အော့ဖ်လိုင်း",
+  "peersBlockedSnack": "{id} ကို ပိတ်ဆို့ထားသည်။",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "ပိတ်ဆို့ထားသည်။",
+  "peersEmpty": "ဒေတာဘေ့စ်တွင် အဖွဲ့ဝင်များ မရှိသေးပါ။\nQR ကို စကင်ဖတ်ပါ သို့မဟုတ် BLE mesh ရှာဖွေတွေ့ရှိမှုကို စောင့်ပါ။",
+  "peersOpenChat": "ချတ်ဖွင့်ပါ။",
+  "peersBlockAction": "ပိတ်ဆို့သည်။",
+  "peersUnblockAction": "ပြန်ဖွင့်ပါ။",
+  "channelPickerTooltip": "ချတ် / #mesh / ဧရိယာ",
+  "locationPickerTooltip": "တည်နေရာချန်နယ်",
+  "transportPickerTooltip": "Mesh/Internet/Auto",
+  "onlinePeopleTooltip": "အွန်လိုင်းကလူတွေ",
+  "unreadDirectsTooltipEmpty": "သီးသန့်စာများ",
+  "unreadDirectsTooltip": "{count} မဖတ်ရသေးသော ကိုယ်ပိုင်စာများ",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "လူတွေ",
+  "onlinePeopleEmpty": "ဒီမှာ အွန်လိုင်းမှာ တစ်ယောက်မှ မရှိသေးဘူး။",
+  "onlinePeopleCount": "{count} အွန်လိုင်း",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · အနီးနား + ဧရိယာ",
+  "peerOnlineMeshTitle": "အနီးတစ်ဝိုက်တွင် တစ်စုံတစ်ယောက်",
+  "peerOnlineMeshBody": "{name} သည် mesh အနီးတွင်ရှိသည်။",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "အွန်လိုင်းမှာ တစ်စုံတစ်ယောက်ရှိတယ်။",
+  "peerOnlineAreaBody": "{name} သည် Nostr မှတစ်ဆင့် အွန်လိုင်းပေါ်တွင် ရှိနေသည်။",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#တည်နေရာချန်နယ်များ",
+  "channelPinsTitle": "ပင်ထိုးထားသည်။",
+  "channelPinsHint": "သင်မကြာခဏအသုံးပြုသည့်ချန်နယ်များကို ပင်ထိုးပါ — ၎င်းတို့သည် ထိပ်ဆုံးတွင်ရှိနေပါသည်။",
+  "channelPinTooltip": "ဤချန်နယ်ကို ပင်ထိုးပါ။",
+  "channelUnpinTooltip": "ပင်ဖြုတ်ပါ။",
+  "locationSheetIntro": "ကြမ်းသော geohash သုံးပြီး အနီးနားရှိလူများနှင့် စကားပြောပါ — တိကျသော GPS မဟုတ်ပါ။ အင်တာနက်ပေါ်တွင် ရှိနေခြင်းသည် အမည်မသိ Nostr ကီးများကို အသုံးပြုသည်။",
+  "locationMeshSubtitle": "#ဘလူးတုသ် • ~10-50 မီတာ",
+  "locationTeleportHint": "#geohash",
+  "locationTeleport": "ရတနာပုံတယ်လီပို့",
+  "homeComposeHint": "မက်ဆေ့ဂျ် {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "{channel} — အများသူငှာ ပေးပို့ပါ။",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "သက်တမ်းကုန်ဆုံးသည်။",
+  "voiceRecordTapToStart": "အသံမက်ဆေ့ဂျ်ကို မှတ်တမ်းတင်ရန် တို့ပါ။",
+  "voiceRecordTooShort": "အသံသွင်းခြင်းသည် တိုလွန်းသည် — ထပ်စမ်းကြည့်ပါ။",
+  "voiceRecordFailed": "မှတ်တမ်းတင်ခြင်းကို မသိမ်းဆည်းနိုင်ခဲ့ပါ — ထပ်စမ်းကြည့်ပါ။",
+  "voicePttHold": "မှတ်တမ်းတင်ရန် ကိုင်ထားပါ။",
+  "voicePttRelease": "အစမ်းကြည့်ရှုရန် ထုတ်ဝေပါ။",
+  "voicePttRecording": "မှတ်တမ်းတင်နေသည်...",
+  "voicePttDraftReady": "အသံမှတ်စု အဆင်သင့်ဖြစ်ပါပြီ။",
+  "voicePttDiscard": "ပစ်ပယ်",
+  "voicePttReRecord": "မှတ်တမ်းတင်ပြန်တယ်။",
+  "voicePttSend": "အသံမှတ်စုပို့ပါ။",
+  "voicePttPlayPreview": "အစမ်းကစားပါ။",
+  "voicePttStopPreview": "အစမ်းကြည့်ရှုခြင်းကို ရပ်လိုက်ပါ။",
+  "noticesBackfilling": "သတိပေးချက်များကို ဖွင့်နေသည်…",
+  "noticesNostrOnline": "Nostr အွန်လိုင်း",
+  "noticesNostrOffline": "Nostr အော့ဖ်လိုင်း — စာစောင်သည် အင်တာနက် လိုအပ်သည်။",
+  "noticesBackfillLoaded": "{count} သတိပေးချက်များကို တင်ထားသည်။",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "ဧရိယာဘုတ်အဖွဲ့သို့ အကြောင်းကြားစာ မထုတ်ပြန်နိုင်ပါ။ Nostr ချိတ်ဆက်မှုကို စစ်ဆေးပါ။",
+  "noticeMeshPublishNoLink": "ပြည်တွင်းမှာ သိမ်းတယ်။ အခြားသူများ လက်ခံနိုင်စေရန်အတွက် အနီးနားရှိ mesh ရေဒီယို (သို့မဟုတ် Wi‑Fi) ဂိတ်ဝသို့ ချိတ်ဆက်ပါ။",
+  "noticeMeshPublishSent": "စာစောင်ကို BLE ကျော် {count} အနီးတဝိုက်ရှိ စက်(များ) သို့ ပေးပို့ခဲ့သည်။",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "အနီးနားရှိ ရေဒီယိုများကို မြင်တွေ့ခဲ့ရသော်လည်း BLE ရေး၍ မရပါ။ အပလီကေးရှင်းနှစ်ခုလုံးကို Notices ဖန်သားပြင်ပေါ်တွင် ဖွင့်ထားပြီး ထပ်စမ်းကြည့်ပါ (သို့မဟုတ် ESP32 relay ကိုသုံးပါ)။",
+  "noticeMeshPublishNoGatt": "ဤစက်ပစ္စည်း၏ BLE လက်ခံကိရိယာ အဆင်သင့်မဖြစ်သေးပါ။ ဘလူးတုသ်ကို ပြောင်းပြီး သတိပေးချက်များကို ပြန်ဖွင့်ပါ။",
+  "noticeDelete": "အသိပေးချက်ကို ဖျက်ပါ။",
+  "noticeDeleteConfirmTitle": "ဤသတိပေးချက်ကို ဖျက်မလား။",
+  "noticeDeleteLocalOnlyBody": "၎င်းသည် ဤစက်ပစ္စည်းပေါ်တွင်သာ ဖယ်ရှားသည်။ လက်ခံရရှိပြီးသော အခြားသူများကလည်း ၎င်းကို မြင်နေကြဆဲဖြစ်သည်။",
+  "noticeDeleted": "အသိပေးချက်ကို ဖျက်လိုက်ပါပြီ။",
+  "chatNoticeHidden": "ဧရိယာသတိပေးချက် — Notices ကိုဖွင့်ပါ။",
+  "identityDisplayNameTitle": "ဖော်ပြမည့်အမည်",
+  "identitySaveName": "နာမည်ကို သိမ်းဆည်းပါ။",
+  "identityUserIdLabel": "အသုံးပြုသူ ID (အများပြည်သူကီး ဟက်ရှ်)",
+  "identityCopyHashTooltip": "အများသူငှာသော့ hash ကို ကူးယူပါ။",
+  "identityMyQrTitle": "ကျွန်ုပ်၏ QR (id + pubKey + အမည်)",
+  "identityQrFailed": "QR ကို ဖန်တီး၍မရပါ။\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "သိမ်းဆည်းနေသည်...",
+  "identitySaveQr": "ဓာတ်ပုံစာကြည့်တိုက်တွင် QR သိမ်းဆည်းပါ။",
+  "identityOpenScanner": "QR စကင်န်ဖတ်ရန် ကင်မရာကိုဖွင့်ပါ။",
+  "identityQrHelp": "သင်၏ အများသူငှာသော့ကို သိမ်းဆည်းရန် ၎င်းကို သူငယ်ချင်းတစ်ဦးအား စကင်ဖတ်ခိုင်းပြီး (လိုအပ်ပါက) သင့်ကို စိစစ်ပြီး ထုတ်ပေးသူအဖြစ် သတ်မှတ်ပါ။",
+  "identityChatTip": "အကြံပြုချက်- E2EE အတွက် အများသူငှာသော့ထည့်ရန် ချတ်တွင် QR ကို စကင်ဖတ်နိုင်သည်။",
+  "infoOpen": "အကြောင်း/အချက်အလက်",
+  "docsGuideTitle": "အသုံးပြုသူလမ်းညွှန်",
+  "docsGuideSubtitle": "ဘရောက်ဆာတွင်ဖွင့်သည်။",
+  "docsOpenAction": "လမ်းညွှန်ဖွင့်ပါ။",
+  "docsOpenFailed": "အသုံးပြုသူလမ်းညွှန်ကို ဖွင့်၍မရပါ။",
+  "firmwareOtaGuideTitle": "Flash လမ်းညွှန် & OTA ပရိုတိုကော",
+  "firmwareOtaGuideSubtitle": "ဝဘ်လမ်းညွှန်ကိုဖွင့်ပါ — .bin ဒေါင်းလုဒ်များနှင့် အဆင့်များ အပြည့်အစုံ",
+  "firmwareWebDownloadsTitle": "ဝဘ်ပေါ်တွင် Firmware ဒေါင်းလုဒ်လုပ်ပါ။",
+  "firmwareWebDownloadsSubtitle": "docs ဆိုက်ရှိ ဗားရှင်းအလိုက် လင့်ခ်များနှင့် ချက်စမ်များ",
+  "inviteCopyShortLink": "လင့်ခ်အတိုကို ကူးယူပါ။",
+  "inviteShareLink": "လင့်ခ်ကို မျှဝေပါ။",
+  "inviteShowFullLink": "လင့်အပြည့်အစုံ",
+  "inviteCopyFullLink": "လင့်အပြည့်အစုံကို ကူးယူပါ။",
+  "inviteLinkCopied": "လင့်ခ်ကို ကူးယူထားသည်။",
+  "inviteLongPressHint": "လင့်ခ်လုပ်ဆောင်ချက်များအတွက် ကြာကြာနှိပ်ပါ။",
+  "inviteSendInChat": "ResilNet ချတ်တွင် ပို့ပါ…",
+  "inviteSendInChatHint": "သင့်အတွက် အများသူငှာသော့ရှိပြီးသားလူများသာ",
+  "inviteSendInChatEmpty": "စာတိုပေးပို့နိုင်သော ချတ်များ မရှိသေးပါ။\nQR ကို စကင်န်ဖတ်ပါ၊ Area/Mesh ကိုဖွင့်ပါ၊ သို့မဟုတ် အက်ပ်ပြင်ပရှိ လင့်ခ်ကို ဦးစွာမျှဝေပါ။",
+  "inviteSentToChat": "ဖိတ်ကြားချက်ကို ချတ်တွင် ပေးပို့ခဲ့သည်။",
+  "infoTabInfo": "အချက်အလက်",
+  "infoTabSettingsHint": "ဘာသာစကား၊ E2EE နှင့် ဒေတာကိရိယာများအတွက် မီနူးမှ ဆက်တင်များကို ဖွင့်ပါ။",
+  "infoHowToTitle": "အသုံးပြုနည်း",
+  "infoHowToBody": "• Chat / #mesh / Area ကိုပြောင်းရန် ချန်နယ်အိုင်ကွန်ကို တို့ပါ။\n• geohash အရွယ်အစားကို ရွေးရန် နေရာကို တို့ပါ။\n• အဖွဲ့ဝင်များ သို့မဟုတ် အွန်လိုင်းရှိသူများအတွက် လူများကို တို့ပါ။\n• လူကိုယ်တိုင်သော့လဲလှယ်ရန် ⋮ မှ Identity/QR ကိုဖွင့်ပါ။\n• ဧရိယာ \"အများပြည်သူ\" သည် အလုံပိတ် E2EE ကို အွန်လိုင်းမှရွယ်တူတစ်ဦးစီထံ ပေးပို့သည် — ရိုးရှင်းသောအခန်းမဟုတ်ပေ။",
+  "infoFeaturesTitle": "အင်္ဂါရပ်များ",
+  "infoFeatureOffline": "စွမ်းအင်နိမ့် Bluetooth မှတဆင့် အော့ဖ်လိုင်းစာတိုပေးပို့ခြင်း။",
+  "infoFeatureE2ee": "RSA-OAEP + AES-GCM ဖြင့် အဆုံးမှ အဆုံးထိ ကုဒ်ဝှက်ခြင်း (Noise မဟုတ်ပါ။)",
+  "infoFeatureMultihop": "မက်ဆေ့ဂျ်များသည် အနီးနားရှိရွယ်တူများမှတဆင့် ပိုဝေးသွားနိုင်သည်။",
+  "infoFeatureBridge": "အလုံပိတ်စာအိတ်များအတွက် Hybrid mesh ↔ အင်တာနက် (Nostr)",
+  "infoFeatureGeo": "အနီးနားရှိလူများအတွက် ဒေသတွင်း geohash ချန်နယ်များ (discovery UX)",
+  "infoFeatureNotices": "#mesh နှင့် Area အတွက် သက်တမ်းကုန်ဆုံးမည့် သတိပေးချက်များ",
+  "infoPrivacyTitle": "ကိုယ်ရေးကိုယ်တာ",
+  "infoPrivacyNoRoom": "ဝါယာကြိုးပေါ်တွင် လွင်ပြင်ကျေးရွာ / အများသူငှာ စကားပြောခန်းမရှိပါ။",
+  "infoPrivacyFanout": "ဧရိယာ ပေးပို့ခြင်း = အများသူငှာသော့များပါသော 1:1 ကို အလုံပိတ် 1:1 fan-out",
+  "infoPrivacyPresence": "အင်တာနက် ဧရိယာတည်ရှိမှုသည် ပေါ်ပင် Nostr သော့များကို အသုံးပြုသည်။",
+  "infoSymbolsTitle": "သင်္ကေတများ",
+  "infoSymBle": "တိုက်ရိုက် Bluetooth လင့်ခ်",
+  "infoSymMesh": "Mesh မှတဆင့် လက်လှမ်းမီနိုင်သည် (အခြားရှေ့ဆက်သည်)",
+  "infoSymInternet": "အင်တာနက်မှတဆင့် (Nostr) — အလုံပိတ်စာအိတ်များ",
+  "infoSymBridge": "mesh↔internet တံတားလမ်းကြောင်းမှတဆင့် ရောက်ရှိခဲ့သည်။",
+  "infoSymOffline": "အော့ဖ်လိုင်း — လောလောဆယ် ဆက်သွယ်၍မရပါ။",
+  "infoSymInArea": "ဤတည်နေရာချန်နယ်၏ဧရိယာတွင်",
+  "infoSymE2eeOk": "အဆုံးမှ အဆုံးထိ ကုဒ်ဝှက်ထားသော စက်ရှင်",
+  "infoSymE2eeFail": "ကုဒ်ဝှက်ခြင်း မရရှိနိုင်ပါ — အရေးကြီးသော စာသားများ မပို့ပါနှင့်",
+  "infoSymVerified": "အထောက်အထား စိစစ်ပြီး/သိသော သော့",
+  "infoSymBlocked": "ပိတ်ဆို့ထားသည်။",
+  "infoSymUnread": "မဖတ်ရသေးသော ကိုယ်ရေးကိုယ်တာ မက်ဆေ့ချ်",
+  "infoEmergencyTitle": "အရေးပေါ်မုဒ်",
+  "infoEmergencyBody": "ဤစက်ပစ္စည်းပေါ်ရှိ မက်ဆေ့ချ်များ၊ သော့များနှင့် အထောက်အထားများကို ရှင်းလင်းရန် ပင်မစခရင်ရှိ ResilNet ခေါင်းစဉ်ကို သုံးချက်တို့ပါ။",
+  "infoLegendNote": "အချို့သော လမ်းကြောင်း အိုင်ကွန်များကို ရှင်းလင်းရန်အတွက် ဤနေရာတွင် မှတ်တမ်းတင်ထားပါသည်။ ချတ်တွင် ပေးပို့မှု အမှတ်အသားများသည် ပင်မ ပေးပို့မှု အခြေအနေအဖြစ် ကျန်ရှိနေပါသည်။",
+  "dangerZoneTitle": "အန္တရာယ်ဇုန်",
+  "dangerZoneSubtitle": "မက်ဆေ့ဂျ်များ၊ ကုဒ်ဝှက်ခြင်းသော့များ၊ Nostr အထောက်အထား၊ ရွယ်တူများနှင့် ဤစက်ပစ္စည်းပေါ်ရှိ အမည်ဝှက်များကို ဖျက်ပါ။ သင် ထပ်မံသတ်မှတ်ပါမည်။",
+  "panicWipeTitle": "အရေးပေါ်သုတ်",
+  "panicWipeSubtitle": "စက်တွင်းရှိ အရာအားလုံးကို ဖျက်ပါ — ပင်မခေါင်းစဉ်ကို သုံးကြိမ်နှိပ်ခြင်းကဲ့သို့ပင် (နှစ်ချက်တို့ပြီး ရေဒီယိုများကို ပြန်လည်ဆန်းသစ်စေသည်)",
+  "panicWipeConfirmTitle": "စက်တွင်းဒေတာအားလုံးကို ဖျက်မလား။",
+  "panicWipeConfirmBody": "၎င်းသည် ဤဖုန်းပေါ်ရှိ ချတ်များ၊ သော့များနှင့် အထောက်အထားများကို အပြီးအပိုင် ဖျက်သည်။\nရွယ်တူများသည် သင်၏အထောက်အထားအသစ်နှင့် QR ကီးများကို ပြန်လည်လဲလှယ်ရပါမည်။\nဒါကို ပြန်ပြင်လို့ မရပါဘူး။",
+  "panicWipeAction": "အကုန်သုတ်",
+  "panicWipeSnack": "ဒေသဆိုင်ရာအထောက်အထားကို ဖယ်ရှားလိုက်သည် — ထပ်မံသတ်မှတ်ပါ။",
+  "panicWipeFailed": "ရှင်းလင်းခြင်း မအောင်မြင်ပါ- {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "ကွက်တံတား",
+  "meshBridgeSubtitle": "ဖွင့်ထားသည့်အခါ (မူလ)၊ အလုံပိတ်စာအိတ်များသည် BLE mesh နှင့် internet (Nostr) နှစ်ခုလုံးကို အတူတကွ အသုံးပြုနိုင်ပြီး အနီးနားရှိ mesh ကျွန်းများကို ချိတ်ဆက်နိုင်သည်။ ပိတ်ထားသောအခါ၊ ပေးပို့မှုများသည် လမ်းကြောင်းတစ်ခုတည်းကိုသာ အသုံးပြုပါ — ဝိုင်ယာကြိုးပေါ်တွင် ရိုးရိုးစာသားကို ဘယ်သောအခါမှ မတင်ပါ။",
+  "favoritesTitle": "အကြိုက်ဆုံးများ",
+  "favoritesAdd": "စိတ်ကြိုက်များထဲသို့ ထည့်ပါ။",
+  "favoritesRemove": "စိတ်ကြိုက်များမှ ဖယ်ရှားပါ။",
+  "favoritesEmpty": "အကြိုက်ဆုံးများ မရှိသေးပါ — အဖွဲ့ဝင်စာရင်းမှ ရွယ်တူတစ်ဦးကို ကြယ်ပွင့်ပြပါ။",
+  "favoritesNearbyTitle": "အနီးနားတွင် အကြိုက်ဆုံး",
+  "favoritesNearbyBody": "{name} သည် mesh အနီးတွင်ရှိသည်။",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "အကြိုက်ဆုံးဧရိယာ",
+  "favoritesInAreaBody": "{name} သည် ဤဧရိယာတွင် အွန်လိုင်းဖြစ်သည်။",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Mesh topology",
+  "topologySubtitle": "Mesh ကြေညာခြင်းမှ ရွယ်တူများနှင့် ချိတ်ဆက်မှု အရိပ်အမြွက်များ (ဖတ်ရန်သာ)",
+  "topologyConnectedNow": "ယခုချိတ်ဆက်ထားသည် (BLE)",
+  "topologyNearby": "အနီးနား (BLE)",
+  "topologyKnown": "ရွယ်တူများ သိကြသည်။",
+  "topologyEmpty": "ရွယ်တူများ မလေ့လာရသေးပါ — BLE ကိုဖွင့်ပြီး အနီးအနားတွင်နေပါ။",
+  "topologyYou": "သင်",
+  "topologyStats": "{peers} ရွယ်တူများ · {links} လင့်ခ်များ",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "အနီးနားရှိ ကွက်ကွက်ရှာဖွေတွေ့ရှိမှုမှ ခန့်မှန်းထားသည် — သင့်စက်ကို မီးမောင်းထိုးပြထားသည်။ ချတ်ဖွင့်ရန် ရွယ်တူတစ်ဦးကို တို့ပါ။",
+  "topologyOpen": "Mesh topology",
+  "slashHelpTitle": "အမိန့်များ",
+  "slashHelpBody": "/help — ဤစာရင်း\n/who — လက်ရှိချန်နယ်ရှိ အွန်လိုင်းရှိလူများ\n/drop <text> — ဤနေရာတွင် အလုံပိတ်သတိပေးချက်ကို ချိတ်ပါ (E2EE fan-out)\n\nလမ်းညွှန်ချက်အပြည့်အစုံ- အောက်ပါဖွင့်လမ်းညွှန်ချက်ကို အသုံးပြုပါ သို့မဟုတ် ဆက်တင်များ → အသုံးပြုသူလမ်းညွှန်။",
+  "slashWhoEmpty": "ယခုချန်နယ်တွင် မည်သူမျှ အွန်လိုင်းမရှိပါ။",
+  "slashWhoTitle": "အွန်လိုင်း ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "အသုံးပြုမှု- / သင့်မှတ်စုစာသားကို ချလိုက်ပါ။",
+  "slashDropDone": "{channel} တွင် သတိပေးချက် ချထားသည်။",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "အမည်မသိ ကွန်မန်း - ကြိုးစား /help",
+  "announceOpen": "ကြေညာချက်များ",
+  "announceTitle": "ကြေညာချက်များ",
+  "announceEmpty": "ဘုတ်များမရှိသေးပါ — လော့ခ်ချထားသော သို့မဟုတ် ဖွင့်ထားသောသတိပေးချက်များကို တင်ရန်တစ်ခုကို ဖန်တီးပါ။",
+  "announceCreate": "ဘုတ်ကိုဖန်တီးပါ။",
+  "announceCreateHint": "ဘုတ်နာမည်",
+  "announceDefaultTitle": "ရပ်ရွာဘုတ်အဖွဲ့",
+  "announceSettings": "ဘုတ်ဆက်တင်များ",
+  "announceAllowLocked": "လော့ခ်ချထားသော (ကုဒ်ဝှက်ထားသော) ပို့စ်များကို ခွင့်ပြုပါ။",
+  "announceAllowLockedSub": "ဘုတ်ကီးသို့ ကုဒ်ဝှက်ထားသည် — စာဖတ်သူများသည် ဝင်ရောက်အသုံးပြုခွင့် လိုအပ်သည်။",
+  "announceAllowOpen": "ပွင့်လင်းမြင်သာသော (လွင်ပြင်) ပို့စ်များကို ခွင့်ပြုပါ။",
+  "announceAllowOpenSub": "E2EE မဟုတ်ပါ — mesh/relays များတွင် ဖတ်နိုင်သည်။ မူရင်းအတိုင်း ပိတ်ပါ။",
+  "announceComposeHint": "ကြေငြာချက်ရေးပါ...",
+  "announceMediaInternetOnly": "ဓာတ်ပုံ/အသံ ကြေငြာချက်များကို အင်တာနက်မှ ပေးပို့ပါ (BLE မဟုတ်ပါ)",
+  "announceNeedInternet": "ဓာတ်ပုံ သို့မဟုတ် အသံကြေငြာချက်များကို ပေးပို့ရန် အင်တာနက်သို့ ချိတ်ဆက်ပါ။",
+  "announceVoiceFailed": "အသံကို မှတ်တမ်းတင်၍မရပါ- {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "ပုံသည် ကြီးလွန်းသည် (အများဆုံး ~180 KB)",
+  "announcePlayVoice": "အသံမှတ်စုကို ဖွင့်ပါ။",
+  "announceImageLabel": "📷 ပုံ",
+  "announceAudioLabel": "🎤 အသံမှတ်စု",
+  "announceModeLocked": "သော့ခတ်ထားသည်။",
+  "announceModeOpen": "ဖွင့်သည်။",
+  "announceOpenBadge": "OPEN · စာဝှက်မထားပါ။",
+  "announceLockedBadge": "သော့ခတ်ထားသည်။",
+  "announceLockedPlaceholder": "ကုဒ်ဝှက်ထားသည် — ဖတ်ရန် ဝင်ရောက်ခွင့် တောင်းဆိုပါ။",
+  "announceRequestAccess": "ဝင်ရောက်ခွင့်တောင်းပါ။",
+  "announceRequestSent": "ဝင်ရောက်ခွင့် တောင်းဆိုချက်ကို ဘုတ်ပိုင်ရှင်ထံ ပေးပို့ခဲ့သည်။",
+  "announceRequestFailed": "ဝင်ရောက်ခွင့် တောင်းဆို၍မရပါ (ပိုင်ရှင်၏ အများသူငှာသော့ လိုအပ်သည်)",
+  "announceOpenConfirmTitle": "ကုဒ်ဝှက်ခြင်းမရှိဘဲ ပို့စ်တင်မလား။",
+  "announceOpenConfirmBody": "ဖွင့်ထားသော ပို့စ်များသည် E2EE မဟုတ်ပါ။ လမ်းကြောင်း (mesh / relays) ရှိ မည်သူမဆို ၎င်းတို့ကို ဖတ်နိုင်ပါသည်။ ဆက်မလား။",
+  "announcePostAction": "ပို့စ်",
+  "announcePendingRequests": "ဝင်ခွင့်တောင်းဆိုမှုများ",
+  "announceApprove": "လက်မခံပါ။",
+  "announceDeny": "ငြင်းတယ်။",
+  "announceGranted": "ဤဘုတ်ပေါ်တွင် သော့ခတ်ထားသော ပို့စ်များကို သင်ဖတ်နိုင်သည်။",
+  "announceOwner": "ဒီဘုတ်ကို မင်းပိုင်တယ်။",
+  "announceCopyInvite": "ဖိတ်ကြားချက်စာသားကို ကူးယူပါ။",
+  "announceShowInviteQr": "ဖိတ်ကြားချက် QR ကိုပြပါ။",
+  "announceScanInviteQr": "ဘုတ်အဖွဲ့ ဖိတ်ကြားချက် QR ကို စကင်ဖတ်ပါ။",
+  "announceFollow": "ဖိတ်ကြားချက်မှ ဘုတ်အဖွဲ့သို့ လိုက်ပါ။",
+  "announceFollowHint": "ဖိတ်ကြားချက်စာသား သို့မဟုတ် ပိုင်ရှင်ထံမှ ResilNet လင့်ခ်ကို ကူးထည့်ပါ။",
+  "announceFollowOk": "ဘုတ်အဖွဲ့နောက်လိုက်",
+  "announceFollowOkNamed": "ယခု “{title}” ကို လိုက်ကြည့်နေသည်",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "ဖိတ်ကြားချက် မမှန်ကန်ပါ သို့မဟုတ် ပျက်စီးနေပါသည်။",
+  "announceInviteCopied": "ဖိတ်ကြားစာ ကူးယူထားသည်။",
+  "announceInviteSaveQr": "QR သိမ်းဆည်းပါ။",
+  "announceInviteShare": "မျှဝေရန် ဖိတ်ကြားအပ်ပါသည်။",
+  "announceFollowFromCompose": "ဘုတ်အဖွဲ့ ဖိတ်ကြားချက်ကို မက်ဆေ့ချ်ဘောက်စ်တွင် တွေ့ရှိခဲ့သည်။",
+  "peerConfirmAddTitle": "ကွန်ရက်အဖွဲ့ဝင်ကို ထည့်မလား။",
+  "peerConfirmAddBody": "၎င်းတို့၏ အများသူငှာသော့ဖြင့် “{name}” ကို ပေါင်းထည့်ခြင်းဖြင့် ၎င်းတို့ကို သီးသန့် မက်ဆေ့ချ်ပို့နိုင်ပါသလား။",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "အဖွဲ့ဝင်ထည့်ပါ။",
+  "peerAddedOk": "ကွန်ရက်အဖွဲ့ဝင်များသို့ {name} ကို ပေါင်းထည့်ခဲ့သည်။",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "မက်ဆေ့ချ်ဘောက်စ်တွင် အထောက်အထား/ အများသူငှာသော့ကို တွေ့ရှိခဲ့သည်။",
+  "peerHashCopied": "အများသူငှာသော့ hash ကို ကူးယူထားသည်။",
+  "peerHashOpenChat": "ချတ်ဖွင့်ပါ။",
+  "peerHashAddHint": "Hash ကူးယူထားသည်။ E2EE အတွက် အများသူငှာသော့အပြည့်အစုံကို သင်ထည့်နိုင်စေရန် ၎င်းတို့၏အထောက်အထားလင့်ခ် သို့မဟုတ် QR ကိုမျှဝေရန် ၎င်းတို့အား တောင်းဆိုပါ။",
+  "peerQrNoCode": "ဤပုံတွင် ResilNet QR မတွေ့ပါ။",
+  "identityInviteSharePreamble": "ResilNet အထောက်အထား- “{name}”\nလင့်ခ်ကိုဖွင့်ပါ သို့မဟုတ် ချတ်တွင် → အဖွဲ့ဝင်ထည့်ပါ။\nသို့မဟုတ် အထောက်အထား QR ကို စကင်န်ဖတ်ပါ။",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "အထောက်အထားလင့်ခ်ကို မျှဝေပါ။",
+  "identityInviteCopied": "အထောက်အထားလင့်ခ်ကို ကူးယူထားသည်။",
+  "announceInviteSharePreamble": "ဘုတ်အဖွဲ့ ဖိတ်ကြားချက်- “{title}”\nResilNet ကိုဖွင့်ပါ → ကွန်မြူနတီဘုတ်များ → ဖိတ်ကြားချက်မှ လိုက်နာပါ။\nသို့မဟုတ် QR ကိုစကင်ဖတ်ပါ / အောက်ပါလင့်ခ်ကိုနှိပ်ပါ။",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "ဒီဘုတ်ကို လိုက်လုပ်မလား။",
+  "announceConfirmFollowBody": "ဤဖိတ်ကြားချက်မှ “{title}” ကို လိုက်ကြည့်မလား။",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "လိုက်နာပါ။"
+}

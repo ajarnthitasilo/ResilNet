@@ -144,7 +144,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'IP หรือ http://IP:พอร์ต เช่น 192.168.1.10:8766';
 
   @override
-  String get lxmfBridgeIdentityMap => 'Peer → LXMF dest (JSON)';
+  String get lxmfBridgeIdentityMap => 'เพียร์ → LXMF ปลายทาง (JSON)';
 
   @override
   String get lxmfBridgeRefresh => 'บันทึกและรีเฟรชสถานะ';
@@ -368,7 +368,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get languageSubtitle =>
-      'ตามภาษาเครื่องเมื่อเป็นไทยหรืออังกฤษ — ภาษาอื่นของระบบใช้อังกฤษ หรือล็อกเป็นไทย / อังกฤษที่นี่';
+      'ค่าเริ่มต้นตามภาษาเครื่อง (ถ้าแอปมีภาษานั้น) — ภาษาอื่นใช้อังกฤษ หรือล็อกภาษาที่นี่';
 
   @override
   String get languageSystem => 'ตามระบบ';
@@ -377,7 +377,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get languageThai => 'ไทย';
 
   @override
-  String get languageEnglish => 'English';
+  String get languageEnglish => 'ภาษาอังกฤษ';
 
   @override
   String get notificationsTooltip => 'การตั้งค่าแจ้งเตือน';
@@ -399,7 +399,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get feedDirects => 'แชท';
 
   @override
-  String get feedMesh => '#mesh';
+  String get feedMesh => '#ตาข่าย';
 
   @override
   String get feedGeo => 'พื้นที่';
@@ -408,7 +408,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get feedDirectsSubtitle => 'ข้อความส่วนตัว E2EE';
 
   @override
-  String get feedMeshSubtitle => 'เพื่อนใกล้ตัว (BLE)';
+  String feedMeshSubtitle(Object ble) {
+    return 'เพื่อนใกล้ตัว (BLE)';
+  }
 
   @override
   String get feedGeoSubtitle => 'ช่องตาม geohash (ค้นพบ)';
@@ -550,7 +552,7 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
-  String get geoChannelFallback => '#area';
+  String get geoChannelFallback => '#พื้นที่';
 
   @override
   String get geoRefreshLocation => 'Refresh ตำแหน่ง';
@@ -586,16 +588,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get chatVoiceSentInternet => 'ส่งข้อความเสียงผ่าน Internet แล้ว';
 
   @override
-  String get noticeAnonMention => 'mention';
+  String get noticeAnonMention => 'กล่าวถึง';
 
   @override
   String get noticeAnonDm => 'ข้อความตรง';
 
   @override
-  String get noticeAnonHug => 'hug';
+  String get noticeAnonHug => 'กอด';
 
   @override
-  String get noticeAnonSlap => 'slap';
+  String get noticeAnonSlap => 'ตบ';
 
   @override
   String get noticeAnonBlock => 'บล็อก';
@@ -622,10 +624,10 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
-  String get geoReconnectNostr => 'Reconnect Nostr';
+  String get geoReconnectNostr => 'เชื่อมต่อใหม่ Nostr';
 
   @override
-  String get nostrSectionTitle => 'Nostr relays';
+  String get nostrSectionTitle => 'Nostr รีเลย์';
 
   @override
   String get nostrSectionSubtitle =>
@@ -644,7 +646,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'ยังไม่เริ่ม (0/0) — กด Reconnect เพื่อเริ่มระบบ';
 
   @override
-  String get nostrReconnectAction => 'Reconnect Nostr';
+  String get nostrReconnectAction => 'เชื่อมต่อใหม่ Nostr';
 
   @override
   String nostrReconnectOk(int connected, int total) {
@@ -681,13 +683,13 @@ class AppLocalizationsTh extends AppLocalizations {
       'Mesh = BLE ใกล้ตัว (radio) เมื่อไม่มี Nostr · Internet & Auto = รายชื่อจาก Nostr';
 
   @override
-  String get transportModeMesh => 'Mesh';
+  String get transportModeMesh => 'ตาข่าย';
 
   @override
-  String get transportModeInternet => 'Internet';
+  String get transportModeInternet => 'อินเทอร์เน็ต';
 
   @override
-  String get transportModeAuto => 'Auto';
+  String get transportModeAuto => 'อัตโนมัติ';
 
   @override
   String get geoPublicHint => 'ข้อความสาธารณะถึงทุกคนที่ออนไลน์ในพื้นที่นี้';
@@ -1151,7 +1153,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String meshBleStatusDetail(String bt, String loc, String ble) {
-    return 'BT $bt · Loc $loc · BLE $ble';
+    return 'BT $bt · ล็อค $loc · BLE $ble';
   }
 
   @override
@@ -1178,7 +1180,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String meshGatewayProgress(String label) {
-    return 'Gateway UDP: $label';
+    return 'UDP เกตเวย์: $label';
   }
 
   @override
@@ -1214,7 +1216,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'ไม่ได้รับอนุญาตไมโครโฟน — เปิด Settings เพื่ออนุญาตการบันทึกเสียง';
 
   @override
-  String get permissionMicOpenSettings => 'Settings';
+  String get permissionMicOpenSettings => 'การตั้งค่า';
 
   @override
   String get permissionCameraDenied =>
@@ -1224,7 +1226,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get permissionCameraFailed => 'ต้องอนุญาตกล้องเพื่อสแกน QR';
 
   @override
-  String get permissionCameraOpenSettings => 'Settings';
+  String get permissionCameraOpenSettings => 'การตั้งค่า';
 
   @override
   String get permissionPhotosDenied =>
@@ -1234,7 +1236,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get permissionPhotosFailed => 'ต้องอนุญาตคลังภาพเพื่อบันทึก QR';
 
   @override
-  String get permissionPhotosOpenSettings => 'Settings';
+  String get permissionPhotosOpenSettings => 'การตั้งค่า';
 
   @override
   String permissionFailedSnack(String error) {
@@ -1243,7 +1245,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get permissionFooter =>
-      'ResilNet Architecture • Store-and-Forward Multi-hop';
+      'ResilNet สถาปัตยกรรม • จัดเก็บและส่งต่อมัลติฮอป';
 
   @override
   String get onboardingSkip => 'ข้าม';
@@ -1479,7 +1481,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get peersBlocked => 'บล็อกแล้ว';
 
   @override
-  String get peersNearbyBle => 'ใกล้เคียง (BLE)';
+  String peersNearbyBle(Object ble) {
+    return 'ใกล้เคียง (BLE)';
+  }
 
   @override
   String get peersRecentlyOnline => 'ออนไลน์ล่าสุด';
@@ -1523,7 +1527,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get locationPickerTooltip => 'ช่องตามตำแหน่ง';
 
   @override
-  String get transportPickerTooltip => 'Mesh / Internet / Auto';
+  String get transportPickerTooltip => 'ตาข่าย/อินเตอร์เน็ต/ออโต้';
 
   @override
   String get onlinePeopleTooltip => 'คนออนไลน์';
@@ -1589,7 +1593,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get locationMeshSubtitle => '#bluetooth • ~10–50 ม.';
 
   @override
-  String get locationTeleportHint => '#geohash';
+  String get locationTeleportHint => '#จีโอฮาช';
 
   @override
   String get locationTeleport => 'เทเลพอร์ต';

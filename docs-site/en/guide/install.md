@@ -29,10 +29,12 @@
 ## After install
 
 - You can set a display name in Settings
-- Version in Settings should show **1.9.49** (or newer)
+- Version in Settings should show **1.9.64** (or newer)
 - There is no email/password signup screen
+- (Optional) If your team uses a home bridge: [Home node / Reticulum](reticulum-home-node.md)
 
 ## Next
 
+- [What’s new](whats-new.md)
 - [1:1 chat](chat.md)
 - [ESP32 firmware](../firmware/)

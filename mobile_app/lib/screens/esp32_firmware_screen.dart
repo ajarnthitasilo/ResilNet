@@ -8,6 +8,7 @@ import '../services/firmware_service.dart';
 import '../state/app_state.dart';
 import '../l10n/l10n_ext.dart';
 import 'esp32_ota_screen.dart';
+import '../app/glass_overlays.dart';
 
 /// ดาวน์โหลดและจัดการไฟล์เฟิร์มแวร์ ESP32
 class Esp32FirmwareScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
       final l10n = context.l10n;
       if (resolved.isUsable) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          GlassSnackBar(
             content: Text(
               l10n.firmwareReadyFromSource(_sourceLabel(resolved.source)),
             ),
@@ -62,13 +63,13 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
                 ? l10n.firmwareChecksumFailed
                 : '${l10n.firmwareSourceUnavailable}${err.isEmpty ? '' : ' — $err'}';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg)),
+          GlassSnackBar(content: Text(msg)),
         );
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('ดาวน์โหลดไม่สำเร็จ: $e')),
+        GlassSnackBar(content: Text('ดาวน์โหลดไม่สำเร็จ: $e')),
       );
     } finally {
       fw.removeListener(listener);

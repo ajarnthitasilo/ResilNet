@@ -10,6 +10,7 @@ import '../core/meshtastic_mqtt_json.dart';
 import '../l10n/l10n_ext.dart';
 import '../services/mqtt_meshtastic_transport.dart';
 import '../state/app_state.dart';
+import '../app/glass_overlays.dart';
 
 /// Settings → Devices → Meshtastic bridge (Mode A / B mutex, text-only).
 class MeshtasticBridgeScreen extends StatefulWidget {
@@ -406,7 +407,7 @@ class _MeshtasticBridgeScreenState extends State<MeshtasticBridgeScreen> {
                             await _saveMqtt(s);
                             if (!mounted) return;
                             messenger.showSnackBar(
-                              SnackBar(content: Text(saved)),
+                              GlassSnackBar(content: Text(saved)),
                             );
                           } finally {
                             if (mounted) setState(() => _busy = false);
@@ -431,7 +432,7 @@ class _MeshtasticBridgeScreenState extends State<MeshtasticBridgeScreen> {
                                 ? errFallback
                                 : _errLabel(l10n, errCode);
                             messenger.showSnackBar(
-                              SnackBar(
+                              GlassSnackBar(
                                 content: Text(ok ? connectedMsg : err),
                               ),
                             );
@@ -661,7 +662,7 @@ class _MeshtasticBridgeScreenState extends State<MeshtasticBridgeScreen> {
                       try {
                         await s.simulateMeshtasticInbound(_simulate.text);
                         if (!mounted) return;
-                        messenger.showSnackBar(SnackBar(content: Text(okMsg)));
+                        messenger.showSnackBar(GlassSnackBar(content: Text(okMsg)));
                       } finally {
                         if (mounted) setState(() => _busy = false);
                       }
@@ -735,7 +736,7 @@ class _MeshtasticBridgeScreenState extends State<MeshtasticBridgeScreen> {
                           s.meshtasticBridge?.lastError,
                         );
                         messenger.showSnackBar(
-                          SnackBar(content: Text(ok ? okMsg : err)),
+                          GlassSnackBar(content: Text(ok ? okMsg : err)),
                         );
                         if (ok) _compose.clear();
                       } finally {

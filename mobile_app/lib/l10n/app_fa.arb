@@ -1,0 +1,1105 @@
+{
+  "@@locale": "fa",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "در حال بازخوانی ResilNet…",
+  "appRefreshed": "تازه - رادیوها و اکتشاف دوباره راه اندازی شد",
+  "appRefreshFailed": "بازخوانی انجام نشد: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "دو بار ضربه بزنید = تازه کردن نرم. فشار طولانی = بازیابی سخت. سه ضربه = پاک کردن اضطراری.",
+  "softRefreshTipTitle": "اگر ResilNet احساس کند گیر کرده است",
+  "softRefreshTipBody": "برای تازه‌سازی رادیویی نرم، روی ResilNet (بالا سمت چپ) دو ضربه بزنید. اگر همچنان گیر کرده اید: عنوان را طولانی فشار دهید، از ⋮ → بازیابی سخت یا تنظیمات استفاده کنید. سه ضربه فقط پاک کردن اضطراری است.",
+  "softRefreshTipGotIt": "متوجه شدم",
+  "infoSoftRefreshTitle": "اگر برنامه احساس می کند گیر کرده است",
+  "infoSoftRefreshStepRefresh": "دو ضربه سریع روی ResilNet (بالا سمت چپ) ← رادیوهای تازه سازی نرم و افراد اطراف",
+  "infoSoftRefreshStepHard": "هنوز گیر کرده اید؟ عنوان را فشار دهید، یا ⋮ / تنظیمات → بازیابی سخت",
+  "infoSoftRefreshStepWait": "منتظر اسنکبار نتیجه باشید، سپس دوباره امتحان کنید. تنظیم مجدد جلسه کلیدهای شما را نگه می دارد.",
+  "infoSoftRefreshStepWipe": "سه ضربه = پاک کردن اضطراری (داده های محلی را حذف می کند) - فقط در صورت عمدی",
+  "appRecoverySection": "بازیابی برنامه",
+  "appRecoverySectionSubtitle": "زمانی استفاده کنید که برنامه احساس می‌کند منجمد شده است. نرم = عنوان دو ضربه سریع. بازیابی سخت قوی تر است. بازنشانی جلسه خدمات را بدون پاک کردن کلیدها مجدداً راه اندازی می کند.",
+  "appHardRecoverAction": "ریکاوری سخت",
+  "appHardRecovering": "بهبودی سخت…",
+  "appSessionResetAction": "بازنشانی جلسه",
+  "appSessionResetRunning": "بازنشانی جلسه…",
+  "appSessionResetConfirmTitle": "بازنشانی جلسه؟",
+  "appSessionResetConfirmBody": "خدمات ResilNet را در این دستگاه مجدداً راه اندازی می کند. کلیدهای هویت شما حفظ می شود.",
+  "appRecoveryBusy": "بازیابی از قبل در حال اجراست…",
+  "appRecoveryOk": "ریکاوری تمام شد",
+  "appRecoveryPartial": "بازیابی با رد شدن برخی از مراحل به پایان رسید - اگر هنوز گیر کرده اید دوباره امتحان کنید",
+  "appRecoveryFailed": "بازیابی انجام نشد - بازنشانی جلسه را امتحان کنید، یا برنامه را به اجبار از سیستم عامل خارج کنید",
+  "localWifiTitle": "محلی Wi‑Fi",
+  "localWifiSubtitle": "دستگاه‌های اطراف را بدون اینترنت پیوند دهید - مانند اینکه در یک LAN باشید.",
+  "localWifiNotGatewayHint": "نه دروازه ESP32 LoRa SoftAP. این فقط تلفن ↔ تلفن / LAN است.",
+  "localWifiUnavailable": "Wi‑Fi محلی هنوز آماده نیست — منتظر راه اندازی برنامه باشید.",
+  "lxmfBridgeTitle": "گره خانه",
+  "lxmfBridgeSubtitle": "Mac یا Pi اختیاری در Wi‑Fi شما که چت های مهر و موم شده را پخش می کند. به طور پیش فرض خاموش است. جایگزین رمزگذاری انتها به انتها نمی شود.",
+  "lxmfBridgeEnable": "از گره خانگی استفاده کنید",
+  "lxmfBridgeDisabledHint": "فقط زمانی روشن شود که برنامه بریج روی Mac یا Pi در این شبکه اجرا شود.",
+  "lxmfBridgeOnline": "آنلاین — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "نمی توان به گره اصلی رسید - {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "آدرس گره خانه",
+  "lxmfBridgeBaseUrlHelper": "IP یا http://IP:port — مثال 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "همتا → LXMF مقصد (JSON)",
+  "lxmfBridgeRefresh": "وضعیت ذخیره و بازخوانی",
+  "lxmfBridgeLabHint": "پیشرفته: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "تنظیمات گره خانه",
+  "lxmfBridgeCheckConnection": "اتصال را بررسی کنید",
+  "lxmfBridgeStatusOnline": "به گره خانه متصل شد",
+  "lxmfBridgeStatusOffline": "گره اصلی قابل دسترسی نیست",
+  "lxmfBridgeYourDest": "آدرس این گره (به اشتراک گذاری با دوستان)",
+  "lxmfBridgeCopyDest": "آدرس را کپی کنید",
+  "lxmfBridgeDestCopied": "آدرس کپی شد",
+  "lxmfBridgeLinkedPeers": "دوستان لینک شده",
+  "lxmfBridgeLinkedPeersHint": "هر دوست یک بار به آدرس گره خانه خود نیاز دارد. سپس چت های مهر و موم شده می توانند از این مسیر استفاده کنند.",
+  "lxmfBridgeNoLinks": "هنوز هیچ دوستی لینک نشده است.",
+  "lxmfBridgeAddLink": "پیوند یک دوست",
+  "lxmfBridgePickPeer": "دوست",
+  "lxmfBridgePeerDest": "آدرس گره خانه آنها",
+  "lxmfBridgePeerDestHint": "کد 32 کاراکتری از صفحه گره اصلی آنها",
+  "lxmfBridgeInvalidDest": "آن آدرس معتبر به نظر نمی رسد. کد کامل را از گره اصلی خود جایگذاری کنید.",
+  "lxmfBridgeRemoveLink": "لغو پیوند",
+  "lxmfBridgeSaveLink": "ذخیره کنید",
+  "lxmfBridgeLinkSaved": "دوست لینک شد",
+  "lxmfBridgeNoPeers": "هنوز مخاطبی قابل پیام نیست — ابتدا یک دوست اضافه کنید.",
+  "lxmfBridgeHelp": "پل را روی Mac/Pi در حال اجرا نگه دارید. این مسیر در LAN شما باقی می ماند — LoRa نیست و جایگزین اینترنت یا مش بلوتوث نمی شود.",
+  "localWifiModeHotspot": "همین نزدیکی",
+  "localWifiModeRouter": "روتر",
+  "localWifiHotspotIntro": "یک دستگاه یک Hotspot شخصی را به اشتراک می گذارد. دیگران به آن نقطه اتصال می‌پیوندند، سپس ResilNet آنها را در شبکه محلی پیدا می‌کند.",
+  "localWifiHostAction": "ایجاد شبکه (میزبان)",
+  "localWifiJoinAction": "به شبکه بپیوندید",
+  "localWifiHostSteps": "1. تنظیمات iOS/Android را باز کرده و Personal Hotspot (یا به اشتراک گذاری اینترنت) را روشن کنید.\n2. نام (و رمز عبور) هات اسپات را به دوستان بگویید.\n3. به اینجا بازگردید و روی \"Hotspot is on - start انتظار\" ضربه بزنید.",
+  "localWifiHostReady": "نقطه اتصال روشن است - شروع به انتظار کنید",
+  "localWifiHostWaiting": "منتظر عضویت دوستان…",
+  "localWifiJoinSteps": "1. تنظیمات سیستم را باز کنید و به Hotspot شخصی دوست خود بپیوندید.\n2. به اینجا برگردید و روی «I'm connect — search» ضربه بزنید.",
+  "localWifiJoinReady": "من متصل هستم - جستجو کنید",
+  "localWifiRouterIntro": "هر دستگاه را به همان Wi‑Fi روتر/AP متصل کنید. روتر به اینترنت نیاز ندارد - فقط یک شبکه محلی مشترک.",
+  "localWifiRouterSearch": "در این Wi‑Fi جستجو کنید",
+  "localWifiRefreshNetwork": "بازخوانی اطلاعات Wi‑Fi",
+  "localWifiRouterNoWifiTitle": "نه در Wi‑Fi",
+  "localWifiRouterNoWifiBody": "به Wi‑Fi روتر در تنظیمات سیستم بپیوندید، سپس دوباره جستجو کنید.",
+  "localWifiDiscovering": "در حال جستجو در Wi‑Fi محلی…",
+  "localWifiPeersFound": "دستگاه های موجود در این شبکه",
+  "localWifiStop": "توقف کنید",
+  "localWifiSsidUnknown": "نام Wi‑Fi در دسترس نیست",
+  "localWifiStubBanner": "در انتظار سوکت LAN…",
+  "localWifiLiveBanner": "کشف LAN زنده (UDP) - چت + مهر و موم شده را در این Wi‑Fi اعلام کنید",
+  "localWifiEmptyHotspot": "هنوز دستگاهی وجود ندارد.\nبررسی کنید که دوستان به نقطه اتصال شما بپیوندند و به شبکه محلی اجازه دسترسی داشته باشند.",
+  "localWifiEmptyRouter": "هنوز دستگاهی وجود ندارد.\nهمان SSID؟ شبکه محلی مجاز است؟ برخی از روترها ترافیک دستگاه به دستگاه را مسدود می کنند (ایزوله AP).",
+  "localWifiIsolationHelp": "چرا ما نمی توانیم همدیگر را پیدا کنیم؟",
+  "localWifiIsolationTitle": "روتر ممکن است کلاینت ها را ایزوله کند",
+  "localWifiIsolationBody": "اگر جداسازی AP/Client (یا یک شبکه مهمان) روشن باشد، تلفن‌های روی همان Wi‑Fi نمی‌توانند صحبت کنند. ایزوله را خاموش کنید، از SSID اصلی استفاده کنید یا به حالت Nearby (Hotspot) بروید.",
+  "localWifiPeerReady": "آماده برای چت (دارای کلید)",
+  "localWifiPeerNeedKey": "پیدا شد - برای تبادل کلیدها، QR را اسکن کنید",
+  "localWifiErrorTitle": "خطای محلی Wi‑Fi",
+  "localWifiErrorBody": "مشکلی پیش آمد. توقف کنید و دوباره امتحان کنید.",
+  "preparingSystem": "در حال آماده سازی سیستم…",
+  "bootFailedTitle": "شروع نشد",
+  "retry": "دوباره امتحان کنید",
+  "bootRecoveryAction": "شروع هویت جدید (پاک کردن داده های محلی)",
+  "bootRecoveryConfirmTitle": "شروع هویت جدید؟",
+  "bootRecoveryConfirmBody": "با این کار چت‌های محلی، کلیدها و هویت این دستگاه برای همیشه پاک می‌شود.\nهمتایان باید QR شما را دوباره با هویت جدیدتان اسکن کنند.\nاین قابل واگرد نیست.",
+  "bootRecoveryRunning": "بازنشانی هویت محلی…",
+  "bootRecoverySuccess": "بازنشانی هویت محلی کامل شد",
+  "bootRecoveryFailed": "هویت بازنشانی نشد: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "لغو کنید",
+  "save": "ذخیره کنید",
+  "close": "بستن",
+  "start": "شروع کنید",
+  "send": "ارسال کنید",
+  "settings": "تنظیمات",
+  "language": "زبان",
+  "languageSubtitle": "به طور پیش فرض برنامه از زبان تلفن شما (در صورت پشتیبانی) پیروی می کند. زبان های دیگر به انگلیسی باز می گردند. همچنین می توانید یک زبان را در اینجا قفل کنید.",
+  "languageSystem": "پیش فرض سیستم",
+  "languageThai": "تایلندی",
+  "languageEnglish": "انگلیسی",
+  "notificationsTooltip": "تنظیمات اعلان",
+  "enableMessageNotifications": "اعلان های پیام را فعال کنید",
+  "settingsNotificationsSubtitle": "پیام‌ها و افراد آنلاین 1:1 (هشدارهای محلی)",
+  "networkMembersTooltip": "اعضای شبکه",
+  "identityQrTooltip": "هویت / QR",
+  "feedDirects": "چت کنید",
+  "feedMesh": "#مش",
+  "feedGeo": "منطقه",
+  "feedDirectsSubtitle": "پیام های خصوصی E2EE",
+  "feedMeshSubtitle": "همتایان نزدیک (BLE)",
+  "feedGeoSubtitle": "کانال کشف Geohash",
+  "peerIdHint": "شناسه گیرنده (هش کلید عمومی) را برای شروع چت جای‌گذاری کنید",
+  "directsEmpty": "هنوز چت وجود ندارد - برای شروع یک QR را اسکن کنید یا شناسه گیرنده را جایگذاری کنید\nپیام‌ها قبل از ارسال با E2EE مهر و موم می‌شوند (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • برای باز کردن چت ضربه بزنید",
+  "meshIntro": "همتایان در محدوده BLE — برای یک چت خصوصی E2EE ضربه بزنید (بدون نوشتن عمومی در #mesh)\nارسال از طریق روتر هیبریدی (BLE + LoRa + Nostr وقتی آنلاین است)",
+  "meshEmptyRunning": "هنوز همتای نزدیکی وجود ندارد - برنامه را در دستگاه دیگری در محدوده BLE باز کنید",
+  "meshEmptyStopped": "BLE در حال اجرا نیست — اجازه بلوتوث / موقعیت مکانی را بدهید",
+  "meshNearbyPrefix": "همین نزدیکی",
+  "meshRetentionTitle": "حذف خودکار پیام ها",
+  "meshRetentionSubtitle": "سابقه چت محلی قدیمی به صورت خودکار حذف می شود",
+  "meshRetentionKeep": "نگه دارید",
+  "meshRetention1Day": "1 روز",
+  "meshRetention3Days": "3 روز",
+  "meshRetention7Days": "7 روز",
+  "refreshLocationTooltip": "بازخوانی مکان",
+  "geoIntro": "به افراد آنلاین در این ژئوهش می‌توان پیام 1:1 یا با یک فن‌آوت عمومی منطقه ارسال کرد (هنوز E2EE مهر و موم شده در هر همتا - نه متن ساده)",
+  "geoEmpty": "هنوز کسی در {channel} آنلاین نیست\nاز Transport → Internet/Auto استفاده کنید، منتظر Nostr باشید، مکان را بازخوانی کنید",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "آنلاین در {channel} • برای E2EE 1:1 ضربه بزنید",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "نزدیک (در انتظار حضور در منطقه) • برای E2EE 1:1 ضربه بزنید",
+  "geoPeerNostrSubtitle": "مشاهده شده در Nostr در {channel} • فقط کشف (میراث)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "حضور ناشناس قدیمی - منتظر یک همتای محدود شده باشید یا QR را مبادله کنید",
+  "bleRadioNearbySubtitle": "BLE در نزدیکی — برای شروع 1:1 E2EE QR را اسکن کنید",
+  "geoInternetDiscoverHint": "منطقه کشف اینترنت نیاز به اتصال Nostr دارد (تنظیمات → حمل و نقل → اینترنت/خودکار)",
+  "geoEmptyNoLocation": "مکان هنوز حل نشده است - به GPS و refresh اجازه دهید تا geohash شما را در Nostr منتشر کند",
+  "geoEmptyNeedsPermission": "اجازه مکان رد شد - ResilNet را در تنظیمات → حریم خصوصی → موقعیت مکانی مجاز کنید",
+  "geoEmptyServicesDisabled": "خدمات موقعیت مکانی خاموش است - آنها را در تنظیمات روشن کنید",
+  "geoEmptyNoGpsFix": "نمی‌توان یک تعمیر GPS دریافت کرد (معمول در iPadهای Wi‑Fi) - geohash را به صورت دستی در زیر تنظیم کنید",
+  "geoEmptyTeleportHint": "روی نماد مکان ضربه بزنید ← وارد کردن یک ژئوهش (به عنوان مثال w5) ← Teleport",
+  "geoSetGeohashManually": "ژئوهش را تنظیم کنید",
+  "geoTeleportHint": "جی پی اس نداره؟ پیشوند geohash را وارد کنید (2 تا 7 نویسه، به عنوان مثال w5) و روی Teleport ضربه بزنید",
+  "geoTeleportInvalid": "ژئوهش نامعتبر - فقط از حروف/اعداد base32 استفاده کنید (مانند w5 یا w5jt8)",
+  "geoTeleportOk": "ناحیه روی {channel} تنظیم شده است",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "ناحیه دستی: {channel} (بازسازی GPS لغو خواهد شد)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr آماده نیست — روی اتصال مجدد ضربه بزنید (0/0 تا زمانی که init موفق شود)",
+  "geoEmptyMeshOnly": "حمل و نقل فقط مش است — برای کشف همتایان بیش از Nostr به اینترنت یا خودکار بروید",
+  "geoEmptyWaiting": "هنوز کسی در {channel} نیست — Area + Internet را در هر دو دستگاه باز نگه دارید و 60 ثانیه صبر کنید",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#منطقه",
+  "geoRefreshLocation": "بازخوانی مکان",
+  "settingsClearLocationTitle": "پاک کردن مکان",
+  "settingsClearLocationSubtitle": "ژئوهش GPS / تله پورت را بردارید (منطقه می شود #—)",
+  "settingsClearLocationConfirmTitle": "مکان پاک شود؟",
+  "settingsClearLocationConfirmBody": "ژئوهش ذخیره شده در این دستگاه را حذف می کند. بعد از آن می توانید GPS یا تله پورت را دوباره به روز کنید.",
+  "settingsClearLocationAction": "پاک کردن مکان",
+  "settingsClearLocationSnack": "مکان پاک شد",
+  "chatVoiceTooLarge": "نت صوتی خیلی بزرگ است - حداکثر 30 ثانیه",
+  "chatVoiceNeedInternet": "یادداشت صوتی به اینترنت نیاز دارد (Nostr) — به تنهایی برای BLE خیلی بزرگ است",
+  "chatVoiceSentInternet": "یادداشت صوتی ارسال شده از طریق اینترنت",
+  "noticeAnonMention": "ذکر کنید",
+  "noticeAnonDm": "پیام مستقیم",
+  "noticeAnonHug": "بغل کردن",
+  "noticeAnonSlap": "سیلی زدن",
+  "noticeAnonBlock": "مسدود کردن",
+  "noticeAnonNeedKey": "هنوز کلید عمومی وجود ندارد - ابتدا QR را با 1:1 تعویض کنید",
+  "noticeAnonActionSent": "ارسال شد",
+  "noticeAnonBlocked": "{anon} مسدود شده است",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* بغل کردن {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* سیلی {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Nostr را دوباره وصل کنید",
+  "nostrSectionTitle": "رله های Nostr",
+  "nostrSectionSubtitle": "پیام های اینترنتی و کشف منطقه از این رله ها استفاده می کنند. در صورت آفلاین ماندن وضعیت، روی اتصال مجدد ضربه بزنید.",
+  "nostrStatusOnline": "{connected}/{total} متصل شد",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "آفلاین - رله‌ها فهرست شده‌اند اما هیچ‌کدام متصل نیستند",
+  "nostrStatusNotInit": "شروع نشده (0/0) - برای مقداردهی اولیه روی اتصال مجدد ضربه بزنید",
+  "nostrReconnectAction": "Nostr را دوباره وصل کنید",
+  "nostrReconnectOk": "Nostr متصل شد ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "هنوز آفلاین است - بررسی کنیدWi‑Fi /cellular یا دوباره امتحان کنید",
+  "nostrReconnectFailedDetail": "ناموفق: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "در حال اتصال به رله…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "اینترنت (Nostr) در {channel} • چت مهر و موم شده آماده است",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "حمل و نقل منطقه",
+  "transportModeSubtitle": "مش = BLE نزدیک (رادیو) وقتی Nostr وجود ندارد · اینترنت و خودکار = Nostr لیست افراد",
+  "transportModeMesh": "مش",
+  "transportModeInternet": "اینترنت",
+  "transportModeAuto": "خودکار",
+  "geoPublicHint": "پیام عمومی برای همه افراد آنلاین در این زمینه",
+  "geoPublicSend": "عمومی",
+  "geoPublicHelp": "فن اوت مهر و موم شده به {count} همتا(های) آنلاین - هر کدام یک پاکت خصوصی دریافت می کنند",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "برای {count} همتا(های) این ناحیه ارسال شد",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "همتاهای قابل پیام آنلاین وجود ندارد — Area/Mesh را با همتاهایی که دارای کلید هستند باز کنید یا منتظر BLE/Nostr باشید.",
+  "areaPublicBadge": "منطقه عمومی",
+  "geoErrorPermission": "مکان خوانده نشد - مجوز مکان را بررسی کنید",
+  "geoPrecisionRegion": "منطقه",
+  "geoPrecisionProvince": "استان",
+  "geoPrecisionCity": "شهر",
+  "geoPrecisionNeighborhood": "محله",
+  "geoPrecisionBlock": "مسدود کردن",
+  "aliasTitle": "تنظیم نام مستعار (نام مستعار تماس)",
+  "aliasHintBody": "این نام مستعار فقط در این دستگاه ذخیره می‌شود (فقط محلی)\nهرگز با ترافیک E2EE ارسال نمی شود",
+  "aliasLabel": "نام مستعار",
+  "aliasHint": "به عنوان مثال \"رئیس دهکده\"، \"P’Somchai\"…",
+  "settingsDevices": "دستگاه ها",
+  "settingsFirmwareTitle": "دانلود / به روز رسانی ESP32 میان افزار",
+  "settingsFirmwareSubtitle": "فایل های .bin را دانلود کنید و برد ESP32 را از طریق OTA به روز کنید",
+  "mtBridgeTitle": "Meshtastic پل",
+  "mtBridgeSettingsSubtitle": "پل A/B فقط متنی — نه ResilNet E2EE",
+  "mtBridgeIntro": "متن ساده کوتاه را بین Meshtastic و ResilNet حرکت دهید. حالت های A و B نمی توانند همزمان اجرا شوند. این رمزگذاری سرتاسر نیست.",
+  "mtBridgeModeLabel": "حالت",
+  "mtBridgeModeOff": "خاموش",
+  "mtBridgeModeA": "مصرف A",
+  "mtBridgeModeB": "خروج B",
+  "mtBridgeModeOffShort": "خاموش",
+  "mtBridgeModeAShort": "در A",
+  "mtBridgeModeBShort": "خارج B",
+  "mtBridgeMutexHint": "انتخاب یک حالت حالت دیگر را به طور خودکار خاموش می کند. A+B همزمان پشتیبانی نمی شود.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "نسخه ی نمایشی (ورود به سیستم)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "متن ورودی در زیر Notices به صورت #meshtastic ظاهر می شود. رله مش اختیاری است (به طور پیش فرض خاموش).",
+  "mtBridgeRelayTitle": "همچنین روی مش ResilNet رله کنید",
+  "mtBridgeRelayHint": "وقتی روشن است، بولتن های عمومی امضا شده پخش می شود. خاموش = فقط اعلامیه های این تلفن.",
+  "mtBridgeSimulateHint": "پیام نمایشی",
+  "mtBridgeSimulate": "پیام Meshtastic را شبیه سازی کنید",
+  "mtBridgeIngestOk": "وارد اعلامیه‌ها (#meshtastic)",
+  "mtBridgeEgressWarning": "هشدار: پیام های ارسال شده در اینجا ResilNet E2EE نیستند. هر کسی در مسیر Meshtastic می تواند آنها را بخواند.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "متن برای انتشار",
+  "mtBridgeSend": "ارسال به Meshtastic",
+  "mtBridgeEgressOk": "صف کشیده برایMeshtastic (به گزارش / تاریخچه مراجعه کنید)",
+  "mtBridgeLastEgress": "آخرین خروج",
+  "mtBridgeEgressHistory": "خروجی اخیر",
+  "mtBridgeOffHint": "Ingest (A) یا Egress (B) را برای استفاده از پل روشن کنید.",
+  "mtBridgeNoticeBadge": "MESHTASTIC · نه E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "از حمل و نقل MQTT استفاده کنید",
+  "mtBridgeUseMqttHint": "خاموش = فقط ورود به سیستم نمایشی (MQTT ورودی نادیده گرفته شد). روشن = MQTT برای ورود/خروج هنگام اتصال.",
+  "mtBridgeMqttHost": "میزبان کارگزار",
+  "mtBridgeMqttPort": "بندر",
+  "mtBridgeMqttTls": "استفاده از TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "پورت معمولی 8883. از گواهینامه های سیستم استفاده می کند. در خطاهای دست دادن نرم شکست می خورد.",
+  "mtBridgeMqttAutoReconnect": "اتصال مجدد خودکار",
+  "mtBridgeMqttAutoReconnectHint": "وقتی روشن است، کلاینت سعی می کند پس از افت دوباره وصل شود. وضعیت اتصال تا زمان بازیابی را نشان می دهد.",
+  "mtBridgeMqttTopicHelpers": "کمک کنندگان موضوع",
+  "mtBridgeMqttRegion": "پیشوند منطقه (اختیاری)",
+  "mtBridgeMqttRegionHint": "وقتی تنظیم شد، Apply ریشه را به صورت msh/<region>/2/json بازسازی می‌کند (ریشه موضوع را لغو می‌کند).",
+  "mtBridgeMqttTopicRoot": "ریشه موضوع JSON",
+  "mtBridgeMqttDownlinkChannel": "نام کانال داونلینک",
+  "mtBridgeMqttApplyTopics": "درخواست root → اشتراک / انتشار موضوعات",
+  "mtBridgeMqttAdvanced": "پیشرفته MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS، اتصال مجدد، موضوعات، اعتبارنامه ها",
+  "mtBridgeMqttTopicIn": "اشتراک موضوع",
+  "mtBridgeMqttTopicOut": "موضوع را منتشر کنید",
+  "mtBridgeMqttGatewayFrom": "شناسه گره دروازه (از)",
+  "mtBridgeMqttGatewayFromHint": "شناسه اعشاری یا !hex - برای ارسال متن ارسالی لازم است",
+  "mtBridgeMqttChannelIndex": "شاخص کانال مش (اختیاری 0-7)",
+  "mtBridgeMqttUser": "نام کاربری (اختیاری)",
+  "mtBridgeMqttPass": "رمز عبور (اختیاری)",
+  "mtBridgeMqttPassStored": "یک رمز عبور در این دستگاه ذخیره می شود (نشان داده نمی شود).",
+  "mtBridgeMqttPassReplace": "رمز عبور جدید (برای نگه داشتن آن خالی بگذارید)",
+  "mtBridgeMqttPassReplaceHint": "برای حفظ رمز عبور ذخیره شده خالی بگذارید.",
+  "mtBridgeMqttPassClear": "رمز عبور را پاک کنید",
+  "mtBridgeMqttSave": "تنظیمات MQTT را ذخیره کنید",
+  "mtBridgeMqttSaved": "تنظیمات MQTT ذخیره شد",
+  "mtBridgeMqttConnect": "اتصال",
+  "mtBridgeMqttDisconnect": "قطع کن",
+  "mtBridgeMqttConnected": "MQTT متصل شد",
+  "mtBridgeMqttConnecting": "MQTT در حال اتصال…",
+  "mtBridgeMqttDisconnected": "MQTT قطع شد",
+  "mtBridgeMqttError": "خطای MQTT",
+  "mtBridgeErrModeIngest": "ابتدا به Ingest (A) بروید",
+  "mtBridgeErrModeEgress": "ابتدا به خروجی (B) بروید",
+  "mtBridgeErrRate": "آهسته - سرعت محدود است",
+  "mtBridgeErrDedupe": "پیام تکراری نادیده گرفته شد",
+  "mtBridgeErrLoop": "برای جلوگیری از حلقه پل افتاد",
+  "mtBridgeErrEmpty": "پیام خالی است",
+  "mtBridgeErrPublish": "انتشار ناموفق بود",
+  "mtBridgeErrNotConnected": "MQTT متصل نیست",
+  "mtBridgeErrMissingHost": "میزبان بروکر MQTT را وارد کنید",
+  "mtBridgeErrMissingTopic": "اشتراک را وارد کنید و موضوعات را منتشر کنید",
+  "mtBridgeErrMissingFromNode": "شناسه گره دروازه (از) را برای متن ارسالی وارد کنید",
+  "mtBridgeErrConnect": "MQTT اتصال ناموفق بود",
+  "mtBridgeErrConnectTls": "MQTT اتصال TLS ناموفق بود",
+  "settingsData": "داده ها",
+  "settingsDataHint": "پیام های محلی را حذف کنید تا پایگاه داده کوچک شود - هویت، کلیدها و همتاها حفظ می شوند",
+  "settingsSaveHistoryTitle": "ذخیره تاریخچه پیام",
+  "settingsSaveHistorySubtitle": "وقتی خاموش است، پیام‌ها E2EE روی سیم باقی می‌مانند و فقط برای این جلسه (نه در سابقه چت محلی) نگهداری می‌شوند. نوشتار خودتان همچنان به‌عنوان متن ساده در این دستگاه نشان داده می‌شود.",
+  "settingsPrivacy": "حریم خصوصی",
+  "settingsE2eeTitle": "رمزگذاری انتها به انتها",
+  "settingsE2eeSubtitle": "همیشه روشن — پیام ها قبل از ارسال با RSA-OAEP + AES-GCM مهر و موم می شوند. رله ها و پرش های نزدیک نمی توانند مطالب را بخوانند.",
+  "settingsScreenshotTitle": "هشدارهای اسکرین شات",
+  "settingsScreenshotSubtitle": "هنگامی که این دستگاه از صفحه نمایش عکس می گیرد، یک خط سیستم را در چت نشان دهید",
+  "settingsNostrExpiryTitle": "زمان نگه داشتن پیام Nostr",
+  "settingsNostrExpirySubtitle": "چه مدت پاکت های مهر و موم شده باید به صورت محلی در هنگام آنلاین بودن از طریق Nostr باقی بمانند",
+  "noticeExpiresIn": "منقضی می شود",
+  "noticesTitle": "اطلاعیه ها",
+  "noticesMeshIntro": "بولتن عمومی - قابل مشاهده برای همه در محدوده رادیویی، نه رمزگذاری شده. تلفن به تلفن آفلاین می‌رود، و جعبه‌های رله ResilNet یک نسخه را نگه می‌دارند تا افرادی که دیرتر وارد می‌شوند همچنان آن را ببینند.",
+  "noticesMeshPublicBadge": "عمومی · رمزگذاری نشده است",
+  "noticesGeoIntro": "یادداشت های کوتاهی برای این مکان اضافه کنید تا سایر بازدیدکنندگان بتوانند آنها را پیدا کنند.",
+  "noticesEmpty": "هنوز هیچ اطلاعیه ای وجود ندارد",
+  "noticesEmptyHint": "اولین اطلاعیه را برای افراد اطراف اینجا پین کنید.",
+  "noticesComposeHint": "ارسال یک اطلاعیه ...",
+  "noticesUrgent": "فوری",
+  "noticesOpen": "اطلاعیه ها",
+  "screenshotTaken": "* اسکرین شات گرفتید *",
+  "chatAttachImage": "تصویر را پیوست کنید",
+  "chatImageLabel": "تصویر",
+  "chatImageTooLarge": "تصویر خیلی بزرگ است - عکس دیگری را امتحان کنید",
+  "chatNostrExpiry": "Nostr نگه دارید",
+  "geoPublicComposeHint": "ارسال به {channel} — عمومی",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "تمام پیام ها را پاک کنید",
+  "settingsClearSubtitle": "تمام چت های این دستگاه را حذف کنید",
+  "settingsClearConfirmTitle": "همه پیام ها پاک شود؟",
+  "settingsClearConfirmBody": "با این کار همه پیام‌های چت در این دستگاه حذف می‌شوند.\nهمتایان و نام مستعار حذف نمی شوند.",
+  "settingsClearAction": "داده ها را پاک کنید",
+  "settingsClearedSnack": "داده ها پاک شد",
+  "settingsVersion": "نسخه {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: اسکن گره ها",
+  "meshBleEsp32Scanning": "ESP32: به دنبال یک گره نزدیک است",
+  "meshBleSyncing": "BLE: همگام سازی با ESP32",
+  "meshNostrPublishing": "Nostr: انتشار",
+  "meshBleIdle": "مش BLE روشن است - هنوز تلفنی در این نزدیکی وجود ندارد",
+  "meshBlePeersNearby": "مش BLE — {count} تلفن(های) نزدیک",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: اجازه لازم است",
+  "meshBlePausedCamera": "BLE برای دوربین متوقف شد — روی شروع BLE ضربه بزنید",
+  "meshBleStopped": "BLE خاموش است — بررسی کنید بلوتوث روشن است، سپس روی Start BLE ضربه بزنید",
+  "meshBleRestart": "BLE را شروع کنید",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "مجوزها را بررسی کنید و BLE را شروع کنید",
+  "meshNostrOffline": "Nostr آفلاین",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} همتایان نزدیک • LoRa {lora} • همگام سازی ~{meters}متر",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "آماده",
+  "meshLoraNotReady": "آماده نیست",
+  "meshGatewayProgress": "UDP دروازه: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Gateway UDP: آماده است",
+  "permissionTitle": "اجازه دسترسی برای راه اندازی شبکه مش BLE",
+  "permissionBody": "این برنامه به بلوتوث (اسکن / اتصال / تبلیغ)، مکان (برای دستگاه‌های Android قدیمی) و میکروفون (برای یادداشت‌های صوتی در چت و اطلاعیه‌ها) برای پیام‌رسانی به جامعه نیاز دارد.",
+  "permissionE2ee": "رمزگذاری سرتاسر (E2EE)\nگره های رله نمی توانند محتوای پیام را بخوانند",
+  "permissionReady": "مجوزها آماده است",
+  "permissionRequest": "اجازه دهید و ادامه دهید",
+  "permissionNotReadySnack": "سیستم هنوز آماده نیست - یک لحظه صبر کنید و دوباره امتحان کنید",
+  "permissionDeniedSnack": "مجوزها ناقص هستند - تنظیمات > ResilNet را باز کنید و بلوتوث / مکان / میکروفون را مجاز کنید",
+  "permissionMicDenied": "دسترسی به میکروفون ممنوع شد - در تنظیمات به آن اجازه دهید یادداشت‌های صوتی را ضبط کند",
+  "permissionMicOpenSettings": "تنظیمات",
+  "permissionCameraDenied": "دسترسی به دوربین رد شد - در تنظیمات به آن اجازه دهید کدهای QR را اسکن کند",
+  "permissionCameraFailed": "مجوز دوربین برای اسکن کدهای QR مورد نیاز است",
+  "permissionCameraOpenSettings": "تنظیمات",
+  "permissionPhotosDenied": "دسترسی به کتابخانه عکس رد شد - در تنظیمات به آن اجازه دهید تا کد QR شما را ذخیره کند",
+  "permissionPhotosFailed": "مجوز کتابخانه عکس برای ذخیره کد QR شما مورد نیاز است",
+  "permissionPhotosOpenSettings": "تنظیمات",
+  "permissionFailedSnack": "درخواست مجوز ناموفق بود: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet معماری • Store-and-Forward Multi-Hop",
+  "onboardingSkip": "پرش کنید",
+  "onboardingNext": "بعدی",
+  "onboardingStart": "شروع کنید",
+  "onboardingWelcomeTitle": "به ResilNet خوش آمدید",
+  "onboardingWelcomeBody": "در ResilNet از طریق شبکه مش - حتی بدون اینترنت گپ بزنید",
+  "onboardingFriendsTitle": "دوستان را به راحتی اضافه کنید",
+  "onboardingFriendsBody": "یک QR را از Identity به اشتراک بگذارید، یا QR یک دوست را برای تبادل کلیدهای عمومی اسکن کنید",
+  "onboardingChannelsTitle": "چت رمزگذاری شده + کانال های نزدیک",
+  "onboardingChannelsBody": "#mesh / Area (geohash) را برای پیدا کردن همتایان نزدیک تغییر دهید — پیام‌ها E2EE روی BLE مش و Nostr باقی می‌مانند",
+  "chatTitle": "چت (E2EE)",
+  "chatScanTooltip": "برای افزودن همتا، QR را اسکن کنید",
+  "chatBlockTooltip": "این فرستنده را مسدود کنید",
+  "chatBlockedSnack": "مسدود شده: بدون اطلاعیه / بدون رله",
+  "chatAliasTooltip": "نام مستعار را تنظیم کنید",
+  "chatReceiverPemLabel": "کلید عمومی گیرنده (PEM)",
+  "chatReceiverPemHint": "کلید عمومی دوست خود را (از QR / فایل مشترک) جای‌گذاری کنید",
+  "chatNeedPeerKey": "ابتدا QR این همتا را اسکن کنید (کلید عمومی تأیید شده لازم است)",
+  "chatPeerKeyMismatch": "کلید عمومی ذخیره شده با این شناسه همتا مطابقت ندارد",
+  "chatVoiceFailed": "صدا ضبط نشد: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "نت صوتی پخش نشد: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "پخش یادداشت صوتی",
+  "chatPauseVoice": "مکث کنید",
+  "chatVoiceLabelSent": "🎤 یادداشت صوتی (مهر شده)",
+  "chatVoiceLabel": "🎤 یادداشت صوتی",
+  "chatDecryptFailed": "[رمزگشایی انجام نشد]",
+  "chatSentSealed": "[مهر شده • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[مهر شده]",
+  "chatComposeHint": "یک پیام تایپ کنید… (مهر شده در هنگام ارسال)",
+  "chatEmptyThread": "هنوز پیامی وجود ندارد\nبرای ارسال روی مش، زیر را تایپ کنید",
+  "chatLoadFailed": "مکالمه بارگیری نشد: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "ایموجی",
+  "statusPending": "در انتظار",
+  "statusSent": "ارسال شد",
+  "statusRelayed": "رله شده",
+  "statusDelivered": "تحویل داده شد",
+  "statusRead": "بخوانید",
+  "statusFailed": "شکست خورد",
+  "chatCopy": "کپی کنید",
+  "chatDeleteLocal": "در این دستگاه حذف کنید",
+  "chatDeletedLocalSnack": "در این دستگاه حذف شد",
+  "chatRetry": "دوباره امتحان کنید",
+  "chatSendFailed": "تحویل داده نشد - روی سعی مجدد ضربه بزنید",
+  "chatImageNeedInternet": "برای ارسال تصاویر به اینترنت متصل شوید",
+  "chatImageTooLargeOnline": "نمی توان تصویر را به اندازه کافی برای ارسال فشرده کرد",
+  "chatOpenLinkFailed": "لینک باز نشد",
+  "identityTitle": "هویت",
+  "identityScanTooltip": "QR را با دوربین اسکن کنید",
+  "identityCopiedHash": "هش کلید عمومی کپی شد",
+  "identityPeerSaved": "همتا از QR ذخیره شد",
+  "identityGalleryDenied": "مجوز کتابخانه عکس رد شد",
+  "identityQrSaved": "QR در کتابخانه عکس ذخیره شد",
+  "identityQrSaveFailed": "QR ذخیره نشد: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "اعضای شبکه",
+  "qrScanTitle": "برای افزودن دوست، QR را اسکن کنید",
+  "qrInvalid": "اسکن انجام نشد: QR نامعتبر است",
+  "qrIdKeyMismatch": "QR رد شد: شناسه با کلید عمومی مطابقت ندارد",
+  "qrCameraNotReady": "دوربین آماده نیست",
+  "qrRetrySettings": "دوباره امتحان کنید / تنظیمات را باز کنید",
+  "qrCameraOpenFailed": "دوربین باز نشد: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "کد QR را در داخل قاب تراز کنید",
+  "firmwareDownloadTitle": "سیستم عامل ESP32 را دانلود کنید",
+  "firmwareSourceOnline": "جدیدترین (آنلاین)",
+  "firmwareSourceCached": "کپی ذخیره شده (آفلاین)",
+  "firmwareSourceBaseline": "خط پایه دسته‌بندی شده (آفلاین)",
+  "firmwareSourceUnavailable": "سیستم عامل موجود نیست",
+  "firmwareBaselineIncompatible": "سیستم عامل همراه بسیار قدیمی است — برای دانلود نسخه جدیدتر به اینترنت متصل شوید",
+  "firmwareChecksumFailed": "بررسی یکپارچگی سیستم عامل ناموفق - چشمک زدن مسدود شده است",
+  "firmwareReadyFromSource": "سفت‌افزار آماده است: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "تازه کردن",
+  "peersBlocked": "مسدود شده است",
+  "peersNearbyBle": "نزدیک (BLE)",
+  "peersRecentlyOnline": "اخیرا آنلاین",
+  "peersOnlineInArea": "آنلاین در منطقه",
+  "peersSeenMinutesAgo": "{minutes} دقیقه پیش دیده شد",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "آفلاین",
+  "peersBlockedSnack": "{id} مسدود شده است",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "رفع انسداد",
+  "peersEmpty": "هنوز هیچ عضوی در پایگاه داده وجود ندارد\nیک QR را اسکن کنید یا منتظر کشف مش BLE باشید",
+  "peersOpenChat": "گپ را باز کنید",
+  "peersBlockAction": "مسدود کردن",
+  "peersUnblockAction": "رفع انسداد",
+  "channelPickerTooltip": "چت / #مش / منطقه",
+  "locationPickerTooltip": "کانال مکان",
+  "transportPickerTooltip": "مش / اینترنت / خودکار",
+  "onlinePeopleTooltip": "افراد آنلاین",
+  "unreadDirectsTooltipEmpty": "پیام های خصوصی",
+  "unreadDirectsTooltip": "{count} پیام های خصوصی خوانده نشده",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "مردم",
+  "onlinePeopleEmpty": "هنوز کسی اینجا آنلاین نیست",
+  "onlinePeopleCount": "{count} آنلاین",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · نزدیک + منطقه",
+  "peerOnlineMeshTitle": "شخصی در نزدیکی مش",
+  "peerOnlineMeshBody": "{name} روی مش نزدیک است",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "شخصی آنلاین در منطقه",
+  "peerOnlineAreaBody": "{name} از طریق Nostr آنلاین است",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "کانال های #مکان",
+  "channelPinsTitle": "پین شده",
+  "channelPinsHint": "کانال‌هایی را که اغلب استفاده می‌کنید پین کنید - آنها در بالا باقی می‌مانند",
+  "channelPinTooltip": "این کانال را پین کنید",
+  "channelUnpinTooltip": "پین را بردارید",
+  "locationSheetIntro": "با استفاده از ژئوهش درشت - نه GPS دقیق - با افراد اطراف گپ بزنید. حضور در اینترنت از کلیدهای ناشناس Nostr استفاده می کند.",
+  "locationMeshSubtitle": "#بلوتوث • ~10-50 متر",
+  "locationTeleportHint": "#ژئوهش",
+  "locationTeleport": "تله پورت",
+  "homeComposeHint": "پیام {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "ارسال به {channel} — عمومی",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "منقضی می شود",
+  "voiceRecordTapToStart": "برای ضبط پیام صوتی ضربه بزنید",
+  "voiceRecordTooShort": "ضبط خیلی کوتاه است - دوباره امتحان کنید",
+  "voiceRecordFailed": "ضبط ذخیره نشد - دوباره امتحان کنید",
+  "voicePttHold": "برای ضبط نگه دارید",
+  "voicePttRelease": "برای پیش نمایش رها کنید",
+  "voicePttRecording": "در حال ضبط…",
+  "voicePttDraftReady": "یادداشت صوتی آماده است",
+  "voicePttDiscard": "دور انداختن",
+  "voicePttReRecord": "دوباره ضبط کن",
+  "voicePttSend": "ارسال یادداشت صوتی",
+  "voicePttPlayPreview": "پخش پیش نمایش",
+  "voicePttStopPreview": "توقف پیش نمایش",
+  "noticesBackfilling": "در حال بارگیری اعلامیه ها…",
+  "noticesNostrOnline": "Nostr آنلاین",
+  "noticesNostrOffline": "Nostr آفلاین — بولتن به اینترنت نیاز دارد",
+  "noticesBackfillLoaded": "اخطارهای {count} بارگیری شد",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "نمی توان اخطاریه را برای هیئت مدیره منطقه منتشر کرد. اتصال Nostr را بررسی کنید.",
+  "noticeMeshPublishNoLink": "به صورت محلی ذخیره شده است. به رادیوی مشبک نزدیک (یا دروازه Wi‑Fi) متصل شوید تا دیگران بتوانند آن را دریافت کنند.",
+  "noticeMeshPublishSent": "بولتن به {count} دستگاه(های) نزدیک بیش از BLE ارسال شد.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "رادیوهای نزدیک دیده شدند، اما نوشتن BLE ناموفق بود. هر دو برنامه را در صفحه اعلامیه ها باز نگه دارید و دوباره امتحان کنید (یا از رله ESP32 استفاده کنید).",
+  "noticeMeshPublishNoGatt": "گیرنده BLE این دستگاه آماده نیست. بلوتوث را روشن کنید و Notices را دوباره باز کنید.",
+  "noticeDelete": "اطلاعیه را حذف کنید",
+  "noticeDeleteConfirmTitle": "این اطلاعیه حذف شود؟",
+  "noticeDeleteLocalOnlyBody": "این فقط در این دستگاه حذف می شود. دیگرانی که قبلاً آن را دریافت کرده‌اند، همچنان آن را خواهند دید.",
+  "noticeDeleted": "اطلاعیه حذف شد",
+  "chatNoticeHidden": "اطلاعیه منطقه - اعلامیه ها را باز کنید",
+  "identityDisplayNameTitle": "نام نمایشی",
+  "identitySaveName": "ذخیره نام",
+  "identityUserIdLabel": "شناسه کاربر (هش کلید عمومی)",
+  "identityCopyHashTooltip": "هش کلید عمومی را کپی کنید",
+  "identityMyQrTitle": "QR من (id + pubKey + نام)",
+  "identityQrFailed": "QR ایجاد نشد\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "در حال ذخیره…",
+  "identitySaveQr": "QR را در کتابخانه عکس ذخیره کنید",
+  "identityOpenScanner": "دوربین را برای اسکن QR باز کنید",
+  "identityQrHelp": "از یک دوست بخواهید این را اسکن کند تا کلید عمومی شما ذخیره شود و (در صورت نیاز) شما را به عنوان صادرکننده تأیید شده تعیین کند",
+  "identityChatTip": "نکته: همچنین می توانید یک QR را در چت اسکن کنید تا یک کلید عمومی برای E2EE اضافه کنید",
+  "infoOpen": "درباره / اطلاعات",
+  "docsGuideTitle": "راهنمای کاربر",
+  "docsGuideSubtitle": "در مرورگر باز می شود",
+  "docsOpenAction": "راهنما را باز کنید",
+  "docsOpenFailed": "راهنمای کاربر باز نشد",
+  "firmwareOtaGuideTitle": "راهنمای فلش و پروتکل OTA",
+  "firmwareOtaGuideSubtitle": "راهنمای وب — دانلودهای .bin و مراحل کامل را باز می کند",
+  "firmwareWebDownloadsTitle": "بارگیری سیستم عامل در وب",
+  "firmwareWebDownloadsSubtitle": "پیوندهای هر نسخه و چک جمع ها در سایت اسناد",
+  "inviteCopyShortLink": "لینک کوتاه را کپی کنید",
+  "inviteShareLink": "لینک را به اشتراک بگذارید",
+  "inviteShowFullLink": "لینک کامل",
+  "inviteCopyFullLink": "لینک کامل را کپی کنید",
+  "inviteLinkCopied": "لینک کپی شد",
+  "inviteLongPressHint": "برای اقدامات پیوند، طولانی فشار دهید",
+  "inviteSendInChat": "ارسال در چت ResilNet…",
+  "inviteSendInChatHint": "فقط افرادی که از قبل برایشان کلید عمومی دارید",
+  "inviteSendInChatEmpty": "هنوز چت قابل پیامی وجود ندارد.\nابتدا یک QR را اسکن کنید، Area/Mesh را باز کنید یا پیوند را در خارج از برنامه به اشتراک بگذارید.",
+  "inviteSentToChat": "دعوتنامه در چت ارسال شد",
+  "infoTabInfo": "اطلاعات",
+  "infoTabSettingsHint": "تنظیمات را از منو برای ابزارهای زبان، E2EE و داده باز کنید",
+  "infoHowToTitle": "نحوه استفاده",
+  "infoHowToBody": "• روی نماد کانال ضربه بزنید تا Chat / #mesh / Area را تغییر دهید\n• برای انتخاب اندازه ژئوهش روی محل ضربه بزنید\n• برای اعضا یا افرادی که آنلاین هستند ضربه بزنید\n• شناسه/QR را از ⋮ باز کنید تا شخصاً کلیدها را مبادله کنید\n• منطقه \"عمومی\" E2EE مهر و موم شده را برای هر همتای آنلاین ارسال می کند - نه یک اتاق متن ساده",
+  "infoFeaturesTitle": "ویژگی ها",
+  "infoFeatureOffline": "پیام رسانی آفلاین از طریق بلوتوث کم انرژی",
+  "infoFeatureE2ee": "رمزگذاری سرتاسر با RSA-OAEP + AES-GCM (نه نویز)",
+  "infoFeatureMultihop": "پیام‌ها می‌توانند از طریق همتایان نزدیک خود عبور کنند تا دورتر بروند",
+  "infoFeatureBridge": "مش هیبریدی ↔ اینترنت (Nostr) برای پاکت های مهر و موم شده",
+  "infoFeatureGeo": "کانال‌های geohash محلی برای افراد اطراف (کاوشگر UX)",
+  "infoFeatureNotices": "اعلامیه هایی با انقضا برای #mesh و Area",
+  "infoPrivacyTitle": "حریم خصوصی",
+  "infoPrivacyNoRoom": "دهکده متن ساده / اتاق چت عمومی روی سیم وجود ندارد",
+  "infoPrivacyFanout": "ارسال منطقه ای = مهر و موم شده 1:1 به همتایان با کلیدهای عمومی شناخته شده",
+  "infoPrivacyPresence": "حضور در منطقه اینترنت از کلیدهای زودگذر Nostr استفاده می کند",
+  "infoSymbolsTitle": "نمادها",
+  "infoSymBle": "لینک مستقیم بلوتوث",
+  "infoSymMesh": "قابل دسترسی از طریق مش (سایر به جلو)",
+  "infoSymInternet": "از طریق اینترنت (Nostr) - پاکت های مهر و موم شده",
+  "infoSymBridge": "از طریق مش↔مسیر پل اینترنتی وارد شد",
+  "infoSymOffline": "آفلاین - در حال حاضر قابل دسترسی نیست",
+  "infoSymInArea": "در منطقه کانال این مکان",
+  "infoSymE2eeOk": "جلسه رمزگذاری شده سرتاسر",
+  "infoSymE2eeFail": "رمزگذاری در دسترس نیست - متن حساس را ارسال نکنید",
+  "infoSymVerified": "هویت تأیید شده / کلید شناخته شده",
+  "infoSymBlocked": "مسدود شده است",
+  "infoSymUnread": "پیام خصوصی خوانده نشده",
+  "infoEmergencyTitle": "حالت اضطراری",
+  "infoEmergencyBody": "برای پاک کردن پیام‌ها، کلیدها و هویت در این دستگاه، روی عنوان ResilNet در صفحه اصلی سه ضربه بزنید.",
+  "infoLegendNote": "برخی از نمادهای مسیر برای وضوح در اینجا مستند شده اند. تیک های تحویل در چت وضعیت ارسال اولیه باقی می ماند.",
+  "dangerZoneTitle": "منطقه خطر",
+  "dangerZoneSubtitle": "پیام‌ها، کلیدهای رمزگذاری، هویت Nostr، همتایان و نام‌های مستعار را در این دستگاه حذف می‌کند. دوباره راه اندازی خواهید کرد.",
+  "panicWipeTitle": "پاک کن اضطراری",
+  "panicWipeSubtitle": "همه چیز محلی را پاک کنید - مانند سه بار ضربه زدن به عنوان خانه (دو ضربه سریع رادیوها را تازه می کند)",
+  "panicWipeConfirmTitle": "تمام داده های محلی پاک شود؟",
+  "panicWipeConfirmBody": "با این کار چت ها، کلیدها و هویت این گوشی برای همیشه حذف می شود.\nهمتایان باید دوباره کلیدهای QR را با هویت جدید شما مبادله کنند.\nاین قابل واگرد نیست.",
+  "panicWipeAction": "همه چیز را پاک کن",
+  "panicWipeSnack": "هویت محلی پاک شد - دوباره راه اندازی کنید",
+  "panicWipeFailed": "پاک کردن ناموفق بود: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "پل مشبک",
+  "meshBridgeSubtitle": "وقتی روشن است (پیش‌فرض)، پاکت‌های مهر و موم شده ممکن است از مش BLE و اینترنت (Nostr) با هم استفاده کنند تا جزایر مش نزدیک بتوانند به هم متصل شوند. وقتی خاموش است، ارسال‌ها فقط از یک مسیر استفاده می‌کنند — هرگز متن ساده را روی سیم قرار نمی‌دهند.",
+  "favoritesTitle": "موارد دلخواه",
+  "favoritesAdd": "به علاقه مندی ها اضافه کنید",
+  "favoritesRemove": "حذف از موارد دلخواه",
+  "favoritesEmpty": "هنوز موارد دلخواه وجود ندارد - یک همتا را از لیست اعضا ستاره دهید",
+  "favoritesNearbyTitle": "مورد علاقه در نزدیکی",
+  "favoritesNearbyBody": "{name} روی مش نزدیک است",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "مورد علاقه در منطقه",
+  "favoritesInAreaBody": "{name} در این منطقه آنلاین است",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "توپولوژی مش",
+  "topologySubtitle": "همتایان و نکات اتصال از مش اعلام (فقط خواندنی)",
+  "topologyConnectedNow": "اکنون متصل شد (BLE)",
+  "topologyNearby": "نزدیک (BLE)",
+  "topologyKnown": "همسالان شناخته شده",
+  "topologyEmpty": "هنوز همتایان یاد نگرفته اند - با BLE روشن در نزدیکی خود بمانید",
+  "topologyYou": "شما",
+  "topologyStats": "{peers} همتایان · {links} پیوندها",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "تخمین زده شده از کشف مش نزدیک - دستگاه شما برجسته شده است. برای باز کردن چت روی همتا ضربه بزنید.",
+  "topologyOpen": "توپولوژی مش",
+  "slashHelpTitle": "دستورات",
+  "slashHelpBody": "/help - این لیست\n/who - افراد آنلاین در کانال فعلی\n/drop <text> - یک اعلامیه مهر و موم شده را در اینجا پین کنید (E2EE fan-out)\n\nراهنمای کامل: از راهنمای باز کردن در زیر یا تنظیمات → راهنمای کاربر استفاده کنید.",
+  "slashWhoEmpty": "در حال حاضر کسی در این کانال آنلاین نیست",
+  "slashWhoTitle": "آنلاین ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "استفاده: /قطع متن یادداشت خود را",
+  "slashDropDone": "اعلامیه در {channel} حذف شد",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "دستور ناشناخته - سعی کنید / help",
+  "announceOpen": "اطلاعیه ها",
+  "announceTitle": "اطلاعیه ها",
+  "announceEmpty": "هنوز تابلویی وجود ندارد - برای ارسال اعلامیه های قفل شده یا باز، تابلویی ایجاد کنید",
+  "announceCreate": "تابلو ایجاد کنید",
+  "announceCreateHint": "نام تابلو",
+  "announceDefaultTitle": "هیئت انجمن",
+  "announceSettings": "تنظیمات برد",
+  "announceAllowLocked": "به پست های قفل شده (رمزگذاری شده) اجازه دهید",
+  "announceAllowLockedSub": "رمزگذاری شده روی کلید برد - خوانندگان نیاز به دسترسی دارند",
+  "announceAllowOpen": "به پست‌های باز (متن ساده) اجازه دهید",
+  "announceAllowOpenSub": "نه E2EE - قابل خواندن روی مش/رله. به طور پیش فرض خاموش است.",
+  "announceComposeHint": "نوشتن اطلاعیه…",
+  "announceMediaInternetOnly": "ارسال اعلان‌های عکس/صدا از طریق اینترنت (نه BLE)",
+  "announceNeedInternet": "برای ارسال اعلان های عکس یا صوتی به اینترنت متصل شوید",
+  "announceVoiceFailed": "صدا ضبط نشد: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "تصویر خیلی بزرگ است (حداکثر ~180 کیلوبایت)",
+  "announcePlayVoice": "پخش یادداشت صوتی",
+  "announceImageLabel": "📷 تصویر",
+  "announceAudioLabel": "🎤 یادداشت صوتی",
+  "announceModeLocked": "قفل شده است",
+  "announceModeOpen": "باز کنید",
+  "announceOpenBadge": "باز · رمزگذاری نشده",
+  "announceLockedBadge": "قفل شده است",
+  "announceLockedPlaceholder": "رمزگذاری شده - درخواست دسترسی برای خواندن",
+  "announceRequestAccess": "درخواست دسترسی",
+  "announceRequestSent": "درخواست دسترسی برای صاحب تابلو ارسال شد",
+  "announceRequestFailed": "درخواست دسترسی امکان‌پذیر نیست (به کلید عمومی مالک نیاز است)",
+  "announceOpenConfirmTitle": "پست بدون رمزگذاری؟",
+  "announceOpenConfirmBody": "پست های باز E2EE نیستند. هر کسی در مسیر (مش / رله) ممکن است آنها را بخواند. ادامه دهید؟",
+  "announcePostAction": "ارسال کنید",
+  "announcePendingRequests": "درخواست های دسترسی",
+  "announceApprove": "تایید کنید",
+  "announceDeny": "تکذیب کنید",
+  "announceGranted": "می توانید پست های قفل شده را در این تابلو بخوانید",
+  "announceOwner": "شما صاحب این تابلو هستید",
+  "announceCopyInvite": "متن دعوت را کپی کنید",
+  "announceShowInviteQr": "نمایش QR دعوت",
+  "announceScanInviteQr": "اسکن QR دعوت هیئت مدیره",
+  "announceFollow": "هیئت مدیره را از دعوت دنبال کنید",
+  "announceFollowHint": "متن دعوت یا پیوند ResilNet را از مالک جای‌گذاری کنید",
+  "announceFollowOk": "هیئت دنباله دار",
+  "announceFollowOkNamed": "اکنون «{title}» را دنبال می‌کنید",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "دعوت نامعتبر یا آسیب دیده است",
+  "announceInviteCopied": "متن دعوت کپی شد",
+  "announceInviteSaveQr": "QR را ذخیره کنید",
+  "announceInviteShare": "دعوت را به اشتراک بگذارید",
+  "announceFollowFromCompose": "دعوت هیئت مدیره در کادر پیام شناسایی شد",
+  "peerConfirmAddTitle": "عضو شبکه اضافه شود؟",
+  "peerConfirmAddBody": "\"{name}\" را با کلید عمومی آنها اضافه کنید تا بتوانید به صورت خصوصی به آنها پیام دهید؟",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "اضافه کردن عضو",
+  "peerAddedOk": "{name} به اعضای شبکه اضافه شد",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "هویت/کلید عمومی در کادر پیام شناسایی شد",
+  "peerHashCopied": "هش کلید عمومی کپی شد",
+  "peerHashOpenChat": "گپ را باز کنید",
+  "peerHashAddHint": "هش کپی شد. از آنها بخواهید پیوند هویت یا QR خود را به اشتراک بگذارند تا بتوانید کلید عمومی کامل را برای E2EE اضافه کنید.",
+  "peerQrNoCode": "هیچ ResilNet QR در این تصویر یافت نشد",
+  "identityInviteSharePreamble": "هویت ResilNet: \"{name}\"\nپیوند را باز کنید یا در چت ← افزودن عضو پیست کنید\nیا QR هویت را اسکن کنید.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "پیوند هویت را به اشتراک بگذارید",
+  "identityInviteCopied": "پیوند هویت کپی شد",
+  "announceInviteSharePreamble": "دعوت هیئت مدیره: \"{title}\"\nResilNet → تابلوهای انجمن → دنبال کردن از دعوت را باز کنید\nیا QR را اسکن کنید / روی پیوند زیر ضربه بزنید.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "این تابلو را دنبال کنید؟",
+  "announceConfirmFollowBody": "«{title}» را از این دعوت دنبال کنید؟",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "دنبال کنید"
+}

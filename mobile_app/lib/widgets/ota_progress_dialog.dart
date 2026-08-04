@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../app/glass_overlays.dart';
 
 /// Dialog แสดงความคืบหน้า OTA / chunk reassembly พร้อม NACK ARQ %
 class OtaProgressDialog extends StatelessWidget {
@@ -65,7 +66,7 @@ class OtaProgressDialog extends StatelessWidget {
     final pct = (progress.clamp(0, 1) * 100).toStringAsFixed(1);
     final arq = nackArqPercent.clamp(0, 100).toStringAsFixed(0);
 
-    return AlertDialog(
+    return GlassAlertDialog(
       title: Text(title),
       content: Column(
         mainAxisSize: MainAxisSize.min,

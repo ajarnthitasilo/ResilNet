@@ -34,6 +34,7 @@ import '../widgets/identicon.dart';
 import 'announcements_screen.dart';
 import 'qr_scanner_screen.dart';
 import 'voice_record_sheet.dart';
+import '../app/glass_overlays.dart';
 
 enum _ComposeInviteKind { none, board, identity, hash }
 
@@ -117,7 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
+        return GlassAlertDialog(
           title: Text(l10n.aliasTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -272,7 +273,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (receiverPub.isEmpty) {
       if (!mounted) return null;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatNeedPeerKey)),
+        GlassSnackBar(content: Text(context.l10n.chatNeedPeerKey)),
       );
       return null;
     }
@@ -282,7 +283,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (bound != widget.peerId) {
       if (!mounted) return null;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatPeerKeyMismatch)),
+        GlassSnackBar(content: Text(context.l10n.chatPeerKeyMismatch)),
       );
       return null;
     }
@@ -295,7 +296,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (!s.e2eeEnabled) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
       );
       return;
     }
@@ -309,7 +310,7 @@ class _ChatScreenState extends State<ChatScreen> {
       debugPrint('[PTT] voice sheet failed: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
+        GlassSnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
       );
     }
   }
@@ -333,7 +334,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (bytes.length > AudioRecorderService.maxBytes) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          GlassSnackBar(
             content: Text(
               '${context.l10n.chatVoiceTooLarge} (${(bytes.length / 1024).toStringAsFixed(1)}KB)',
             ),
@@ -378,7 +379,7 @@ class _ChatScreenState extends State<ChatScreen> {
       debugPrint('[PTT] voice needs Nostr dto=$dtoLen nostr=off');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.chatVoiceNeedInternet)),
+          GlassSnackBar(content: Text(context.l10n.chatVoiceNeedInternet)),
         );
         setState(() => _sendingOutbound = false);
       }
@@ -395,18 +396,18 @@ class _ChatScreenState extends State<ChatScreen> {
       if (!mounted) return;
       if (!ok) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.chatVoiceNeedInternet)),
+          GlassSnackBar(content: Text(context.l10n.chatVoiceNeedInternet)),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.chatVoiceSentInternet)),
+          GlassSnackBar(content: Text(context.l10n.chatVoiceSentInternet)),
         );
       }
     } catch (e) {
       debugPrint('[PTT] send voice failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
+          GlassSnackBar(content: Text(context.l10n.chatVoiceFailed('$e'))),
         );
       }
       rethrow;
@@ -446,7 +447,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settingsE2eeSubtitle)),
+        GlassSnackBar(content: Text(l10n.settingsE2eeSubtitle)),
       );
       return;
     }
@@ -515,7 +516,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final l10n = context.l10n;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settingsE2eeSubtitle)),
+        GlassSnackBar(content: Text(l10n.settingsE2eeSubtitle)),
       );
       return;
     }
@@ -523,7 +524,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final online = s.isNostrOnline || s.isCloudOnline;
     if (!online) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.chatImageNeedInternet)),
+        GlassSnackBar(content: Text(l10n.chatImageNeedInternet)),
       );
       return;
     }
@@ -545,7 +546,7 @@ class _ChatScreenState extends State<ChatScreen> {
       if (bytes == null || bytes.isEmpty) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.chatImageTooLargeOnline)),
+          GlassSnackBar(content: Text(l10n.chatImageTooLargeOnline)),
         );
         return;
       }
@@ -591,7 +592,7 @@ class _ChatScreenState extends State<ChatScreen> {
         await s.markMessageFailed(msg.id);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.chatSendFailed)),
+            GlassSnackBar(content: Text(l10n.chatSendFailed)),
           );
         }
       }
@@ -790,7 +791,7 @@ class _ChatScreenState extends State<ChatScreen> {
       if (!mounted) return;
       setState(() => _playingVoiceId = null);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
+        GlassSnackBar(content: Text(context.l10n.chatPlayVoiceFailed('$e'))),
       );
     }
   }
@@ -1122,14 +1123,14 @@ class _ChatScreenState extends State<ChatScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.peerQrNoCode)),
+        GlassSnackBar(content: Text(l10n.peerQrNoCode)),
       );
       return;
     }
     if (!mounted) return;
     showDialog<void>(
       context: context,
-      builder: (ctx) => Dialog(
+      builder: (ctx) => GlassDialog(
         insetPadding: const EdgeInsets.all(16),
         child: InteractiveViewer(
           child: Image.memory(
@@ -1255,7 +1256,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.chatOpenLinkFailed)),
+        GlassSnackBar(content: Text(l10n.chatOpenLinkFailed)),
       );
     }
   }
@@ -1267,7 +1268,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ) async {
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.announceConfirmFollowTitle),
         content: Text(l10n.announceConfirmFollowBody(title)),
         actions: [
@@ -1288,12 +1289,12 @@ class _ChatScreenState extends State<ChatScreen> {
     if (!mounted) return;
     if (board == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.announceFollowFail)),
+        GlassSnackBar(content: Text(l10n.announceFollowFail)),
       );
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.announceFollowOkNamed(board.title))),
+      GlassSnackBar(content: Text(l10n.announceFollowOkNamed(board.title))),
     );
     await openAnnouncementsScreen(context);
   }
@@ -1308,7 +1309,7 @@ class _ChatScreenState extends State<ChatScreen> {
         : formatShortPeerId(identity.id);
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.peerConfirmAddTitle),
         content: Text(l10n.peerConfirmAddBody(label)),
         actions: [
@@ -1329,12 +1330,12 @@ class _ChatScreenState extends State<ChatScreen> {
     if (!mounted) return;
     if (peer == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.qrInvalid)),
+        GlassSnackBar(content: Text(l10n.qrInvalid)),
       );
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.peerAddedOk(label))),
+      GlassSnackBar(content: Text(l10n.peerAddedOk(label))),
     );
     // If this chat was opened for this peer (hash-only), stay; else offer open.
     if (peer.id != widget.peerId) {
@@ -1355,7 +1356,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (!mounted) return;
     await showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.peerHashCopied),
         content: Text(
           hasKey ? l10n.peerConfirmAddBody(formatShortPeerId(hash)) : l10n.peerHashAddHint,
@@ -1393,7 +1394,7 @@ class _ChatScreenState extends State<ChatScreen> {
         m.payloadKind != PayloadKinds.audio &&
         text.isNotEmpty &&
         text != '…';
-    await showModalBottomSheet<void>(
+    await showGlassModalBottomSheet<void>(
       context: context,
       builder: (ctx) {
         return SafeArea(
@@ -1431,7 +1432,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     await s.deleteLocalMessage(m.id);
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.chatDeletedLocalSnack)),
+                      GlassSnackBar(content: Text(l10n.chatDeletedLocalSnack)),
                     );
                     await _reloadMessages(force: true);
                   },
@@ -1455,7 +1456,7 @@ class _ChatScreenState extends State<ChatScreen> {
       if (!mounted) return;
       if (!ok) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.chatSendFailed)),
+          GlassSnackBar(content: Text(l10n.chatSendFailed)),
         );
       }
       await _reloadMessages(force: true);
@@ -1494,7 +1495,7 @@ class _ChatScreenState extends State<ChatScreen> {
               );
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(context.l10n.chatBlockedSnack)),
+                GlassSnackBar(content: Text(context.l10n.chatBlockedSnack)),
               );
             },
             icon: const Icon(Icons.block),

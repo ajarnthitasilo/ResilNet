@@ -1,0 +1,1105 @@
+{
+  "@@locale": "uk",
+  "appTitle": "ResilNet",
+  "communityTitle": "ResilNet",
+  "appRefreshing": "Оновлення ResilNet…",
+  "appRefreshed": "Оновлено — радіо та Discovery перезапущено",
+  "appRefreshFailed": "Не вдалося оновити: {error}",
+  "@appRefreshFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "appRefreshTitleHint": "Подвійне торкання = м'яке оновлення. Тривале натискання = сильне відновлення. Потрійне натискання = екстрене стирання.",
+  "softRefreshTipTitle": "Якщо ResilNet відчуває, що застряг",
+  "softRefreshTipBody": "Двічі торкніться ResilNet (верхній лівий кут) для м’якого оновлення радіо. Якщо проблема все ще зависла: натисніть і утримуйте назву, скористайтеся ⋮ → Жорстке відновлення або Налаштування. Потрійне торкання – це лише екстрене стирання.",
+  "softRefreshTipGotIt": "зрозумів",
+  "infoSoftRefreshTitle": "Якщо програма зависла",
+  "infoSoftRefreshStepRefresh": "Двічі торкніться ResilNet (верхній лівий кут) → програмне оновлення радіо та людей поблизу",
+  "infoSoftRefreshStepHard": "Все ще застряг? Утримуйте заголовок або ⋮ / Налаштування → Жорстке відновлення",
+  "infoSoftRefreshStepWait": "Зачекайте на панелі завантажень результатів, а потім повторіть спробу. Скидання сеансу зберігає ваші ключі.",
+  "infoSoftRefreshStepWipe": "Потрійне торкання = екстрене стирання (видалення локальних даних) — лише якщо навмисно",
+  "appRecoverySection": "Відновлення програми",
+  "appRecoverySectionSubtitle": "Використовуйте, коли програма зависла. Soft = двічі торкніться заголовка. Важке відновлення сильніше. Скидання сеансу перезапускає служби без стирання ключів.",
+  "appHardRecoverAction": "Важко відновитися",
+  "appHardRecovering": "Важко відновлюється…",
+  "appSessionResetAction": "Скинути сеанс",
+  "appSessionResetRunning": "Скидання сеансу…",
+  "appSessionResetConfirmTitle": "Скинути сеанс?",
+  "appSessionResetConfirmBody": "Перезапускає служби ResilNet на цьому пристрої. Ваші ідентифікаційні ключі зберігаються.",
+  "appRecoveryBusy": "Відновлення вже запущено…",
+  "appRecoveryOk": "Відновлення завершено",
+  "appRecoveryPartial": "Відновлення завершено, деякі кроки пропущено — спробуйте ще раз, якщо проблема все ще зависла",
+  "appRecoveryFailed": "Помилка відновлення — спробуйте скинути сеанс або примусово закрийте програму з ОС",
+  "localWifiTitle": "Локальний Wi‑Fi",
+  "localWifiSubtitle": "Підключайте пристрої поблизу без Інтернету — це те ж саме, що перебуваєте в одній локальній мережі.",
+  "localWifiNotGatewayHint": "Не ESP32 LoRa шлюз SoftAP. Це лише телефон↔телефон/LAN.",
+  "localWifiUnavailable": "Локальний Wi‑Fi ще не готовий — зачекайте на запуск програми.",
+  "lxmfBridgeTitle": "Домашній вузол",
+  "lxmfBridgeSubtitle": "Додатковий Mac або Pi на вашому Wi‑Fi, який передає закриті чати. Вимкнено за замовчуванням. Не замінює наскрізне шифрування.",
+  "lxmfBridgeEnable": "Використовуйте домашній вузол",
+  "lxmfBridgeDisabledHint": "Увімкніть, лише коли програма Bridge запущена на Mac або Pi у цій мережі.",
+  "lxmfBridgeOnline": "Онлайн — {dest}",
+  "@lxmfBridgeOnline": {
+    "placeholders": {
+      "dest": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeOffline": "Неможливо зв’язатися з домашнім вузлом — {error}",
+  "@lxmfBridgeOffline": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "lxmfBridgeBaseUrl": "Адреса домашнього вузла",
+  "lxmfBridgeBaseUrlHelper": "IP або http://IP:порт — приклад 192.168.1.10:8766",
+  "lxmfBridgeIdentityMap": "Одноранговий → LXMF dest (JSON)",
+  "lxmfBridgeRefresh": "Зберегти та оновити статус",
+  "lxmfBridgeLabHint": "Додатково: labs/reticulum_lxmf",
+  "lxmfBridgeOpen": "Налаштування домашнього вузла",
+  "lxmfBridgeCheckConnection": "Перевірити з’ єднання",
+  "lxmfBridgeStatusOnline": "Підключено до домашнього вузла",
+  "lxmfBridgeStatusOffline": "Домашній вузол недоступний",
+  "lxmfBridgeYourDest": "Адреса цього вузла (поділіться з друзями)",
+  "lxmfBridgeCopyDest": "Скопіюйте адресу",
+  "lxmfBridgeDestCopied": "Адресу скопійовано",
+  "lxmfBridgeLinkedPeers": "Пов'язані друзі",
+  "lxmfBridgeLinkedPeersHint": "Кожному другу потрібна адреса домашнього вузла один раз. Тоді закриті чати можуть використовувати цей шлях.",
+  "lxmfBridgeNoLinks": "Друзів ще немає.",
+  "lxmfBridgeAddLink": "Посилання друга",
+  "lxmfBridgePickPeer": "Друг",
+  "lxmfBridgePeerDest": "Адреса їх домашнього вузла",
+  "lxmfBridgePeerDestHint": "32-символьний код із екрана домашнього вузла",
+  "lxmfBridgeInvalidDest": "Ця адреса виглядає недійсною. Вставте повний код із домашнього вузла.",
+  "lxmfBridgeRemoveLink": "Від’єднати",
+  "lxmfBridgeSaveLink": "зберегти",
+  "lxmfBridgeLinkSaved": "Друг пов’язаний",
+  "lxmfBridgeNoPeers": "Поки що немає контактів для надсилання повідомлень — спочатку додайте друга.",
+  "lxmfBridgeHelp": "Підтримуйте роботу моста на Mac/Pi. Цей шлях залишається у вашій локальній мережі — він не LoRa і не замінює мережу Інтернет чи Bluetooth.",
+  "localWifiModeHotspot": "Поруч",
+  "localWifiModeRouter": "Маршрутизатор",
+  "localWifiHotspotIntro": "Один пристрій має спільну особисту точку доступу. Інші приєднуються до цієї точки доступу, а потім ResilNet знаходить їх у локальній мережі.",
+  "localWifiHostAction": "Створити мережу (хост)",
+  "localWifiJoinAction": "Приєднатися до мережі",
+  "localWifiHostSteps": "1. Відкрийте налаштування iOS/Android і ввімкніть «Особиста точка доступу» (або «Спільний доступ до Інтернету»).\n2. Повідомте друзям назву (та пароль) точки доступу.\n3. Поверніться сюди та натисніть «Точка доступу увімкнена — почніть очікувати».",
+  "localWifiHostReady": "Точка доступу увімкнена — почніть чекати",
+  "localWifiHostWaiting": "Чекаю на приєднання друзів…",
+  "localWifiJoinSteps": "1. Відкрийте налаштування системи та приєднайтеся до особистої точки доступу вашого друга.\n2. Поверніться сюди та натисніть «Я підключений — пошук».",
+  "localWifiJoinReady": "Я підключений — пошук",
+  "localWifiRouterIntro": "Підключіть усі пристрої до одного маршрутизатора/AP Wi‑Fi. Роутеру не потрібен інтернет — тільки спільна локальна мережа.",
+  "localWifiRouterSearch": "Шукати на цьому Wi‑Fi",
+  "localWifiRefreshNetwork": "Оновити інформацію Wi‑Fi",
+  "localWifiRouterNoWifiTitle": "Не на Wi‑Fi",
+  "localWifiRouterNoWifiBody": "Приєднайтеся до маршрутизатора Wi‑Fi у системних налаштуваннях, а потім повторіть пошук.",
+  "localWifiDiscovering": "Пошук на місцевому Wi‑Fi…",
+  "localWifiPeersFound": "Пристрої в цій мережі",
+  "localWifiStop": "СТІЙ",
+  "localWifiSsidUnknown": "Ім'я Wi‑Fi недоступне",
+  "localWifiStubBanner": "Очікування гнізда LAN…",
+  "localWifiLiveBanner": "Відкриття локальної мережі в реальному часі (UDP) — оголошення + закритий чат на цьому Wi‑Fi",
+  "localWifiEmptyHotspot": "Пристроїв ще немає.\nПереконайтеся, що друзі приєдналися до вашої точки доступу та дали доступ до локальної мережі.",
+  "localWifiEmptyRouter": "Пристроїв ще немає.\nТой самий SSID? Локальна мережа дозволена? Деякі маршрутизатори блокують трафік між пристроями (ізоляція AP).",
+  "localWifiIsolationHelp": "Чому ми не можемо знайти один одного?",
+  "localWifiIsolationTitle": "Маршрутизатор може ізолювати клієнтів",
+  "localWifiIsolationBody": "Якщо ізоляцію точки доступу/клієнта (або гостьову мережу) увімкнено, телефони на одному Wi‑Fi не можуть спілкуватися. Вимкніть ізоляцію, використовуйте головний SSID або перейдіть у режим поблизу (точка доступу).",
+  "localWifiPeerReady": "Готовий до чату (є ключ)",
+  "localWifiPeerNeedKey": "Знайдено — скануйте QR для обміну ключами",
+  "localWifiErrorTitle": "Локальна помилка Wi‑Fi",
+  "localWifiErrorBody": "Щось пішло не так. Зупиніть і спробуйте ще раз.",
+  "preparingSystem": "Підготовка системи…",
+  "bootFailedTitle": "Не вдалося запустити",
+  "retry": "Спробуйте знову",
+  "bootRecoveryAction": "Створити нову особу (стерти локальні дані)",
+  "bootRecoveryConfirmTitle": "Створити нову ідентичність?",
+  "bootRecoveryConfirmBody": "Це назавжди видалить локальні чати, ключі та ідентифікаційні дані на цьому пристрої.\nКолективи повинні ще раз відсканувати ваш QR-код із вашим новим ідентифікатором.\nЦе неможливо скасувати.",
+  "bootRecoveryRunning": "Скидання локальної ідентичності…",
+  "bootRecoverySuccess": "Скидання локальної ідентифікації завершено",
+  "bootRecoveryFailed": "Не вдалося скинути ідентифікатор: {error}",
+  "@bootRecoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Скасувати",
+  "save": "зберегти",
+  "close": "Закрити",
+  "start": "Почніть",
+  "send": "Надіслати",
+  "settings": "Налаштування",
+  "language": "Мова",
+  "languageSubtitle": "За замовчуванням програма відповідає мові вашого телефону (якщо підтримується). Інші мови повертаються до англійської. Тут також можна заблокувати мову.",
+  "languageSystem": "Система за замовчуванням",
+  "languageThai": "тайська",
+  "languageEnglish": "англійська",
+  "notificationsTooltip": "Налаштування сповіщень",
+  "enableMessageNotifications": "Увімкнути сповіщення про повідомлення",
+  "settingsNotificationsSubtitle": "Повідомлення 1:1 і люди онлайн (локальні сповіщення)",
+  "networkMembersTooltip": "Учасники мережі",
+  "identityQrTooltip": "Ідентичність / QR",
+  "feedDirects": "Чат",
+  "feedMesh": "#сітка",
+  "feedGeo": "Площа",
+  "feedDirectsSubtitle": "Приватні повідомлення E2EE",
+  "feedMeshSubtitle": "Найближчі аналоги (BLE)",
+  "feedGeoSubtitle": "Канал виявлення Geohash",
+  "peerIdHint": "Вставте ідентифікатор отримувача (хеш відкритого ключа), щоб почати чат",
+  "directsEmpty": "Поки що немає чатів — відскануйте QR або вставте ідентифікатор одержувача, щоб почати\nПовідомлення закриваються E2EE перед надсиланням (BLE / LoRa / Nostr)",
+  "directsSubtitle": "E2EE • натисніть, щоб відкрити чат",
+  "meshIntro": "Однорангові пристрої в діапазоні BLE — торкніться для приватного чату E2EE (без публічного створення на #mesh)\nНадсилає через гібридний маршрутизатор (BLE + LoRa + Nostr у мережі)",
+  "meshEmptyRunning": "Поблизу ще немає аналогів — відкрийте програму на іншому пристрої в межах BLE",
+  "meshEmptyStopped": "BLE не запущено — надайте дозвіл Bluetooth/локації",
+  "meshNearbyPrefix": "Поруч",
+  "meshRetentionTitle": "Автоматичне видалення повідомлень",
+  "meshRetentionSubtitle": "Старіша історія локального чату видаляється автоматично",
+  "meshRetentionKeep": "Тримайте",
+  "meshRetention1Day": "1 день",
+  "meshRetention3Days": "3 дні",
+  "meshRetention7Days": "7 днів",
+  "refreshLocationTooltip": "Оновити розташування",
+  "geoIntro": "Людям, які знаходяться в Інтернеті, у цьому геохеш-коді можна надсилати повідомлення 1:1 або з загальнодоступною зоною розгортання (все ще запечатаний E2EE на однорангового користувача — не відкритий текст)",
+  "geoEmpty": "Ще нікого в мережі в {channel}\nВикористовуйте Транспорт → Інтернет/Авто, зачекайте Nostr, оновіть розташування",
+  "@geoEmpty": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerSubtitle": "Онлайн через {channel} • натисніть для 1:1 E2EE",
+  "@geoPeerSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerNearbySubtitle": "Поруч (присутність зони очікування) • натисніть для 1:1 E2EE",
+  "geoPeerNostrSubtitle": "Виявлено на Nostr в {channel} • лише виявлення (застаріле)",
+  "@geoPeerNostrSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerDiscoverOnlySnack": "Застаріла анонімна присутність — зачекайте прив’язаного однорангового користувача або обміняйтеся QR",
+  "bleRadioNearbySubtitle": "BLE поруч — відскануйте QR, щоб почати E2EE 1:1",
+  "geoInternetDiscoverHint": "Зона виявлення Інтернету потребує підключення Nostr (Налаштування → Транспорт → Інтернет/Авто)",
+  "geoEmptyNoLocation": "Місцезнаходження ще не визначено — дозвольте GPS і оновіть, щоб опублікувати геохеш на Nostr",
+  "geoEmptyNeedsPermission": "У дозволі на місцезнаходження відмовлено — дозвольте ResilNet у Налаштуваннях → Конфіденційність → Розташування",
+  "geoEmptyServicesDisabled": "Служби локації вимкнено — увімкніть їх у налаштуваннях",
+  "geoEmptyNoGpsFix": "Не вдалося отримати GPS-фікс (типово на Wi‑Fi iPad) — установіть геохеш вручну нижче",
+  "geoEmptyTeleportHint": "Торкніться значка місця → введіть геохеш (наприклад, w5) → Телепорт",
+  "geoSetGeohashManually": "Встановити геохеш",
+  "geoTeleportHint": "Немає GPS? Введіть префікс геохеш (2–7 символів, наприклад, w5) і натисніть «Телепорт».",
+  "geoTeleportInvalid": "Недійсний геохеш — використовуйте лише літери/цифри base32 (наприклад, w5 або w5jt8)",
+  "geoTeleportOk": "Для області встановлено {channel}",
+  "@geoTeleportOk": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoManualActive": "Зона вручну: {channel} (оновлення GPS матиме перевагу)",
+  "@geoManualActive": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoEmptyNoNostr": "Nostr не готовий — торкніться Reconnect (0/0, доки ініціалізація не вдасться)",
+  "geoEmptyMeshOnly": "Транспорт — це лише мережева мережа — перемкніться в Інтернет або Авто, щоб виявити однорангові пристрої понад Nostr",
+  "geoEmptyWaiting": "Ще нікого в {channel} — залиште зону + Інтернет відкритою на обох пристроях і зачекайте ~60 с",
+  "@geoEmptyWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "geoChannelFallback": "#область",
+  "geoRefreshLocation": "Оновити розташування",
+  "settingsClearLocationTitle": "Чітке розташування",
+  "settingsClearLocationSubtitle": "Видалити геохеш GPS/телепорт (зона стає #—)",
+  "settingsClearLocationConfirmTitle": "Очистити місцезнаходження?",
+  "settingsClearLocationConfirmBody": "Видаляє геохеш, збережений на цьому пристрої. Ви можете оновити GPS або знову телепортуватися пізніше.",
+  "settingsClearLocationAction": "Чітке розташування",
+  "settingsClearLocationSnack": "Розташування очищено",
+  "chatVoiceTooLarge": "Голосова нотатка завелика — максимум ~30 секунд",
+  "chatVoiceNeedInternet": "Голосова нотатка потребує Інтернету (Nostr) — занадто велика для BLE",
+  "chatVoiceSentInternet": "Голосова нотатка, надіслана через Інтернет",
+  "noticeAnonMention": "згадка",
+  "noticeAnonDm": "пряме повідомлення",
+  "noticeAnonHug": "обійми",
+  "noticeAnonSlap": "ляпас",
+  "noticeAnonBlock": "блокувати",
+  "noticeAnonNeedKey": "Ще немає відкритого ключа — спочатку обміняйте QR на 1:1",
+  "noticeAnonActionSent": "Надіслано",
+  "noticeAnonBlocked": "Заблоковано {anon}",
+  "@noticeAnonBlocked": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonHugMessage": "* обійми {anon} *",
+  "@noticeAnonHugMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAnonSlapMessage": "* ляпас {anon} *",
+  "@noticeAnonSlapMessage": {
+    "placeholders": {
+      "anon": {
+        "type": "String"
+      }
+    }
+  },
+  "geoReconnectNostr": "Повторно підключіться Nostr",
+  "nostrSectionTitle": "Nostr реле",
+  "nostrSectionSubtitle": "Інтернет-повідомлення та визначення зони використовують ці реле. Торкніться повторно підключитися, якщо статус залишається офлайн.",
+  "nostrStatusOnline": "Підключено {connected}/{total}",
+  "@nostrStatusOnline": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrStatusOffline": "Офлайн — реле вказано, але жодне не підключено",
+  "nostrStatusNotInit": "Не розпочато (0/0) — торкніться Reconnect, щоб ініціалізувати",
+  "nostrReconnectAction": "Повторно підключіться Nostr",
+  "nostrReconnectOk": "Nostr підключено ({connected}/{total})",
+  "@nostrReconnectOk": {
+    "placeholders": {
+      "connected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nostrReconnectFailed": "Все ще офлайн — перевірте Wi‑Fi/cellular або повторіть спробу",
+  "nostrReconnectFailedDetail": "Помилка: {error}",
+  "@nostrReconnectFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nostrReconnecting": "Підключення до реле…",
+  "geoDiscoveryStatus": "{channel} · Nostr {relays}",
+  "@geoDiscoveryStatus": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "geoPeerInternetSubtitle": "Інтернет (Nostr) в {channel} • готовий закритий чат",
+  "@geoPeerInternetSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "transportModeTitle": "Місцевий транспорт",
+  "transportModeSubtitle": "Сітка = BLE поруч (радіо), якщо немає Nostr · Інтернет і авто = Nostr список людей",
+  "transportModeMesh": "Сітка",
+  "transportModeInternet": "Інтернет",
+  "transportModeAuto": "Авто",
+  "geoPublicHint": "Публічне повідомлення для всіх онлайн у цій зоні",
+  "geoPublicSend": "Громадський",
+  "geoPublicHelp": "Запечатаний фанат до {count} онлайн-партнера(ів) — кожен отримує приватний конверт",
+  "@geoPublicHelp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSent": "Надіслано {count} одноранговому(-им) у цій області",
+  "@geoPublicSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "geoPublicSentNone": "Немає однорангових вузлів, доступних для повідомлень, у мережі — відкрийте Area/Mesh з одноранговими вузлами, які мають ключі, або зачекайте BLE/Nostr",
+  "areaPublicBadge": "Зона громадська",
+  "geoErrorPermission": "Не вдалося прочитати місцезнаходження — перевірте дозвіл на місцезнаходження",
+  "geoPrecisionRegion": "Регіон",
+  "geoPrecisionProvince": "Провінція",
+  "geoPrecisionCity": "місто",
+  "geoPrecisionNeighborhood": "Околиці",
+  "geoPrecisionBlock": "Блокувати",
+  "aliasTitle": "Встановити псевдонім (псевдонім контакту)",
+  "aliasHintBody": "Цей псевдонім зберігається лише на цьому пристрої (лише локально)\nВін ніколи не надсилається з трафіком E2EE",
+  "aliasLabel": "псевдонім",
+  "aliasHint": "напр. «Сільський голова», «П’Сомчай»…",
+  "settingsDevices": "Пристрої",
+  "settingsFirmwareTitle": "Завантажити/оновити мікропрограму ESP32",
+  "settingsFirmwareSubtitle": "Завантажте файли .bin і оновіть плату ESP32 через OTA",
+  "mtBridgeTitle": "Meshtastic міст",
+  "mtBridgeSettingsSubtitle": "Лише текстовий міст A/B — не ResilNet E2EE",
+  "mtBridgeIntro": "Перемістити короткий відкритий текст між Meshtastic і ResilNet. Режими A і B не можуть працювати одночасно. Це не наскрізне шифрування.",
+  "mtBridgeModeLabel": "Режим",
+  "mtBridgeModeOff": "Вимкнено",
+  "mtBridgeModeA": "Проковтнути А",
+  "mtBridgeModeB": "Виїзд Б",
+  "mtBridgeModeOffShort": "Вимкнено",
+  "mtBridgeModeAShort": "В А",
+  "mtBridgeModeBShort": "Вихід Б",
+  "mtBridgeMutexHint": "Вибір режиму автоматично вимикає інший. Одночасний A+B не підтримується.",
+  "mtBridgeStatusLine": "{mode} · {transport}",
+  "@mtBridgeStatusLine": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "transport": {
+        "type": "String"
+      }
+    }
+  },
+  "mtBridgeTransportDemo": "Демо (реєстрація)",
+  "mtBridgeIngestSection": "Meshtastic → ResilNet",
+  "mtBridgeIngestHint": "Вхідний текст відображається в розділі «Повідомлення» як #meshtastic. Сітчасте реле є необов’язковим (за умовчанням вимкнено).",
+  "mtBridgeRelayTitle": "Також реле на сітці ResilNet",
+  "mtBridgeRelayHint": "Коли ввімкнено, транслюються підписані публічні бюлетені. Вимкнено = лише повідомлення для цього телефону.",
+  "mtBridgeSimulateHint": "Демонстраційне повідомлення",
+  "mtBridgeSimulate": "Симулювати повідомлення Meshtastic",
+  "mtBridgeIngestOk": "Введено в повідомлення (#meshtastic)",
+  "mtBridgeEgressWarning": "Попередження: повідомлення, надіслані тут, НЕ ResilNet E2EE. Будь-хто на шляху Meshtastic може прочитати їх.",
+  "mtBridgeEgressSection": "ResilNet → Meshtastic",
+  "mtBridgeComposeHint": "Текст для публікації",
+  "mtBridgeSend": "Надіслати до Meshtastic",
+  "mtBridgeEgressOk": "У черзі для Meshtastic (перегляньте журнал/історію)",
+  "mtBridgeLastEgress": "Останній вихід",
+  "mtBridgeEgressHistory": "Недавній вихід",
+  "mtBridgeOffHint": "Увімкніть Ingest (A) або Egress (B), щоб скористатися мостом.",
+  "mtBridgeNoticeBadge": "MESHTASTIC · не E2EE",
+  "mtBridgeSenderFallback": "Meshtastic",
+  "mtBridgeUseMqtt": "Використовуйте транспорт MQTT",
+  "mtBridgeUseMqttHint": "Вимкнено = лише протоколювання демонстрації (MQTT вхідні ігноруються). Увімк. = MQTT для прийому/виходу під час підключення.",
+  "mtBridgeMqttHost": "Хост брокера",
+  "mtBridgeMqttPort": "Порт",
+  "mtBridgeMqttTls": "Використовуйте TLS (mqtts)",
+  "mtBridgeMqttTlsHint": "Типовий порт 8883. Використовує системні сертифікати; не працює м’яко при помилках рукостискання.",
+  "mtBridgeMqttAutoReconnect": "Автоматичне повторне підключення",
+  "mtBridgeMqttAutoReconnectHint": "Коли ввімкнено, клієнт намагається повторно підключитися після розривів. Статус показує Підключення до відновлення.",
+  "mtBridgeMqttTopicHelpers": "Тематичні помічники",
+  "mtBridgeMqttRegion": "Префікс регіону (необов'язково)",
+  "mtBridgeMqttRegionHint": "Якщо встановлено, «Застосувати» перебудовує кореневу папку як msh/<регіон>/2/json (перевизначає корінь теми).",
+  "mtBridgeMqttTopicRoot": "Корінь теми JSON",
+  "mtBridgeMqttDownlinkChannel": "Назва каналу низхідного каналу",
+  "mtBridgeMqttApplyTopics": "Застосувати root → підписатися / публікувати теми",
+  "mtBridgeMqttAdvanced": "Розширений MQTT",
+  "mtBridgeMqttAdvancedHint": "TLS, повторне підключення, теми, облікові дані",
+  "mtBridgeMqttTopicIn": "Підписатися на тему",
+  "mtBridgeMqttTopicOut": "Опублікувати тему",
+  "mtBridgeMqttGatewayFrom": "Ідентифікатор вузла шлюзу (від)",
+  "mtBridgeMqttGatewayFromHint": "Десятковий ідентифікатор або !hex — необхідний для відправлення тексту вниз",
+  "mtBridgeMqttChannelIndex": "Індекс каналу сітки (необов 'язково 0–7)",
+  "mtBridgeMqttUser": "Ім'я користувача (необов'язково)",
+  "mtBridgeMqttPass": "Пароль (необов'язково)",
+  "mtBridgeMqttPassStored": "На цьому пристрої зберігається пароль (не показано).",
+  "mtBridgeMqttPassReplace": "Новий пароль (залиште порожнім, щоб зберегти)",
+  "mtBridgeMqttPassReplaceHint": "Залиште порожнім, щоб зберегти збережений пароль.",
+  "mtBridgeMqttPassClear": "Очистити пароль",
+  "mtBridgeMqttSave": "Зберегти налаштування MQTT",
+  "mtBridgeMqttSaved": "Налаштування збережено",
+  "mtBridgeMqttConnect": "Підключитися",
+  "mtBridgeMqttDisconnect": "Відключити",
+  "mtBridgeMqttConnected": "MQTT підключено",
+  "mtBridgeMqttConnecting": "MQTT підключення…",
+  "mtBridgeMqttDisconnected": "Роз'єднано",
+  "mtBridgeMqttError": "MQTT помилка",
+  "mtBridgeErrModeIngest": "Спочатку перейдіть до режиму «Ковтати» (A).",
+  "mtBridgeErrModeEgress": "Спочатку перейдіть на вихід (B).",
+  "mtBridgeErrRate": "Уповільнення — швидкість обмежена",
+  "mtBridgeErrDedupe": "Дубльоване повідомлення проігноровано",
+  "mtBridgeErrLoop": "Впав, щоб запобігти петлі мосту",
+  "mtBridgeErrEmpty": "Повідомлення порожнє",
+  "mtBridgeErrPublish": "Помилка публікації",
+  "mtBridgeErrNotConnected": "MQTT не підключено",
+  "mtBridgeErrMissingHost": "Введіть хост брокера MQTT",
+  "mtBridgeErrMissingTopic": "Введіть підписку та публікацію тем",
+  "mtBridgeErrMissingFromNode": "Введіть ідентифікатор вузла шлюзу (від) для надсилання тексту",
+  "mtBridgeErrConnect": "Не вдалося підключитися MQTT",
+  "mtBridgeErrConnectTls": "MQTT Помилка підключення TLS",
+  "settingsData": "Дані",
+  "settingsDataHint": "Видаліть локальні повідомлення, щоб зменшити базу даних — ідентифікаційні дані, ключі та однорангові пристрої зберігаються",
+  "settingsSaveHistoryTitle": "Зберегти історію повідомлень",
+  "settingsSaveHistorySubtitle": "Якщо вимкнено, повідомлення залишаються E2EE на дроті та зберігаються лише протягом цього сеансу (не в історії локального чату). Ваш власний текст все ще відображається як відкритий текст на цьому пристрої.",
+  "settingsPrivacy": "Конфіденційність",
+  "settingsE2eeTitle": "Наскрізне шифрування",
+  "settingsE2eeSubtitle": "Завжди ввімкнено — повідомлення запечатуються RSA-OAEP + AES-GCM перед надсиланням. Реле та сусідні переходи не можуть читати вміст.",
+  "settingsScreenshotTitle": "Сповіщення про знімок екрана",
+  "settingsScreenshotSubtitle": "Показувати системну лінію в чаті, коли цей пристрій знімає екран",
+  "settingsNostrExpiryTitle": "Час зберігання повідомлення Nostr",
+  "settingsNostrExpirySubtitle": "Як довго запечатані конверти повинні зберігатися локально, коли вони онлайн через Nostr",
+  "noticeExpiresIn": "закінчується через",
+  "noticesTitle": "Повідомлення",
+  "noticesMeshIntro": "Загальнодоступний бюлетень — видимий для всіх у радіусі дії, не зашифрований. Він перемикається з телефону на телефон в автономному режимі, а сусідні ретрансляційні блоки ResilNet зберігають копію, щоб люди, які приходять пізніше, все одно бачили її.",
+  "noticesMeshPublicBadge": "PUBLIC · не зашифровано",
+  "noticesGeoIntro": "Додайте короткі нотатки для цього місця, щоб інші відвідувачі могли їх знайти.",
+  "noticesEmpty": "ще немає повідомлень",
+  "noticesEmptyHint": "закріпити перше сповіщення для людей навколо.",
+  "noticesComposeHint": "опублікувати повідомлення...",
+  "noticesUrgent": "терміновий",
+  "noticesOpen": "Повідомлення",
+  "screenshotTaken": "* ти зробив скріншот *",
+  "chatAttachImage": "Прикріпити зображення",
+  "chatImageLabel": "Зображення",
+  "chatImageTooLarge": "Зображення завелике — спробуйте інше фото",
+  "chatNostrExpiry": "Nostr зберегти",
+  "geoPublicComposeHint": "Надіслати до {channel} — публічно",
+  "@geoPublicComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearTitle": "Очистити всі повідомлення",
+  "settingsClearSubtitle": "Видалити всі чати на цьому пристрої",
+  "settingsClearConfirmTitle": "Спорожнити журнал повідомлень.",
+  "settingsClearConfirmBody": "Буде видалено всі повідомлення чату на цьому пристрої.\nОднолітки та псевдоніми не видаляються.",
+  "settingsClearAction": "Очистити дані",
+  "settingsClearedSnack": "Дані видалено",
+  "settingsVersion": "версія {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleScanning": "BLE: пошук вузлів",
+  "meshBleEsp32Scanning": "ESP32: пошук вузла поблизу",
+  "meshBleSyncing": "BLE: синхронізація з ESP32",
+  "meshNostrPublishing": "Nostr: публікація",
+  "meshBleIdle": "Сітку BLE увімкнено — телефонів поблизу ще немає",
+  "meshBlePeersNearby": "BLE mesh — {count} телефонів поблизу",
+  "@meshBlePeersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meshBleNeedsPermission": "BLE: потрібен дозвіл",
+  "meshBlePausedCamera": "BLE призупинено для камери — натисніть «Пуск» BLE",
+  "meshBleStopped": "BLE вимкнено — перевірте, чи Bluetooth увімкнено, а потім натисніть «Пуск» BLE",
+  "meshBleRestart": "Почніть BLE",
+  "meshBleStatusDetail": "BT {bt} · Loc {loc} · BLE {ble}",
+  "@meshBleStatusDetail": {
+    "placeholders": {
+      "bt": {
+        "type": "String"
+      },
+      "loc": {
+        "type": "String"
+      },
+      "ble": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBleEnsureAction": "Перевірте дозволи та запустіть BLE",
+  "meshNostrOffline": "Nostr офлайн",
+  "meshNostrOnline": "Nostr {relays}",
+  "@meshNostrOnline": {
+    "placeholders": {
+      "relays": {
+        "type": "String"
+      }
+    }
+  },
+  "meshFooter": "{count} найближчі однорангові пристрої • LoRa {lora} • синхронізація ~{meters}m",
+  "@meshFooter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "lora": {
+        "type": "String"
+      },
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "meshLoraReady": "готовий",
+  "meshLoraNotReady": "не готовий",
+  "meshGatewayProgress": "Шлюз UDP: {label}",
+  "@meshGatewayProgress": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "meshGatewayReady": "Шлюз UDP: готовий",
+  "permissionTitle": "Дозвольте доступ для запуску сітчастої мережі BLE",
+  "permissionBody": "Додатку потрібен Bluetooth (сканування/підключення/реклама), місцезнаходження (для старіших пристроїв Android) і мікрофон (для голосових нотаток у чаті та оголошень) для обміну повідомленнями спільноти.",
+  "permissionE2ee": "Наскрізне шифрування (E2EE)\nВузли ретрансляції не можуть читати вміст повідомлення",
+  "permissionReady": "Дозволи готові",
+  "permissionRequest": "Дозволити та продовжити",
+  "permissionNotReadySnack": "Система ще не готова — зачекайте хвилинку та повторіть спробу",
+  "permissionDeniedSnack": "Немає дозволів — відкрийте «Налаштування» > ResilNet і дозвольте Bluetooth / Місцезнаходження / Мікрофон",
+  "permissionMicDenied": "Доступ до мікрофона заборонено — дозвольте йому в налаштуваннях записувати голосові нотатки",
+  "permissionMicOpenSettings": "Налаштування",
+  "permissionCameraDenied": "Доступ до камери заборонено — дозвольте сканувати QR-коди в налаштуваннях",
+  "permissionCameraFailed": "Для сканування QR-кодів потрібен дозвіл камери",
+  "permissionCameraOpenSettings": "Налаштування",
+  "permissionPhotosDenied": "Доступ до бібліотеки фотографій заборонено — дозвольте в налаштуваннях, щоб зберегти ваш QR-код",
+  "permissionPhotosFailed": "Щоб зберегти ваш QR-код, потрібен дозвіл бібліотеки фотографій",
+  "permissionPhotosOpenSettings": "Налаштування",
+  "permissionFailedSnack": "Не вдалося отримати дозвіл: {error}",
+  "@permissionFailedSnack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionFooter": "ResilNet Архітектура • Store-and-Forward Multi-hop",
+  "onboardingSkip": "Пропустити",
+  "onboardingNext": "Далі",
+  "onboardingStart": "Почніть роботу",
+  "onboardingWelcomeTitle": "Ласкаво просимо до ResilNet",
+  "onboardingWelcomeBody": "Спілкуйтеся в чаті на ResilNet через сітчасту мережу — навіть без Інтернету",
+  "onboardingFriendsTitle": "Легко додавайте друзів",
+  "onboardingFriendsBody": "Поділіться QR із Identity або відскануйте QR друга, щоб обмінятися відкритими ключами",
+  "onboardingChannelsTitle": "Зашифрований чат + найближчі канали",
+  "onboardingChannelsBody": "Перемикайте #mesh / Area (geohash), щоб знайти найближчі однорангові пристрої — повідомлення залишаються E2EE через BLE mesh і Nostr",
+  "chatTitle": "Чат (E2EE)",
+  "chatScanTooltip": "Відскануйте QR, щоб додати партнера",
+  "chatBlockTooltip": "Заблокувати цього відправника",
+  "chatBlockedSnack": "Заблоковано: немає сповіщень / немає ретрансляції",
+  "chatAliasTooltip": "Встановити псевдонім",
+  "chatReceiverPemLabel": "Відкритий ключ одержувача (PEM)",
+  "chatReceiverPemHint": "Вставте відкритий ключ вашого друга (з QR/спільного файлу)",
+  "chatNeedPeerKey": "Спершу відскануйте QR цього вузла (потрібен підтверджений відкритий ключ)",
+  "chatPeerKeyMismatch": "Збережений відкритий ключ не відповідає цьому ідентифікатору вузла",
+  "chatVoiceFailed": "Не вдалося записати звук: {error}",
+  "@chatVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoiceFailed": "Не вдалося відтворити голосову нотатку: {error}",
+  "@chatPlayVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPlayVoice": "Відтворити голосову нотатку",
+  "chatPauseVoice": "Пауза",
+  "chatVoiceLabelSent": "🎤 Голосова нотатка (запечатана)",
+  "chatVoiceLabel": "🎤 Голосова нотатка",
+  "chatDecryptFailed": "[не вдалося розшифрувати]",
+  "chatSentSealed": "[запечатано • ct={preview}]",
+  "@chatSentSealed": {
+    "placeholders": {
+      "preview": {
+        "type": "String"
+      }
+    }
+  },
+  "chatSentSealedShort": "[запечатано]",
+  "chatComposeHint": "Введіть повідомлення… (запечатано під час надсилання)",
+  "chatEmptyThread": "Повідомлень ще немає\nВведіть нижче, щоб надіслати сіть",
+  "chatLoadFailed": "Не вдалося завантажити бесіду: {error}",
+  "@chatLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chatEmojiTooltip": "Emoji",
+  "statusPending": "В очікуванні",
+  "statusSent": "Надіслано",
+  "statusRelayed": "Естафетний",
+  "statusDelivered": "Доставлено",
+  "statusRead": "Прочитайте",
+  "statusFailed": "Не вдалося",
+  "chatCopy": "Копія",
+  "chatDeleteLocal": "Видалити на цьому пристрої",
+  "chatDeletedLocalSnack": "Видалено на цьому пристрої",
+  "chatRetry": "Повторіть спробу",
+  "chatSendFailed": "Не доставлено — натисніть Повторити",
+  "chatImageNeedInternet": "Щоб надіслати зображення, підключіться до Інтернету",
+  "chatImageTooLargeOnline": "Не вдалося стиснути зображення достатньо для надсилання",
+  "chatOpenLinkFailed": "Не вдалося відкрити посилання",
+  "identityTitle": "Ідентичність",
+  "identityScanTooltip": "Скануйте QR камерою",
+  "identityCopiedHash": "Хеш відкритого ключа скопійовано",
+  "identityPeerSaved": "Пір збережено з QR",
+  "identityGalleryDenied": "Відмовлено в дозволі бібліотеки фотографій",
+  "identityQrSaved": "QR збережено в бібліотеці фотографій",
+  "identityQrSaveFailed": "Не вдалося зберегти QR: {error}",
+  "@identityQrSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "peersTitle": "Учасники мережі",
+  "qrScanTitle": "Відскануйте QR, щоб додати друга",
+  "qrInvalid": "Помилка сканування: недійсний QR-код",
+  "qrIdKeyMismatch": "QR відхилено: ідентифікатор не відповідає відкритому ключу",
+  "qrCameraNotReady": "Камера не готова",
+  "qrRetrySettings": "Повторіть спробу / відкрийте налаштування",
+  "qrCameraOpenFailed": "Не вдалося відкрити камеру: {error}",
+  "@qrCameraOpenFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanAlignHint": "Вирівняйте QR-код у рамці",
+  "firmwareDownloadTitle": "Завантажити мікропрограму ESP32",
+  "firmwareSourceOnline": "Останні (онлайн)",
+  "firmwareSourceCached": "Збережена копія (офлайн)",
+  "firmwareSourceBaseline": "Базовий пакет (офлайн)",
+  "firmwareSourceUnavailable": "Прошивка недоступна",
+  "firmwareBaselineIncompatible": "Мікропрограмне забезпечення в комплекті застаріле — підключіться до Інтернету, щоб завантажити новішу версію",
+  "firmwareChecksumFailed": "Прошивка не перевірила цілісність — миготіння заблоковано",
+  "firmwareReadyFromSource": "Прошивка готова: {source}",
+  "@firmwareReadyFromSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "peersRefreshTooltip": "Оновити",
+  "peersBlocked": "заблоковано",
+  "peersNearbyBle": "Поруч (BLE)",
+  "peersRecentlyOnline": "Нещодавно онлайн",
+  "peersOnlineInArea": "Онлайн в області",
+  "peersSeenMinutesAgo": "Було {minutes} хв тому",
+  "@peersSeenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "peersOffline": "Особисто",
+  "peersBlockedSnack": "Заблоковано {id}",
+  "@peersBlockedSnack": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "peersUnblockedSnack": "Розблоковано",
+  "peersEmpty": "У базі даних ще немає учасників\nВідскануйте QR або зачекайте на виявлення сітки BLE",
+  "peersOpenChat": "Відкрити чат",
+  "peersBlockAction": "Блокувати",
+  "peersUnblockAction": "Розблокувати",
+  "channelPickerTooltip": "Чат / #mesh / Площа",
+  "locationPickerTooltip": "Канал розташування",
+  "transportPickerTooltip": "Сітка / Інтернет / Авто",
+  "onlinePeopleTooltip": "Люди онлайн",
+  "unreadDirectsTooltipEmpty": "Приватні повідомлення",
+  "unreadDirectsTooltip": "{count} непрочитаних особистих повідомлень",
+  "@unreadDirectsTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleTitle": "людей",
+  "onlinePeopleEmpty": "Тут ще нікого в мережі",
+  "onlinePeopleCount": "{count} онлайн",
+  "@onlinePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlinePeopleDirectsChannel": "1:1 · поблизу + площа",
+  "peerOnlineMeshTitle": "Хтось поруч на сітці",
+  "peerOnlineMeshBody": "{name} знаходиться поруч на сітці",
+  "@peerOnlineMeshBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerOnlineAreaTitle": "Хтось онлайн в цьому районі",
+  "peerOnlineAreaBody": "{name} онлайн через Nostr",
+  "@peerOnlineAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "locationSheetTitle": "#локаційні канали",
+  "channelPinsTitle": "Закріплено",
+  "channelPinsHint": "Закріпіть канали, якими ви часто користуєтеся — вони залишаються вгорі",
+  "channelPinTooltip": "Закріпити цей канал",
+  "channelUnpinTooltip": "Відкріпити",
+  "locationSheetIntro": "Спілкуйтеся з людьми поблизу, використовуючи грубий геохеш — не точний GPS. Присутність в Інтернеті використовує анонімні ключі Nostr.",
+  "locationMeshSubtitle": "#bluetooth • ~10–50 м",
+  "locationTeleportHint": "#геохеш",
+  "locationTeleport": "Телепорт",
+  "homeComposeHint": "Повідомлення {channel}",
+  "@homeComposeHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "homeComposePublicHint": "Надіслати до {channel} — публічно",
+  "@homeComposePublicHint": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "messageExpiryTitle": "закінчується через",
+  "voiceRecordTapToStart": "Натисніть, щоб записати голосове повідомлення",
+  "voiceRecordTooShort": "Запис надто короткий — повторіть спробу",
+  "voiceRecordFailed": "Не вдалося зберегти запис — повторіть спробу",
+  "voicePttHold": "Утримуйте для запису",
+  "voicePttRelease": "Відпустіть для попереднього перегляду",
+  "voicePttRecording": "Запис...",
+  "voicePttDraftReady": "Голосова нотатка готова",
+  "voicePttDiscard": "Відкинути",
+  "voicePttReRecord": "Запис знову",
+  "voicePttSend": "Надіслати голосову нотатку",
+  "voicePttPlayPreview": "Відтворити попередній перегляд",
+  "voicePttStopPreview": "Зупинити попередній перегляд",
+  "noticesBackfilling": "Завантаження повідомлень…",
+  "noticesNostrOnline": "Nostr онлайн",
+  "noticesNostrOffline": "Nostr офлайн — для бюлетеня потрібен Інтернет",
+  "noticesBackfillLoaded": "Завантажено сповіщення {count}",
+  "@noticesBackfillLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticePublishFailed": "Не вдалося опублікувати сповіщення на панелі області. Перевірте Nostr з 'єднання.",
+  "noticeMeshPublishNoLink": "Збережено локально. Підключіться до сусіднього мережевого радіо (або шлюзу Wi‑Fi), щоб інші могли приймати його.",
+  "noticeMeshPublishSent": "Бюлетень надіслано на {count} пристрої поблизу через BLE.",
+  "@noticeMeshPublishSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeMeshPublishBleFailed": "Побачено радіостанції поблизу, але BLE не вдалося записати. Залиште обидві програми відкритими на екрані повідомлень і повторіть спробу (або скористайтеся реле ESP32).",
+  "noticeMeshPublishNoGatt": "Приймач BLE цього пристрою не готовий. Увімкніть Bluetooth і знову відкрийте сповіщення.",
+  "noticeDelete": "Видалити повідомлення",
+  "noticeDeleteConfirmTitle": "Видалити це повідомлення?",
+  "noticeDeleteLocalOnlyBody": "Це видаляє його лише на цьому пристрої. Інші, хто вже отримав його, все одно побачать його.",
+  "noticeDeleted": "Повідомлення видалено",
+  "chatNoticeHidden": "Повідомлення про зону — відкрити повідомлення",
+  "identityDisplayNameTitle": "Відображуване ім'я",
+  "identitySaveName": "Зберегти назву",
+  "identityUserIdLabel": "Ідентифікатор користувача (хеш відкритого ключа)",
+  "identityCopyHashTooltip": "Копіювати хеш відкритого ключа",
+  "identityMyQrTitle": "Мій QR (id + pubKey + ім'я)",
+  "identityQrFailed": "Не вдалося створити QR\n{error}",
+  "@identityQrFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "identitySaving": "Збереження…",
+  "identitySaveQr": "Збережіть QR у бібліотеці фотографій",
+  "identityOpenScanner": "Відкрийте камеру, щоб сканувати QR",
+  "identityQrHelp": "Попросіть друга відсканувати це, щоб зберегти ваш відкритий ключ і (за потреби) встановити вас як перевіреного емітента",
+  "identityChatTip": "Порада: ви також можете відсканувати QR у чаті, щоб додати відкритий ключ для E2EE",
+  "infoOpen": "Про / Інформація",
+  "docsGuideTitle": "Посібник користувача",
+  "docsGuideSubtitle": "Відкривається в браузері",
+  "docsOpenAction": "Відкрити посібник",
+  "docsOpenFailed": "Не вдалося відкрити посібник користувача",
+  "firmwareOtaGuideTitle": "Flash guide & OTA протокол",
+  "firmwareOtaGuideSubtitle": "Відкриває веб-довідник — завантаження .bin і повні кроки",
+  "firmwareWebDownloadsTitle": "Завантаження прошивки в Інтернеті",
+  "firmwareWebDownloadsSubtitle": "Посилання на версії та контрольні суми на сайті документів",
+  "inviteCopyShortLink": "Копіювати коротке посилання",
+  "inviteShareLink": "Поділитися посиланням",
+  "inviteShowFullLink": "Повне посилання",
+  "inviteCopyFullLink": "Скопіюйте повне посилання",
+  "inviteLinkCopied": "Посилання скопійовано",
+  "inviteLongPressHint": "Тривале натискання для дій за посиланням",
+  "inviteSendInChat": "Надіслати в ResilNet чат…",
+  "inviteSendInChatHint": "Лише люди, для яких у вас уже є відкритий ключ",
+  "inviteSendInChatEmpty": "Поки що немає чатів для повідомлень.\nСпершу відскануйте QR-код, відкрийте Area/Mesh або поділіться посиланням за межами програми.",
+  "inviteSentToChat": "Запрошення надіслано в чаті",
+  "infoTabInfo": "Інформація",
+  "infoTabSettingsHint": "Відкрийте «Параметри» в меню інструментів мови, E2EE та даних",
+  "infoHowToTitle": "Як використовувати",
+  "infoHowToBody": "• Торкніться значка каналу, щоб переключити чат / #mesh / область\n• Торкніться місця, щоб вибрати розмір геохеш\n• Торкніться людей для учасників або хто в мережі\n• Відкрийте Identity/QR у ⋮, щоб обміняти ключі особисто\n• Зона «загальнодоступна» надсилає запечатаний E2EE кожному одноранговому вузлу в мережі — не кімнаті відкритого тексту",
+  "infoFeaturesTitle": "особливості",
+  "infoFeatureOffline": "Офлайн-повідомлення через Bluetooth Low Energy",
+  "infoFeatureE2ee": "Наскрізне шифрування з RSA-OAEP + AES-GCM (без шуму)",
+  "infoFeatureMultihop": "Повідомлення можуть переходити через сусідні вузли, щоб відправлятися далі",
+  "infoFeatureBridge": "Гібридна сітка ↔ Інтернет (Nostr) для запечатаних конвертів",
+  "infoFeatureGeo": "Локальні геохеш-канали для людей поблизу (discovery UX)",
+  "infoFeatureNotices": "Повідомлення з терміном дії для #mesh і Area",
+  "infoPrivacyTitle": "Конфіденційність",
+  "infoPrivacyNoRoom": "Немає відкритого тексту села/публічного чату на дроті",
+  "infoPrivacyFanout": "Надсилання зони = запечатане розгалуження 1:1 до однорангових пристроїв із відомими відкритими ключами",
+  "infoPrivacyPresence": "Присутність в Інтернет-зоні використовує тимчасові ключі Nostr",
+  "infoSymbolsTitle": "Символи",
+  "infoSymBle": "Пряме з'єднання Bluetooth",
+  "infoSymMesh": "Доступно через сітку (інші вперед)",
+  "infoSymInternet": "Через Інтернет (Nostr) — запечатані конверти",
+  "infoSymBridge": "Прибув через↔ мережевий інтернет-міст PATH",
+  "infoSymOffline": "Офлайн — зараз недоступний",
+  "infoSymInArea": "У зоні цього каналу розташування",
+  "infoSymE2eeOk": "Сеанс із наскрізним шифруванням",
+  "infoSymE2eeFail": "Шифрування недоступне — не надсилайте конфіденційний текст",
+  "infoSymVerified": "Ідентичність підтверджена / відомий ключ",
+  "infoSymBlocked": "заблоковано",
+  "infoSymUnread": "Непрочитане приватне повідомлення",
+  "infoEmergencyTitle": "Аварійний режим",
+  "infoEmergencyBody": "Тричі торкніться заголовка ResilNet на головному екрані, щоб стерти повідомлення, ключі та дані на цьому пристрої.",
+  "infoLegendNote": "Деякі піктограми шляху задокументовані тут для ясності; галочки доставки в чаті залишаються основним статусом надсилання.",
+  "dangerZoneTitle": "НЕБЕЗПЕЧНА ЗОНА",
+  "dangerZoneSubtitle": "Видаляє повідомлення, ключі шифрування, ідентифікаційні дані Nostr, однорангові пристрої та псевдоніми на цьому пристрої. Ви налаштуєте знову.",
+  "panicWipeTitle": "Екстрене протирання",
+  "panicWipeSubtitle": "Видалити все локальне — так само, як тричі торкнутися заголовка будинку (подвійне торкання оновить радіо)",
+  "panicWipeConfirmTitle": "Видалити всі локальні дані?",
+  "panicWipeConfirmBody": "Це назавжди видаляє чати, ключі та ідентифікаційні дані на цьому телефоні.\nРівні мають повторно обмінятися QR-ключами з вашим новим ідентифікатором.\nЦе неможливо скасувати.",
+  "panicWipeAction": "Витріть все",
+  "panicWipeSnack": "Локальну ідентифікацію видалено — налаштуйте знову",
+  "panicWipeFailed": "Не вдалося стерти: {error}",
+  "@panicWipeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "meshBridgeTitle": "Сітчастий міст",
+  "meshBridgeSubtitle": "Якщо ввімкнено (за замовчуванням), запечатані конверти можуть використовувати сітчасту мережу BLE та Інтернет (Nostr) разом, щоб сусідні острови сітчастої мережі могли підключатися. Коли вимкнено, надсилання використовує лише один шлях — ніколи не розміщує відкритий текст у дроті.",
+  "favoritesTitle": "Вибране",
+  "favoritesAdd": "Додати в обране",
+  "favoritesRemove": "Видалити з вибраного",
+  "favoritesEmpty": "Ще немає вибраних — позначте партнера зі списку учасників",
+  "favoritesNearbyTitle": "Улюблене поруч",
+  "favoritesNearbyBody": "{name} знаходиться поруч на сітці",
+  "@favoritesNearbyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesInAreaTitle": "Улюблений в районі",
+  "favoritesInAreaBody": "{name} онлайн у цій зоні",
+  "@favoritesInAreaBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "topologyTitle": "Сітчаста топологія",
+  "topologySubtitle": "Однорангові підказки та підказки щодо з’єднання з оголошення сітки (лише для читання)",
+  "topologyConnectedNow": "Зараз підключено (BLE)",
+  "topologyNearby": "Поруч (BLE)",
+  "topologyKnown": "Відомі однолітки",
+  "topologyEmpty": "Ще немає аналогів — залишайтеся поруч із увімкненим BLE",
+  "topologyYou": "ти",
+  "topologyStats": "{peers} партнери · {links} посилання",
+  "@topologyStats": {
+    "placeholders": {
+      "peers": {
+        "type": "int"
+      },
+      "links": {
+        "type": "int"
+      }
+    }
+  },
+  "topologyGraphHint": "Розраховано на основі виявлення сітки поблизу — ваш пристрій виділено. Торкніться партнера, щоб відкрити чат.",
+  "topologyOpen": "Сітчаста топологія",
+  "slashHelpTitle": "Команди",
+  "slashHelpBody": "/help — цей список\n/who — люди онлайн на поточному каналі\n/drop <текст> — закріпити тут запечатане повідомлення (розгортання E2EE)\n\nПовний посібник: скористайтеся Відкритим посібником нижче або Параметри → Посібник користувача.",
+  "slashWhoEmpty": "На цьому каналі зараз нікого в мережі",
+  "slashWhoTitle": "Онлайн ({count})",
+  "@slashWhoTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "slashDropNeedText": "Використання: /скиньте текст примітки",
+  "slashDropDone": "Відкинуто сповіщення про {channel}",
+  "@slashDropDone": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "slashUnknown": "Невідома команда — try /help",
+  "announceOpen": "Оголошення",
+  "announceTitle": "Оголошення",
+  "announceEmpty": "Ще немає дошок — створіть одну, щоб публікувати закриті або відкриті повідомлення",
+  "announceCreate": "Створити дошку",
+  "announceCreateHint": "Назва дошки",
+  "announceDefaultTitle": "Громадська рада",
+  "announceSettings": "Налаштування дошки",
+  "announceAllowLocked": "Дозволити заблоковані (зашифровані) публікації",
+  "announceAllowLockedSub": "Зашифровано до ключа плати — читачам потрібен доступ",
+  "announceAllowOpen": "Дозволити відкриті (відкриті) повідомлення",
+  "announceAllowOpenSub": "Не E2EE — читається на сітці/реле. Вимкнено за замовчуванням.",
+  "announceComposeHint": "Написати оголошення…",
+  "announceMediaInternetOnly": "Фото/голосові оголошення надсилаються через Інтернет (не BLE)",
+  "announceNeedInternet": "Підключіться до Інтернету, щоб надсилати фото чи голосові оголошення",
+  "announceVoiceFailed": "Не вдалося записати голос: {error}",
+  "@announceVoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "announceImageTooLarge": "Зображення завелике (макс. ~180 КБ)",
+  "announcePlayVoice": "Відтворити голосову нотатку",
+  "announceImageLabel": "📷 Зображення",
+  "announceAudioLabel": "🎤 Голосова нотатка",
+  "announceModeLocked": "Заблоковано",
+  "announceModeOpen": "ВІДЧИНЕНО",
+  "announceOpenBadge": "ВІДКРИТО · не зашифровано",
+  "announceLockedBadge": "Заблоковано",
+  "announceLockedPlaceholder": "Зашифровано — запит на доступ для читання",
+  "announceRequestAccess": "Запит на доступ",
+  "announceRequestSent": "Запит на доступ надіслано власнику дошки",
+  "announceRequestFailed": "Не вдалося надіслати запит на доступ (потрібен відкритий ключ власника)",
+  "announceOpenConfirmTitle": "Опублікувати без шифрування?",
+  "announceOpenConfirmBody": "Відкриті дописи не є E2EE. Будь-хто на шляху (сітка / реле) може прочитати їх. Продовжити?",
+  "announcePostAction": "Опублікувати",
+  "announcePendingRequests": "Запити на доступ",
+  "announceApprove": "Затвердити",
+  "announceDeny": "Заперечувати",
+  "announceGranted": "Ви можете читати закриті повідомлення на цій дошці",
+  "announceOwner": "Ви володієте цією дошкою",
+  "announceCopyInvite": "Скопіюйте текст запрошення",
+  "announceShowInviteQr": "Показати QR запрошення",
+  "announceScanInviteQr": "Сканування дошки запрошення QR",
+  "announceFollow": "Слідкуйте за дошкою з запрошення",
+  "announceFollowHint": "Вставте текст запрошення або посилання ResilNet від власника",
+  "announceFollowOk": "Наступна дошка",
+  "announceFollowOkNamed": "Тепер стежить за “{title}”",
+  "@announceFollowOkNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceFollowFail": "Запрошення недійсне або пошкоджене",
+  "announceInviteCopied": "Текст запрошення скопійовано",
+  "announceInviteSaveQr": "Зберегти QR",
+  "announceInviteShare": "Поділіться запрошенням",
+  "announceFollowFromCompose": "У вікні повідомлення виявлено запрошення на форум",
+  "peerConfirmAddTitle": "Додати учасника мережі?",
+  "peerConfirmAddBody": "Додати «{name}» з їхнім відкритим ключем, щоб ви могли надсилати їм приватні повідомлення?",
+  "@peerConfirmAddBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerConfirmAdd": "Додати учасника",
+  "peerAddedOk": "Додано {name} до учасників мережі",
+  "@peerAddedOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "peerAddFromCompose": "Ідентифікація/відкритий ключ виявлено у вікні повідомлення",
+  "peerHashCopied": "Хеш відкритого ключа скопійовано",
+  "peerHashOpenChat": "Відкрити чат",
+  "peerHashAddHint": "Хеш скопійовано. Попросіть їх поділитися своїм ідентифікаційним посиланням або QR, щоб ви могли додати повний відкритий ключ для E2EE.",
+  "peerQrNoCode": "На цьому зображенні не знайдено ResilNet QR",
+  "identityInviteSharePreamble": "ResilNet ідентифікатор: “{name}”\nВідкрийте посилання або вставте його в чат → Додати учасника\nАбо відскануйте ідентифікатор QR.",
+  "@identityInviteSharePreamble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "identityShareInvite": "Поділіться посиланням на ідентифікатор",
+  "identityInviteCopied": "Посилання на ідентифікатор скопійовано",
+  "announceInviteSharePreamble": "Запрошення до ради: “{title}”\nВідкрийте ResilNet → Дошки спільноти → Підпишіться за запрошенням\nАбо відскануйте QR / торкніться посилання нижче.",
+  "@announceInviteSharePreamble": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollowTitle": "Слідкувати за цією дошкою?",
+  "announceConfirmFollowBody": "Стежити за «{title}» із цього запрошення?",
+  "@announceConfirmFollowBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "announceConfirmFollow": "Слідуйте"
+}
