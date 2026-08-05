@@ -1,0 +1,73 @@
+# ResilNet Home node — Raspberry Pi + RNode (LoRa radio) template
+# ----------------------------------------------------------------
+# ONE Pi = ONE config dir. Copy this dir per device if you run several.
+# Two Pis join the SAME Reticulum radio fabric when the RNode LoRa
+# parameters below (frequency / bandwidth / spreadingfactor / codingrate)
+# MATCH EXACTLY on both sides. See docs/pi_rnode_mesh.md.
+#
+# This is NOT the Mac localhost TCP lab (config/a + config/b). Do not run
+# both roles on one machine when using real radio.
+
+[reticulum]
+  # Transport ON so this Pi can relay LXMF for the phone <-> peer path.
+  enable_transport = Yes
+  # Shared instance lets `bridge listen` attach (require_shared_instance=True).
+  share_instance = Yes
+  instance_name = resilnet-pi-home
+  # Isolated ports so this can coexist with the Mac lab on a dev box.
+  shared_instance_port = 37448
+  instance_control_port = 37449
+
+[logging]
+  loglevel = 6
+
+[interfaces]
+
+  # --- LoRa radio between Pis (edit to your hardware + legal band) ---
+  # Requires an RNode-firmware device (RNode, or supported LoRa board
+  # flashed with RNode firmware) — NOT a Heltec running ResilNet ESP32.
+  [[RNode LoRa]]
+    type = RNodeInterface
+    enabled = yes
+
+    # Serial port of the RNode:
+    #   Linux/Pi : /dev/ttyUSB0  or  /dev/ttyACM0
+    #   macOS    : /dev/cu.usbserial-0001
+    # Or wireless: port = tcp://rnode.local   |   port = ble://RNode 3B87
+    port = /dev/ttyUSB0
+
+    # RADIO PARAMETERS — MUST be identical on both Pis.
+    # Pick a frequency that is LEGAL in your country/band. Examples:
+    #   868200000  (EU 868 MHz)   915000000 (US 915 MHz)
+    frequency = 868200000
+    bandwidth = 125000
+    # txpower in dBm — stay within your hardware AND legal ERP ceiling.
+    txpower = 7
+    # spreadingfactor 7..12 (higher = longer range, slower).
+    spreadingfactor = 8
+    # codingrate 5..8 (higher = more robust, slower).
+    codingrate = 5
+
+    # Optional airtime limits (percent) to respect duty-cycle rules.
+    # airtime_limit_long = 1.5
+    # airtime_limit_short = 25
+
+    # Optional on-air ID (amateur radio):
+    # id_callsign = MYCALL-0
+    # id_interval = 600
+
+  # --- Optional IP fallback for TESTING WITHOUT RADIO ---
+  # Uncomment ONE side as server and the other as client (or use a VPN)
+  # to prove the phone->Pi->Pi->phone path before the LoRa link works.
+  #
+  # [[Test TCP Server]]
+  #   type = TCPServerInterface
+  #   enabled = yes
+  #   listen_ip = 0.0.0.0
+  #   listen_port = 4242
+  #
+  # [[Test TCP Client]]
+  #   type = TCPClientInterface
+  #   enabled = yes
+  #   target_host = 192.168.1.50
+  #   target_port = 4242

@@ -151,6 +151,17 @@ Still valid for plain LXMF text / raw `--payload-hex` / `--payload-file`:
 - Desktop/Mac (or Pi) bridge first; phone-side RNS is a separate decision.
 - Do not flash Heltec / RNode from this lab.
 
+## Pi + RNode mesh (phone ↔ Pi ↔ LoRa ↔ Pi ↔ phone)
+
+Two portable Raspberry Pis, each running this bridge + `rnsd` with an **RNode
+LoRa** interface, relay opaque sealed blobs between phones over Reticulum radio.
+Different stack from ResilNet's ESP32 230B LoRa — do not mix.
+
+- Guide + checklist: [`docs/pi_rnode_mesh.md`](docs/pi_rnode_mesh.md)
+- Config template: `config/pi_home/config` (edit RNode `port`/`frequency`/…)
+- Run: `./start_home_node_pi.sh` (or `DRY_RUN=1 ./start_home_node_pi.sh`) / `./stop_home_node_pi.sh`
+- Cheat sheet: `HOME_NODE_PI.txt`
+
 ## Overhead vs LoRa (done in lab)
 
 ```bash
@@ -194,9 +205,14 @@ Simulate Flutter without touching the app:
 
 | Path | Role |
 |------|------|
-| `config/a`, `config/b` | Isolated Reticulum configs |
+| `config/a`, `config/b` | Isolated Reticulum configs (Mac localhost TCP lab) |
+| `config/pi_home/config` | Pi + RNode LoRa config template |
 | `config/identity_map.example.json` | peerId ↔ LXMF dest stub template |
 | `start_daemons.sh` / `stop_daemons.sh` | Two localhost `rnsd` processes |
+| `start_home_node.sh` / `stop_home_node.sh` | Mac LAN-facing Home node bridge |
+| `start_home_node_pi.sh` / `stop_home_node_pi.sh` | Pi + RNode Home node bridge |
+| `docs/pi_rnode_mesh.md` | Pi ↔ LoRa ↔ Pi mesh guide + checklist |
+| `HOME_NODE_MAC.txt` / `HOME_NODE_PI.txt` | Start/stop cheat sheets |
 | `lxmf_node.py` | Minimal announce / listen / send |
 | `bridge/` | Blob codec, identity map, HTTP/CLI bridge |
 | `demo_bridge.sh` | Opaque B→A demo (CLI send) |

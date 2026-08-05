@@ -1,0 +1,98 @@
+ResilNet — Mac Home Node (Reticulum / LXMF bridge)
+====================================================
+อัปเดต: 2026-08-05
+
+บทบาท
+------
+Mac รัน Home node ให้มือถือ ResilNet คุยผ่าน HTTP
+(ไม่ต้องมี LoRa board สำหรับโหมดนี้)
+
+ที่อยู่โฟลเดอร์ lab
+------------------
+/Volumes/SSD_2TB/Documents/MacHome/ResilNet/labs/reticulum_lxmf
+
+หรือผ่าน symlink:
+~/ResilNet/labs/reticulum_lxmf
+
+
+คำสั่งเปิด (Start)
+-----------------
+เปิด Terminal แล้วรัน:
+
+cd /Volumes/SSD_2TB/Documents/MacHome/ResilNet/labs/reticulum_lxmf
+./start_home_node.sh
+
+เมื่อสำเร็จจะเห็นประมาณ:
+  Home node bridge is UP
+  phone URL: <IP>:8765
+
+
+คำสั่งปิด (Stop)
+----------------
+cd /Volumes/SSD_2TB/Documents/MacHome/ResilNet/labs/reticulum_lxmf
+./stop_home_node.sh
+
+
+ตรวจสถานะ
+---------
+1) ดูว่า bridge ตอบหรือยัง:
+
+curl -sS http://127.0.0.1:8765/status
+
+ควรได้ JSON ที่มี "ok": true
+
+2) ดู IP ของ Mac ตอนนี้ (มือถือต้องอยู่เน็ตเดียวกัน):
+
+ipconfig getifaddr en0
+ipconfig getifaddr en1
+
+3) ดู process ที่เกี่ยวข้อง:
+
+pgrep -fl 'rnsd|bridge listen'
+
+
+ใส่ในแอป ResilNet
+-----------------
+Settings → Home node
+
+ที่อยู่โหนด (ตัวอย่างตอนฮอตสปอต / บันทึกล่าสุด):
+  172.20.10.2:8765
+หรือ
+  http://172.20.10.2:8765
+
+จากนั้น:
+  - กดตรวจการเชื่อมต่อ
+  - เปิดสวิตช์ “ใช้โหนดบ้าน”
+  - คัดลอกที่อยู่โหนด (LXMF dest) ให้เพื่อนถ้าจะผูกลิงก์
+
+หมายเหตุ: ถ้าเปลี่ยน Wi‑Fi / ฮอตสปอต IP จะเปลี่ยน
+ให้ดู IP ใหม่แล้วใส่ในแอปใหม่
+
+
+พอร์ต / ชื่อ
+------------
+HTTP port: 8765
+ชื่อ bridge: home-mac
+ฟังทุก interface: 0.0.0.0 (มือถือใน LAN เข้าได้)
+
+
+Log
+---
+logs/bridge_home.log
+logs/rnsd-a.log
+logs/rnsd-b.log
+
+
+ติดตั้งครั้งแรก (ถ้ายังไม่มี .venv)
+---------------------------------
+cd /Volumes/SSD_2TB/Documents/MacHome/ResilNet/labs/reticulum_lxmf
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+./start_home_node.sh
+
+
+หยุดฉุกเฉิน (ถ้าสคริปต์ปิดไม่สำเร็จ)
+---------------------------------
+pkill -f ' -m bridge listen'
+cd /Volumes/SSD_2TB/Documents/MacHome/ResilNet/labs/reticulum_lxmf
+./stop_daemons.sh

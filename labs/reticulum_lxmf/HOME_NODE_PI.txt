@@ -1,0 +1,86 @@
+ResilNet — Raspberry Pi Home Node (Reticulum / LXMF over LoRa/RNode)
+====================================================================
+อัปเดต: 2026-08-05
+
+บทบาท
+------
+Pi พกพา รัน Home node ให้มือถือ ResilNet คุยผ่าน HTTP
+และส่งต่อระหว่าง Pi ↔ Pi ด้วย Reticulum บน LoRa (RNode)
+ต้องมี 2 Pi (ฝั่งคุณ + ฝั่งเพื่อน) + RNode ฝั่งละตัว
+คู่มือเต็ม: docs/pi_rnode_mesh.md
+
+
+โฟลเดอร์ lab
+------------
+labs/reticulum_lxmf   (ใช้ path จริง ไม่ผ่าน symlink)
+
+
+ติดตั้งครั้งแรก
+---------------
+cd labs/reticulum_lxmf
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+
+ตั้งค่า RNode (แก้ก่อนเปิด)
+--------------------------
+แก้ไฟล์: config/pi_home/config
+  - port         = /dev/ttyUSB0 (หรือ /dev/ttyACM0)
+  - frequency / bandwidth / spreadingfactor / codingrate
+    >>> ต้องตรงกันทั้งสอง Pi <<<
+  - txpower      ภายในเพดานกฎหมาย + ฮาร์ดแวร์
+หา serial port: ls /dev/ttyUSB* /dev/ttyACM*
+
+
+ตรวจก่อน (ไม่ต้องมีวิทยุ)
+------------------------
+DRY_RUN=1 ./start_home_node_pi.sh
+
+
+เปิด (Start)
+------------
+./start_home_node_pi.sh
+เมื่อสำเร็จจะเห็น:
+  ResilNet Pi Home node is UP
+  phone URL: <IP>:8765
+  LXMF dest: <รหัสยาว>
+
+
+ปิด (Stop)
+----------
+./stop_home_node_pi.sh
+
+
+ตรวจสถานะ
+---------
+curl -sS http://127.0.0.1:8765/status        # ควรได้ "ok": true
+.venv/bin/rnstatus --config config/pi_home   # ดู path/วิทยุ
+hostname -I                                  # IP ของ Pi ใน LAN
+
+
+ใส่ในแอป ResilNet
+-----------------
+Settings → Home node
+  ที่อยู่โหนด: <IP_ของ_Pi>:8765
+  - กดตรวจการเชื่อมต่อ
+  - เปิดสวิตช์ "ใช้โหนดบ้าน"
+  - แลก LXMF dest กับเพื่อน แล้วผูกลิงก์
+
+
+ตัวเลือก / ชื่อ
+---------------
+HTTP_PORT=8765 (ค่าเริ่มต้น)   NAME=pi-home   SELF_PEER=pi_home_peer
+เช่น: HTTP_PORT=8766 NAME=pi-a ./start_home_node_pi.sh
+
+
+Log
+---
+logs/bridge_pi.log
+logs/rnsd-pi.log
+
+
+หมายเหตุ
+--------
+- คนละ stack กับ ESP32/Heltec LoRa ของ ResilNet (230B) — อย่าปนกัน
+- LoRa ช้า/แบนด์วิดท์ต่ำ เหมาะข้อความสั้น sealed ไม่ใช่ sync ใหญ่
+- ทดสอบก่อนมีวิทยุได้ด้วย [[Test TCP ...]] ใน config/pi_home/config

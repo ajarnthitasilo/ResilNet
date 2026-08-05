@@ -130,6 +130,11 @@
 
 หลักการสำคัญ: เนื้อหาที่ bridge เห็นคือ **opaque** — มี magic `RNLB` + peer id + sealed payload ไม่มี plaintext แชต
 
+> อยากให้ **โหนดพกพา 2 เครื่องคุยกันเองด้วย LoRa** (ไม่พึ่งเน็ต)? ดู
+> `labs/reticulum_lxmf/docs/pi_rnode_mesh.md` — ตั้ง Pi + RNode ฝั่งละตัว
+> ให้พารามิเตอร์วิทยุตรงกัน แล้วมือถือคุยกับ Pi ข้างตัวผ่าน HTTP เหมือนเดิม
+> (คนละ stack กับ ESP32/Heltec LoRa 230B ของ ResilNet)
+
 ---
 
 ## ข้อจำกัดและความปลอดภัย
@@ -159,3 +164,4 @@
 - [แชต 1:1](chat.md)
 - [Local Wi‑Fi](local-wifi.md) — ทาง LAN แบบมือถือ↔มือถือ
 - ใน repo (นักพัฒนา/ผู้ดูแลโหนด): `labs/reticulum_lxmf/` และ `labs/reticulum_lxmf/docs/bridge_app_integration.md`
+- โหนดพกพา 2 เครื่องคุยกันด้วย LoRa: `labs/reticulum_lxmf/docs/pi_rnode_mesh.md` (Pi + RNode — มือถือ↔Pi↔LoRa↔Pi↔มือถือ)
