@@ -9,7 +9,7 @@
 เวอร์ชันเฟิร์มแวร์ปัจจุบันบนเว็บนี้: **1.9.49**  
 (ดูค่าสดใน [manifest.json](https://ajarnthitasilo.github.io/ResilNet/firmware/manifest.json))
 
-> คู่มือแอปอัปเดตเป็น **1.9.64** แล้ว (รวม Home node / Local Wi‑Fi) — เลขเฟิร์มแวร์บน CDN อาจตามหลังจนกว่าจะ sync รอบใหม่ ใช้ manifest เป็นแหล่งจริงของ `.bin`
+> คู่มือแอปอัปเดตเป็น **1.9.75** แล้ว (รวม Apple Watch / Tor / Area) — เฟิร์มแวร์บน CDN ยังเป็น **1.9.49** จนกว่าจะ sync รอบใหม่ ใช้ manifest เป็นแหล่งจริงของ `.bin`
 
 > ลิงก์ดาวน์โหลดด้านล่างเป็น URL เต็มของ GitHub Pages — กดแล้วได้ไฟล์ `.bin` โดยตรง (ไม่ผ่าน hash route ของ Docsify)
 

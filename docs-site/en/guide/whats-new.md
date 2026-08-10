@@ -1,99 +1,89 @@
 # What’s new since the previous guide
 
-The previous docs-site snapshot referenced app/firmware around **1.9.49**.  
-This update aligns the guide with app **1.9.64** (+82) and features added after that.
+The previous docs-site snapshot referenced app **1.9.64** (Home node / Local Wi‑Fi).  
+This update aligns the guide with app **1.9.75** (+93) and features added after that.
+
+ESP32 firmware on the CDN / in-app baseline remains **1.9.49** (the app may be ahead of firmware — trust `manifest.json` for `.bin` hashes).
 
 ---
 
 ## User-facing highlights
 
-| Topic | In 1.9.64 |
+| Topic | In 1.9.75 |
 |-------|-----------|
-| **Home node (Reticulum / LXMF)** | Settings — optional Mac/Pi on Wi‑Fi |
-| **Local Wi‑Fi** | Settings — phone LAN discovery/chat |
-| **Languages** | Follow system + picker; many locales shipped |
-| **Stuck-app refresh** | Double-tap ResilNet = soft refresh; long-press = hard recover; triple-tap = panic wipe |
-| **Area / online people** | Better geohash + Nostr presence behavior |
-| **Voice / mic** | Clearer permission + recorder UI |
-| **BLE status** | Clearer permission / paused / scanning copy |
+| **Apple Watch** | Companion: status, recent Directs, short sealed texts (~160 chars) via iPhone |
+| **Onboarding** | Interactive first-run walkthrough (Identity, channels, toolbar, boards, Wi‑Fi, safety, Watch, …) |
+| **Nostr via Tor** | Settings — relays through local SOCKS (Orbot/Tor); no clearnet fallback |
+| **Home node / Local Wi‑Fi** | Unchanged from the 1.9.64 guides |
+| **ESP32 firmware** | Still **1.9.49** |
 
-New pages:
+New / updated pages:
 
-- [Home node — Reticulum / LXMF](reticulum-home-node.md) *(detailed)*
-- [Local Wi‑Fi](local-wifi.md)
-
----
-
-## 1) Home node (Reticulum / LXMF) — major addition
-
-**Previously (1.9.49 guide):** transports documented as BLE → ESP32/LoRa → Nostr only.
-
-**Now (1.9.64):**
-
-- **Settings → Home node**
-- Configure Mac/Pi bridge URL, check online, copy node address, link friends
-- App opportunistically sends/polls **sealed** chat bytes over HTTP to an LXMF/Reticulum bridge
-- Operator lab: `labs/reticulum_lxmf/`
-
-Full guide: [reticulum-home-node.md](reticulum-home-node.md)
-
-Remember: does not replace E2EE; not for Heltec LXMF; different from Local Wi‑Fi.
+- [Apple Watch](apple-watch.md)
+- [Area / geohash](area.md) *(short)*
+- [What’s new](whats-new.md) (this page)
 
 ---
 
-## 2) Local Wi‑Fi
+## 1) Apple Watch — major addition
 
-**Added after 1.9.49** — missing from the old guide.
+- Ships with the iPhone app (Watch target `ResilNetWatch`)
+- **Status** tab: transport, online count, unread, iPhone reachability
+- **Chats** tab: recent Directs, short text / quick replies
+- **Crypto and mesh routing stay on the iPhone** — the Watch has no separate keys
+- Open ResilNet on the iPhone at least once and keep it reachable
 
-- Settings → Local Wi‑Fi  
-- Hotspot / router modes  
-- LAN discovery + 1:1 when keys exist  
-
-See [local-wifi.md](local-wifi.md).
-
----
-
-## 3) Languages
-
-- Default: **follow device** when shipped; else English  
-- Settings language picker  
-- Broad locale set; Thai remains the curated primary non-English pack; some locales are machine drafts  
+Full guide: [apple-watch.md](apple-watch.md)
 
 ---
 
-## 4) Soft refresh / recover / wipe
+## 2) Interactive onboarding
 
-- **Double-tap** title = soft refresh radios/discovery  
-- **Long-press** = harder recover  
-- **Triple-tap** = emergency wipe — do not confuse with double-tap  
-- In-app tips / Info copy  
+First launch (or after resetting onboarding) walks through:
 
----
+Welcome → Identity → Channels → Toolbar → Compose → Direct → Boards → Local Wi‑Fi → Transport → Area → Bridges/hardware → Safety → **Apple Watch** → Ready
 
-## 5) Area, voice, BLE
-
-- Area: refresh geohash on launch when needed; clearer empty states  
-- Voice notes: mic permission + recorder sheet improvements  
-- BLE status bar: permission vs paused vs scanning  
+Short demo chips help remember main icons and menus.
 
 ---
 
-## 6) Unchanged expectations
+## 3) Route Nostr via Tor
 
-- Still account-less  
-- 1:1 E2EE; public #mesh bulletins are not content-encrypted  
-- ResilNet LoRa ≠ Meshtastic  
-- Community boards Open/Locked model unchanged  
+- **Settings → Route Nostr via Tor**
+- Uses SOCKS `127.0.0.1:9050` (Orbot or system Tor)
+- Slower, but hides your IP from relays
+- **Tor must be running** — the app will not fall back to clearnet if SOCKS is unavailable
 
 ---
 
-## 7) Doc version table
+## 4) Unchanged from 1.9.64
+
+- Home node (Reticulum / LXMF) and Local Wi‑Fi as documented before
+- Double-tap ResilNet title = soft refresh; long-press = hard recover; triple-tap = panic wipe
+- Still account-less
+- 1:1 remains E2EE; **public mesh bulletins** remain plaintext + signature
+- ResilNet LoRa is still **not** Meshtastic-compatible on RF (optional in-app text bridge — plaintext)
+
+---
+
+## 5) Area vs #mesh (do not conflate)
+
+| | #mesh (peer list) | Public bulletin (Notices) | Area (geohash) |
+|--|-------------------|---------------------------|----------------|
+| Role | Tap nearby peer → 1:1 | Local public announcement | People in cell + public fan-out |
+| Content encryption | 1:1 = E2EE | **No** (plaintext + signature) | Public fan-out = **sealed per peer** (not plaintext) |
+
+Details: [mesh.md](mesh.md) · [area.md](area.md)
+
+---
+
+## 6) Doc version table
 
 | Item | Previous guide | This update |
 |------|----------------|-------------|
-| Version on home page | 1.9.49 | **1.9.64** |
-| Home node / Reticulum | — | Full page |
-| Local Wi‑Fi | — | Short page |
-| What’s new | — | This page |
+| Version on home page | 1.9.64 | **1.9.75** |
+| Apple Watch | — | Guide page |
+| Nostr via Tor | — | Settings / FAQ |
+| CDN firmware | 1.9.49 | **1.9.49** (unchanged) |
 
-If your build is newer than the number in the docs, trust **Settings → version** in the app and use the feature table above.
+If your build is newer than the number in the docs, trust **Settings → version** in the app.

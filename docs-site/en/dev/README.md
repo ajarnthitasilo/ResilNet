@@ -24,7 +24,7 @@ cd esp32_firmware
 pio run -e standalone
 pio run -e lora_gateway
 cd ..
-./tool/sync_firmware_release.sh 1.9.64
+./tool/sync_firmware_release.sh 1.9.49
 # docs CDN mirror only:
 ./tool/sync_docs_firmware.sh
 ```

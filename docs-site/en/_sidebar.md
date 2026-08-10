@@ -1,10 +1,12 @@
 * [What is ResilNet](/en/)
 * User guide
-  * [What’s new (1.9.64)](/en/guide/whats-new)
+  * [What’s new (1.9.75)](/en/guide/whats-new)
   * [Install the app](/en/guide/install)
   * [1:1 chat](/en/guide/chat)
   * [#mesh / public bulletin](/en/guide/mesh)
+  * [Area / geohash](/en/guide/area)
   * [Community boards](/en/guide/boards)
+  * [Apple Watch](/en/guide/apple-watch)
   * [Local Wi‑Fi](/en/guide/local-wifi)
   * [Home node (Reticulum / LXMF)](/en/guide/reticulum-home-node)
   * [ESP32 Mule](/en/guide/esp32-mule)

@@ -2,11 +2,11 @@
 
 **ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), phone LAN / home-node bridges, and long-range sync over public **Nostr** relays.
 
-**Current app version:** `1.9.64` (+82)  
+**Current app version:** `1.9.75` (+93)  
 **ESP32 firmware (releases/):** `1.9.49` (LoRa mesh relay + store-and-forward)  
 **Bundled ESP32 firmware baseline:** `1.9.49`
 
-> App guide / docs are updated for **1.9.64**. CDN firmware may still list **1.9.49** until the next sync — trust `releases/firmware/manifest.json` for `.bin` hashes.
+> App guide / docs are updated for **1.9.75**. CDN firmware may still list **1.9.49** until the next sync — trust `releases/firmware/manifest.json` for `.bin` hashes.
 
 ## Project layout
 
@@ -26,7 +26,7 @@ ResilNet/
 **User documentation:**
 
 - **Live (GitHub Pages):** https://ajarnthitasilo.github.io/ResilNet/
-- **What’s new (1.9.64):** https://ajarnthitasilo.github.io/ResilNet/#/en/guide/whats-new
+- **What’s new (1.9.75):** https://ajarnthitasilo.github.io/ResilNet/#/en/guide/whats-new
 - **Firmware CDN base:** `https://ajarnthitasilo.github.io/ResilNet/firmware`
 - **Local preview:**
 
@@ -45,10 +45,11 @@ Deploy: `.github/workflows/deploy-docs.yml`. First time enable **Settings → Pa
 - **Account-less cryptographic identity:** No email/phone signup. Keys are generated on-device (`secp256k1` / `npub` / `nsec`) on first launch.
 - **Hybrid multi-tier transport:**
   - **Near:** Phone BLE mesh (discovery; chat still prefers Nostr when online)
+  - **Wrist:** Apple Watch companion (status + short Directs; crypto on iPhone)
   - **LAN:** Local Wi‑Fi (hotspot / router) for nearby phones
   - **Home node:** Optional Mac/Pi **Reticulum / LXMF** HTTP bridge (Settings → Home node)
   - **Mid:** ESP32 BLE data mule / LoRa gateway
-  - **Far / Internet:** Nostr relays with local offline queue (store locally, flush when online)
+  - **Far / Internet:** Nostr relays with local offline queue (store locally, flush when online); optional **Tor SOCKS** for Nostr (Settings)
 - **Rust-powered core:** Deduplication, hybrid fan-out routing, and queue handling via FFI.
 - **E2EE 1:1 messaging:** Sealed private chats with delivery + read receipts; longer voice notes use chunked **MediaPart** payloads over Nostr.
 - **ResilNet LoRa mesh relay:** LoRa gateways multi-hop opaque `ResilNetRadioPacket` frames (TTL + dedupe + rate cap + optional store-and-forward when no phone is connected). **Not** Meshtastic-compatible — ResilNet protocol only. Disable with `-DLORA_MESH_RELAY_ENABLE=0`.

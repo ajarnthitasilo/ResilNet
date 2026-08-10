@@ -6,8 +6,9 @@
 
 1. เพิ่มเพื่อน (ค้นหาใกล้ตัว / QR / ช่องทางที่มีในแอป)
 2. เปิดห้องแชต → พิมพ์หรือส่งเสียง / รูปตามที่รองรับ
-3. เมื่อมีเน็ต ระบบมักส่งผ่าน **Nostr**; เมื่อออฟไลน์ใช้ mesh / ESP32 / คิวในเครื่อง  
-   บน LAN อาจใช้ **Local Wi‑Fi** หรือ **Home node** (ถ้าเปิดไว้) — ดู [Local Wi‑Fi](local-wifi.md) และ [Home node](reticulum-home-node.md)
+3. เมื่อมีเน็ต ระบบมักส่งผ่าน **Nostr** (ทางเลือก: ผ่าน Tor ใน Settings); เมื่อออฟไลน์ใช้ mesh / ESP32 / คิวในเครื่อง  
+   บน LAN อาจใช้ **Local Wi‑Fi** หรือ **Home node** (ถ้าเปิดไว้) — ดู [Local Wi‑Fi](local-wifi.md) และ [Home node](reticulum-home-node.md)  
+   บน Apple Watch ส่งข้อความสั้นได้ (~160 ตัวอักษร) โดย iPhone เป็นฝ่ายเข้ารหัส — ดู [Apple Watch](apple-watch.md)
 
 ## ความหมายของติ๊กสถานะ
 

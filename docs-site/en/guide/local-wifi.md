@@ -15,8 +15,10 @@ Open **Settings → Local Wi‑Fi**.
 
 - For LAN discovery and sealed chat once keys exist  
 - **Not** a substitute for Home node (Reticulum) or for Nostr across different networks  
+- **iOS:** allow **Local Network** for ResilNet (Settings → ResilNet) or LAN discovery will fail  
 - Some routers enable **client isolation** — same SSID but phones cannot see each other; disable isolation or use hotspot mode  
 - If a peer is found without keys, scan QR / add contact as usual  
+- Not the ESP32 SoftAP (`ResilNet-Node-XXXX`) — a different path  
 
 ## vs Home node
 

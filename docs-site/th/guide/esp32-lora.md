@@ -7,7 +7,7 @@
 - ย่านที่ใช้ในเฟิร์มแวร์หลักประมาณ **920–925 MHz (AS923)** เช่น ~923.5 MHz
 - **ต้องต่อเสาอากาศก่อนเปิดส่ง** — อย่า TX โดยไม่มีเสา
 - ปฏิบัติตามประกาศ กสทช. / ข้อจำกัดกำลังและ duty cycle ในพื้นที่ของคุณ
-- **ไม่** เข้ากันกับ Meshtastic ที่ชั้น LoRa และไม่ได้ตั้งใจให้คุยข้ามระบบนั้นบน RF — แอปอาจมี **สะพานข้อความแยก** (plaintext ไม่ใช่ E2EE) ดู [`meshtastic_bridge/README.md`](https://github.com/AjarnThitasilo/ResilNet/blob/main/meshtastic_bridge/README.md)
+- **ไม่** เข้ากันกับ Meshtastic ที่ชั้น LoRa และไม่ได้ตั้งใจให้คุยข้ามระบบนั้นบน RF — ในแอปมี **Settings → Meshtastic bridge** (MQTT ingest/egress, plaintext ไม่ใช่ E2EE; รายละเอียดผู้ดูแลดู [`meshtastic_bridge/README.md`](https://github.com/AjarnThitasilo/ResilNet/blob/main/meshtastic_bridge/README.md))
 
 ## เชื่อมมือถือกับเกตเวย์
 

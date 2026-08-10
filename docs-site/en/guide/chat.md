@@ -6,8 +6,9 @@ Private messages between you and one peer are **sealed** before they leave the p
 
 1. Add a peer (nearby discovery / QR / in-app flows)
 2. Open the chat — text, voice, or images as supported
-3. With internet, delivery often uses **Nostr**; offline, BLE mesh / ESP32 / local queue apply.  
-   On a LAN you may also use **Local Wi‑Fi** or **Home node** if enabled — see [Local Wi‑Fi](local-wifi.md) and [Home node](reticulum-home-node.md).
+3. With internet, delivery often uses **Nostr** (optional: via Tor in Settings); offline, BLE mesh / ESP32 / local queue apply.  
+   On a LAN you may also use **Local Wi‑Fi** or **Home node** if enabled — see [Local Wi‑Fi](local-wifi.md) and [Home node](reticulum-home-node.md).  
+   On Apple Watch you can send short texts (~160 chars); the iPhone seals them — see [Apple Watch](apple-watch.md).
 
 ## Tick meanings
 

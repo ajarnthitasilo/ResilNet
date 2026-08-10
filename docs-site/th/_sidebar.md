@@ -1,10 +1,12 @@
 * [ResilNet คืออะไร](/th/)
 * คู่มือใช้งาน
-  * [มีอะไรใหม่ (1.9.64)](/th/guide/whats-new)
+  * [มีอะไรใหม่ (1.9.75)](/th/guide/whats-new)
   * [ติดตั้งแอป](/th/guide/install)
   * [แชต 1:1](/th/guide/chat)
   * [#mesh / ประกาศสาธารณะ](/th/guide/mesh)
+  * [Area / geohash](/th/guide/area)
   * [กระดานชุมชน](/th/guide/boards)
+  * [Apple Watch](/th/guide/apple-watch)
   * [Local Wi‑Fi](/th/guide/local-wifi)
   * [Home node (Reticulum / LXMF)](/th/guide/reticulum-home-node)
   * [ESP32 Mule](/th/guide/esp32-mule)
