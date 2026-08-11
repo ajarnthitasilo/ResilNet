@@ -2,7 +2,7 @@
 
 **Account-less crisis messaging** — works with or without the internet via nearby Bluetooth, mid-range ESP32 / LoRa, Nostr when online, plus optional **Local Wi‑Fi** and **Home node (Reticulum)** on a LAN, and an **Apple Watch** companion (with iPhone).
 
-Current app version: **1.9.75**  
+Current app version: **1.10.0**  
 ESP32 firmware: **1.9.49** (see in-app / firmware page — the app may be ahead of firmware).
 
 ## Who it is for
