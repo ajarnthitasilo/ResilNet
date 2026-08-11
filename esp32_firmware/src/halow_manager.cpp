@@ -55,9 +55,9 @@ bool HaLowManager::isStub() const {
 }
 
 bool HaLowManager::dedupCheckAndRegister(const uint8_t packet_id[16]) {
-  if (_dedup_mutex == nullptr) return true;
+  if (_dedup_mutex == nullptr) return _dedup.accept(packet_id);
   xSemaphoreTake(_dedup_mutex, portMAX_DELAY);
-  const bool fresh = _dedup.checkAndRegister(packet_id);
+  const bool fresh = _dedup.accept(packet_id);
   xSemaphoreGive(_dedup_mutex);
   return fresh;
 }
