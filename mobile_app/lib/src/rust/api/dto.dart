@@ -6,7 +6,17 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
+
+/// โหมดวิทยุเกตเวย์จาก Settings (LoRa / HaLow / Auto)
+enum GatewayRadioPreferenceDto {
+  loRa,
+  haLow,
+  auto;
+
+  static Future<GatewayRadioPreferenceDto> default_() =>
+      ResilNetCore.instance.api.crateApiDtoGatewayRadioPreferenceDtoDefault();
+}
 
 /// Public geohash notice from Nostr (plaintext JSON content).
 class GeoNoticeDto {
@@ -132,23 +142,32 @@ class MessagePacketDto {
           payloadTag == other.payloadTag;
 }
 
-/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + LoRa)
+/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + gateway radios)
 class NetworkStatusDto {
   final bool isInternetAvailable;
   final int activeBlePeersCount;
   final bool loraAvailable;
+  final bool halowAvailable;
+  final bool halowLinkUp;
+  final GatewayRadioPreferenceDto gatewayRadioPreference;
 
   const NetworkStatusDto({
     required this.isInternetAvailable,
     required this.activeBlePeersCount,
     required this.loraAvailable,
+    required this.halowAvailable,
+    required this.halowLinkUp,
+    required this.gatewayRadioPreference,
   });
 
   @override
   int get hashCode =>
       isInternetAvailable.hashCode ^
       activeBlePeersCount.hashCode ^
-      loraAvailable.hashCode;
+      loraAvailable.hashCode ^
+      halowAvailable.hashCode ^
+      halowLinkUp.hashCode ^
+      gatewayRadioPreference.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -157,7 +176,10 @@ class NetworkStatusDto {
           runtimeType == other.runtimeType &&
           isInternetAvailable == other.isInternetAvailable &&
           activeBlePeersCount == other.activeBlePeersCount &&
-          loraAvailable == other.loraAvailable;
+          loraAvailable == other.loraAvailable &&
+          halowAvailable == other.halowAvailable &&
+          halowLinkUp == other.halowLinkUp &&
+          gatewayRadioPreference == other.gatewayRadioPreference;
 }
 
 /// Result of first-time / restore Nostr identity init
@@ -189,6 +211,12 @@ class NostrPoolStatusDto {
   final int totalRelays;
   final List<RelayStatusDto> relays;
 
+  /// When true, relay WebSockets go through local Tor SOCKS5.
+  final bool torEnabled;
+
+  /// SOCKS endpoint (e.g. `127.0.0.1:9050`) when Tor routing is enabled.
+  final String socksAddr;
+
   const NostrPoolStatusDto({
     required this.initialized,
     required this.pubkeyHex,
@@ -196,6 +224,8 @@ class NostrPoolStatusDto {
     required this.connectedRelays,
     required this.totalRelays,
     required this.relays,
+    required this.torEnabled,
+    required this.socksAddr,
   });
 
   @override
@@ -205,7 +235,9 @@ class NostrPoolStatusDto {
       npub.hashCode ^
       connectedRelays.hashCode ^
       totalRelays.hashCode ^
-      relays.hashCode;
+      relays.hashCode ^
+      torEnabled.hashCode ^
+      socksAddr.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -217,7 +249,9 @@ class NostrPoolStatusDto {
           npub == other.npub &&
           connectedRelays == other.connectedRelays &&
           totalRelays == other.totalRelays &&
-          relays == other.relays;
+          relays == other.relays &&
+          torEnabled == other.torEnabled &&
+          socksAddr == other.socksAddr;
 }
 
 /// ประเภท payload (wire tag: Text=1, Image=2, Audio=3, Firmware=4, Ack=5)
@@ -373,4 +407,4 @@ class RouterConfigDto {
 }
 
 /// ช่องทางส่งข้อมูล (mirror ของ `TransportType`)
-enum TransportTypeDto { nostr, bluetoothMesh, loRa, offlineQueue }
+enum TransportTypeDto { nostr, bluetoothMesh, loRa, haLow, offlineQueue }

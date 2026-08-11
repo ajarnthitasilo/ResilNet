@@ -17,6 +17,13 @@
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		ED497973363F6EDB94AFBECF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1E9C293E6AA2906244D65AA /* Pods_RunnerTests.framework */; };
 		F39E70FC164615BEEF660D96 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 892D9683EE94B672BCF3C4D3 /* Pods_Runner.framework */; };
+
+		A7WATCH01B71D6E00000002 /* WatchConnectivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7WATCH01B71D6E00000001 /* WatchConnectivityBridge.swift */; };
+		A7WATCH01B71D6E0000000E /* ResilNetWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7WATCH01B71D6E00000004 /* ResilNetWatchApp.swift */; };
+		A7WATCH01B71D6E0000000F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7WATCH01B71D6E00000005 /* ContentView.swift */; };
+		A7WATCH01B71D6E00000010 /* WatchSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7WATCH01B71D6E00000006 /* WatchSessionModel.swift */; };
+		A7WATCH01B71D6E00000011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7WATCH01B71D6E00000008 /* Assets.xcassets */; };
+		A7WATCH01B71D6E00000013 /* ResilNetWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A7WATCH01B71D6E00000003 /* ResilNetWatch.app */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +33,15 @@
 			proxyType = 1;
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
+		};
+
+		A7WATCH01B71D6E00000014 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A7WATCH01B71D6E0000000A;
+			remoteInfo = ResilNetWatch;
+			platformFilter = ios;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -38,6 +54,18 @@
 			files = (
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A7WATCH01B71D6E00000012 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				A7WATCH01B71D6E00000013 /* ResilNetWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -68,6 +96,16 @@
 		C6DEA76CBCDDB03C44F890BD /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		D3392D89D83B1384841AAF3F /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		EAC8B37E30059958001FA235 /* RunnerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
+
+		A7WATCH01B71D6E00000001 /* WatchConnectivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityBridge.swift; sourceTree = "<group>"; };
+		A7WATCH01B71D6E00000003 /* ResilNetWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ResilNetWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7WATCH01B71D6E00000004 /* ResilNetWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResilNetWatchApp.swift; sourceTree = "<group>"; };
+		A7WATCH01B71D6E00000005 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A7WATCH01B71D6E00000006 /* WatchSessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionModel.swift; sourceTree = "<group>"; };
+		A7WATCH01B71D6E00000007 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A7WATCH01B71D6E00000008 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A7WATCH01B71D6E0000001A /* Watch.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Watch.xcconfig; sourceTree = "<group>"; };
+		A7WATCH01B71D6E0000001B /* ResilNetWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ResilNetWatch.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +122,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				F39E70FC164615BEEF660D96 /* Pods_Runner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A7WATCH01B71D6E0000000D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +182,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				A7WATCH01B71D6E00000009 /* ResilNetWatch */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				3443FE32B9C7FB387B4C7002 /* Pods */,
@@ -148,6 +195,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
+				A7WATCH01B71D6E00000003 /* ResilNetWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -163,10 +211,26 @@
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				A7WATCH01B71D6E00000001 /* WatchConnectivityBridge.swift */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+
+		A7WATCH01B71D6E00000009 /* ResilNetWatch */ = {
+			isa = PBXGroup;
+			children = (
+				A7WATCH01B71D6E00000004 /* ResilNetWatchApp.swift */,
+				A7WATCH01B71D6E00000005 /* ContentView.swift */,
+				A7WATCH01B71D6E00000006 /* WatchSessionModel.swift */,
+				A7WATCH01B71D6E00000007 /* Info.plist */,
+				A7WATCH01B71D6E0000001B /* ResilNetWatch.entitlements */,
+				A7WATCH01B71D6E00000008 /* Assets.xcassets */,
+				A7WATCH01B71D6E0000001A /* Watch.xcconfig */,
+			);
+			path = ResilNetWatch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,6 +265,8 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				A7WATCH01B71D6E00000012 /* Embed Watch Content */,
+				A7WATCH01B71D6E0000001C /* Re-sign Embedded Watch App */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				CB77CEA7AF728D595A97ED3E /* [CP] Embed Pods Frameworks */,
 				EAA95EA88E5549B7CFF1F78D /* [CP] Copy Pods Resources */,
@@ -208,10 +274,29 @@
 			buildRules = (
 			);
 			dependencies = (
+				A7WATCH01B71D6E00000015 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
+			productType = "com.apple.product-type.application";
+		};
+
+		A7WATCH01B71D6E0000000A /* ResilNetWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A7WATCH01B71D6E00000019 /* Build configuration list for PBXNativeTarget "ResilNetWatch" */;
+			buildPhases = (
+				A7WATCH01B71D6E0000000B /* Sources */,
+				A7WATCH01B71D6E0000000D /* Frameworks */,
+				A7WATCH01B71D6E0000000C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ResilNetWatch;
+			productName = ResilNetWatch;
+			productReference = A7WATCH01B71D6E00000003 /* ResilNetWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -231,6 +316,11 @@
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
+					};
+					A7WATCH01B71D6E0000000A = {
+						CreatedOnToolsVersion = 15.0;
+						DevelopmentTeam = 8PS7CND77B;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -285,6 +375,7 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
+				A7WATCH01B71D6E0000000A /* ResilNetWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -305,6 +396,15 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A7WATCH01B71D6E0000000C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A7WATCH01B71D6E00000011 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +448,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+		};
+		A7WATCH01B71D6E0000001C /* Re-sign Embedded Watch App */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/Watch/ResilNetWatch.app",
+			);
+			name = "Re-sign Embedded Watch App";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/tool/resign_watch_embed.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		7EA625338A7D4EC4AE5EBC2C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -436,8 +552,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				A7WATCH01B71D6E00000002 /* WatchConnectivityBridge.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A7WATCH01B71D6E0000000B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A7WATCH01B71D6E0000000E /* ResilNetWatchApp.swift in Sources */,
+				A7WATCH01B71D6E0000000F /* ContentView.swift in Sources */,
+				A7WATCH01B71D6E00000010 /* WatchSessionModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,6 +576,12 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+
+		A7WATCH01B71D6E00000015 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A7WATCH01B71D6E0000000A /* ResilNetWatch */;
+			targetProxy = A7WATCH01B71D6E00000014 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -714,6 +848,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 8PS7CND77B;
 				ENABLE_BITCODE = NO;
@@ -754,6 +890,102 @@
 			};
 			name = Release;
 		};
+
+		A7WATCH01B71D6E00000016 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A7WATCH01B71D6E0000001A /* Watch.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ResilNetWatch/ResilNetWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "Apple Development";
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 8PS7CND77B;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ResilNetWatch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.ajarnnarin.resilnet;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ajarnnarin.resilnet.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = watchos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+
+		A7WATCH01B71D6E00000017 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A7WATCH01B71D6E0000001A /* Watch.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ResilNetWatch/ResilNetWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "Apple Development";
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 8PS7CND77B;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ResilNetWatch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.ajarnnarin.resilnet;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ajarnnarin.resilnet.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = watchos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+
+		A7WATCH01B71D6E00000018 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A7WATCH01B71D6E0000001A /* Watch.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ResilNetWatch/ResilNetWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "Apple Development";
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 8PS7CND77B;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ResilNetWatch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.ajarnnarin.resilnet;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ajarnnarin.resilnet.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = watchos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -783,6 +1015,17 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+
+		A7WATCH01B71D6E00000019 /* Build configuration list for PBXNativeTarget "ResilNetWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A7WATCH01B71D6E00000016 /* Debug */,
+				A7WATCH01B71D6E00000017 /* Release */,
+				A7WATCH01B71D6E00000018 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

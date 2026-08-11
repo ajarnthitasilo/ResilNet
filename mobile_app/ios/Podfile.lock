@@ -38,7 +38,7 @@ PODS:
     - Flutter
   - permission_handler_apple (9.4.8):
     - Flutter
-  - Protobuf (3.29.0)
+  - Protobuf (3.29.6)
   - reactive_ble_mobile (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -78,7 +78,6 @@ DEPENDENCIES:
   - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
-  - Protobuf (from `/Users/ajarnnarinthitasilo/Downloads/protobuf-29.0`)
   - reactive_ble_mobile (from `.symlinks/plugins/reactive_ble_mobile/darwin`)
   - record_ios (from `.symlinks/plugins/record_ios/ios`)
   - resilnet_core (from `.symlinks/plugins/resilnet_core/ios`)
@@ -89,6 +88,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Protobuf
     - SwiftProtobuf
 
 EXTERNAL SOURCES:
@@ -126,8 +126,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info_plus/ios"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
-  Protobuf:
-    :path: "/Users/ajarnnarinthitasilo/Downloads/protobuf-29.0"
   reactive_ble_mobile:
     :path: ".symlinks/plugins/reactive_ble_mobile/darwin"
   record_ios:
@@ -161,7 +159,7 @@ SPEC CHECKSUMS:
   network_info_plus: cf61925ab5205dce05a4f0895989afdb6aade5fc
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   permission_handler_apple: 92d754bbaa7361d436db2d6c3c1c2a0fdcec462e
-  Protobuf: 4bd991351f557a31f4fadd3ce1cdab236ccb9ea5
+  Protobuf: 8d5596f7468be5400861a6bbfb2dfe9d0d1cde34
   reactive_ble_mobile: c6a561a56b81d802642823cd3455a6dee24629d7
   record_ios: 980fd386a97a35987d0fce3dfda4b26a38c90f4c
   resilnet_core: 831deedd014627a98e2310a46e7dcc306d83b9d0
@@ -171,6 +169,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 409d3aaec90e51b1705b1dd8065b56893450e77c
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 
-PODFILE CHECKSUM: 2a736f51a0d98b62c5043db2b11ee335b6fab2b2
+PODFILE CHECKSUM: ea172f82f72804b3df1f0034ab52217191d924be
 
 COCOAPODS: 1.16.2

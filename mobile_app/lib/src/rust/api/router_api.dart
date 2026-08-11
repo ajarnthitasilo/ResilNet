@@ -13,15 +13,21 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<void> initRouter({required RouterConfigDto config}) =>
     ResilNetCore.instance.api.crateApiRouterApiInitRouter(config: config);
 
-/// อัปเดตสถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + LoRa)
+/// อัปเดตสถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + gateway radios)
 Future<void> updateNetworkStatus({
   required bool isInternetAvailable,
   required int activeBlePeersCount,
   required bool loraAvailable,
+  required bool halowAvailable,
+  required bool halowLinkUp,
+  required GatewayRadioPreferenceDto gatewayRadioPreference,
 }) => ResilNetCore.instance.api.crateApiRouterApiUpdateNetworkStatus(
   isInternetAvailable: isInternetAvailable,
   activeBlePeersCount: activeBlePeersCount,
   loraAvailable: loraAvailable,
+  halowAvailable: halowAvailable,
+  halowLinkUp: halowLinkUp,
+  gatewayRadioPreference: gatewayRadioPreference,
 );
 
 /// อ่านสถานะเครือข่ายล่าสุดที่ router เก็บไว้

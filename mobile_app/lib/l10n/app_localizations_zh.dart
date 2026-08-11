@@ -628,6 +628,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nostrReconnecting => '连接到继电器...';
 
   @override
+  String get nostrTorTitle => 'Route Nostr via Tor';
+
+  @override
+  String get nostrTorSubtitle =>
+      'When on, relays connect through local Tor SOCKS (127.0.0.1:9050 — Orbot or system Tor). Slower, but hides your IP from relays. Requires Tor to be running; will not fall back to clearnet.';
+
+  @override
+  String get nostrTorFailed =>
+      'Tor SOCKS unavailable — open Orbot/Tor, then try again';
+
+  @override
+  String nostrTorFailedDetail(String error) {
+    return 'Tor failed: $error';
+  }
+
+  @override
   String geoDiscoveryStatus(String channel, String relays) {
     return '$channel · Nostr $relays';
   }
@@ -652,6 +668,33 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get transportModeAuto => '汽车';
+
+  @override
+  String get gatewayRadioTitle => 'Gateway radio';
+
+  @override
+  String get gatewayRadioSubtitle =>
+      'Switch ESP32 gateway RF path — phone still uses BLE / SoftAP UDP';
+
+  @override
+  String get gatewayRadioLora => 'LoRa';
+
+  @override
+  String get gatewayRadioHalow => 'HaLow';
+
+  @override
+  String get gatewayRadioAuto => 'Auto';
+
+  @override
+  String get gatewayRadioHalowUnavailable =>
+      'HaLow not reported by this gateway (LoRa-only firmware)';
+
+  @override
+  String get gatewayRadioSharedWarning =>
+      'Changing gateway radio affects every phone connected to this gateway.';
+
+  @override
+  String get gatewayCapsWaiting => 'gateway: waiting for caps…';
 
   @override
   String get geoPublicHint => '向该领域的所有人在线公开消息';
@@ -758,7 +801,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mtBridgeTransportDemo => '演示（记录）';
 
   @override
-  String get mtBridgeIngestSection => 'Meshtastic → ResilNet';
+  String get mtBridgeIngestSection => '1 0';
 
   @override
   String get mtBridgeIngestHint =>
@@ -784,7 +827,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '警告：此处发送的消息不是 ResilNet E2EE。 Meshtastic 路径上的任何人都可以阅读它们。';
 
   @override
-  String get mtBridgeEgressSection => 'ResilNet → Meshtastic';
+  String get mtBridgeEgressSection => '0-1份';
 
   @override
   String get mtBridgeComposeHint => '待发布文本';
@@ -1126,6 +1169,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get meshLoraNotReady => '还没准备好';
 
   @override
+  String get meshHalowReady => 'HaLow ready';
+
+  @override
+  String get meshHalowStubReady => 'HaLow ready (stub)';
+
+  @override
+  String get meshHalowRealReady => 'HaLow ready (link up)';
+
+  @override
+  String get meshHalowNotReady => 'HaLow not ready';
+
+  @override
+  String get meshGatewayHalowReady => 'Gateway HaLow: ready';
+
+  @override
+  String get meshGatewayHalowStubReady => 'Gateway HaLow: stub/loopback';
+
+  @override
+  String get meshGatewayHalowRealReady => 'Gateway HaLow: real link';
+
+  @override
   String meshGatewayProgress(String label) {
     return '网关 UDP：$label';
   }
@@ -1203,10 +1267,53 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingWelcomeBody => '通过网状网络在 ResilNet 上聊天 — 即使没有互联网';
 
   @override
-  String get onboardingFriendsTitle => '轻松添加好友';
+  String get onboardingWelcomeFeatMeshLabel => '网';
 
   @override
-  String get onboardingFriendsBody => '分享来自 Identity 的 QR，或扫描朋友的 QR 来交换公钥';
+  String get onboardingWelcomeFeatMeshHint => '附近的电话通过蓝牙LE逐跳中继密封的数据包。';
+
+  @override
+  String get onboardingWelcomeFeatE2eeLabel => 'E2EE';
+
+  @override
+  String get onboardingWelcomeFeatE2eeHint => '直接聊天在您的设备上加密；只有对等的密钥才能打开它们。';
+
+  @override
+  String get onboardingWelcomeFeatOfflineLabel => '离线';
+
+  @override
+  String get onboardingWelcomeFeatOfflineHint => '您可以在没有手机或Wi‑Fi互联网连接的情况下继续聊天。';
+
+  @override
+  String get onboardingIdentityTitle => '您的身份';
+
+  @override
+  String get onboardingIdentityBody =>
+      '从“身份”菜单中打开“身份”。您的二维码带有您的公钥，因此好友可以在私人聊天前验证您的身份。';
+
+  @override
+  String get onboardingIdentityFeatQrLabel => 'QR';
+
+  @override
+  String get onboardingIdentityFeatQrHint => '显示或保存您的身份证件二维码，以便其他人可以安全地添加您。';
+
+  @override
+  String get onboardingIdentityFeatShareLabel => '分享';
+
+  @override
+  String get onboardingIdentityFeatShareHint => '分享Identity的邀请链接或二维码有效载荷。';
+
+  @override
+  String get onboardingIdentityFeatScanLabel => '扫描';
+
+  @override
+  String get onboardingIdentityFeatScanHint => '扫描好友的二维码以交换公钥并解锁直接聊天。';
+
+  @override
+  String get onboardingIdentityFeatNameLabel => '名称';
+
+  @override
+  String get onboardingIdentityFeatNameHint => '保存同行在您宣布自己时看到的显示名称。';
 
   @override
   String get onboardingChannelsTitle => '加密聊天+附近频道';
@@ -1214,6 +1321,404 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get onboardingChannelsBody =>
       '切换 #mesh / Area (geohash) 以查找附近的对等点 - 消息通过 BLE 网格和 Nostr 保持 E2EE';
+
+  @override
+  String get onboardingChannelsFeatDirectsLabel => 'Directs';
+
+  @override
+  String get onboardingChannelsFeatDirectsHint => '与经过验证的同行进行私人E2EE对话。';
+
+  @override
+  String get onboardingChannelsFeatMeshLabel => '＃网';
+
+  @override
+  String get onboardingChannelsFeatMeshHint => '向附近的网格同行公开密封的帖子。';
+
+  @override
+  String get onboardingChannelsFeatGeoLabel => '区域';
+
+  @override
+  String get onboardingChannelsFeatGeoHint => '范围为所选地理哈希单元格的公开帖子。';
+
+  @override
+  String get onboardingChannelsFeatPinLabel => '销';
+
+  @override
+  String get onboardingChannelsFeatPinHint => '固定频道，以便下次在该订阅源上打开社区。';
+
+  @override
+  String get onboardingToolbarTitle => '社区工具栏';
+
+  @override
+  String get onboardingToolbarBody =>
+      '应用栏图标控制位置、传输、通知、未读Directs、在线人员和溢出菜单（⟦ 0⟧、恢复、信息、公告、设置、身份）。';
+
+  @override
+  String get onboardingToolbarFeatLocationLabel => '会议地点';
+
+  @override
+  String get onboardingToolbarFeatLocationHint =>
+      '打开面积表：精度、固定单元格、传送地理散列、刷新GPS。';
+
+  @override
+  String get onboardingToolbarFeatTransportLabel => '传输层';
+
+  @override
+  String get onboardingToolbarFeatTransportHint =>
+      '选择“网格”、“互联网”或“自动”查看公共交通的传输方式。';
+
+  @override
+  String get onboardingToolbarFeatNoticesLabel => '通知';
+
+  @override
+  String get onboardingToolbarFeatNoticesHint => '发布和浏览地理/网格通知；打开聊天或阻止项目。';
+
+  @override
+  String get onboardingToolbarFeatUnreadLabel => '未读';
+
+  @override
+  String get onboardingToolbarFeatUnreadHint => '在等待私人消息时跳回Directs。';
+
+  @override
+  String get onboardingToolbarFeatPeopleLabel => '人';
+
+  @override
+  String get onboardingToolbarFeatPeopleHint => '查看附近的在线用户并打开Direct聊天。';
+
+  @override
+  String get onboardingToolbarFeatMenuLabel => '菜单';
+
+  @override
+  String get onboardingToolbarFeatMenuHint =>
+      '打开Local Wi‑Fi、Hard recover、Info、Announcements、Settings、Identity。';
+
+  @override
+  String get onboardingComposeTitle => '公开撰写';
+
+  @override
+  String get onboardingComposeBody =>
+      '在#网格或区域上，底部栏附加图像，记录语音，发送文本，并设置消息过期（ 1d/3d/7d/∞ ）。';
+
+  @override
+  String get onboardingComposeFeatImageLabel => '图像';
+
+  @override
+  String get onboardingComposeFeatImageHint => '将照片附在密封的公开帖子上。';
+
+  @override
+  String get onboardingComposeFeatVoiceLabel => '声音';
+
+  @override
+  String get onboardingComposeFeatVoiceHint => '录制并在公共源上发送简短的语音剪辑。';
+
+  @override
+  String get onboardingComposeFeatSendLabel => '发送';
+
+  @override
+  String get onboardingComposeFeatSendHint => '将文本发布到所选的公共频道。';
+
+  @override
+  String get onboardingComposeFeatExpiryLabel => '到期';
+
+  @override
+  String get onboardingComposeFeatExpiryHint => '选择帖子在本地到期之前应保留多长时间。';
+
+  @override
+  String get onboardingChatTitle => '直接聊天控件';
+
+  @override
+  String get onboardingChatBody =>
+      '在直接聊天中，您可以扫描以验证、屏蔽、设置别名、接受挂起的对等密钥，然后发送麦克风/图像/表情符号/文本。长按消息以在本地复制、重试或删除。';
+
+  @override
+  String get onboardingChatFeatScanLabel => '扫描';
+
+  @override
+  String get onboardingChatFeatScanHint => '如果此同行仍然缺少已验证的密钥，请扫描其二维码。';
+
+  @override
+  String get onboardingChatFeatBlockLabel => '堵塞';
+
+  @override
+  String get onboardingChatFeatBlockHint => '停止通知并转发此发件人。';
+
+  @override
+  String get onboardingChatFeatAliasLabel => '别名';
+
+  @override
+  String get onboardingChatFeatAliasHint => '给对方一个只有您能看到的昵称。';
+
+  @override
+  String get onboardingChatFeatAcceptKeyLabel => '接受';
+
+  @override
+  String get onboardingChatFeatAcceptKeyHint => '在发送消息之前确认待处理的公钥。';
+
+  @override
+  String get onboardingChatFeatMicLabel => '弥迦书';
+
+  @override
+  String get onboardingChatFeatMicHint => '一键通语音备注，为此同行密封。';
+
+  @override
+  String get onboardingChatFeatImageLabel => '图像';
+
+  @override
+  String get onboardingChatFeatImageHint => '在Direct线程中发送加密照片。';
+
+  @override
+  String get onboardingChatFeatEmojiLabel => '表情符号';
+
+  @override
+  String get onboardingChatFeatEmojiHint => '打开撰写字段的表情符号选择器。';
+
+  @override
+  String get onboardingChatFeatSendLabel => '发送';
+
+  @override
+  String get onboardingChatFeatSendHint => '加密文本消息并将其路由到此对等点。';
+
+  @override
+  String get onboardingAnnounceTitle => '公告栏';
+
+  @override
+  String get onboardingAnnounceBody =>
+      '创建或关注看板、扫描邀请二维码、批准关键请求、切换锁定/打开帖子，然后发布图片/表情符号/文本并分享邀请。';
+
+  @override
+  String get onboardingAnnounceFeatCreateLabel => '创建';
+
+  @override
+  String get onboardingAnnounceFeatCreateHint => '启动您控制的新公告板。';
+
+  @override
+  String get onboardingAnnounceFeatScanLabel => '扫描';
+
+  @override
+  String get onboardingAnnounceFeatScanHint => '扫描看板邀请二维码或点击深层链接。';
+
+  @override
+  String get onboardingAnnounceFeatAccessLabel => '访问';
+
+  @override
+  String get onboardingAnnounceFeatAccessHint => '请求访问、批准/拒绝密钥请求、锁定或公开发布。';
+
+  @override
+  String get onboardingAnnounceFeatPostLabel => '邮政';
+
+  @override
+  String get onboardingAnnounceFeatPostHint => '使用图片、表情符号或文字发布到白板。';
+
+  @override
+  String get onboardingWifiTitle => '本地Wi‑Fi链接';
+
+  @override
+  String get onboardingWifiBody =>
+      '在“设置”或“”菜单中，托管或加入LAN ResilNet链接，以便在没有互联网⟧的情况下与同一个⟦1上的同行聊天。';
+
+  @override
+  String get onboardingWifiFeatHostLabel => '主机';
+
+  @override
+  String get onboardingWifiFeatHostHint => '在LAN上启动其他人可以发现的本地Wi‑Fi会话。';
+
+  @override
+  String get onboardingWifiFeatJoinLabel => '加入';
+
+  @override
+  String get onboardingWifiFeatJoinHint => '发现并加入本地网络中的房东/体验达人。';
+
+  @override
+  String get onboardingWifiFeatChatLabel => '聊天';
+
+  @override
+  String get onboardingWifiFeatChatHint => '与在局域网上看到的同行进行直接聊天。';
+
+  @override
+  String get onboardingTransportTitle => '傳輸同步';
+
+  @override
+  String get onboardingTransportBody =>
+      '设置和传输选择器选择网格/互联网/自动，确保⟦1个⟧广告，并⟧使用消息到期选项重新连接⟦0。';
+
+  @override
+  String get onboardingTransportFeatMeshLabel => '网';
+
+  @override
+  String get onboardingTransportFeatMeshHint => '附近的派送员首选BLE目。';
+
+  @override
+  String get onboardingTransportFeatInternetLabel => '互联网';
+
+  @override
+  String get onboardingTransportFeatInternetHint => '如果可用，首选Nostr/互联网路径。';
+
+  @override
+  String get onboardingTransportFeatAutoLabel => '汽车';
+
+  @override
+  String get onboardingTransportFeatAutoHint => '让⟦0根据条件⟧选择网格或互联网。';
+
+  @override
+  String get onboardingTransportFeatBleLabel => 'BLE';
+
+  @override
+  String get onboardingTransportFeatBleHint => '确保BLE网格广告/扫描处于活动状态。';
+
+  @override
+  String get onboardingTransportFeatNostrLabel => 'Nostr';
+
+  @override
+  String get onboardingTransportFeatNostrHint => '重新连接中继并设置同步帖子的生存时间。';
+
+  @override
+  String get onboardingGeoTitle => '区域和地理哈希';
+
+  @override
+  String get onboardingGeoBody =>
+      '位置表设置GPS单元格精度、标记您关心的区域、传送到地理哈希，并刷新当前单元格以进行区域聊天。';
+
+  @override
+  String get onboardingGeoFeatGpsLabel => 'GPS';
+
+  @override
+  String get onboardingGeoFeatGpsHint => '从GPS刷新当前地理散列。';
+
+  @override
+  String get onboardingGeoFeatPrecisionLabel => '精确';
+
+  @override
+  String get onboardingGeoFeatPrecisionHint => '加宽或收紧面积电池尺寸。';
+
+  @override
+  String get onboardingGeoFeatTeleportLabel => '传送';
+
+  @override
+  String get onboardingGeoFeatTeleportHint => '跳转到地理哈希字符串，无需物理移动。';
+
+  @override
+  String get onboardingGeoFeatPinLabel => '销';
+
+  @override
+  String get onboardingGeoFeatPinHint => '固定最喜爱的区域单元格以快速返回。';
+
+  @override
+  String get onboardingAdvancedTitle => '桥梁和硬件';
+
+  @override
+  String get onboardingAdvancedBody =>
+      '设置打开网格拓扑、Meshtastic ⟦4网⟧桥、⟦3个⟧固件下载+ ⟦2个⟧OTA和⟦1个主节点网⟧桥，用于无线电/骡子链路。';
+
+  @override
+  String get onboardingAdvancedFeatTopoLabel => '拓扑学';
+
+  @override
+  String get onboardingAdvancedFeatTopoHint => '可视化网格节点并点击节点以打开聊天。';
+
+  @override
+  String get onboardingAdvancedFeatMtLabel => 'Meshtastic';
+
+  @override
+  String get onboardingAdvancedFeatMtHint => '通过MQTT个主题、中继和模拟导入/导出进行桥接。';
+
+  @override
+  String get onboardingAdvancedFeatEspLabel => 'ESP32';
+
+  @override
+  String get onboardingAdvancedFeatEspHint => '下载固件箱并通过BLE OTA进行闪存。';
+
+  @override
+  String get onboardingAdvancedFeatLxmfLabel => 'LXMF';
+
+  @override
+  String get onboardingAdvancedFeatLxmfHint => '启用主节点网桥并管理目标链接。';
+
+  @override
+  String get onboardingSecurityTitle => '安全与恢复';
+
+  @override
+  String get onboardingSecurityBody =>
+      '设置包括通知、屏幕截图提醒、保存历史记录、清除消息、紧急擦除、硬恢复、会话重置、语言和文档。';
+
+  @override
+  String get onboardingSecurityFeatNotifLabel => '提醒';
+
+  @override
+  String get onboardingSecurityFeatNotifHint => '切换消息通知。';
+
+  @override
+  String get onboardingSecurityFeatShotLabel => '示意图';
+
+  @override
+  String get onboardingSecurityFeatShotHint => '在聊天时截取屏幕截图时发出警告。';
+
+  @override
+  String get onboardingSecurityFeatHistoryLabel => '历史记录';
+
+  @override
+  String get onboardingSecurityFeatHistoryHint => '选择是否将聊天记录在磁盘上。';
+
+  @override
+  String get onboardingSecurityFeatPanicLabel => '恐慌';
+
+  @override
+  String get onboardingSecurityFeatPanicHint => '在紧急情况下擦除本地机密和消息。';
+
+  @override
+  String get onboardingSecurityFeatRecoverLabel => '恢复';
+
+  @override
+  String get onboardingSecurityFeatRecoverHint => '如果应用卡住，则硬恢复或会话重置。';
+
+  @override
+  String get onboardingSecurityFeatDocsLabel => '文档';
+
+  @override
+  String get onboardingSecurityFeatDocsHint => '打开应用内指南和信息表。';
+
+  @override
+  String get onboardingWatchTitle => 'applew';
+
+  @override
+  String get onboardingWatchBody =>
+      '配对Apple Watch以查看网格状态、最近的Directs ，并发送简短的加密文本。手表使用您的iPhone进行加密和网状路由。';
+
+  @override
+  String get onboardingWatchFeatStatusLabel => '状态';
+
+  @override
+  String get onboardingWatchFeatStatusHint => '掠过传输模式、在线同行和您的简短ID。';
+
+  @override
+  String get onboardingWatchFeatChatsLabel => '聊天';
+
+  @override
+  String get onboardingWatchFeatChatsHint => '浏览最近的Direct线程和未读计数。';
+
+  @override
+  String get onboardingWatchFeatSendLabel => '发送';
+
+  @override
+  String get onboardingWatchFeatSendHint => '输入短消息（ ≈ 160个字符） ； iPhone密封并路由。';
+
+  @override
+  String get onboardingReadyTitle => '準備好了嗎！';
+
+  @override
+  String get onboardingReadyBody =>
+      '轻触“开始使用”以进入社区，或随时从顶部跳过。如果您需要复习，可以重新访问设置→文档。';
+
+  @override
+  String get onboardingReadyFeatStartLabel => '开始';
+
+  @override
+  String get onboardingReadyFeatStartHint => '完成入驻流程并打开社区主页。';
+
+  @override
+  String get onboardingReadyFeatSkipLabel => '跳过';
+
+  @override
+  String get onboardingReadyFeatSkipHint => '跳过始终可在每个页面上立即输入。';
 
   @override
   String get chatTitle => '聊天（E2EE）';
@@ -1522,7 +2027,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get locationMeshSubtitle => '#蓝牙 • ~10–50 m';
 
   @override
-  String get locationTeleportHint => '#geohash';
+  String get locationTeleportHint => 'Geohash';
 
   @override
   String get locationTeleport => '传送';
@@ -2760,6 +3265,22 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get nostrReconnecting => '連接到繼電器...';
 
   @override
+  String get nostrTorTitle => 'Route Nostr via Tor';
+
+  @override
+  String get nostrTorSubtitle =>
+      'When on, relays connect through local Tor SOCKS (127.0.0.1:9050 — Orbot or system Tor). Slower, but hides your IP from relays. Requires Tor to be running; will not fall back to clearnet.';
+
+  @override
+  String get nostrTorFailed =>
+      'Tor SOCKS unavailable — open Orbot/Tor, then try again';
+
+  @override
+  String nostrTorFailedDetail(String error) {
+    return 'Tor failed: $error';
+  }
+
+  @override
   String geoDiscoveryStatus(String channel, String relays) {
     return '$channel · Nostr $relays';
   }
@@ -2890,7 +3411,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get mtBridgeTransportDemo => '示範（記錄）';
 
   @override
-  String get mtBridgeIngestSection => 'Meshtastic → ResilNet';
+  String get mtBridgeIngestSection => '1 0';
 
   @override
   String get mtBridgeIngestHint => '入站文字在「通知」下顯示為#meshtastic。網狀中繼是可選的（預設關閉）。';
@@ -3333,10 +3854,54 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get onboardingWelcomeBody => '透過網狀網路在 ResilNet 上聊天 — 即使沒有互聯網';
 
   @override
-  String get onboardingFriendsTitle => '輕鬆新增好友';
+  String get onboardingWelcomeFeatMeshLabel => '網';
 
   @override
-  String get onboardingFriendsBody => '分享來自 Identity 的 QR，或掃描朋友的 QR 來交換公鑰';
+  String get onboardingWelcomeFeatMeshHint => '附近的手機透過藍牙LE逐躍傳送密封的封包。';
+
+  @override
+  String get onboardingWelcomeFeatE2eeLabel => 'E2EE';
+
+  @override
+  String get onboardingWelcomeFeatE2eeHint => '直接聊天在您的裝置上加密；只有對方的金鑰才能打開它們。';
+
+  @override
+  String get onboardingWelcomeFeatOfflineLabel => '離線';
+
+  @override
+  String get onboardingWelcomeFeatOfflineHint =>
+      '您可以在沒有行動網路或沒有⟧網際網路連⟦線的情況下繼續聊天。';
+
+  @override
+  String get onboardingIdentityTitle => '你的身份';
+
+  @override
+  String get onboardingIdentityBody =>
+      '從「」選單中開啟「身分」。你的QR碼有公開金鑰，好友可以在私人聊天前驗證你的身份。';
+
+  @override
+  String get onboardingIdentityFeatQrLabel => 'QR';
+
+  @override
+  String get onboardingIdentityFeatQrHint => '顯示或儲存你的身份QR碼，以便其他人安全新增你。';
+
+  @override
+  String get onboardingIdentityFeatShareLabel => '分享';
+
+  @override
+  String get onboardingIdentityFeatShareHint => '分享Identity的邀請連結或QR碼載荷。';
+
+  @override
+  String get onboardingIdentityFeatScanLabel => '掃瞄';
+
+  @override
+  String get onboardingIdentityFeatScanHint => '掃描好友的QR碼以交換公鑰並解鎖直接對話。';
+
+  @override
+  String get onboardingIdentityFeatNameLabel => '名称';
+
+  @override
+  String get onboardingIdentityFeatNameHint => '儲存一個顯示名稱，讓同儕在宣佈自己時看到。';
 
   @override
   String get onboardingChannelsTitle => '加密聊天+附近頻道';
@@ -3344,6 +3909,405 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get onboardingChannelsBody =>
       '切換 #mesh / Area (geohash) 以查找附近的對等點 - 訊息透過 BLE 網格和 Nostr 保持 E2EE';
+
+  @override
+  String get onboardingChannelsFeatDirectsLabel => 'Directs';
+
+  @override
+  String get onboardingChannelsFeatDirectsHint => '與經過驗證的同儕進行私人E2EE對話。';
+
+  @override
+  String get onboardingChannelsFeatMeshLabel => '＃網';
+
+  @override
+  String get onboardingChannelsFeatMeshHint => '向附近的網格同行公開密封的帖子。';
+
+  @override
+  String get onboardingChannelsFeatGeoLabel => '區域';
+
+  @override
+  String get onboardingChannelsFeatGeoHint => '所選地理雜湊儲存格的公開文章範圍。';
+
+  @override
+  String get onboardingChannelsFeatPinLabel => '插针';
+
+  @override
+  String get onboardingChannelsFeatPinHint => '釘選頻道，以便下次在該動態消息上打開社羣。';
+
+  @override
+  String get onboardingToolbarTitle => '社羣工具列';
+
+  @override
+  String get onboardingToolbarBody =>
+      '應用程式列圖示可控制位置、傳輸、通知、未讀指示、線上人員和溢位功能表(Wi‑Fi、復原、資訊、公告、設定、身分)。';
+
+  @override
+  String get onboardingToolbarFeatLocationLabel => '位置';
+
+  @override
+  String get onboardingToolbarFeatLocationHint =>
+      '開啟區域工作表：精確度、固定儲存格、瞬移地理雜湊、重新整理GPS。';
+
+  @override
+  String get onboardingToolbarFeatTransportLabel => '運輸';
+
+  @override
+  String get onboardingToolbarFeatTransportHint =>
+      '選擇「網狀」、「網際網路」或「自動」，了解公共交通的運輸方式。';
+
+  @override
+  String get onboardingToolbarFeatNoticesLabel => '通知';
+
+  @override
+  String get onboardingToolbarFeatNoticesHint => '發佈和瀏覽地理/網格通知；開啟聊天或封鎖項目。';
+
+  @override
+  String get onboardingToolbarFeatUnreadLabel => '未讀';
+
+  @override
+  String get onboardingToolbarFeatUnreadHint => '私人訊息等候期間，請返回「導覽」。';
+
+  @override
+  String get onboardingToolbarFeatPeopleLabel => '者';
+
+  @override
+  String get onboardingToolbarFeatPeopleHint => '查看附近有誰在線上，並開啟Uber Direct即時對話。';
+
+  @override
+  String get onboardingToolbarFeatMenuLabel => '價目表';
+
+  @override
+  String get onboardingToolbarFeatMenuHint =>
+      '開啟Local Wi‑Fi、Hard recover、Info、Announcements、Settings、Identity。';
+
+  @override
+  String get onboardingComposeTitle => '公開撰寫';
+
+  @override
+  String get onboardingComposeBody =>
+      '在# mesh或Area上，底部欄會附加影像、記錄語音、傳送文字，並設定訊息過期時間(1d/3d/7d/∞)。';
+
+  @override
+  String get onboardingComposeFeatImageLabel => '影像';
+
+  @override
+  String get onboardingComposeFeatImageHint => '將相片附在密封的公開貼文上。';
+
+  @override
+  String get onboardingComposeFeatVoiceLabel => '音量';
+
+  @override
+  String get onboardingComposeFeatVoiceHint => '在公開摘要上錄製並傳送簡短的語音片段。';
+
+  @override
+  String get onboardingComposeFeatSendLabel => '傳送';
+
+  @override
+  String get onboardingComposeFeatSendHint => '將文字發佈到所選的公開頻道。';
+
+  @override
+  String get onboardingComposeFeatExpiryLabel => '逾期';
+
+  @override
+  String get onboardingComposeFeatExpiryHint => '選擇帖子在當地到期前應該保留多長時間。';
+
+  @override
+  String get onboardingChatTitle => '直接聊天控制';
+
+  @override
+  String get onboardingChatBody =>
+      '在直接對談中，你可以掃描以驗證、封鎖、設定別名、接受擱置的對等金鑰，然後傳送麥克風/圖片/表情符號/文字。長按訊息即可在本機複製、重試或刪除。';
+
+  @override
+  String get onboardingChatFeatScanLabel => '掃瞄';
+
+  @override
+  String get onboardingChatFeatScanHint => '如果對方的已驗證金鑰仍然遺失，請掃描對方的QR碼。';
+
+  @override
+  String get onboardingChatFeatBlockLabel => '堵塞';
+
+  @override
+  String get onboardingChatFeatBlockHint => '停止通知並轉發此寄件人。';
+
+  @override
+  String get onboardingChatFeatAliasLabel => '別名';
+
+  @override
+  String get onboardingChatFeatAliasHint => '給對方一個只有你能看到的暱稱。';
+
+  @override
+  String get onboardingChatFeatAcceptKeyLabel => '接受';
+
+  @override
+  String get onboardingChatFeatAcceptKeyHint => '傳送訊息前，請先確認待處理的公開金鑰。';
+
+  @override
+  String get onboardingChatFeatMicLabel => 'MIC';
+
+  @override
+  String get onboardingChatFeatMicHint => '一鍵通語音備註，為此同儕密封。';
+
+  @override
+  String get onboardingChatFeatImageLabel => '影像';
+
+  @override
+  String get onboardingChatFeatImageHint => '在Direct訊息串中傳送加密相片。';
+
+  @override
+  String get onboardingChatFeatEmojiLabel => '表情符號';
+
+  @override
+  String get onboardingChatFeatEmojiHint => '開啟撰寫欄位的表情符號選擇器。';
+
+  @override
+  String get onboardingChatFeatSendLabel => '傳送';
+
+  @override
+  String get onboardingChatFeatSendHint => '加密文本消息並將其路由到此同行。';
+
+  @override
+  String get onboardingAnnounceTitle => '公告板';
+
+  @override
+  String get onboardingAnnounceBody =>
+      '建立或追蹤看板、掃描邀請QR碼、核準金鑰請求、切換鎖定/開啟的貼文，然後張貼圖片/表情符號/文字並分享邀請。';
+
+  @override
+  String get onboardingAnnounceFeatCreateLabel => '建立';
+
+  @override
+  String get onboardingAnnounceFeatCreateHint => '啟動您控制的新公告板。';
+
+  @override
+  String get onboardingAnnounceFeatScanLabel => '掃瞄';
+
+  @override
+  String get onboardingAnnounceFeatScanHint => '掃描看板邀請QR碼或追蹤深層連結。';
+
+  @override
+  String get onboardingAnnounceFeatAccessLabel => '服務';
+
+  @override
+  String get onboardingAnnounceFeatAccessHint => '請求存取、批準/拒絕金鑰請求、鎖定或開放發佈。';
+
+  @override
+  String get onboardingAnnounceFeatPostLabel => '郵政';
+
+  @override
+  String get onboardingAnnounceFeatPostHint => '使用圖片、表情符號或文字發佈到白板。';
+
+  @override
+  String get onboardingWifiTitle => 'Local Wi‑Fi連結';
+
+  @override
+  String get onboardingWifiBody =>
+      '在「設定」或「」選單中，託管或加入LAN ResilNet連結，即可在沒有網際網路的⟧情況下與相同⟦1上的同儕聊天。';
+
+  @override
+  String get onboardingWifiFeatHostLabel => 'Host';
+
+  @override
+  String get onboardingWifiFeatHostHint => '在LAN上啟動其他人可以發現的Local ⟦0工作⟧階段。';
+
+  @override
+  String get onboardingWifiFeatJoinLabel => '合併';
+
+  @override
+  String get onboardingWifiFeatJoinHint => '探索並加入當地網路上的旅居主人。';
+
+  @override
+  String get onboardingWifiFeatChatLabel => '聊天';
+
+  @override
+  String get onboardingWifiFeatChatHint => '與在區域網路上看到的同儕開啟直接對話。';
+
+  @override
+  String get onboardingTransportTitle => '傳輸與同步';
+
+  @override
+  String get onboardingTransportBody =>
+      '設置和傳輸選擇器選擇網格/互聯網/自動，確保⟦1個⟧廣告，並⟧使用消息到期選項重新連接⟦0。';
+
+  @override
+  String get onboardingTransportFeatMeshLabel => '網';
+
+  @override
+  String get onboardingTransportFeatMeshHint => '附近的送餐服務偏好使用BLE目。';
+
+  @override
+  String get onboardingTransportFeatInternetLabel => '網際網路';
+
+  @override
+  String get onboardingTransportFeatInternetHint => '如果可用，首選Nostr/網際網路路徑。';
+
+  @override
+  String get onboardingTransportFeatAutoLabel => '汽車';
+
+  @override
+  String get onboardingTransportFeatAutoHint => '讓⟦0根據條件⟧選擇網格或互聯網。';
+
+  @override
+  String get onboardingTransportFeatBleLabel => 'BLE';
+
+  @override
+  String get onboardingTransportFeatBleHint => '確保BLE mesh廣告/掃描已啟用。';
+
+  @override
+  String get onboardingTransportFeatNostrLabel => 'Nostr';
+
+  @override
+  String get onboardingTransportFeatNostrHint => '重新連接中繼，並設定同步文章的存活時間。';
+
+  @override
+  String get onboardingGeoTitle => '區域和地理雜湊';
+
+  @override
+  String get onboardingGeoBody =>
+      '位置表可設定GPS儲存格精度、釘選您關心的區域、傳送至地理雜湊，並重新整理目前儲存格以進行區域聊天。';
+
+  @override
+  String get onboardingGeoFeatGpsLabel => 'GPS';
+
+  @override
+  String get onboardingGeoFeatGpsHint => '從GPS重新整理目前的地理雜湊。';
+
+  @override
+  String get onboardingGeoFeatPrecisionLabel => '精準';
+
+  @override
+  String get onboardingGeoFeatPrecisionHint => '擴大或收緊區域儲存格尺寸。';
+
+  @override
+  String get onboardingGeoFeatTeleportLabel => '傳送';
+
+  @override
+  String get onboardingGeoFeatTeleportHint => '跳至地理雜湊字串，無需實際移動。';
+
+  @override
+  String get onboardingGeoFeatPinLabel => '插针';
+
+  @override
+  String get onboardingGeoFeatPinHint => '釘選最喜愛的區域儲存格，以便快速還原。';
+
+  @override
+  String get onboardingAdvancedTitle => '橋樑和五金件';
+
+  @override
+  String get onboardingAdvancedBody =>
+      '設置打開網格拓撲、Meshtastic MQTT橋接器、⟦3個⟧韌體下載+ ⟦2個⟧OTA和⟦1個家庭節點橋⟧接器，用於無線電/騾子鏈接。';
+
+  @override
+  String get onboardingAdvancedFeatTopoLabel => '拓撲';
+
+  @override
+  String get onboardingAdvancedFeatTopoHint => '視覺化網格節點，並點選節點以開啟對話。';
+
+  @override
+  String get onboardingAdvancedFeatMtLabel => 'Meshtastic';
+
+  @override
+  String get onboardingAdvancedFeatMtHint => '通過⟦0個⟧主題、中繼和模擬輸入/輸出進行橋接。';
+
+  @override
+  String get onboardingAdvancedFeatEspLabel => 'ESP32';
+
+  @override
+  String get onboardingAdvancedFeatEspHint => '下載韌體箱並透過BLE OTA閃存。';
+
+  @override
+  String get onboardingAdvancedFeatLxmfLabel => 'LXMF';
+
+  @override
+  String get onboardingAdvancedFeatLxmfHint => '啟用主節點橋接並管理目的地連結。';
+
+  @override
+  String get onboardingSecurityTitle => '安全與恢復';
+
+  @override
+  String get onboardingSecurityBody =>
+      '設定涵蓋通知、螢幕截圖提醒、儲存紀錄、清除訊息、緊急抹除、硬復原、工作階段重設、語言和文件。';
+
+  @override
+  String get onboardingSecurityFeatNotifLabel => '警示';
+
+  @override
+  String get onboardingSecurityFeatNotifHint => '切換訊息通知。';
+
+  @override
+  String get onboardingSecurityFeatShotLabel => '擷圖';
+
+  @override
+  String get onboardingSecurityFeatShotHint => '聊天時拍攝螢幕截圖時發出警告。';
+
+  @override
+  String get onboardingSecurityFeatHistoryLabel => '歷史紀錄';
+
+  @override
+  String get onboardingSecurityFeatHistoryHint => '選擇對話是否保留在磁碟上。';
+
+  @override
+  String get onboardingSecurityFeatPanicLabel => '恐慌';
+
+  @override
+  String get onboardingSecurityFeatPanicHint => '在緊急情況下清除當地機密和訊息。';
+
+  @override
+  String get onboardingSecurityFeatRecoverLabel => '復原';
+
+  @override
+  String get onboardingSecurityFeatRecoverHint => '如果應用程式卡住，則會硬恢復或重設工作階段。';
+
+  @override
+  String get onboardingSecurityFeatDocsLabel => '文件檔案';
+
+  @override
+  String get onboardingSecurityFeatDocsHint => '開啟App內的指南和資訊表。';
+
+  @override
+  String get onboardingWatchTitle => 'Apple Watch';
+
+  @override
+  String get onboardingWatchBody =>
+      '配對Apple Watch即可查看網格狀態、最近的Directs ，並傳送簡短的加密文字。手錶使用您的iPhone進行加密和網格路由。';
+
+  @override
+  String get onboardingWatchFeatStatusLabel => '狀態';
+
+  @override
+  String get onboardingWatchFeatStatusHint => '掠過傳輸模式、線上同行和您的簡短ID。';
+
+  @override
+  String get onboardingWatchFeatChatsLabel => '聊天';
+
+  @override
+  String get onboardingWatchFeatChatsHint => '瀏覽最近的直接執行緒和未讀計數。';
+
+  @override
+  String get onboardingWatchFeatSendLabel => '傳送';
+
+  @override
+  String get onboardingWatchFeatSendHint =>
+      '輸入簡短訊息（ ≈ 160個字元） ； iPhone會封存並傳送訊息。';
+
+  @override
+  String get onboardingReadyTitle => '你已準備就緒';
+
+  @override
+  String get onboardingReadyBody =>
+      '點選「開始使用」以進入社羣，或隨時從上方略過。如果你需要複習，可以重新瀏覽「設定→文件」。';
+
+  @override
+  String get onboardingReadyFeatStartLabel => '開始';
+
+  @override
+  String get onboardingReadyFeatStartHint => '完成申請流程，並開啟社羣首頁。';
+
+  @override
+  String get onboardingReadyFeatSkipLabel => '跳過';
+
+  @override
+  String get onboardingReadyFeatSkipHint => '每個頁面都隨時可以跳過，以便立即輸入。';
 
   @override
   String get chatTitle => '聊天（E2EE）';
@@ -3652,7 +4616,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get locationMeshSubtitle => '#藍牙 • ~10–50 m';
 
   @override
-  String get locationTeleportHint => '#geohash';
+  String get locationTeleportHint => '# geohash';
 
   @override
   String get locationTeleport => '傳送';

@@ -9,6 +9,8 @@ pub enum TransportType {
     BluetoothMesh,
     /// LoRa via ESP32 mule / radio bridge
     LoRa,
+    /// Wi‑Fi HaLow via ESP32 gateway (Sub‑1 GHz, switchable with LoRa)
+    HaLow,
     /// คิวท้องถิ่น รอ Nostr/mesh กลับมา
     OfflineQueue,
 }
@@ -19,17 +21,30 @@ impl std::fmt::Display for TransportType {
             Self::Nostr => write!(f, "Nostr"),
             Self::BluetoothMesh => write!(f, "BluetoothMesh"),
             Self::LoRa => write!(f, "LoRa"),
+            Self::HaLow => write!(f, "HaLow"),
             Self::OfflineQueue => write!(f, "OfflineQueue"),
         }
     }
 }
 
-/// สถานะเครือข่ายปัจจุบัน — อัปเดตจาก Flutter (connectivity + BLE + LoRa)
+/// โหมดวิทยุที่ผู้ใช้เลือกบนเกตเวย์ (LoRa / HaLow / Auto)
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum GatewayRadioPreference {
+    LoRa,
+    HaLow,
+    #[default]
+    Auto,
+}
+
+/// สถานะเครือข่ายปัจจุบัน — อัปเดตจาก Flutter (connectivity + BLE + gateway radios)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct NetworkStatus {
     pub is_internet_available: bool,
     pub active_ble_peers_count: usize,
     pub lora_available: bool,
+    pub halow_available: bool,
+    pub halow_link_up: bool,
+    pub gateway_radio_preference: GatewayRadioPreference,
 }
 
 impl NetworkStatus {
@@ -38,6 +53,9 @@ impl NetworkStatus {
             is_internet_available,
             active_ble_peers_count,
             lora_available: false,
+            halow_available: false,
+            halow_link_up: false,
+            gateway_radio_preference: GatewayRadioPreference::Auto,
         }
     }
 
@@ -50,6 +68,27 @@ impl NetworkStatus {
             is_internet_available,
             active_ble_peers_count,
             lora_available,
+            halow_available: false,
+            halow_link_up: false,
+            gateway_radio_preference: GatewayRadioPreference::Auto,
+        }
+    }
+
+    pub const fn with_gateway(
+        is_internet_available: bool,
+        active_ble_peers_count: usize,
+        lora_available: bool,
+        halow_available: bool,
+        halow_link_up: bool,
+        gateway_radio_preference: GatewayRadioPreference,
+    ) -> Self {
+        Self {
+            is_internet_available,
+            active_ble_peers_count,
+            lora_available,
+            halow_available,
+            halow_link_up,
+            gateway_radio_preference,
         }
     }
 
@@ -58,6 +97,42 @@ impl NetworkStatus {
         self.is_internet_available
             || self.active_ble_peers_count > 0
             || self.lora_available
+            || self.halow_available
+    }
+
+    /// เลือกวิทยุเกตเวย์เดียว (LoRa หรือ HaLow) — ไม่ fan-out ทั้งสองบน RF
+    pub const fn selected_gateway_transport(&self) -> Option<TransportType> {
+        match self.gateway_radio_preference {
+            GatewayRadioPreference::LoRa => {
+                if self.lora_available {
+                    Some(TransportType::LoRa)
+                } else if self.halow_available {
+                    Some(TransportType::HaLow)
+                } else {
+                    None
+                }
+            }
+            GatewayRadioPreference::HaLow => {
+                if self.halow_available {
+                    Some(TransportType::HaLow)
+                } else if self.lora_available {
+                    Some(TransportType::LoRa)
+                } else {
+                    None
+                }
+            }
+            GatewayRadioPreference::Auto => {
+                if self.halow_available && self.halow_link_up {
+                    Some(TransportType::HaLow)
+                } else if self.lora_available {
+                    Some(TransportType::LoRa)
+                } else if self.halow_available {
+                    Some(TransportType::HaLow)
+                } else {
+                    None
+                }
+            }
+        }
     }
 }
 

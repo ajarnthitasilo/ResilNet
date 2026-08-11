@@ -25,14 +25,24 @@ pub fn init_router(config: RouterConfigDto) -> Result<(), String> {
     init_router_state(config.into())
 }
 
-/// อัปเดตสถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + LoRa)
+/// อัปเดตสถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + gateway radios)
 #[frb]
 pub fn update_network_status(
     is_internet_available: bool,
     active_ble_peers_count: u32,
     lora_available: bool,
+    halow_available: bool,
+    halow_link_up: bool,
+    gateway_radio_preference: crate::api::dto::GatewayRadioPreferenceDto,
 ) -> Result<(), String> {
-    update_network_status_mapped(is_internet_available, active_ble_peers_count, lora_available)
+    update_network_status_mapped(
+        is_internet_available,
+        active_ble_peers_count,
+        lora_available,
+        halow_available,
+        halow_link_up,
+        gateway_radio_preference,
+    )
 }
 
 /// อ่านสถานะเครือข่ายล่าสุดที่ router เก็บไว้
@@ -162,7 +172,7 @@ mod tests {
     #[tokio::test]
     async fn ffi_api_smoke_test() {
         init_router(RouterConfigDto::default()).unwrap();
-        update_network_status(true, 0, false).unwrap();
+        update_network_status(true, 0, false, false, false, crate::api::dto::GatewayRadioPreferenceDto::Auto).unwrap();
 
         let routed = route_packet(sample_dto("pkt-1", 1)).await.unwrap();
         assert_eq!(

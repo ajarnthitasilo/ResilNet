@@ -26,7 +26,7 @@ end
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
 
 flutter_ios_podfile_setup
-pod 'Protobuf', :path => '/Users/ajarnnarinthitasilo/Downloads/protobuf-29.0'
+
 target 'Runner' do
   use_frameworks!
 
@@ -51,6 +51,10 @@ post_install do |installer|
         'PERMISSION_MICROPHONE=1',
         'PERMISSION_PHOTOS=1',
       ]
+      # Avoid Swift 4.2 + Xcode 26 compiler crash in reactive_ble_mobile.
+      if target.name == 'reactive_ble_mobile'
+        config.build_settings['SWIFT_VERSION'] = '5.0'
+      end
     end
   end
 end

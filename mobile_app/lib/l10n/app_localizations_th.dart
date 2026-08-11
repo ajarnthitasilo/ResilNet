@@ -664,6 +664,22 @@ class AppLocalizationsTh extends AppLocalizations {
   String get nostrReconnecting => 'กำลังเชื่อม relay…';
 
   @override
+  String get nostrTorTitle => 'เชื่อม Nostr ผ่าน Tor';
+
+  @override
+  String get nostrTorSubtitle =>
+      'เมื่อเปิด จะต่อ relays ผ่าน Tor SOCKS ในเครื่อง (127.0.0.1:9050 — Orbot หรือ Tor ของระบบ) ช้ากว่า แต่ซ่อน IP จาก relays ต้องเปิด Tor ไว้ และจะไม่ถอยไป clearnet';
+
+  @override
+  String get nostrTorFailed =>
+      'Tor SOCKS ใช้ไม่ได้ — เปิด Orbot/Tor แล้วลองใหม่';
+
+  @override
+  String nostrTorFailedDetail(String error) {
+    return 'Tor ล้มเหลว: $error';
+  }
+
+  @override
   String geoDiscoveryStatus(String channel, String relays) {
     return '$channel · Nostr $relays';
   }
@@ -688,6 +704,33 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get transportModeAuto => 'อัตโนมัติ';
+
+  @override
+  String get gatewayRadioTitle => 'วิทยุเกตเวย์';
+
+  @override
+  String get gatewayRadioSubtitle =>
+      'สวิตช์ RF บน ESP32 — มือถือยังใช้ BLE / SoftAP UDP';
+
+  @override
+  String get gatewayRadioLora => 'LoRa';
+
+  @override
+  String get gatewayRadioHalow => 'HaLow';
+
+  @override
+  String get gatewayRadioAuto => 'อัตโนมัติ';
+
+  @override
+  String get gatewayRadioHalowUnavailable =>
+      'เกตเวย์นี้ยังไม่รายงาน HaLow (เฟิร์มแวร์ LoRa อย่างเดียว)';
+
+  @override
+  String get gatewayRadioSharedWarning =>
+      'การเปลี่ยนวิทยุเกตเวย์มีผลกับทุกมือถือที่เชื่อมต่อเกตเวย์นี้';
+
+  @override
+  String get gatewayCapsWaiting => 'เกตเวย์: รอ RN_CAPS…';
 
   @override
   String get geoPublicHint => 'ข้อความสาธารณะถึงทุกคนที่ออนไลน์ในพื้นที่นี้';
@@ -798,7 +841,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get mtBridgeTransportDemo => 'ทดลอง (logging)';
 
   @override
-  String get mtBridgeIngestSection => 'Meshtastic → ResilNet';
+  String get mtBridgeIngestSection => '1 ± 0';
 
   @override
   String get mtBridgeIngestHint =>
@@ -825,7 +868,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'คำเตือน: ข้อความที่ส่งตรงนี้ไม่ใช่ E2EE ของ ResilNet ผู้ที่อยู่บนเส้นทาง Meshtastic อ่านได้';
 
   @override
-  String get mtBridgeEgressSection => 'ResilNet → Meshtastic';
+  String get mtBridgeEgressSection => '0   1  0';
 
   @override
   String get mtBridgeComposeHint => 'ข้อความที่จะส่ง';
@@ -1177,6 +1220,27 @@ class AppLocalizationsTh extends AppLocalizations {
   String get meshLoraNotReady => 'ไม่พร้อม';
 
   @override
+  String get meshHalowReady => 'HaLow พร้อม';
+
+  @override
+  String get meshHalowStubReady => 'HaLow พร้อม (stub)';
+
+  @override
+  String get meshHalowRealReady => 'HaLow พร้อม (ลิงก์จริง)';
+
+  @override
+  String get meshHalowNotReady => 'HaLow ไม่พร้อม';
+
+  @override
+  String get meshGatewayHalowReady => 'Gateway HaLow: พร้อม';
+
+  @override
+  String get meshGatewayHalowStubReady => 'Gateway HaLow: stub/loopback';
+
+  @override
+  String get meshGatewayHalowRealReady => 'Gateway HaLow: ลิงก์จริง';
+
+  @override
   String meshGatewayProgress(String label) {
     return 'UDP เกตเวย์: $label';
   }
@@ -1259,21 +1323,507 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get onboardingWelcomeBody =>
-      'สื่อสารบน ResilNet ผ่านเครือข่าย Mesh แม้ไม่มีอินเทอร์เน็ต';
+      'ResilNet คือแอปแชท Mesh ที่ทนทาน ข้อความเข้ารหัสปลายทางถึงปลายทางผ่าน BLE Mesh, Local Wi‑Fi และ Nostr — แม้ไม่มีอินเทอร์เน็ต สังเกตชิปสาธิตที่กระพริบเพื่อเรียนรู้ปุ่มแต่ละปุ่ม';
 
   @override
-  String get onboardingFriendsTitle => 'เพิ่มเพื่อนได้ง่าย';
+  String get onboardingWelcomeFeatMeshLabel => 'Mesh';
 
   @override
-  String get onboardingFriendsBody =>
-      'แชร์ QR จากหน้า “ตัวตน” หรือสแกน QR ของเพื่อนเพื่อแลกเปลี่ยน Public Key';
+  String get onboardingWelcomeFeatMeshHint =>
+      'โทรศัพท์ใกล้เคียงช่วยส่งแพ็กเก็ตที่ปิดผนึกต่อกันผ่าน Bluetooth LE';
 
   @override
-  String get onboardingChannelsTitle => 'แชทแบบเข้ารหัส + ช่องใกล้ตัว';
+  String get onboardingWelcomeFeatE2eeLabel => 'E2EE';
+
+  @override
+  String get onboardingWelcomeFeatE2eeHint =>
+      'แชทตรงเข้ารหัสบนเครื่องคุณ มีเพียงกุญแจของเพื่อนเท่านั้นที่เปิดได้';
+
+  @override
+  String get onboardingWelcomeFeatOfflineLabel => 'ออฟไลน์';
+
+  @override
+  String get onboardingWelcomeFeatOfflineHint =>
+      'คุยต่อได้แม้ไม่มีเซลลูลาร์หรือ Wi‑Fi อินเทอร์เน็ต';
+
+  @override
+  String get onboardingIdentityTitle => 'ตัวตนของคุณ';
+
+  @override
+  String get onboardingIdentityBody =>
+      'เปิดหน้าตัวตนจากเมนู ⋮ QR ของคุณมี Public Key เพื่อให้เพื่อนยืนยันก่อนแชทส่วนตัว';
+
+  @override
+  String get onboardingIdentityFeatQrLabel => 'QR ';
+
+  @override
+  String get onboardingIdentityFeatQrHint =>
+      'แสดงหรือบันทึก QR ตัวตนให้ผู้อื่นเพิ่มคุณได้อย่างปลอดภัย';
+
+  @override
+  String get onboardingIdentityFeatShareLabel => 'แชร์';
+
+  @override
+  String get onboardingIdentityFeatShareHint =>
+      'แชร์ลิงก์เชิญหรือข้อมูล QR จากหน้าตัวตน';
+
+  @override
+  String get onboardingIdentityFeatScanLabel => 'สแกน';
+
+  @override
+  String get onboardingIdentityFeatScanHint =>
+      'สแกน QR ของเพื่อนเพื่อแลก Public Key และเปิดแชทตรง';
+
+  @override
+  String get onboardingIdentityFeatNameLabel => 'ชื่อ';
+
+  @override
+  String get onboardingIdentityFeatNameHint =>
+      'บันทึกชื่อที่แสดงเมื่อคุณประกาศตัวตน';
+
+  @override
+  String get onboardingChannelsTitle => 'ช่องชุมชน';
 
   @override
   String get onboardingChannelsBody =>
-      'สลับ #mesh / พื้นที่ (geohash) เพื่อค้นหาเพื่อนใกล้ตัว — ส่งข้อความยังเป็น E2EE ผ่าน BLE Mesh และ Nostr เสมอ';
+      'หน้าชุมชนสลับระหว่าง Directs (ส่วนตัว), #mesh (สาธารณะใกล้ตัว) และ Area/Geo (geohash) ปักหมุดฟีดที่ใช้บ่อยได้';
+
+  @override
+  String get onboardingChannelsFeatDirectsLabel => 'Directs';
+
+  @override
+  String get onboardingChannelsFeatDirectsHint =>
+      'บทสนทนา E2EE ส่วนตัวกับเพื่อนที่ยืนยันแล้ว';
+
+  @override
+  String get onboardingChannelsFeatMeshLabel => 'Mesh';
+
+  @override
+  String get onboardingChannelsFeatMeshHint =>
+      'โพสต์สาธารณะแบบปิดผนึกไปยังเพื่อน Mesh ใกล้ตัว';
+
+  @override
+  String get onboardingChannelsFeatGeoLabel => 'พื้นที่';
+
+  @override
+  String get onboardingChannelsFeatGeoHint =>
+      'โพสต์สาธารณะตามเซลล์ geohash ที่เลือก';
+
+  @override
+  String get onboardingChannelsFeatPinLabel => 'ปักหมุด';
+
+  @override
+  String get onboardingChannelsFeatPinHint =>
+      'ปักหมุดช่องเพื่อให้ชุมชนเปิดฟีดนั้นในครั้งถัดไป';
+
+  @override
+  String get onboardingToolbarTitle => 'แถบเครื่องมือชุมชน';
+
+  @override
+  String get onboardingToolbarBody =>
+      'ไอคอนแถบบนควบคุมตำแหน่ง, ขนส่ง, ประกาศสั้น, Directs ที่ยังไม่อ่าน, คนออนไลน์ และเมนู ⋮ (Wi‑Fi, กู้คืน, ข้อมูล, ประกาศ, ตั้งค่า, ตัวตน)';
+
+  @override
+  String get onboardingToolbarFeatLocationLabel => 'ตำแหน่ง';
+
+  @override
+  String get onboardingToolbarFeatLocationHint =>
+      'เปิดชีตพื้นที่: ความละเอียด, ปักหมุดเซลล์, teleport geohash, รีเฟรช GPS';
+
+  @override
+  String get onboardingToolbarFeatTransportLabel => 'ขนส่ง';
+
+  @override
+  String get onboardingToolbarFeatTransportHint =>
+      'เลือก Mesh, Internet หรือ Auto สำหรับทราฟฟิกสาธารณะ';
+
+  @override
+  String get onboardingToolbarFeatNoticesLabel => 'ประกาศ';
+
+  @override
+  String get onboardingToolbarFeatNoticesHint =>
+      'โพสต์และดูประกาศ geo/mesh เปิดแชทหรือบล็อกจากรายการได้';
+
+  @override
+  String get onboardingToolbarFeatUnreadLabel => 'ยังไม่อ่าน';
+
+  @override
+  String get onboardingToolbarFeatUnreadHint =>
+      'กลับไป Directs เมื่อมีข้อความส่วนตัวรออยู่';
+
+  @override
+  String get onboardingToolbarFeatPeopleLabel => 'คน';
+
+  @override
+  String get onboardingToolbarFeatPeopleHint =>
+      'ดูใครออนไลน์ใกล้ตัวและเปิดแชทตรง';
+
+  @override
+  String get onboardingToolbarFeatMenuLabel => 'เมนู';
+
+  @override
+  String get onboardingToolbarFeatMenuHint =>
+      '⋮ เปิด Local Wi‑Fi, กู้คืนหนัก, ข้อมูล, ประกาศ, ตั้งค่า, ตัวตน';
+
+  @override
+  String get onboardingComposeTitle => 'เขียนโพสต์สาธารณะ';
+
+  @override
+  String get onboardingComposeBody =>
+      'บน #mesh หรือ Area แถบล่างแนบรูป อัดเสียง ส่งข้อความ และตั้งอายุโพสต์ (1 วัน / 3 วัน / 7 วัน / ∞)';
+
+  @override
+  String get onboardingComposeFeatImageLabel => 'รูป';
+
+  @override
+  String get onboardingComposeFeatImageHint => 'แนบรูปในโพสต์สาธารณะแบบปิดผนึก';
+
+  @override
+  String get onboardingComposeFeatVoiceLabel => 'เสียง';
+
+  @override
+  String get onboardingComposeFeatVoiceHint =>
+      'อัดและส่งคลิปเสียงสั้นบนฟีดสาธารณะ';
+
+  @override
+  String get onboardingComposeFeatSendLabel => 'ส่ง';
+
+  @override
+  String get onboardingComposeFeatSendHint =>
+      'เผยแพร่ข้อความไปยังช่องสาธารณะที่เลือก';
+
+  @override
+  String get onboardingComposeFeatExpiryLabel => 'อายุ';
+
+  @override
+  String get onboardingComposeFeatExpiryHint =>
+      'เลือกว่าโพสต์อยู่ได้นานเท่าใดก่อนหมดอายุในเครื่อง';
+
+  @override
+  String get onboardingChatTitle => 'ปุ่มในแชทตรง';
+
+  @override
+  String get onboardingChatBody =>
+      'ในแชทตรง สแกนเพื่อยืนยัน บล็อก ตั้งชื่อเล่น รับกุญแจที่รออยู่ แล้วส่งไมค์ / รูป / อีโมจิ / ข้อความ กดค้างข้อความเพื่อคัดลอก ลองใหม่ หรือลบในเครื่อง';
+
+  @override
+  String get onboardingChatFeatScanLabel => 'สแกน';
+
+  @override
+  String get onboardingChatFeatScanHint =>
+      'สแกน QR ของเพื่อนนี้หากยังไม่มีกุญแจที่ยืนยัน';
+
+  @override
+  String get onboardingChatFeatBlockLabel => 'บล็อก';
+
+  @override
+  String get onboardingChatFeatBlockHint =>
+      'หยุดการแจ้งเตือนและการ relay จากผู้ส่งนี้';
+
+  @override
+  String get onboardingChatFeatAliasLabel => 'ชื่อเล่น';
+
+  @override
+  String get onboardingChatFeatAliasHint =>
+      'ตั้งชื่อเล่นของเพื่อนที่เห็นเฉพาะคุณ';
+
+  @override
+  String get onboardingChatFeatAcceptKeyLabel => 'รับกุญแจ';
+
+  @override
+  String get onboardingChatFeatAcceptKeyHint =>
+      'ยืนยัน Public Key ที่รอก่อนเริ่มคุย';
+
+  @override
+  String get onboardingChatFeatMicLabel => 'ไมค์';
+
+  @override
+  String get onboardingChatFeatMicHint =>
+      'บันทึกเสียงสั้นแบบปิดผนึกถึงเพื่อนนี้';
+
+  @override
+  String get onboardingChatFeatImageLabel => 'รูป';
+
+  @override
+  String get onboardingChatFeatImageHint => 'ส่งรูปเข้ารหัสในเธรดแชทตรง';
+
+  @override
+  String get onboardingChatFeatEmojiLabel => 'อีโมจิ';
+
+  @override
+  String get onboardingChatFeatEmojiHint => 'เปิดตัวเลือกอีโมจิสำหรับช่องพิมพ์';
+
+  @override
+  String get onboardingChatFeatSendLabel => 'ส่ง';
+
+  @override
+  String get onboardingChatFeatSendHint =>
+      'เข้ารหัสและส่งข้อความไปยังเพื่อนนี้';
+
+  @override
+  String get onboardingAnnounceTitle => 'บอร์ดประกาศ';
+
+  @override
+  String get onboardingAnnounceBody =>
+      'สร้างหรือติดตามบอร์ด สแกน QR เชิญ อนุมัติคำขอกุญแจ สลับโหมดล็อก/เปิดโพสต์ แล้วโพสต์รูป/อีโมจิ/ข้อความและแชร์คำเชิญ';
+
+  @override
+  String get onboardingAnnounceFeatCreateLabel => 'สร้าง';
+
+  @override
+  String get onboardingAnnounceFeatCreateHint => 'เริ่มบอร์ดประกาศที่คุณควบคุม';
+
+  @override
+  String get onboardingAnnounceFeatScanLabel => 'สแกน';
+
+  @override
+  String get onboardingAnnounceFeatScanHint =>
+      'สแกน QR เชิญบอร์ดหรือติดตามดีปลิงก์';
+
+  @override
+  String get onboardingAnnounceFeatAccessLabel => 'สิทธิ์';
+
+  @override
+  String get onboardingAnnounceFeatAccessHint =>
+      'ขอเข้าใช้ อนุมัติ/ปฏิเสธคำขอกุญแจ ล็อกหรือเปิดการโพสต์';
+
+  @override
+  String get onboardingAnnounceFeatPostLabel => 'โพสต์';
+
+  @override
+  String get onboardingAnnounceFeatPostHint =>
+      'เผยแพร่ไปยังบอร์ดด้วยรูป อีโมจิ หรือข้อความ';
+
+  @override
+  String get onboardingWifiTitle => 'ลิงก์ Local Wi‑Fi';
+
+  @override
+  String get onboardingWifiBody =>
+      'จากตั้งค่าหรือเมนู ⋮ โฮสต์หรือเข้าร่วมลิงก์ ResilNet บน LAN เพื่อคุยกับเพื่อนใน Wi‑Fi เดียวกันโดยไม่ต้องใช้อินเทอร์เน็ต';
+
+  @override
+  String get onboardingWifiFeatHostLabel => 'โฮสต์';
+
+  @override
+  String get onboardingWifiFeatHostHint =>
+      'เริ่มเซสชัน Local Wi‑Fi ให้คนอื่นใน LAN ค้นพบได้';
+
+  @override
+  String get onboardingWifiFeatJoinLabel => 'เข้าร่วม';
+
+  @override
+  String get onboardingWifiFeatJoinHint =>
+      'ค้นหาและเข้าร่วมโฮสต์บนเครือข่ายท้องถิ่น';
+
+  @override
+  String get onboardingWifiFeatChatLabel => 'แชท';
+
+  @override
+  String get onboardingWifiFeatChatHint => 'เปิดแชทตรงกับเพื่อนที่เห็นบน LAN';
+
+  @override
+  String get onboardingTransportTitle => 'ขนส่งและการซิงก์';
+
+  @override
+  String get onboardingTransportBody =>
+      'ตั้งค่าและตัวเลือกขนส่ง เลือก Mesh / Internet / Auto เปิด BLE และเชื่อม Nostr ใหม่พร้อมตัวเลือกอายุข้อความ';
+
+  @override
+  String get onboardingTransportFeatMeshLabel => 'Mesh';
+
+  @override
+  String get onboardingTransportFeatMeshHint => 'เน้นส่งผ่าน BLE Mesh ใกล้ตัว';
+
+  @override
+  String get onboardingTransportFeatInternetLabel => 'อินเทอร์เน็ต';
+
+  @override
+  String get onboardingTransportFeatInternetHint =>
+      'เน้นเส้นทาง Nostr / อินเทอร์เน็ตเมื่อพร้อม';
+
+  @override
+  String get onboardingTransportFeatAutoLabel => 'อัตโนมัติ';
+
+  @override
+  String get onboardingTransportFeatAutoHint =>
+      'ให้ ResilNet เลือก mesh หรืออินเทอร์เน็ตตามสถานการณ์';
+
+  @override
+  String get onboardingTransportFeatBleLabel => 'BLE';
+
+  @override
+  String get onboardingTransportFeatBleHint =>
+      'ให้แน่ใจว่าโฆษณา/สแกน BLE Mesh ทำงาน';
+
+  @override
+  String get onboardingTransportFeatNostrLabel => 'Nostr';
+
+  @override
+  String get onboardingTransportFeatNostrHint =>
+      'เชื่อมรีเลย์ใหม่และตั้งอายุโพสต์ที่ซิงก์';
+
+  @override
+  String get onboardingGeoTitle => 'พื้นที่และ geohash';
+
+  @override
+  String get onboardingGeoBody =>
+      'ชีตตำแหน่งตั้งความละเอียดเซลล์ GPS ปักหมุดพื้นที่ที่สนใจ teleport ไป geohash และรีเฟรชเซลล์ปัจจุบันสำหรับแชท Area';
+
+  @override
+  String get onboardingGeoFeatGpsLabel => 'GPS';
+
+  @override
+  String get onboardingGeoFeatGpsHint => 'รีเฟรช geohash ปัจจุบันจาก GPS';
+
+  @override
+  String get onboardingGeoFeatPrecisionLabel => 'ความละเอียด';
+
+  @override
+  String get onboardingGeoFeatPrecisionHint => 'ขยายหรือย่อขนาดเซลล์ Area';
+
+  @override
+  String get onboardingGeoFeatTeleportLabel => 'เทเลพอร์ต';
+
+  @override
+  String get onboardingGeoFeatTeleportHint =>
+      'กระโดดไป geohash โดยไม่ต้องย้ายที่จริง';
+
+  @override
+  String get onboardingGeoFeatPinLabel => 'ปักหมุด';
+
+  @override
+  String get onboardingGeoFeatPinHint =>
+      'ปักหมุดเซลล์ Area ที่ใช้บ่อยเพื่อกลับเร็ว';
+
+  @override
+  String get onboardingAdvancedTitle => 'บริดจ์และฮาร์ดแวร์';
+
+  @override
+  String get onboardingAdvancedBody =>
+      'ตั้งค่าเปิดแผนที่ Topology, บริดจ์ Meshtastic MQTT, ดาวน์โหลดเฟิร์มแวร์ ESP32 + OTA ผ่าน BLE และบริดจ์ LXMF home-node';
+
+  @override
+  String get onboardingAdvancedFeatTopoLabel => 'โทโพโลยี';
+
+  @override
+  String get onboardingAdvancedFeatTopoHint =>
+      'ดูโหนด Mesh แล้วแตะโหนดเพื่อเปิดแชท';
+
+  @override
+  String get onboardingAdvancedFeatMtLabel => 'Meshtastic';
+
+  @override
+  String get onboardingAdvancedFeatMtHint =>
+      'บริดจ์ผ่าน MQTT, relay และจำลอง ingest/egress';
+
+  @override
+  String get onboardingAdvancedFeatEspLabel => 'ESP32';
+
+  @override
+  String get onboardingAdvancedFeatEspHint =>
+      'ดาวน์โหลดไฟล์เฟิร์มแวร์และแฟลชผ่าน BLE OTA';
+
+  @override
+  String get onboardingAdvancedFeatLxmfLabel => 'LXMF';
+
+  @override
+  String get onboardingAdvancedFeatLxmfHint =>
+      'เปิดบริดจ์ home-node และจัดการลิงก์ปลายทาง';
+
+  @override
+  String get onboardingSecurityTitle => 'ความปลอดภัยและการกู้คืน';
+
+  @override
+  String get onboardingSecurityBody =>
+      'ตั้งค่าครอบคลุมการแจ้งเตือน, แจ้งเตือนภาพหน้าจอ, บันทึกประวัติ, ล้างข้อความ, Panic Wipe, กู้คืนหนัก, รีเซ็ตเซสชัน, ภาษา และเอกสาร';
+
+  @override
+  String get onboardingSecurityFeatNotifLabel => 'แจ้งเตือน';
+
+  @override
+  String get onboardingSecurityFeatNotifHint => 'เปิด/ปิดการแจ้งเตือนข้อความ';
+
+  @override
+  String get onboardingSecurityFeatShotLabel => 'จับภาพ';
+
+  @override
+  String get onboardingSecurityFeatShotHint =>
+      'เตือนเมื่อมีการจับภาพหน้าจอขณะแชท';
+
+  @override
+  String get onboardingSecurityFeatHistoryLabel => 'ประวัติ';
+
+  @override
+  String get onboardingSecurityFeatHistoryHint =>
+      'เลือกว่าจะเก็บแชทบนดิสก์หรือไม่';
+
+  @override
+  String get onboardingSecurityFeatPanicLabel => 'ตื่นตกใจ';
+
+  @override
+  String get onboardingSecurityFeatPanicHint =>
+      'ล้างความลับและข้อความในเครื่องเมื่อฉุกเฉิน';
+
+  @override
+  String get onboardingSecurityFeatRecoverLabel => 'กู้คืน';
+
+  @override
+  String get onboardingSecurityFeatRecoverHint =>
+      'กู้คืนหนักหรือรีเซ็ตเซสชันหากแอปค้าง';
+
+  @override
+  String get onboardingSecurityFeatDocsLabel => 'เอกสาร';
+
+  @override
+  String get onboardingSecurityFeatDocsHint => 'เปิดคู่มือในแอปและชีตข้อมูล';
+
+  @override
+  String get onboardingWatchTitle => 'Apple Watch';
+
+  @override
+  String get onboardingWatchBody =>
+      'จับคู่ Apple Watch เพื่อดูสถานะ Mesh, Directs ล่าสุด และส่งข้อความสั้นแบบเข้ารหัส Watch ใช้ iPhone สำหรับเข้ารหัสและส่งบน Mesh';
+
+  @override
+  String get onboardingWatchFeatStatusLabel => 'สถานะ';
+
+  @override
+  String get onboardingWatchFeatStatusHint =>
+      'ดูโหมดขนส่ง จำนวนเพื่อนออนไลน์ และรหัสสั้นของคุณ';
+
+  @override
+  String get onboardingWatchFeatChatsLabel => 'แชท';
+
+  @override
+  String get onboardingWatchFeatChatsHint =>
+      'ดูเธรด Direct ล่าสุดและจำนวนยังไม่อ่าน';
+
+  @override
+  String get onboardingWatchFeatSendLabel => 'ส่ง';
+
+  @override
+  String get onboardingWatchFeatSendHint =>
+      'พิมพ์ข้อความสั้น (≈160 ตัวอักษร) ให้ iPhone ปิดผนึกและส่งต่อ';
+
+  @override
+  String get onboardingReadyTitle => 'พร้อมใช้งานแล้ว';
+
+  @override
+  String get onboardingReadyBody =>
+      'แตะเริ่มใช้งานเพื่อเข้าชุมชน หรือกดข้ามได้ทุกเมื่อจากมุมบน ดูซ้ำได้ที่ตั้งค่า → เอกสาร';
+
+  @override
+  String get onboardingReadyFeatStartLabel => 'เริ่ม';
+
+  @override
+  String get onboardingReadyFeatStartHint => 'จบการแนะนำและเปิดหน้าชุมชน';
+
+  @override
+  String get onboardingReadyFeatSkipLabel => 'ข้าม';
+
+  @override
+  String get onboardingReadyFeatSkipHint =>
+      'ปุ่มข้ามมีทุกหน้าเพื่อเข้าแอปได้ทันที';
 
   @override
   String get chatTitle => 'แชต (E2EE)';

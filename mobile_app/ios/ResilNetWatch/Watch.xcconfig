@@ -1,0 +1,2 @@
+// Version only — do not pull iOS SDK settings from Flutter/Debug.xcconfig.
+#include "../Flutter/Generated.xcconfig"

@@ -150,6 +150,9 @@ static void setupMuleBle() {
 
 #if defined(NODE_TYPE_LORA_GATEWAY)
 #include "ble_manager.h"
+#include "gateway_control.h"
+#include "gateway_radio.h"
+#include "halow_manager.h"
 #include "lora_manager.h"
 #include "lora_store_forward.h"
 #include "packet.h"
@@ -159,6 +162,12 @@ static void setupMuleBle() {
 static void onLoraRxGateway(const ResilNetRadioPacket& pkt, void* /*user*/) {
   transportForwardFromLora(pkt);
 }
+
+#if HALOW_ENABLE
+static void onHalowRxGateway(const ResilNetRadioPacket& pkt, void* /*user*/) {
+  transportForwardFromHalow(pkt);
+}
+#endif
 
 #if LORA_HEARTBEAT_ENABLE
 static void taskGatewayHeartbeat(void* /*arg*/) {
@@ -177,6 +186,14 @@ static void taskGatewayHeartbeat(void* /*arg*/) {
 #endif
 
 static void setupGateway() {
+  gatewayRadio().begin();
+#if HALOW_ENABLE
+  if (halow().begin()) {
+    halow().setRxCallback(onHalowRxGateway, nullptr);
+    halow().startTasks();
+    Serial.println("[Gateway] HaLow stub enabled (HALOW_ENABLE=1)");
+  }
+#endif
   if (!lora().begin()) {
     Serial.println("[FATAL] LoRa init failed");
     while (true) delay(1000);
@@ -198,6 +215,7 @@ static void setupGateway() {
   } else {
     wifiUdpBridge().startTask();
   }
+  gatewayBroadcastCaps();
 
 #if LORA_HEARTBEAT_ENABLE
   xTaskCreatePinnedToCore(taskGatewayHeartbeat, "TaskHeartbeat",

@@ -1301,6 +1301,30 @@ abstract class AppLocalizations {
   /// **'Connecting to relays…'**
   String get nostrReconnecting;
 
+  /// No description provided for @nostrTorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Route Nostr via Tor'**
+  String get nostrTorTitle;
+
+  /// No description provided for @nostrTorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, relays connect through local Tor SOCKS (127.0.0.1:9050 — Orbot or system Tor). Slower, but hides your IP from relays. Requires Tor to be running; will not fall back to clearnet.'**
+  String get nostrTorSubtitle;
+
+  /// No description provided for @nostrTorFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Tor SOCKS unavailable — open Orbot/Tor, then try again'**
+  String get nostrTorFailed;
+
+  /// No description provided for @nostrTorFailedDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Tor failed: {error}'**
+  String nostrTorFailedDetail(String error);
+
   /// No description provided for @geoDiscoveryStatus.
   ///
   /// In en, this message translates to:
@@ -1342,6 +1366,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto'**
   String get transportModeAuto;
+
+  /// No description provided for @gatewayRadioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway radio'**
+  String get gatewayRadioTitle;
+
+  /// No description provided for @gatewayRadioSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch ESP32 gateway RF path — phone still uses BLE / SoftAP UDP'**
+  String get gatewayRadioSubtitle;
+
+  /// No description provided for @gatewayRadioLora.
+  ///
+  /// In en, this message translates to:
+  /// **'LoRa'**
+  String get gatewayRadioLora;
+
+  /// No description provided for @gatewayRadioHalow.
+  ///
+  /// In en, this message translates to:
+  /// **'HaLow'**
+  String get gatewayRadioHalow;
+
+  /// No description provided for @gatewayRadioAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get gatewayRadioAuto;
+
+  /// No description provided for @gatewayRadioHalowUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'HaLow not reported by this gateway (LoRa-only firmware)'**
+  String get gatewayRadioHalowUnavailable;
+
+  /// No description provided for @gatewayRadioSharedWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing gateway radio affects every phone connected to this gateway.'**
+  String get gatewayRadioSharedWarning;
+
+  /// No description provided for @gatewayCapsWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'gateway: waiting for caps…'**
+  String get gatewayCapsWaiting;
 
   /// No description provided for @geoPublicHint.
   ///
@@ -2231,6 +2303,48 @@ abstract class AppLocalizations {
   /// **'not ready'**
   String get meshLoraNotReady;
 
+  /// No description provided for @meshHalowReady.
+  ///
+  /// In en, this message translates to:
+  /// **'HaLow ready'**
+  String get meshHalowReady;
+
+  /// No description provided for @meshHalowStubReady.
+  ///
+  /// In en, this message translates to:
+  /// **'HaLow ready (stub)'**
+  String get meshHalowStubReady;
+
+  /// No description provided for @meshHalowRealReady.
+  ///
+  /// In en, this message translates to:
+  /// **'HaLow ready (link up)'**
+  String get meshHalowRealReady;
+
+  /// No description provided for @meshHalowNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'HaLow not ready'**
+  String get meshHalowNotReady;
+
+  /// No description provided for @meshGatewayHalowReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway HaLow: ready'**
+  String get meshGatewayHalowReady;
+
+  /// No description provided for @meshGatewayHalowStubReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway HaLow: stub/loopback'**
+  String get meshGatewayHalowStubReady;
+
+  /// No description provided for @meshGatewayHalowRealReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway HaLow: real link'**
+  String get meshGatewayHalowRealReady;
+
   /// No description provided for @meshGatewayProgress.
   ///
   /// In en, this message translates to:
@@ -2372,32 +2486,884 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeBody.
   ///
   /// In en, this message translates to:
-  /// **'Chat on ResilNet over a mesh network — even without the internet'**
+  /// **'ResilNet is a resilient mesh messenger. Messages stay end-to-end encrypted over BLE mesh, Local Wi‑Fi, and Nostr — even when the public internet is down. Watch each demo chip pulse to learn what a control does.'**
   String get onboardingWelcomeBody;
 
-  /// No description provided for @onboardingFriendsTitle.
+  /// No description provided for @onboardingWelcomeFeatMeshLabel.
   ///
   /// In en, this message translates to:
-  /// **'Add friends easily'**
-  String get onboardingFriendsTitle;
+  /// **'Mesh'**
+  String get onboardingWelcomeFeatMeshLabel;
 
-  /// No description provided for @onboardingFriendsBody.
+  /// No description provided for @onboardingWelcomeFeatMeshHint.
   ///
   /// In en, this message translates to:
-  /// **'Share a QR from Identity, or scan a friend’s QR to exchange public keys'**
-  String get onboardingFriendsBody;
+  /// **'Nearby phones relay sealed packets hop-by-hop over Bluetooth LE.'**
+  String get onboardingWelcomeFeatMeshHint;
+
+  /// No description provided for @onboardingWelcomeFeatE2eeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'E2EE'**
+  String get onboardingWelcomeFeatE2eeLabel;
+
+  /// No description provided for @onboardingWelcomeFeatE2eeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct chats encrypt on your device; only the peer’s key can open them.'**
+  String get onboardingWelcomeFeatE2eeHint;
+
+  /// No description provided for @onboardingWelcomeFeatOfflineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get onboardingWelcomeFeatOfflineLabel;
+
+  /// No description provided for @onboardingWelcomeFeatOfflineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can keep chatting without cellular or Wi‑Fi internet access.'**
+  String get onboardingWelcomeFeatOfflineHint;
+
+  /// No description provided for @onboardingIdentityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your identity'**
+  String get onboardingIdentityTitle;
+
+  /// No description provided for @onboardingIdentityBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Identity from the ⋮ menu. Your QR carries your public key so friends can verify you before private chat.'**
+  String get onboardingIdentityBody;
+
+  /// No description provided for @onboardingIdentityFeatQrLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'QR'**
+  String get onboardingIdentityFeatQrLabel;
+
+  /// No description provided for @onboardingIdentityFeatQrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Show or save your identity QR so others can add you safely.'**
+  String get onboardingIdentityFeatQrHint;
+
+  /// No description provided for @onboardingIdentityFeatShareLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get onboardingIdentityFeatShareLabel;
+
+  /// No description provided for @onboardingIdentityFeatShareHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Share an invite link or QR payload from Identity.'**
+  String get onboardingIdentityFeatShareHint;
+
+  /// No description provided for @onboardingIdentityFeatScanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get onboardingIdentityFeatScanLabel;
+
+  /// No description provided for @onboardingIdentityFeatScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a friend’s QR to exchange public keys and unlock Direct chat.'**
+  String get onboardingIdentityFeatScanHint;
+
+  /// No description provided for @onboardingIdentityFeatNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get onboardingIdentityFeatNameLabel;
+
+  /// No description provided for @onboardingIdentityFeatNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a display name that peers see when you announce yourself.'**
+  String get onboardingIdentityFeatNameHint;
 
   /// No description provided for @onboardingChannelsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Encrypted chat + nearby channels'**
+  /// **'Community channels'**
   String get onboardingChannelsTitle;
 
   /// No description provided for @onboardingChannelsBody.
   ///
   /// In en, this message translates to:
-  /// **'Switch #mesh / Area (geohash) to find nearby peers — messages stay E2EE over BLE mesh and Nostr'**
+  /// **'The Community home switches between Directs (private), #mesh (nearby public), and Area/Geo (geohash). Pin a feed you use often.'**
   String get onboardingChannelsBody;
+
+  /// No description provided for @onboardingChannelsFeatDirectsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Directs'**
+  String get onboardingChannelsFeatDirectsLabel;
+
+  /// No description provided for @onboardingChannelsFeatDirectsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Private E2EE conversations with verified peers.'**
+  String get onboardingChannelsFeatDirectsHint;
+
+  /// No description provided for @onboardingChannelsFeatMeshLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'#mesh'**
+  String get onboardingChannelsFeatMeshLabel;
+
+  /// No description provided for @onboardingChannelsFeatMeshHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Public sealed posts to nearby mesh peers.'**
+  String get onboardingChannelsFeatMeshHint;
+
+  /// No description provided for @onboardingChannelsFeatGeoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get onboardingChannelsFeatGeoLabel;
+
+  /// No description provided for @onboardingChannelsFeatGeoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Public posts scoped to your selected geohash cell.'**
+  String get onboardingChannelsFeatGeoHint;
+
+  /// No description provided for @onboardingChannelsFeatPinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get onboardingChannelsFeatPinLabel;
+
+  /// No description provided for @onboardingChannelsFeatPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin a channel so Community opens on that feed next time.'**
+  String get onboardingChannelsFeatPinHint;
+
+  /// No description provided for @onboardingToolbarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Community toolbar'**
+  String get onboardingToolbarTitle;
+
+  /// No description provided for @onboardingToolbarBody.
+  ///
+  /// In en, this message translates to:
+  /// **'App bar icons control location, transport, notices, unread Directs, online people, and the overflow menu (Wi‑Fi, recover, info, announcements, settings, identity).'**
+  String get onboardingToolbarBody;
+
+  /// No description provided for @onboardingToolbarFeatLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get onboardingToolbarFeatLocationLabel;
+
+  /// No description provided for @onboardingToolbarFeatLocationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the Area sheet: precision, pin cells, teleport geohash, refresh GPS.'**
+  String get onboardingToolbarFeatLocationHint;
+
+  /// No description provided for @onboardingToolbarFeatTransportLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get onboardingToolbarFeatTransportLabel;
+
+  /// No description provided for @onboardingToolbarFeatTransportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Mesh, Internet, or Auto for how public traffic is carried.'**
+  String get onboardingToolbarFeatTransportHint;
+
+  /// No description provided for @onboardingToolbarFeatNoticesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notices'**
+  String get onboardingToolbarFeatNoticesLabel;
+
+  /// No description provided for @onboardingToolbarFeatNoticesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Post and browse geo/mesh notices; open chat or block from an item.'**
+  String get onboardingToolbarFeatNoticesHint;
+
+  /// No description provided for @onboardingToolbarFeatUnreadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get onboardingToolbarFeatUnreadLabel;
+
+  /// No description provided for @onboardingToolbarFeatUnreadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump back to Directs when private messages are waiting.'**
+  String get onboardingToolbarFeatUnreadHint;
+
+  /// No description provided for @onboardingToolbarFeatPeopleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get onboardingToolbarFeatPeopleLabel;
+
+  /// No description provided for @onboardingToolbarFeatPeopleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'See who is online nearby and open a Direct chat.'**
+  String get onboardingToolbarFeatPeopleHint;
+
+  /// No description provided for @onboardingToolbarFeatMenuLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get onboardingToolbarFeatMenuLabel;
+
+  /// No description provided for @onboardingToolbarFeatMenuHint.
+  ///
+  /// In en, this message translates to:
+  /// **'⋮ opens Local Wi‑Fi, Hard recover, Info, Announcements, Settings, Identity.'**
+  String get onboardingToolbarFeatMenuHint;
+
+  /// No description provided for @onboardingComposeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public compose'**
+  String get onboardingComposeTitle;
+
+  /// No description provided for @onboardingComposeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On #mesh or Area, the bottom bar attaches an image, records voice, sends text, and sets message expiry (1d / 3d / 7d / ∞).'**
+  String get onboardingComposeBody;
+
+  /// No description provided for @onboardingComposeFeatImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get onboardingComposeFeatImageLabel;
+
+  /// No description provided for @onboardingComposeFeatImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach a photo to a sealed public post.'**
+  String get onboardingComposeFeatImageHint;
+
+  /// No description provided for @onboardingComposeFeatVoiceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get onboardingComposeFeatVoiceLabel;
+
+  /// No description provided for @onboardingComposeFeatVoiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Record and send a short voice clip on the public feed.'**
+  String get onboardingComposeFeatVoiceHint;
+
+  /// No description provided for @onboardingComposeFeatSendLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get onboardingComposeFeatSendLabel;
+
+  /// No description provided for @onboardingComposeFeatSendHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish your text to the selected public channel.'**
+  String get onboardingComposeFeatSendHint;
+
+  /// No description provided for @onboardingComposeFeatExpiryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry'**
+  String get onboardingComposeFeatExpiryLabel;
+
+  /// No description provided for @onboardingComposeFeatExpiryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick how long the post should remain before local expiry.'**
+  String get onboardingComposeFeatExpiryHint;
+
+  /// No description provided for @onboardingChatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct chat controls'**
+  String get onboardingChatTitle;
+
+  /// No description provided for @onboardingChatBody.
+  ///
+  /// In en, this message translates to:
+  /// **'In a Direct chat you can scan to verify, block, set an alias, accept a pending peer key, then send mic / image / emoji / text. Long-press a message to copy, retry, or delete locally.'**
+  String get onboardingChatBody;
+
+  /// No description provided for @onboardingChatFeatScanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get onboardingChatFeatScanLabel;
+
+  /// No description provided for @onboardingChatFeatScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this peer’s QR if their verified key is still missing.'**
+  String get onboardingChatFeatScanHint;
+
+  /// No description provided for @onboardingChatFeatBlockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get onboardingChatFeatBlockLabel;
+
+  /// No description provided for @onboardingChatFeatBlockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop notifications and relay for this sender.'**
+  String get onboardingChatFeatBlockHint;
+
+  /// No description provided for @onboardingChatFeatAliasLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Alias'**
+  String get onboardingChatFeatAliasLabel;
+
+  /// No description provided for @onboardingChatFeatAliasHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the peer a nickname only you see.'**
+  String get onboardingChatFeatAliasHint;
+
+  /// No description provided for @onboardingChatFeatAcceptKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get onboardingChatFeatAcceptKeyLabel;
+
+  /// No description provided for @onboardingChatFeatAcceptKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm a pending public key before messaging.'**
+  String get onboardingChatFeatAcceptKeyHint;
+
+  /// No description provided for @onboardingChatFeatMicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mic'**
+  String get onboardingChatFeatMicLabel;
+
+  /// No description provided for @onboardingChatFeatMicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Push-to-talk voice note, sealed for this peer.'**
+  String get onboardingChatFeatMicHint;
+
+  /// No description provided for @onboardingChatFeatImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get onboardingChatFeatImageLabel;
+
+  /// No description provided for @onboardingChatFeatImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send an encrypted photo in the Direct thread.'**
+  String get onboardingChatFeatImageHint;
+
+  /// No description provided for @onboardingChatFeatEmojiLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Emoji'**
+  String get onboardingChatFeatEmojiLabel;
+
+  /// No description provided for @onboardingChatFeatEmojiHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the emoji picker for the compose field.'**
+  String get onboardingChatFeatEmojiHint;
+
+  /// No description provided for @onboardingChatFeatSendLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get onboardingChatFeatSendLabel;
+
+  /// No description provided for @onboardingChatFeatSendHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypt and route the text message to this peer.'**
+  String get onboardingChatFeatSendHint;
+
+  /// No description provided for @onboardingAnnounceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcement boards'**
+  String get onboardingAnnounceTitle;
+
+  /// No description provided for @onboardingAnnounceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create or follow boards, scan invite QR, approve key requests, toggle locked/open posting, then post image/emoji/text and share invites.'**
+  String get onboardingAnnounceBody;
+
+  /// No description provided for @onboardingAnnounceFeatCreateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get onboardingAnnounceFeatCreateLabel;
+
+  /// No description provided for @onboardingAnnounceFeatCreateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a new announcement board you control.'**
+  String get onboardingAnnounceFeatCreateHint;
+
+  /// No description provided for @onboardingAnnounceFeatScanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get onboardingAnnounceFeatScanLabel;
+
+  /// No description provided for @onboardingAnnounceFeatScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a board invite QR or follow a deep link.'**
+  String get onboardingAnnounceFeatScanHint;
+
+  /// No description provided for @onboardingAnnounceFeatAccessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Access'**
+  String get onboardingAnnounceFeatAccessLabel;
+
+  /// No description provided for @onboardingAnnounceFeatAccessHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Request access, approve/deny key requests, lock or open posting.'**
+  String get onboardingAnnounceFeatAccessHint;
+
+  /// No description provided for @onboardingAnnounceFeatPostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get onboardingAnnounceFeatPostLabel;
+
+  /// No description provided for @onboardingAnnounceFeatPostHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish to the board with image, emoji, or text.'**
+  String get onboardingAnnounceFeatPostHint;
+
+  /// No description provided for @onboardingWifiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Wi‑Fi link'**
+  String get onboardingWifiTitle;
+
+  /// No description provided for @onboardingWifiBody.
+  ///
+  /// In en, this message translates to:
+  /// **'From Settings or the ⋮ menu, host or join a LAN ResilNet link to chat with peers on the same Wi‑Fi without the internet.'**
+  String get onboardingWifiBody;
+
+  /// No description provided for @onboardingWifiFeatHostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Host'**
+  String get onboardingWifiFeatHostLabel;
+
+  /// No description provided for @onboardingWifiFeatHostHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a Local Wi‑Fi session others on the LAN can discover.'**
+  String get onboardingWifiFeatHostHint;
+
+  /// No description provided for @onboardingWifiFeatJoinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get onboardingWifiFeatJoinLabel;
+
+  /// No description provided for @onboardingWifiFeatJoinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover and join a host on your local network.'**
+  String get onboardingWifiFeatJoinHint;
+
+  /// No description provided for @onboardingWifiFeatChatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get onboardingWifiFeatChatLabel;
+
+  /// No description provided for @onboardingWifiFeatChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Direct chat with a peer sighted on the LAN.'**
+  String get onboardingWifiFeatChatHint;
+
+  /// No description provided for @onboardingTransportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport & sync'**
+  String get onboardingTransportTitle;
+
+  /// No description provided for @onboardingTransportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings and the transport picker choose Mesh / Internet / Auto, ensure BLE advertising, and reconnect Nostr with message expiry options.'**
+  String get onboardingTransportBody;
+
+  /// No description provided for @onboardingTransportFeatMeshLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh'**
+  String get onboardingTransportFeatMeshLabel;
+
+  /// No description provided for @onboardingTransportFeatMeshHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer BLE mesh for nearby delivery.'**
+  String get onboardingTransportFeatMeshHint;
+
+  /// No description provided for @onboardingTransportFeatInternetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet'**
+  String get onboardingTransportFeatInternetLabel;
+
+  /// No description provided for @onboardingTransportFeatInternetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer Nostr / internet paths when available.'**
+  String get onboardingTransportFeatInternetHint;
+
+  /// No description provided for @onboardingTransportFeatAutoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get onboardingTransportFeatAutoLabel;
+
+  /// No description provided for @onboardingTransportFeatAutoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Let ResilNet pick mesh or internet based on conditions.'**
+  String get onboardingTransportFeatAutoHint;
+
+  /// No description provided for @onboardingTransportFeatBleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'BLE'**
+  String get onboardingTransportFeatBleLabel;
+
+  /// No description provided for @onboardingTransportFeatBleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ensure BLE mesh advertising/scanning is active.'**
+  String get onboardingTransportFeatBleHint;
+
+  /// No description provided for @onboardingTransportFeatNostrLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nostr'**
+  String get onboardingTransportFeatNostrLabel;
+
+  /// No description provided for @onboardingTransportFeatNostrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect relays and set how long synced posts live.'**
+  String get onboardingTransportFeatNostrHint;
+
+  /// No description provided for @onboardingGeoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Area & geohash'**
+  String get onboardingGeoTitle;
+
+  /// No description provided for @onboardingGeoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The location sheet sets GPS cell precision, pins areas you care about, teleports to a geohash, and refreshes your current cell for Area chat.'**
+  String get onboardingGeoBody;
+
+  /// No description provided for @onboardingGeoFeatGpsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS'**
+  String get onboardingGeoFeatGpsLabel;
+
+  /// No description provided for @onboardingGeoFeatGpsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh your current geohash from GPS.'**
+  String get onboardingGeoFeatGpsHint;
+
+  /// No description provided for @onboardingGeoFeatPrecisionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Precision'**
+  String get onboardingGeoFeatPrecisionLabel;
+
+  /// No description provided for @onboardingGeoFeatPrecisionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Widen or tighten the Area cell size.'**
+  String get onboardingGeoFeatPrecisionHint;
+
+  /// No description provided for @onboardingGeoFeatTeleportLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Teleport'**
+  String get onboardingGeoFeatTeleportLabel;
+
+  /// No description provided for @onboardingGeoFeatTeleportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump to a geohash string without moving physically.'**
+  String get onboardingGeoFeatTeleportHint;
+
+  /// No description provided for @onboardingGeoFeatPinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get onboardingGeoFeatPinLabel;
+
+  /// No description provided for @onboardingGeoFeatPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin favorite Area cells for quick return.'**
+  String get onboardingGeoFeatPinHint;
+
+  /// No description provided for @onboardingAdvancedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridges & hardware'**
+  String get onboardingAdvancedTitle;
+
+  /// No description provided for @onboardingAdvancedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings opens Mesh topology, Meshtastic MQTT bridge, ESP32 firmware download + BLE OTA, and LXMF home-node bridge for radio/mule links.'**
+  String get onboardingAdvancedBody;
+
+  /// No description provided for @onboardingAdvancedFeatTopoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Topology'**
+  String get onboardingAdvancedFeatTopoLabel;
+
+  /// No description provided for @onboardingAdvancedFeatTopoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Visualize mesh nodes and tap a node to open chat.'**
+  String get onboardingAdvancedFeatTopoHint;
+
+  /// No description provided for @onboardingAdvancedFeatMtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Meshtastic'**
+  String get onboardingAdvancedFeatMtLabel;
+
+  /// No description provided for @onboardingAdvancedFeatMtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge via MQTT topics, relay, and simulate ingest/egress.'**
+  String get onboardingAdvancedFeatMtHint;
+
+  /// No description provided for @onboardingAdvancedFeatEspLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ESP32'**
+  String get onboardingAdvancedFeatEspLabel;
+
+  /// No description provided for @onboardingAdvancedFeatEspHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Download firmware bins and flash over BLE OTA.'**
+  String get onboardingAdvancedFeatEspHint;
+
+  /// No description provided for @onboardingAdvancedFeatLxmfLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'LXMF'**
+  String get onboardingAdvancedFeatLxmfLabel;
+
+  /// No description provided for @onboardingAdvancedFeatLxmfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable a home-node bridge and manage destination links.'**
+  String get onboardingAdvancedFeatLxmfHint;
+
+  /// No description provided for @onboardingSecurityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety & recovery'**
+  String get onboardingSecurityTitle;
+
+  /// No description provided for @onboardingSecurityBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings covers notifications, screenshot alerts, save history, clear messages, panic wipe, hard recover, session reset, language, and docs.'**
+  String get onboardingSecurityBody;
+
+  /// No description provided for @onboardingSecurityFeatNotifLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get onboardingSecurityFeatNotifLabel;
+
+  /// No description provided for @onboardingSecurityFeatNotifHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle message notifications.'**
+  String get onboardingSecurityFeatNotifHint;
+
+  /// No description provided for @onboardingSecurityFeatShotLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot'**
+  String get onboardingSecurityFeatShotLabel;
+
+  /// No description provided for @onboardingSecurityFeatShotHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Warn when a screenshot is taken while chatting.'**
+  String get onboardingSecurityFeatShotHint;
+
+  /// No description provided for @onboardingSecurityFeatHistoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get onboardingSecurityFeatHistoryLabel;
+
+  /// No description provided for @onboardingSecurityFeatHistoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose whether chats are kept on disk.'**
+  String get onboardingSecurityFeatHistoryHint;
+
+  /// No description provided for @onboardingSecurityFeatPanicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Panic'**
+  String get onboardingSecurityFeatPanicLabel;
+
+  /// No description provided for @onboardingSecurityFeatPanicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe local secrets and messages in an emergency.'**
+  String get onboardingSecurityFeatPanicHint;
+
+  /// No description provided for @onboardingSecurityFeatRecoverLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover'**
+  String get onboardingSecurityFeatRecoverLabel;
+
+  /// No description provided for @onboardingSecurityFeatRecoverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard recover or session reset if the app is stuck.'**
+  String get onboardingSecurityFeatRecoverHint;
+
+  /// No description provided for @onboardingSecurityFeatDocsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Docs'**
+  String get onboardingSecurityFeatDocsLabel;
+
+  /// No description provided for @onboardingSecurityFeatDocsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the in-app guide and info sheets.'**
+  String get onboardingSecurityFeatDocsHint;
+
+  /// No description provided for @onboardingWatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Watch'**
+  String get onboardingWatchTitle;
+
+  /// No description provided for @onboardingWatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair an Apple Watch to see mesh status, recent Directs, and send short encrypted texts. The Watch uses your iPhone for crypto and mesh routing.'**
+  String get onboardingWatchBody;
+
+  /// No description provided for @onboardingWatchFeatStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get onboardingWatchFeatStatusLabel;
+
+  /// No description provided for @onboardingWatchFeatStatusHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Glance transport mode, online peers, and your short id.'**
+  String get onboardingWatchFeatStatusHint;
+
+  /// No description provided for @onboardingWatchFeatChatsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chats'**
+  String get onboardingWatchFeatChatsLabel;
+
+  /// No description provided for @onboardingWatchFeatChatsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse recent Direct threads and unread counts.'**
+  String get onboardingWatchFeatChatsHint;
+
+  /// No description provided for @onboardingWatchFeatSendLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get onboardingWatchFeatSendLabel;
+
+  /// No description provided for @onboardingWatchFeatSendHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a short message (≈160 chars); iPhone seals and routes it.'**
+  String get onboardingWatchFeatSendHint;
+
+  /// No description provided for @onboardingReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re ready'**
+  String get onboardingReadyTitle;
+
+  /// No description provided for @onboardingReadyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Get started to enter Community, or Skip anytime from the top. You can revisit Settings → Docs if you need a refresher.'**
+  String get onboardingReadyBody;
+
+  /// No description provided for @onboardingReadyFeatStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get onboardingReadyFeatStartLabel;
+
+  /// No description provided for @onboardingReadyFeatStartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish onboarding and open the Community home.'**
+  String get onboardingReadyFeatStartHint;
+
+  /// No description provided for @onboardingReadyFeatSkipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingReadyFeatSkipLabel;
+
+  /// No description provided for @onboardingReadyFeatSkipHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip is always available on every page to enter immediately.'**
+  String get onboardingReadyFeatSkipHint;
 
   /// No description provided for @chatTitle.
   ///

@@ -675,6 +675,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nostrReconnecting => 'Подключение к реле…';
 
   @override
+  String get nostrTorTitle => 'Route Nostr via Tor';
+
+  @override
+  String get nostrTorSubtitle =>
+      'When on, relays connect through local Tor SOCKS (127.0.0.1:9050 — Orbot or system Tor). Slower, but hides your IP from relays. Requires Tor to be running; will not fall back to clearnet.';
+
+  @override
+  String get nostrTorFailed =>
+      'Tor SOCKS unavailable — open Orbot/Tor, then try again';
+
+  @override
+  String nostrTorFailedDetail(String error) {
+    return 'Tor failed: $error';
+  }
+
+  @override
   String geoDiscoveryStatus(String channel, String relays) {
     return '$channel · Nostr $relays';
   }
@@ -699,6 +715,33 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get transportModeAuto => 'Авто';
+
+  @override
+  String get gatewayRadioTitle => 'Gateway radio';
+
+  @override
+  String get gatewayRadioSubtitle =>
+      'Switch ESP32 gateway RF path — phone still uses BLE / SoftAP UDP';
+
+  @override
+  String get gatewayRadioLora => 'LoRa';
+
+  @override
+  String get gatewayRadioHalow => 'HaLow';
+
+  @override
+  String get gatewayRadioAuto => 'Auto';
+
+  @override
+  String get gatewayRadioHalowUnavailable =>
+      'HaLow not reported by this gateway (LoRa-only firmware)';
+
+  @override
+  String get gatewayRadioSharedWarning =>
+      'Changing gateway radio affects every phone connected to this gateway.';
+
+  @override
+  String get gatewayCapsWaiting => 'gateway: waiting for caps…';
 
   @override
   String get geoPublicHint =>
@@ -1203,6 +1246,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get meshLoraNotReady => 'не готов';
 
   @override
+  String get meshHalowReady => 'HaLow ready';
+
+  @override
+  String get meshHalowStubReady => 'HaLow ready (stub)';
+
+  @override
+  String get meshHalowRealReady => 'HaLow ready (link up)';
+
+  @override
+  String get meshHalowNotReady => 'HaLow not ready';
+
+  @override
+  String get meshGatewayHalowReady => 'Gateway HaLow: ready';
+
+  @override
+  String get meshGatewayHalowStubReady => 'Gateway HaLow: stub/loopback';
+
+  @override
+  String get meshGatewayHalowRealReady => 'Gateway HaLow: real link';
+
+  @override
   String meshGatewayProgress(String label) {
     return 'UDP-шлюз: $label';
   }
@@ -1291,11 +1355,60 @@ class AppLocalizationsRu extends AppLocalizations {
       'Общайтесь на ResilNet через ячеистую сеть — даже без Интернета';
 
   @override
-  String get onboardingFriendsTitle => 'Легко добавляйте друзей';
+  String get onboardingWelcomeFeatMeshLabel => 'Mesh';
 
   @override
-  String get onboardingFriendsBody =>
-      'Поделитесь QR-кодом из Identity или отсканируйте QR-код друга, чтобы обменяться открытыми ключами.';
+  String get onboardingWelcomeFeatMeshHint =>
+      'Nearby phones relay sealed packets hop-by-hop over Bluetooth LE.';
+
+  @override
+  String get onboardingWelcomeFeatE2eeLabel => 'E2EE';
+
+  @override
+  String get onboardingWelcomeFeatE2eeHint =>
+      'Direct chats encrypt on your device; only the peer’s key can open them.';
+
+  @override
+  String get onboardingWelcomeFeatOfflineLabel => 'Offline';
+
+  @override
+  String get onboardingWelcomeFeatOfflineHint =>
+      'You can keep chatting without cellular or Wi‑Fi internet access.';
+
+  @override
+  String get onboardingIdentityTitle => 'Your identity';
+
+  @override
+  String get onboardingIdentityBody =>
+      'Open Identity from the ⋮ menu. Your QR carries your public key so friends can verify you before private chat.';
+
+  @override
+  String get onboardingIdentityFeatQrLabel => 'QR';
+
+  @override
+  String get onboardingIdentityFeatQrHint =>
+      'Show or save your identity QR so others can add you safely.';
+
+  @override
+  String get onboardingIdentityFeatShareLabel => 'Share';
+
+  @override
+  String get onboardingIdentityFeatShareHint =>
+      'Share an invite link or QR payload from Identity.';
+
+  @override
+  String get onboardingIdentityFeatScanLabel => 'Scan';
+
+  @override
+  String get onboardingIdentityFeatScanHint =>
+      'Scan a friend’s QR to exchange public keys and unlock Direct chat.';
+
+  @override
+  String get onboardingIdentityFeatNameLabel => 'Name';
+
+  @override
+  String get onboardingIdentityFeatNameHint =>
+      'Save a display name that peers see when you announce yourself.';
 
   @override
   String get onboardingChannelsTitle => 'Зашифрованный чат + ближайшие каналы';
@@ -1303,6 +1416,453 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get onboardingChannelsBody =>
       'Переключите #mesh / Area (geohash), чтобы найти близлежащих сверстников — сообщения остаются E2EE через BLE mesh и Nostr';
+
+  @override
+  String get onboardingChannelsFeatDirectsLabel => 'Directs';
+
+  @override
+  String get onboardingChannelsFeatDirectsHint =>
+      'Private E2EE conversations with verified peers.';
+
+  @override
+  String get onboardingChannelsFeatMeshLabel => '#mesh';
+
+  @override
+  String get onboardingChannelsFeatMeshHint =>
+      'Public sealed posts to nearby mesh peers.';
+
+  @override
+  String get onboardingChannelsFeatGeoLabel => 'Area';
+
+  @override
+  String get onboardingChannelsFeatGeoHint =>
+      'Public posts scoped to your selected geohash cell.';
+
+  @override
+  String get onboardingChannelsFeatPinLabel => 'Pin';
+
+  @override
+  String get onboardingChannelsFeatPinHint =>
+      'Pin a channel so Community opens on that feed next time.';
+
+  @override
+  String get onboardingToolbarTitle => 'Community toolbar';
+
+  @override
+  String get onboardingToolbarBody =>
+      'App bar icons control location, transport, notices, unread Directs, online people, and the overflow menu (Wi‑Fi, recover, info, announcements, settings, identity).';
+
+  @override
+  String get onboardingToolbarFeatLocationLabel => 'Location';
+
+  @override
+  String get onboardingToolbarFeatLocationHint =>
+      'Open the Area sheet: precision, pin cells, teleport geohash, refresh GPS.';
+
+  @override
+  String get onboardingToolbarFeatTransportLabel => 'Transport';
+
+  @override
+  String get onboardingToolbarFeatTransportHint =>
+      'Choose Mesh, Internet, or Auto for how public traffic is carried.';
+
+  @override
+  String get onboardingToolbarFeatNoticesLabel => 'Notices';
+
+  @override
+  String get onboardingToolbarFeatNoticesHint =>
+      'Post and browse geo/mesh notices; open chat or block from an item.';
+
+  @override
+  String get onboardingToolbarFeatUnreadLabel => 'Unread';
+
+  @override
+  String get onboardingToolbarFeatUnreadHint =>
+      'Jump back to Directs when private messages are waiting.';
+
+  @override
+  String get onboardingToolbarFeatPeopleLabel => 'People';
+
+  @override
+  String get onboardingToolbarFeatPeopleHint =>
+      'See who is online nearby and open a Direct chat.';
+
+  @override
+  String get onboardingToolbarFeatMenuLabel => 'Menu';
+
+  @override
+  String get onboardingToolbarFeatMenuHint =>
+      '⋮ opens Local Wi‑Fi, Hard recover, Info, Announcements, Settings, Identity.';
+
+  @override
+  String get onboardingComposeTitle => 'Public compose';
+
+  @override
+  String get onboardingComposeBody =>
+      'On #mesh or Area, the bottom bar attaches an image, records voice, sends text, and sets message expiry (1d / 3d / 7d / ∞).';
+
+  @override
+  String get onboardingComposeFeatImageLabel => 'Image';
+
+  @override
+  String get onboardingComposeFeatImageHint =>
+      'Attach a photo to a sealed public post.';
+
+  @override
+  String get onboardingComposeFeatVoiceLabel => 'Voice';
+
+  @override
+  String get onboardingComposeFeatVoiceHint =>
+      'Record and send a short voice clip on the public feed.';
+
+  @override
+  String get onboardingComposeFeatSendLabel => 'Send';
+
+  @override
+  String get onboardingComposeFeatSendHint =>
+      'Publish your text to the selected public channel.';
+
+  @override
+  String get onboardingComposeFeatExpiryLabel => 'Expiry';
+
+  @override
+  String get onboardingComposeFeatExpiryHint =>
+      'Pick how long the post should remain before local expiry.';
+
+  @override
+  String get onboardingChatTitle => 'Direct chat controls';
+
+  @override
+  String get onboardingChatBody =>
+      'In a Direct chat you can scan to verify, block, set an alias, accept a pending peer key, then send mic / image / emoji / text. Long-press a message to copy, retry, or delete locally.';
+
+  @override
+  String get onboardingChatFeatScanLabel => 'Scan';
+
+  @override
+  String get onboardingChatFeatScanHint =>
+      'Scan this peer’s QR if their verified key is still missing.';
+
+  @override
+  String get onboardingChatFeatBlockLabel => 'Block';
+
+  @override
+  String get onboardingChatFeatBlockHint =>
+      'Stop notifications and relay for this sender.';
+
+  @override
+  String get onboardingChatFeatAliasLabel => 'Alias';
+
+  @override
+  String get onboardingChatFeatAliasHint =>
+      'Give the peer a nickname only you see.';
+
+  @override
+  String get onboardingChatFeatAcceptKeyLabel => 'Accept';
+
+  @override
+  String get onboardingChatFeatAcceptKeyHint =>
+      'Confirm a pending public key before messaging.';
+
+  @override
+  String get onboardingChatFeatMicLabel => 'Mic';
+
+  @override
+  String get onboardingChatFeatMicHint =>
+      'Push-to-talk voice note, sealed for this peer.';
+
+  @override
+  String get onboardingChatFeatImageLabel => 'Image';
+
+  @override
+  String get onboardingChatFeatImageHint =>
+      'Send an encrypted photo in the Direct thread.';
+
+  @override
+  String get onboardingChatFeatEmojiLabel => 'Emoji';
+
+  @override
+  String get onboardingChatFeatEmojiHint =>
+      'Open the emoji picker for the compose field.';
+
+  @override
+  String get onboardingChatFeatSendLabel => 'Send';
+
+  @override
+  String get onboardingChatFeatSendHint =>
+      'Encrypt and route the text message to this peer.';
+
+  @override
+  String get onboardingAnnounceTitle => 'Announcement boards';
+
+  @override
+  String get onboardingAnnounceBody =>
+      'Create or follow boards, scan invite QR, approve key requests, toggle locked/open posting, then post image/emoji/text and share invites.';
+
+  @override
+  String get onboardingAnnounceFeatCreateLabel => 'Create';
+
+  @override
+  String get onboardingAnnounceFeatCreateHint =>
+      'Start a new announcement board you control.';
+
+  @override
+  String get onboardingAnnounceFeatScanLabel => 'Scan';
+
+  @override
+  String get onboardingAnnounceFeatScanHint =>
+      'Scan a board invite QR or follow a deep link.';
+
+  @override
+  String get onboardingAnnounceFeatAccessLabel => 'Access';
+
+  @override
+  String get onboardingAnnounceFeatAccessHint =>
+      'Request access, approve/deny key requests, lock or open posting.';
+
+  @override
+  String get onboardingAnnounceFeatPostLabel => 'Post';
+
+  @override
+  String get onboardingAnnounceFeatPostHint =>
+      'Publish to the board with image, emoji, or text.';
+
+  @override
+  String get onboardingWifiTitle => 'Local Wi‑Fi link';
+
+  @override
+  String get onboardingWifiBody =>
+      'From Settings or the ⋮ menu, host or join a LAN ResilNet link to chat with peers on the same Wi‑Fi without the internet.';
+
+  @override
+  String get onboardingWifiFeatHostLabel => 'Host';
+
+  @override
+  String get onboardingWifiFeatHostHint =>
+      'Start a Local Wi‑Fi session others on the LAN can discover.';
+
+  @override
+  String get onboardingWifiFeatJoinLabel => 'Join';
+
+  @override
+  String get onboardingWifiFeatJoinHint =>
+      'Discover and join a host on your local network.';
+
+  @override
+  String get onboardingWifiFeatChatLabel => 'Chat';
+
+  @override
+  String get onboardingWifiFeatChatHint =>
+      'Open Direct chat with a peer sighted on the LAN.';
+
+  @override
+  String get onboardingTransportTitle => 'Transport & sync';
+
+  @override
+  String get onboardingTransportBody =>
+      'Settings and the transport picker choose Mesh / Internet / Auto, ensure BLE advertising, and reconnect Nostr with message expiry options.';
+
+  @override
+  String get onboardingTransportFeatMeshLabel => 'Mesh';
+
+  @override
+  String get onboardingTransportFeatMeshHint =>
+      'Prefer BLE mesh for nearby delivery.';
+
+  @override
+  String get onboardingTransportFeatInternetLabel => 'Internet';
+
+  @override
+  String get onboardingTransportFeatInternetHint =>
+      'Prefer Nostr / internet paths when available.';
+
+  @override
+  String get onboardingTransportFeatAutoLabel => 'Auto';
+
+  @override
+  String get onboardingTransportFeatAutoHint =>
+      'Let ResilNet pick mesh or internet based on conditions.';
+
+  @override
+  String get onboardingTransportFeatBleLabel => 'BLE';
+
+  @override
+  String get onboardingTransportFeatBleHint =>
+      'Ensure BLE mesh advertising/scanning is active.';
+
+  @override
+  String get onboardingTransportFeatNostrLabel => 'Nostr';
+
+  @override
+  String get onboardingTransportFeatNostrHint =>
+      'Reconnect relays and set how long synced posts live.';
+
+  @override
+  String get onboardingGeoTitle => 'Area & geohash';
+
+  @override
+  String get onboardingGeoBody =>
+      'The location sheet sets GPS cell precision, pins areas you care about, teleports to a geohash, and refreshes your current cell for Area chat.';
+
+  @override
+  String get onboardingGeoFeatGpsLabel => 'GPS';
+
+  @override
+  String get onboardingGeoFeatGpsHint =>
+      'Refresh your current geohash from GPS.';
+
+  @override
+  String get onboardingGeoFeatPrecisionLabel => 'Precision';
+
+  @override
+  String get onboardingGeoFeatPrecisionHint =>
+      'Widen or tighten the Area cell size.';
+
+  @override
+  String get onboardingGeoFeatTeleportLabel => 'Teleport';
+
+  @override
+  String get onboardingGeoFeatTeleportHint =>
+      'Jump to a geohash string without moving physically.';
+
+  @override
+  String get onboardingGeoFeatPinLabel => 'Pin';
+
+  @override
+  String get onboardingGeoFeatPinHint =>
+      'Pin favorite Area cells for quick return.';
+
+  @override
+  String get onboardingAdvancedTitle => 'Bridges & hardware';
+
+  @override
+  String get onboardingAdvancedBody =>
+      'Settings opens Mesh topology, Meshtastic MQTT bridge, ESP32 firmware download + BLE OTA, and LXMF home-node bridge for radio/mule links.';
+
+  @override
+  String get onboardingAdvancedFeatTopoLabel => 'Topology';
+
+  @override
+  String get onboardingAdvancedFeatTopoHint =>
+      'Visualize mesh nodes and tap a node to open chat.';
+
+  @override
+  String get onboardingAdvancedFeatMtLabel => 'Meshtastic';
+
+  @override
+  String get onboardingAdvancedFeatMtHint =>
+      'Bridge via MQTT topics, relay, and simulate ingest/egress.';
+
+  @override
+  String get onboardingAdvancedFeatEspLabel => 'ESP32';
+
+  @override
+  String get onboardingAdvancedFeatEspHint =>
+      'Download firmware bins and flash over BLE OTA.';
+
+  @override
+  String get onboardingAdvancedFeatLxmfLabel => 'LXMF';
+
+  @override
+  String get onboardingAdvancedFeatLxmfHint =>
+      'Enable a home-node bridge and manage destination links.';
+
+  @override
+  String get onboardingSecurityTitle => 'Safety & recovery';
+
+  @override
+  String get onboardingSecurityBody =>
+      'Settings covers notifications, screenshot alerts, save history, clear messages, panic wipe, hard recover, session reset, language, and docs.';
+
+  @override
+  String get onboardingSecurityFeatNotifLabel => 'Alerts';
+
+  @override
+  String get onboardingSecurityFeatNotifHint => 'Toggle message notifications.';
+
+  @override
+  String get onboardingSecurityFeatShotLabel => 'Screenshot';
+
+  @override
+  String get onboardingSecurityFeatShotHint =>
+      'Warn when a screenshot is taken while chatting.';
+
+  @override
+  String get onboardingSecurityFeatHistoryLabel => 'History';
+
+  @override
+  String get onboardingSecurityFeatHistoryHint =>
+      'Choose whether chats are kept on disk.';
+
+  @override
+  String get onboardingSecurityFeatPanicLabel => 'Panic';
+
+  @override
+  String get onboardingSecurityFeatPanicHint =>
+      'Wipe local secrets and messages in an emergency.';
+
+  @override
+  String get onboardingSecurityFeatRecoverLabel => 'Recover';
+
+  @override
+  String get onboardingSecurityFeatRecoverHint =>
+      'Hard recover or session reset if the app is stuck.';
+
+  @override
+  String get onboardingSecurityFeatDocsLabel => 'Docs';
+
+  @override
+  String get onboardingSecurityFeatDocsHint =>
+      'Open the in-app guide and info sheets.';
+
+  @override
+  String get onboardingWatchTitle => 'Apple Watch';
+
+  @override
+  String get onboardingWatchBody =>
+      'Pair an Apple Watch to see mesh status, recent Directs, and send short encrypted texts. The Watch uses your iPhone for crypto and mesh routing.';
+
+  @override
+  String get onboardingWatchFeatStatusLabel => 'Status';
+
+  @override
+  String get onboardingWatchFeatStatusHint =>
+      'Glance transport mode, online peers, and your short id.';
+
+  @override
+  String get onboardingWatchFeatChatsLabel => 'Chats';
+
+  @override
+  String get onboardingWatchFeatChatsHint =>
+      'Browse recent Direct threads and unread counts.';
+
+  @override
+  String get onboardingWatchFeatSendLabel => 'Send';
+
+  @override
+  String get onboardingWatchFeatSendHint =>
+      'Type a short message (≈160 chars); iPhone seals and routes it.';
+
+  @override
+  String get onboardingReadyTitle => 'You’re ready';
+
+  @override
+  String get onboardingReadyBody =>
+      'Tap Get started to enter Community, or Skip anytime from the top. You can revisit Settings → Docs if you need a refresher.';
+
+  @override
+  String get onboardingReadyFeatStartLabel => 'Start';
+
+  @override
+  String get onboardingReadyFeatStartHint =>
+      'Finish onboarding and open the Community home.';
+
+  @override
+  String get onboardingReadyFeatSkipLabel => 'Skip';
+
+  @override
+  String get onboardingReadyFeatSkipHint =>
+      'Skip is always available on every page to enter immediately.';
 
   @override
   String get chatTitle => 'Чат (E2EE)';

@@ -1713,7 +1713,8 @@ class BleMeshService extends ChangeNotifier {
           }
           if (routed.transports.contains(TransportTypeDto.nostr) &&
               !routed.transports.contains(TransportTypeDto.bluetoothMesh) &&
-              !routed.transports.contains(TransportTypeDto.loRa)) {
+              !routed.transports.contains(TransportTypeDto.loRa) &&
+              !routed.transports.contains(TransportTypeDto.haLow)) {
             debugPrint(
               '[BleMesh] nostr-only id=${msg.id} — skip BLE hop',
             );

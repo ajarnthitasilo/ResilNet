@@ -26,6 +26,9 @@ class LoRaManager {
   /// เริ่ม FreeRTOS tasks RX/TX
   void startTasks();
 
+  /// ล้างคิว TX ที่ค้าง (ใช้ตอนสวิตช์วิทยุ — ปล่อยให้แอป retry เอง)
+  void flushTxQueue();
+
   DedupCache& dedup() { return _dedup; }
 
   /// ตรวจ + บันทึก packet_id (thread-safe) — คืน true ถ้าเป็น id ใหม่

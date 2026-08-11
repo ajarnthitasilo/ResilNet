@@ -11,6 +11,7 @@ import 'l10n/supported_locales.dart';
 import 'screens/chat_list_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/permission_screen.dart';
+import 'services/watch_sync_service.dart';
 import 'state/app_state.dart';
 import 'widgets/app_lifecycle_handler.dart';
 import 'widgets/board_invite_link_listener.dart';
@@ -54,6 +55,34 @@ class ResilNetApp extends StatefulWidget {
 
 class _ResilNetAppState extends State<ResilNetApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    WatchSyncService.instance.bind(
+      appState: widget.appState,
+      navigatorKey: _navigatorKey,
+    );
+    widget.appState.addListener(_onAppStateForWatch);
+  }
+
+  @override
+  void dispose() {
+    widget.appState.removeListener(_onAppStateForWatch);
+    WatchSyncService.instance.dispose();
+    super.dispose();
+  }
+
+  void _onAppStateForWatch() {
+    final s = widget.appState;
+    if (!s.myUserIdReady) return;
+    unawaited(WatchSyncService.instance.pushSnapshot());
+    for (final delay in [1, 2, 4, 8, 15]) {
+      Future<void>.delayed(Duration(seconds: delay), () {
+        unawaited(WatchSyncService.instance.pushSnapshot());
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

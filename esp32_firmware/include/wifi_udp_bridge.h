@@ -16,6 +16,9 @@ class WifiUdpBridge {
   /// Broadcast แพ็กเก็ตไปยังมือถือทุกเครื่องบน SoftAP (UDP)
   void broadcastPacket(const ResilNetRadioPacket& pkt);
 
+  /// Broadcast RN_CAPS / control frame (raw bytes, not radio encoded)
+  void broadcastControlFrame(const uint8_t* data, size_t len);
+
   bool isApActive() const { return _apActive; }
 
   /// มีสถานี Wi-Fi (มือถือ) เกาะ SoftAP อยู่หรือไม่

@@ -23,14 +23,14 @@ Deployed by `.github/workflows/deploy-docs.yml` on pushes that touch `docs-site/
 |------|------|
 | `th/` | คู่มือภาษาไทย (ค่าเริ่มต้น) |
 | `en/` | English guide |
-| `th/guide/whats-new.md` | เปลี่ยนจากคู่มือรอบ 1.9.64 → 1.9.75 |
+| `th/guide/whats-new.md` | เปลี่ยนจากคู่มือรอบ 1.9.64 → 1.10.0 |
 | `th/guide/apple-watch.md` | Apple Watch companion |
 | `th/guide/area.md` | Area / geohash |
 | `th/guide/reticulum-home-node.md` | Home node / Reticulum / LXMF (ผู้ใช้) |
 | `th/guide/local-wifi.md` | Local Wi‑Fi |
 | `firmware/` | CDN hub: `manifest.json`, `esp32_*/latest.bin`, alias `.bin` names |
 
-App version documented in the guide home pages: **1.9.75**. Firmware packages on the CDN remain **1.9.49** until the next `sync_docs_firmware` / release sync — check `firmware/manifest.json`.
+App version documented in the guide home pages: **1.10.0**. Firmware packages on the CDN remain **1.9.49** until the next `sync_docs_firmware` / release sync — check `firmware/manifest.json`.
 
 ## Refresh firmware on the docs hub
 

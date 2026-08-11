@@ -9,6 +9,7 @@ import '../core/docs_links.dart';
 import '../l10n/l10n_ext.dart';
 import '../l10n/supported_locales.dart';
 import '../models/notice_expiry.dart';
+import '../models/gateway_radio_mode.dart';
 import '../models/transport_mode.dart';
 import '../state/app_state.dart';
 import 'announcements_screen.dart';
@@ -371,6 +372,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: s.setMeshBridgeEnabled,
             ),
             const SizedBox(height: 12),
+            Text(l10n.gatewayRadioTitle),
+            const SizedBox(height: 4),
+            Text(
+              l10n.gatewayRadioSubtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context),
+                  ),
+            ),
+            const SizedBox(height: 10),
+            SegmentedButton<GatewayRadioMode>(
+              segments: [
+                ButtonSegment(
+                  value: GatewayRadioMode.lora,
+                  label: Text(l10n.gatewayRadioLora),
+                ),
+                ButtonSegment(
+                  value: GatewayRadioMode.halow,
+                  label: Text(l10n.gatewayRadioHalow),
+                  enabled: s.gatewayHalowCapable,
+                ),
+                ButtonSegment(
+                  value: GatewayRadioMode.auto,
+                  label: Text(l10n.gatewayRadioAuto),
+                ),
+              ],
+              selected: {s.gatewayRadioMode},
+              onSelectionChanged: s.gatewayHalowCapable || s.isGatewayWifiActive
+                  ? (set) => unawaited(s.setGatewayRadioMode(set.first))
+                  : null,
+            ),
+            if (!s.gatewayHalowCapable && s.isGatewayWifiActive) ...[
+              const SizedBox(height: 6),
+              Text(
+                l10n.gatewayRadioHalowUnavailable,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: ResilNetTheme.mutedOnSurface(context),
+                    ),
+              ),
+            ],
+            if (s.isGatewayWifiActive) ...[
+              const SizedBox(height: 6),
+              Text(
+                l10n.gatewayRadioSharedWarning,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.amberAccent.withValues(alpha: 0.9),
+                    ),
+              ),
+            ],
+            const SizedBox(height: 12),
             Text(l10n.transportModeTitle),
             const SizedBox(height: 4),
             Text(
@@ -534,6 +584,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ? l10n.nostrReconnecting
                     : l10n.nostrReconnectAction,
               ),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: Icon(
+                s.nostrTorEnabled
+                    ? Icons.vpn_lock
+                    : Icons.vpn_lock_outlined,
+                color: s.nostrTorEnabled
+                    ? ResilNetTheme.emerald
+                    : ResilNetTheme.mutedOnSurface(context),
+              ),
+              title: Text(l10n.nostrTorTitle),
+              subtitle: Text(l10n.nostrTorSubtitle),
+              value: s.nostrTorEnabled,
+              onChanged: s.nostrReconnecting
+                  ? null
+                  : (v) async {
+                      await s.setNostrTorEnabled(v);
+                      if (!context.mounted) return;
+                      final err = s.nostrLastError;
+                      if (v && !s.isNostrOnline) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          GlassSnackBar(
+                            content: Text(
+                              (err != null && err.isNotEmpty)
+                                  ? l10n.nostrTorFailedDetail(err)
+                                  : l10n.nostrTorFailed,
+                            ),
+                          ),
+                        );
+                      }
+                    },
             ),
             const SizedBox(height: 16),
             Text(l10n.settingsNostrExpiryTitle),

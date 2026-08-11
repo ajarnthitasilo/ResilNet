@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "appVersion": "1.9.49",
+  "appVersion": "1.10.0",
   "minCompatibleVersion": "1.9.0",
-  "updatedAt": "2026-07-31",
+  "updatedAt": "2026-08-11",
   "artifacts": {
     "standaloneNode": {
       "file": "resilnet_esp32_standalone.bin",

@@ -541,17 +541,23 @@ class DatabaseService {
   Future<List<String>> getChatPeersFor(String myId) async {
     final rows = await _database.rawQuery(
       '''
-      SELECT DISTINCT
-        CASE
-          WHEN senderId = ? THEN receiverId
-          ELSE senderId
-        END AS peerId
-      FROM messages
-      WHERE (senderId = ? OR receiverId = ?)
-        AND type != ?
-        AND receiverId != ?
-        AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')
-      ORDER BY MAX(timestamp) DESC
+      SELECT peerId, MAX(timestamp) AS lastTs
+      FROM (
+        SELECT
+          CASE
+            WHEN senderId = ? THEN receiverId
+            ELSE senderId
+          END AS peerId,
+          timestamp
+        FROM messages
+        WHERE (senderId = ? OR receiverId = ?)
+          AND type != ?
+          AND receiverId != ?
+          AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')
+      )
+      WHERE peerId IS NOT NULL AND peerId != ''
+      GROUP BY peerId
+      ORDER BY lastTs DESC
     ''',
       [
         myId,
@@ -562,7 +568,7 @@ class DatabaseService {
       ],
     );
     return rows
-        .map((e) => e['peerId'] as String)
+        .map((e) => (e['peerId'] as String?) ?? '')
         .where(
           (e) => e.isNotEmpty && e != ResilNetIds.broadcastReceiverId,
         )

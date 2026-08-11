@@ -2,11 +2,11 @@
 
 **ResilNet** is a crisis-ready, account-less messaging system. It works without cellular service or a central cloud server, spanning short-range BLE, mid-range LoRa (via ESP32), phone LAN / home-node bridges, and long-range sync over public **Nostr** relays.
 
-**Current app version:** `1.9.75` (+93)  
+**Current app version:** `1.10.0` (+94)  
 **ESP32 firmware (releases/):** `1.9.49` (LoRa mesh relay + store-and-forward)  
 **Bundled ESP32 firmware baseline:** `1.9.49`
 
-> App guide / docs are updated for **1.9.75**. CDN firmware may still list **1.9.49** until the next sync — trust `releases/firmware/manifest.json` for `.bin` hashes.
+> App guide / docs are updated for **1.10.0**. CDN firmware may still list **1.9.49** until the next sync — trust `releases/firmware/manifest.json` for `.bin` hashes.
 
 ## Project layout
 
@@ -39,7 +39,7 @@ Deploy: `.github/workflows/deploy-docs.yml`. First time enable **Settings → Pa
 
 ---
 
-## 1. Architecture highlights (v1.9.x)
+## 1. Architecture highlights (v1.10.x)
 
 - **True decentralization (no cloud backend):** No Supabase or other centralized app server. Remote sync uses **Nostr** over public relays.
 - **Account-less cryptographic identity:** No email/phone signup. Keys are generated on-device (`secp256k1` / `npub` / `nsec`) on first launch.

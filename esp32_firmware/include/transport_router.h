@@ -4,10 +4,13 @@
 
 #if defined(NODE_TYPE_LORA_GATEWAY)
 
-/// Multi-transport routing: BLE / Wi-Fi UDP / LoRa (+ optional cellular)
+/// Multi-transport routing: BLE / Wi-Fi UDP / LoRa / HaLow (+ optional cellular)
 
 /// แพ็กเก็ตจาก LoRa → BLE + Wi-Fi UDP broadcast
 void transportForwardFromLora(const ResilNetRadioPacket& pkt);
+
+/// แพ็กเก็ตจาก HaLow → BLE + Wi-Fi UDP broadcast
+void transportForwardFromHalow(const ResilNetRadioPacket& pkt);
 
 /// แพ็กเก็ตจาก Wi-Fi UDP → LoRa (และ cellular หากเปิดใช้)
 void transportForwardFromUdp(const ResilNetRadioPacket& pkt);
