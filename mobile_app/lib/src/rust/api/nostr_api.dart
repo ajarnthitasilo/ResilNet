@@ -11,12 +11,19 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 ///
 /// After connect, background task auto-ingests ResilNet envelopes into the hybrid router
 /// (same dedup path as BLE / LoRa).
+///
+/// `use_tor`: when true, all relay WebSockets use local SOCKS5 (default `127.0.0.1:9050`).
+/// Fail-closed — if SOCKS is down, clearnet is not used.
 Future<NostrInitResultDto> initNostr({
   String? secretKeyHex,
   List<String>? relayUrls,
+  bool? useTor,
+  String? socksAddr,
 }) => ResilNetCore.instance.api.crateApiNostrApiInitNostr(
   secretKeyHex: secretKeyHex,
   relayUrls: relayUrls,
+  useTor: useTor,
+  socksAddr: socksAddr,
 );
 
 Future<NostrPoolStatusDto> getNostrStatus() =>
@@ -24,6 +31,18 @@ Future<NostrPoolStatusDto> getNostrStatus() =>
 
 Future<void> nostrReconnect() =>
     ResilNetCore.instance.api.crateApiNostrApiNostrReconnect();
+
+/// Enable/disable Tor SOCKS routing for Nostr and rebuild the relay client.
+///
+/// When `enabled` is true and SOCKS is unreachable, any clearnet client is shut
+/// down (fail-closed) and an error is returned.
+Future<NostrPoolStatusDto> setNostrTorEnabled({
+  required bool enabled,
+  String? socksAddr,
+}) => ResilNetCore.instance.api.crateApiNostrApiSetNostrTorEnabled(
+  enabled: enabled,
+  socksAddr: socksAddr,
+);
 
 /// Publish ResilNet envelope to Nostr relays (kind = direct | health).
 /// `"broadcast"` is rejected (legacy village-announcement product removed).

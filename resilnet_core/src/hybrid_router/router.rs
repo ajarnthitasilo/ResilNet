@@ -308,8 +308,8 @@ impl ResilNetRouterInner {
             transports.push(TransportType::BluetoothMesh);
         }
 
-        if status.lora_available {
-            transports.push(TransportType::LoRa);
+        if let Some(gateway) = status.selected_gateway_transport() {
+            transports.push(gateway);
         }
 
         if transports.is_empty() {
@@ -450,6 +450,46 @@ mod tests {
         let pkt = sample_packet(0);
         let routed = handle.route_packet(pkt).await.unwrap();
         assert_eq!(routed.transport, TransportType::OfflineQueue);
+    }
+
+    #[tokio::test]
+    async fn routes_via_halow_when_preferred_and_available() {
+        use crate::hybrid_router::{GatewayRadioPreference, NetworkStatus};
+
+        let (_router, handle, _incoming) = ResilNetRouter::new(RouterConfig::default());
+        handle.update_network_status(NetworkStatus::with_gateway(
+            false,
+            0,
+            true,
+            true,
+            true,
+            GatewayRadioPreference::HaLow,
+        ));
+
+        let pkt = sample_packet(3);
+        let routed = handle.route_packet(pkt).await.unwrap();
+
+        assert_eq!(routed.transport, TransportType::HaLow);
+        assert_eq!(routed.transports, vec![TransportType::HaLow]);
+    }
+
+    #[tokio::test]
+    async fn auto_prefers_halow_when_link_up() {
+        use crate::hybrid_router::{GatewayRadioPreference, NetworkStatus};
+
+        let (_router, handle, _incoming) = ResilNetRouter::new(RouterConfig::default());
+        handle.update_network_status(NetworkStatus::with_gateway(
+            false,
+            0,
+            true,
+            true,
+            true,
+            GatewayRadioPreference::Auto,
+        ));
+
+        let routed = handle.route_packet(sample_packet(3)).await.unwrap();
+        assert!(routed.transports.contains(&TransportType::HaLow));
+        assert!(!routed.transports.contains(&TransportType::LoRa));
     }
 
     #[tokio::test]

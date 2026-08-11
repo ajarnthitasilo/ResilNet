@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../core/gateway_caps_coordinator.dart';
 import '../core/resilnet_protocol.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/ble_radio_state.dart';
+import '../models/gateway_radio_mode.dart';
 import '../state/app_state.dart';
 import '../app/glass_overlays.dart';
 
@@ -52,6 +54,38 @@ class MeshStatusBar extends StatelessWidget {
     }
   }
 
+  String _meshFooterRadioLabel(
+    AppLocalizations l10n,
+    AppState s,
+    GatewayCaps? caps,
+  ) {
+    final halowActive = s.resilnet.halowAvailable &&
+        s.gatewayRadioMode != GatewayRadioMode.lora;
+    if (halowActive) {
+      if (caps?.halowStub == true) return l10n.meshHalowStubReady;
+      if (caps?.halowLinkUp == true) return l10n.meshHalowRealReady;
+      return l10n.meshHalowNotReady;
+    }
+    return s.resilnet.loraAvailable
+        ? l10n.meshLoraReady
+        : l10n.meshLoraNotReady;
+  }
+
+  String _gatewayDetailLabel(AppLocalizations l10n, AppState s) {
+    if (s.gatewayCapsPhase == GatewayCapsPhase.waitingCaps) {
+      return l10n.gatewayCapsWaiting;
+    }
+    final caps = s.resilnet.gatewayCaps;
+    final halowActive = s.resilnet.halowAvailable &&
+        s.gatewayRadioMode != GatewayRadioMode.lora;
+    if (halowActive) {
+      if (caps?.halowStub == true) return l10n.meshGatewayHalowStubReady;
+      if (caps?.halowLinkUp == true) return l10n.meshGatewayHalowRealReady;
+      return l10n.meshHalowNotReady;
+    }
+    return l10n.meshGatewayReady;
+  }
+
   Future<void> _onNostrTap(BuildContext context, AppState s) async {
     final l10n = context.l10n;
     final ok = await s.reconnectNostrAndSyncGeo();
@@ -88,9 +122,11 @@ class MeshStatusBar extends StatelessWidget {
     final chunkProgress = s.chunkTransferState;
     // 0/0 = not initialized; 0/N = init ok but no relay up yet.
     final relays = s.nostrRelayLabel;
-    final lora = s.resilnet.loraAvailable
-        ? l10n.meshLoraReady
-        : l10n.meshLoraNotReady;
+    final caps = s.resilnet.gatewayCaps;
+    final waitingCaps = s.gatewayCapsPhase == GatewayCapsPhase.waitingCaps;
+    final lora = waitingCaps
+        ? l10n.gatewayCapsWaiting
+        : _meshFooterRadioLabel(l10n, s, caps);
     final showRestart = radioState == BleRadioState.stopped ||
         radioState == BleRadioState.needsPermission ||
         radioState == BleRadioState.pausedForCamera;
@@ -192,7 +228,7 @@ class MeshStatusBar extends StatelessWidget {
             Text(
               chunkProgress != null
                   ? l10n.meshGatewayProgress(chunkProgress.label)
-                  : l10n.meshGatewayReady,
+                  : _gatewayDetailLabel(l10n, s),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: chunkProgress != null
                         ? ResilNetTheme.emerald

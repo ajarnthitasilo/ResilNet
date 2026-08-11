@@ -38,6 +38,7 @@ import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
 import '../models/push_signal.dart';
+import '../models/gateway_radio_mode.dart';
 import '../models/transport_mode.dart';
 import '../services/ack_handler_service.dart';
 import '../services/ack_queue_manager.dart';
@@ -374,6 +375,11 @@ class AppState extends ChangeNotifier {
   bool _meshBridgeEnabled = true;
   bool get meshBridgeEnabled => _meshBridgeEnabled;
 
+  /// Route Nostr relay WebSockets via local Tor SOCKS5 (default off).
+  static const _kNostrTorEnabled = 'resilnet_nostr_tor_enabled';
+  bool _nostrTorEnabled = false;
+  bool get nostrTorEnabled => _nostrTorEnabled;
+
   /// Mac/Pi LXMF bridge via localhost HTTP (off by default).
   static const _kLxmfBridgeEnabled = 'resilnet_lxmf_bridge_enabled';
   static const _kLxmfBridgeBaseUrl = 'resilnet_lxmf_bridge_base_url';
@@ -508,6 +514,8 @@ class AppState extends ChangeNotifier {
   }
 
   static const _kOnboardingDone = 'resilnet_onboarding_done';
+  /// Legacy Keychain key (survives uninstall). No longer written or used to skip
+  /// onboarding after reinstall — SharedPreferences alone is the source of truth.
   static const _kOnboardingDoneSecure = 'resilnet_onboarding_done';
   bool _onboardingCompleted = false;
   bool get onboardingCompleted => _onboardingCompleted;
@@ -558,6 +566,7 @@ class AppState extends ChangeNotifier {
   static const _kFeedChannel = 'resilnet_feed_channel';
   static const _kGeoPrecision = 'resilnet_geo_precision';
   static const _kTransportMode = 'resilnet_transport_mode';
+  static const _kGatewayRadioMode = 'resilnet_gateway_radio_mode';
   static const _kManualGeohash = 'resilnet_manual_geohash';
   static const _kCachedGeohash = 'resilnet_cached_geohash';
 
@@ -569,6 +578,12 @@ class AppState extends ChangeNotifier {
 
   TransportMode _transportMode = TransportMode.auto;
   TransportMode get transportMode => _transportMode;
+
+  GatewayRadioMode _gatewayRadioMode = GatewayRadioMode.auto;
+  GatewayRadioMode get gatewayRadioMode => _gatewayRadioMode;
+  bool get gatewayHalowCapable => resilnet.gatewayHalowCapable;
+  GatewayCapsPhase get gatewayCapsPhase => resilnet.gatewayCapsPhase;
+  bool get gatewayHalowStub => resilnet.gatewayHalowStub;
 
   /// Anonymous Nostr presence sightings keyed by pubkey hex.
   final Map<String, NostrPresenceSighting> _nostrPresence = {};
@@ -803,7 +818,10 @@ class AppState extends ChangeNotifier {
       await _firmware!.refreshLocalInfo();
 
       _nostr = NostrSyncService();
-      final nostrOk = await _nostr!.start();
+      // Prefs block loads later; read Tor flag early so bootstrap honors it.
+      final earlyPrefs = await SharedPreferences.getInstance();
+      _nostrTorEnabled = earlyPrefs.getBool(_kNostrTorEnabled) ?? false;
+      final nostrOk = await _nostr!.start(useTor: _nostrTorEnabled);
       if (nostrOk) {
         _attachGeoPresenceListener();
       } else {
@@ -874,6 +892,7 @@ class AppState extends ChangeNotifier {
       }
       _screenshotAlerts = prefs.getBool(_kScreenshotAlerts) ?? true;
       _meshBridgeEnabled = prefs.getBool(_kMeshBridgeEnabled) ?? true;
+      _nostrTorEnabled = prefs.getBool(_kNostrTorEnabled) ?? false;
       _lxmfBridgeEnabled = prefs.getBool(_kLxmfBridgeEnabled) ?? false;
       _lxmfBridgeBaseUrl =
           prefs.getString(_kLxmfBridgeBaseUrl)?.trim().isNotEmpty == true
@@ -888,9 +907,13 @@ class AppState extends ChangeNotifier {
       _loadNotices(prefs);
       await _loadAnnouncementBoards(prefs);
       await _loadContactAliases();
+      // Prefs only: cleared on uninstall, so reinstall shows onboarding again.
       _onboardingCompleted = prefs.getBool(_kOnboardingDone) ?? false;
       if (!_onboardingCompleted) {
-        await _restoreOnboardingIfReturningUser(prefs);
+        // Drop leftover Keychain flag from older builds (survives delete/reinstall).
+        try {
+          await _storage.delete(key: _kOnboardingDoneSecure);
+        } catch (_) {}
       }
       final loc = prefs.getString(_kLocaleOverride);
       _localeOverrideCode = (loc == null || loc.isEmpty || loc == 'system')
@@ -906,6 +929,9 @@ class AppState extends ChangeNotifier {
         orElse: () => GeoPrecision.region,
       );
       _transportMode = TransportMode.fromName(prefs.getString(_kTransportMode));
+      _gatewayRadioMode =
+          GatewayRadioMode.fromName(prefs.getString(_kGatewayRadioMode));
+      resilnet.configureGatewayRadioMode(_gatewayRadioMode);
 
       final mtCb = _onMeshtasticBridgeChanged;
       if (mtCb != null) {
@@ -969,47 +995,13 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  /// Returning user heuristics when prefs flag was lost (e.g. reinstall).
-  /// Panic wipe clears keychain identity + secure flag so intro still shows.
-  Future<void> _restoreOnboardingIfReturningUser(
-    SharedPreferences prefs,
-  ) async {
-    try {
-      final secureDone =
-          (await _storage.read(key: _kOnboardingDoneSecure))?.trim() == '1';
-      if (secureDone) {
-        await _persistOnboardingDone(prefs);
-        debugPrint('[ResilNet] onboarding restored from keychain flag');
-        return;
-      }
-    } catch (e) {
-      debugPrint('[ResilNet] onboarding secure read failed: $e');
-    }
-
-    final existingPeers = await db.getAllPeers(limit: 1);
-    final hasMessages = await db.hasAnyMessages();
-    final restoredIdentity = crypto.restoredFromKeychain;
-    if (existingPeers.isNotEmpty ||
-        _displayName.isNotEmpty ||
-        hasMessages ||
-        restoredIdentity) {
-      await _persistOnboardingDone(prefs);
-      debugPrint(
-        '[ResilNet] onboarding restored '
-        '(peers=${existingPeers.isNotEmpty} name=${_displayName.isNotEmpty} '
-        'msgs=$hasMessages identity=$restoredIdentity)',
-      );
-    }
-  }
-
   Future<void> _persistOnboardingDone(SharedPreferences prefs) async {
     _onboardingCompleted = true;
     await prefs.setBool(_kOnboardingDone, true);
+    // Do not mirror to Keychain — that survived uninstall and skipped intro.
     try {
-      await _storage.write(key: _kOnboardingDoneSecure, value: '1');
-    } catch (e) {
-      debugPrint('[ResilNet] onboarding secure write failed: $e');
-    }
+      await _storage.delete(key: _kOnboardingDoneSecure);
+    } catch (_) {}
   }
 
   void _loadNotices(SharedPreferences prefs) {
@@ -1733,6 +1725,26 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Enable/disable Tor SOCKS for Nostr (fail-closed when enabling).
+  Future<void> setNostrTorEnabled(bool enabled) async {
+    if (_nostrTorEnabled == enabled && _nostr?.useTor == enabled) return;
+    _nostrTorEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kNostrTorEnabled, enabled);
+    notifyListeners();
+
+    final sync = _nostr;
+    if (sync == null) return;
+    final ok = await sync.setTorEnabled(enabled);
+    if (ok || sync.isInitialized) {
+      _attachGeoPresenceListener();
+    }
+    if (ok && _transportMode.usesInternet) {
+      unawaited(syncGeoPresence(forceAnnounce: true));
+    }
+    notifyListeners();
+  }
+
   Future<void> setLxmfBridgeEnabled(bool enabled) async {
     if (_lxmfBridgeEnabled == enabled) return;
     _lxmfBridgeEnabled = enabled;
@@ -2194,7 +2206,9 @@ class AppState extends ChangeNotifier {
     final meshLike = transports
         .where(
           (t) =>
-              t == TransportTypeDto.bluetoothMesh || t == TransportTypeDto.loRa,
+              t == TransportTypeDto.bluetoothMesh ||
+              t == TransportTypeDto.loRa ||
+              t == TransportTypeDto.haLow,
         )
         .toList();
     if (hasNostr && meshLike.isNotEmpty) {
@@ -3949,6 +3963,15 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setGatewayRadioMode(GatewayRadioMode mode) async {
+    if (_gatewayRadioMode == mode) return;
+    _gatewayRadioMode = mode;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kGatewayRadioMode, mode.name);
+    resilnet.setGatewayRadioMode(mode);
+    notifyListeners();
+  }
+
   void _attachGeoPresenceListener() {
     final n = _nostr;
     if (n == null) return;
@@ -5139,6 +5162,7 @@ class AppState extends ChangeNotifier {
           }
         case TransportTypeDto.bluetoothMesh:
         case TransportTypeDto.loRa:
+        case TransportTypeDto.haLow:
           if (internetOnly) continue;
           final outgoing = outbound.copyWith(
             ttl: routed.packet.ttl,
@@ -5448,6 +5472,7 @@ class AppState extends ChangeNotifier {
           }
         case TransportTypeDto.bluetoothMesh:
         case TransportTypeDto.loRa:
+        case TransportTypeDto.haLow:
           if (await (_mesh?.sendAckBatch(packet) ?? false)) {
             ok = true;
           }

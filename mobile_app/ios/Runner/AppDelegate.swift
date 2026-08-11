@@ -19,11 +19,36 @@ private final class SecureHostField: UITextField {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    WatchConnectivityBridge.shared.activateSessionEarly()
+    let result = super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+      guard let self else { return }
+      WatchConnectivityBridge.shared.tryAttachFromKeyWindow(self.keyWindow())
+    }
+    return result
+  }
+
+  override func applicationDidBecomeActive(_ application: UIApplication) {
+    super.applicationDidBecomeActive(application)
+    WatchConnectivityBridge.shared.activateSessionEarly()
+    WatchConnectivityBridge.shared.tryAttachFromKeyWindow(keyWindow())
+    WatchConnectivityBridge.shared.pushLatestToWatch()
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+
+    // Match SecureScreen: plugin registrar messenger is what Dart MethodChannels use.
+    if let watchRegistrar = engineBridge.pluginRegistry.registrar(
+      forPlugin: "WatchConnectivityBridge"
+    ) {
+      WatchConnectivityBridge.shared.attach(messenger: watchRegistrar.messenger())
+    }
+    // Also attach application registrar (some Flutter versions route app channels here).
+    WatchConnectivityBridge.shared.attach(
+      messenger: engineBridge.applicationRegistrar.messenger()
+    )
+
     guard let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "SecureScreen") else {
       return
     }

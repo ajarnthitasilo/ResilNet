@@ -5,12 +5,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
+import '../core/gateway_control_codec.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
 import '../core/resilnet_payload_type.dart';
 import '../core/resilnet_protocol.dart';
 import '../core/resilnet_radio_codec.dart';
 import '../models/chat_message.dart';
+import '../models/gateway_radio_mode.dart';
 import '../src/rust/api/dto.dart';
 import 'database_service.dart';
 import 'resilnet_packet_codec.dart';
@@ -43,6 +45,10 @@ class UdpTransportService extends ChangeNotifier {
 
   final _incomingController = StreamController<ResilNetRadioPacket>.broadcast();
   final _incomingNackController = StreamController<NackFrame>.broadcast();
+  final _capsController = StreamController<GatewayCaps>.broadcast();
+
+  /// Gateway capability announcements (RN_CAPS).
+  Stream<GatewayCaps> get incomingCaps => _capsController.stream;
 
   /// แพ็กเก็ตวิทยุที่ถอดจาก UDP แล้ว (ก่อน ingest Rust)
   Stream<ResilNetRadioPacket> get incomingPackets => _incomingController.stream;
@@ -214,6 +220,13 @@ class UdpTransportService extends ChangeNotifier {
 
   void _onDatagram(Datagram datagram) {
     final raw = Uint8List.fromList(datagram.data);
+    final caps = GatewayControlCodec.tryDecodeCaps(raw);
+    if (caps != null) {
+      GatewayControlCodec.debugLogCaps(caps);
+      _capsController.add(caps);
+      return;
+    }
+
     final nack = ResilNetNackCodec.tryDecode(raw);
     if (nack != null) {
       debugPrint(
@@ -415,7 +428,8 @@ class UdpTransportService extends ChangeNotifier {
           }
           if (routed.transports.contains(TransportTypeDto.nostr) &&
               !routed.transports.contains(TransportTypeDto.bluetoothMesh) &&
-              !routed.transports.contains(TransportTypeDto.loRa)) {
+              !routed.transports.contains(TransportTypeDto.loRa) &&
+              !routed.transports.contains(TransportTypeDto.haLow)) {
             debugPrint(
               '[UdpTransport] nostr-only id=${msg.id} — skip UDP hop',
             );
@@ -432,6 +446,22 @@ class UdpTransportService extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  /// Send RN_RADIO preference to gateway (LoRa / HaLow / Auto).
+  Future<bool> sendRadioCommand(GatewayRadioMode mode) async {
+    final socket = _socket;
+    if (!_active || socket == null) return false;
+    try {
+      final frame = GatewayControlCodec.encodeRadioCommand(mode);
+      final sent = socket.send(frame, gatewayAddress, port);
+      if (sent != frame.length) return false;
+      debugPrint('[UdpTransport] TX RN_RADIO mode=${mode.name}');
+      return true;
+    } catch (e, st) {
+      debugPrint('[UdpTransport] RN_RADIO send failed: $e\n$st');
+      return false;
+    }
   }
 
   Future<void> _deactivate(String reason) async {
@@ -461,6 +491,7 @@ class UdpTransportService extends ChangeNotifier {
     unawaited(stop());
     _incomingController.close();
     _incomingNackController.close();
+    _capsController.close();
     super.dispose();
   }
 }

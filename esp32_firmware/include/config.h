@@ -135,4 +135,15 @@
 #define TASK_WIFI_UDP_STACK 4096
 #define TASK_WIFI_UDP_PRIO  1
 
+// ─── Wi‑Fi HaLow (optional gateway RF) ───────────────────────────────────────
+/// 1 = compile HaLow manager + RN_CAPS bit; 0 = LoRa-only gateway (default)
+#ifndef HALOW_ENABLE
+#define HALOW_ENABLE 0
+#endif
+
+/// 1 = stub driver loopbacks TX→RX for switch testing without RF module
+#ifndef HALOW_STUB_LOOPBACK
+#define HALOW_STUB_LOOPBACK 1
+#endif
+
 #endif  // NODE_TYPE_LORA_GATEWAY

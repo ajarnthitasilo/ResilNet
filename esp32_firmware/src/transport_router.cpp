@@ -3,6 +3,9 @@
 #if defined(NODE_TYPE_LORA_GATEWAY)
 
 #include "ble_manager.h"
+#include "gateway_control.h"
+#include "gateway_radio.h"
+#include "halow_manager.h"
 #include "lora_manager.h"
 #include "lora_store_forward.h"
 #include "wifi_udp_bridge.h"
@@ -22,6 +25,33 @@ static bool isHeartbeatPacket(const ResilNetRadioPacket& pkt) {
 /// การ drop ตรงนี้จะทำให้ retry ใช้ไม่ได้
 static void registerOwnTx(const ResilNetRadioPacket& pkt) {
   lora().dedupCheckAndRegister(pkt.packet_id);
+#if HALOW_ENABLE
+  halow().dedupCheckAndRegister(pkt.packet_id);
+#endif
+}
+
+static void forwardToGatewayRadio(const ResilNetRadioPacket& pkt) {
+  // Radio path chosen at enqueue time from gatewayRadio().resolvedRadio().
+  // Pending packets on the other radio are dropped on RN_RADIO switch
+  // (see gatewayDropPendingTxQueues) — app TTL / chunk ARQ handles retry.
+  gatewaySetActiveRadioWire(gatewayRadio().resolvedRadio());
+  if (gatewayActiveRadioWire() == GW_RADIO_HALOW) {
+#if HALOW_ENABLE
+    Serial.printf("[Router] → HaLow ttl=%u len=%u\n", pkt.ttl, pkt.payload_len);
+    halow().enqueueTx(pkt);
+#else
+    Serial.println("[Router] HaLow requested but HALOW_ENABLE=0 — LoRa fallback");
+    lora().enqueueTx(pkt);
+#endif
+  } else {
+    Serial.printf("[Router] → LoRa ttl=%u len=%u\n", pkt.ttl, pkt.payload_len);
+    lora().enqueueTx(pkt);
+  }
+}
+
+void transportForwardFromHalow(const ResilNetRadioPacket& pkt) {
+  bleGateway().notifyPacketToPhone(pkt);
+  wifiUdpBridge().broadcastPacket(pkt);
 }
 
 void transportForwardFromLora(const ResilNetRadioPacket& pkt) {
@@ -79,10 +109,10 @@ void transportForwardFromLora(const ResilNetRadioPacket& pkt) {
 void transportForwardFromUdp(const ResilNetRadioPacket& pkt) {
   if (pkt.payload_len > sizeof(pkt.payload)) return;
 
+  wifiUdpBridge().onBleActivity();
   registerOwnTx(pkt);
 
-  Serial.printf("[Router] UDP → LoRa ttl=%u len=%u\n", pkt.ttl, pkt.payload_len);
-  lora().enqueueTx(pkt);
+  forwardToGatewayRadio(pkt);
 
 #if defined(RESILNET_HAS_CELLULAR)
   cellularBridge().sendPacket(pkt);
@@ -95,8 +125,7 @@ void transportForwardFromPhone(const ResilNetRadioPacket& pkt) {
   wifiUdpBridge().onBleActivity();
   registerOwnTx(pkt);
 
-  Serial.printf("[Router] BLE → LoRa ttl=%u len=%u\n", pkt.ttl, pkt.payload_len);
-  lora().enqueueTx(pkt);
+  forwardToGatewayRadio(pkt);
 
 #if defined(RESILNET_HAS_CELLULAR)
   cellularBridge().sendPacket(pkt);

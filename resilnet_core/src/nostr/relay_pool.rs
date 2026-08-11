@@ -1,5 +1,6 @@
 //! Relay pool manager — multi-relay WebSocket connect, publish, subscribe.
 
+use std::net::{SocketAddr, ToSocketAddrs};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -28,10 +29,14 @@ pub const DEFAULT_RELAYS: &[&str] = &[
     "wss://eden.nostr.land",
 ];
 
+/// Default local Tor SOCKS5 (Orbot / system Tor).
+pub const DEFAULT_SOCKS_ADDR: &str = "127.0.0.1:9050";
+
 /// How long to wait for at least one relay after connect/reconnect.
 const CONNECT_WAIT: Duration = Duration::from_secs(12);
 const CONNECT_POLL: Duration = Duration::from_millis(400);
 const GEO_NOTICE_FETCH_TIMEOUT: Duration = Duration::from_secs(12);
+const SOCKS_PROBE_TIMEOUT: Duration = Duration::from_secs(3);
 
 #[derive(Debug, Error)]
 pub enum PoolError {
@@ -43,6 +48,8 @@ pub enum PoolError {
     Event(String),
     #[error("identity error: {0}")]
     Identity(String),
+    #[error("tor socks error: {0}")]
+    TorSocks(String),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -59,6 +66,10 @@ pub struct NostrPoolStatus {
     pub connected_relays: u32,
     pub total_relays: u32,
     pub relays: Vec<RelayStatus>,
+    /// When true, relay WebSockets are routed through local SOCKS5 (Tor).
+    pub tor_enabled: bool,
+    /// SOCKS endpoint in use when [tor_enabled] is true (e.g. `127.0.0.1:9050`).
+    pub socks_addr: String,
 }
 
 /// Handle cloneable across FFI tasks.
@@ -71,6 +82,10 @@ struct NostrPoolInner {
     identity: RwLock<Option<NostrIdentity>>,
     client: RwLock<Option<Client>>,
     relay_urls: RwLock<Vec<String>>,
+    /// Route all relay WebSockets via local Tor SOCKS5 when true.
+    tor_enabled: RwLock<bool>,
+    /// SOCKS5 address (host:port). Default [DEFAULT_SOCKS_ADDR].
+    socks_addr: RwLock<String>,
     /// Incoming ResilNet envelopes (after parse) for Flutter / router ingest.
     event_tx: broadcast::Sender<ResilNetEnvelope>,
     /// Anonymous geohash presence (never routed as chat).
@@ -96,6 +111,8 @@ impl NostrPoolHandle {
                 relay_urls: RwLock::new(
                     DEFAULT_RELAYS.iter().map(|s| (*s).to_string()).collect(),
                 ),
+                tor_enabled: RwLock::new(false),
+                socks_addr: RwLock::new(DEFAULT_SOCKS_ADDR.to_string()),
                 event_tx,
                 presence_tx,
                 notice_tx,
@@ -119,39 +136,42 @@ impl NostrPoolHandle {
     }
 
     pub fn status(&self) -> NostrPoolStatus {
-        self.inner.status.read().clone()
+        let mut st = self.inner.status.read().clone();
+        st.tor_enabled = *self.inner.tor_enabled.read();
+        st.socks_addr = self.inner.socks_addr.read().clone();
+        st
     }
 
     /// Init or restore identity and connect to relays.
+    ///
+    /// `use_tor` / `socks_addr` update routing mode. Changing Tor mode while a
+    /// client already exists rebuilds the client (proxy cannot be swapped in place).
     pub async fn init(
         &self,
         secret_key_hex: Option<String>,
         relay_urls: Option<Vec<String>>,
+        use_tor: Option<bool>,
+        socks_addr: Option<String>,
     ) -> Result<NostrPoolStatus, PoolError> {
         if let Some(urls) = relay_urls {
             if !urls.is_empty() {
                 *self.inner.relay_urls.write() = urls;
             }
         }
+        let prev_tor = *self.inner.tor_enabled.read();
+        let prev_socks = self.inner.socks_addr.read().clone();
+        self.apply_tor_prefs(use_tor, socks_addr)?;
+        let mode_changed = *self.inner.tor_enabled.read() != prev_tor
+            || self.inner.socks_addr.read().as_str() != prev_socks.as_str();
 
-        // Already initialized (e.g. Flutter retry after soft failure) — reconnect.
+        // Already initialized — reconnect, or rebuild if Tor routing changed.
         if self.inner.client.read().is_some() {
-            self.reconnect().await?;
-            let mut st = self.inner.status.read().clone();
-            st.initialized = true;
-            if let Ok(info) = self
-                .inner
-                .identity
-                .read()
-                .as_ref()
-                .ok_or(PoolError::NotInitialized)
-                .and_then(|id| id.info().map_err(|e| PoolError::Identity(e.to_string())))
-            {
-                st.pubkey_hex = info.pubkey_hex;
-                st.npub = info.npub;
+            if mode_changed {
+                self.rebuild_client().await?;
+            } else {
+                self.reconnect().await?;
             }
-            *self.inner.status.write() = st.clone();
-            return Ok(st);
+            return Ok(self.finalize_status_after_connect());
         }
 
         let identity = match secret_key_hex {
@@ -160,44 +180,139 @@ impl NostrPoolHandle {
             _ => NostrIdentity::generate(),
         };
 
-        let info = identity
-            .info()
-            .map_err(|e| PoolError::Identity(e.to_string()))?;
+        *self.inner.identity.write() = Some(identity);
+        self.rebuild_client().await?;
+        Ok(self.finalize_status_after_connect())
+    }
 
-        let client = Client::new(identity.keys().clone());
+    /// Enable/disable Tor SOCKS routing and rebuild the relay client.
+    pub async fn set_tor_enabled(
+        &self,
+        enabled: bool,
+        socks_addr: Option<String>,
+    ) -> Result<NostrPoolStatus, PoolError> {
+        if self.inner.identity.read().is_none() {
+            return Err(PoolError::NotInitialized);
+        }
+        self.apply_tor_prefs(Some(enabled), socks_addr)?;
+        self.rebuild_client().await?;
+        Ok(self.finalize_status_after_connect())
+    }
+
+    fn apply_tor_prefs(
+        &self,
+        use_tor: Option<bool>,
+        socks_addr: Option<String>,
+    ) -> Result<(), PoolError> {
+        if let Some(enabled) = use_tor {
+            *self.inner.tor_enabled.write() = enabled;
+        }
+        if let Some(raw) = socks_addr {
+            let trimmed = raw.trim();
+            if !trimmed.is_empty() {
+                // Validate early so bad prefs fail before connect.
+                parse_socks_addr(trimmed)?;
+                *self.inner.socks_addr.write() = trimmed.to_string();
+            }
+        }
+        Ok(())
+    }
+
+    fn finalize_status_after_connect(&self) -> NostrPoolStatus {
+        let mut st = self.inner.status.read().clone();
+        st.initialized = true;
+        st.tor_enabled = *self.inner.tor_enabled.read();
+        st.socks_addr = self.inner.socks_addr.read().clone();
+        if let Ok(info) = self
+            .inner
+            .identity
+            .read()
+            .as_ref()
+            .ok_or(PoolError::NotInitialized)
+            .and_then(|id| id.info().map_err(|e| PoolError::Identity(e.to_string())))
+        {
+            st.pubkey_hex = info.pubkey_hex;
+            st.npub = info.npub;
+        }
+        *self.inner.status.write() = st.clone();
+        st
+    }
+
+    /// Tear down the live client (if any), build a new one with current Tor prefs,
+    /// connect, and start the notifications loop.
+    async fn rebuild_client(&self) -> Result<(), PoolError> {
+        let tor_enabled = *self.inner.tor_enabled.read();
+        let socks_str = self.inner.socks_addr.read().clone();
+        let socks = parse_socks_addr(&socks_str)?;
+
+        if tor_enabled {
+            #[cfg(target_arch = "wasm32")]
+            {
+                self.shutdown_client().await;
+                return Err(PoolError::TorSocks(
+                    "Tor SOCKS routing is not supported on web".into(),
+                ));
+            }
+            #[cfg(not(target_arch = "wasm32"))]
+            {
+                if let Err(e) = probe_socks(socks).await {
+                    // Fail-closed: drop any clearnet client so IP is not leaked.
+                    self.shutdown_client().await;
+                    self.refresh_status_from_client().await;
+                    return Err(e);
+                }
+            }
+        }
+
+        self.shutdown_client().await;
+
+        let keys = {
+            let guard = self.inner.identity.read();
+            let id = guard.as_ref().ok_or(PoolError::NotInitialized)?;
+            id.keys().clone()
+        };
+
+        let opts = build_client_options(tor_enabled, socks);
+        let client = Client::builder().signer(keys).opts(opts).build();
+
         let urls = self.inner.relay_urls.read().clone();
         for url in &urls {
-            // Don't abort entire init if one relay URL fails to add.
             if let Err(e) = client.add_relay(url.clone()).await {
                 tracing::warn!(%url, error = %e, "nostr add_relay failed");
             }
         }
         client.connect().await;
 
-        // Persist client before subscribe so status can report total relays
-        // even when no relay is up yet (avoids Flutter UI stuck at 0/0).
-        *self.inner.identity.write() = Some(identity);
         *self.inner.client.write() = Some(client.clone());
+        *self.inner.geo_sub_id.write() = None;
+        *self.inner.geo_notice_sub_id.write() = None;
         self.refresh_status_from_client().await;
 
         self.ensure_direct_subscription(&client).await;
 
-        // Background notification listener (once per process pool)
         let handle = self.clone();
         tokio::spawn(async move {
             handle.run_notifications_loop().await;
         });
 
-        // Wait until ≥1 relay is up (or timeout) — 400ms was too short on mobile.
         self.wait_for_relay_connection().await;
+        Ok(())
+    }
 
-        let mut st = self.inner.status.read().clone();
-        st.initialized = true;
-        st.pubkey_hex = info.pubkey_hex;
-        st.npub = info.npub;
-        // secret is returned once via FFI init response — not stored in status
-        *self.inner.status.write() = st.clone();
-        Ok(st)
+    async fn shutdown_client(&self) {
+        let old = self.inner.client.write().take();
+        if let Some(client) = old {
+            client.shutdown().await;
+        }
+        *self.inner.geo_sub_id.write() = None;
+        *self.inner.geo_notice_sub_id.write() = None;
+        let mut st = self.inner.status.write();
+        st.connected_relays = 0;
+        st.relays = Vec::new();
+        // Keep total_relays from configured URLs for UI (n/m).
+        st.total_relays = self.inner.relay_urls.read().len() as u32;
+        st.tor_enabled = *self.inner.tor_enabled.read();
+        st.socks_addr = self.inner.socks_addr.read().clone();
     }
 
     /// Returns secret hex for Flutter secure storage (only after init).
@@ -508,6 +623,14 @@ impl NostrPoolHandle {
     }
 
     pub async fn reconnect(&self) -> Result<(), PoolError> {
+        if self.inner.client.read().is_none() {
+            // e.g. after fail-closed Tor shutdown — rebuild from identity.
+            if self.inner.identity.read().is_some() {
+                self.rebuild_client().await?;
+                return Ok(());
+            }
+            return Err(PoolError::NotInitialized);
+        }
         let client = {
             let guard = self.inner.client.read();
             guard.clone().ok_or(PoolError::NotInitialized)?
@@ -586,6 +709,8 @@ impl NostrPoolHandle {
         st.connected_relays = connected;
         st.total_relays = list.len() as u32;
         st.relays = list;
+        st.tor_enabled = *self.inner.tor_enabled.read();
+        st.socks_addr = self.inner.socks_addr.read().clone();
     }
 
     async fn run_notifications_loop(&self) {
@@ -720,6 +845,50 @@ fn parse_geo_notice_event(event: &Event) -> Option<GeoNoticeEvent> {
     })
 }
 
+fn parse_socks_addr(raw: &str) -> Result<SocketAddr, PoolError> {
+    let trimmed = raw.trim();
+    if let Ok(addr) = trimmed.parse::<SocketAddr>() {
+        return Ok(addr);
+    }
+    // Allow host:port that needs resolution (rare for localhost).
+    let mut iter = trimmed
+        .to_socket_addrs()
+        .map_err(|e| PoolError::TorSocks(format!("invalid SOCKS address '{trimmed}': {e}")))?;
+    iter.next()
+        .ok_or_else(|| PoolError::TorSocks(format!("invalid SOCKS address '{trimmed}'")))
+}
+
+fn build_client_options(tor_enabled: bool, socks: SocketAddr) -> Options {
+    #[cfg(target_arch = "wasm32")]
+    {
+        let _ = (tor_enabled, socks);
+        Options::new()
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        let mut conn = Connection::new().target(ConnectionTarget::All);
+        if tor_enabled {
+            conn = conn.proxy(socks);
+        } else {
+            conn = conn.direct();
+        }
+        Options::new().connection(conn)
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+async fn probe_socks(addr: SocketAddr) -> Result<(), PoolError> {
+    match tokio::time::timeout(SOCKS_PROBE_TIMEOUT, tokio::net::TcpStream::connect(addr)).await {
+        Ok(Ok(_stream)) => Ok(()),
+        Ok(Err(e)) => Err(PoolError::TorSocks(format!(
+            "Tor SOCKS unavailable at {addr}: {e}. Open Orbot or a local Tor SOCKS proxy."
+        ))),
+        Err(_) => Err(PoolError::TorSocks(format!(
+            "Tor SOCKS timeout at {addr}. Open Orbot or a local Tor SOCKS proxy."
+        ))),
+    }
+}
+
 impl Default for NostrPoolHandle {
     fn default() -> Self {
         Self::new()
@@ -734,5 +903,23 @@ mod tests {
     fn anon_nick_is_unlinkable_prefix() {
         let n = anon_nick_from_pubkey("a1b2c3d4e5");
         assert_eq!(n, "anon·a1b2");
+    }
+
+    #[test]
+    fn parse_default_socks_addr() {
+        let a = parse_socks_addr(DEFAULT_SOCKS_ADDR).unwrap();
+        assert_eq!(a.to_string(), "127.0.0.1:9050");
+    }
+
+    #[tokio::test]
+    async fn probe_socks_fails_closed_when_nothing_listens() {
+        let addr: SocketAddr = "127.0.0.1:59999".parse().unwrap();
+        let err = probe_socks(addr).await.unwrap_err();
+        match err {
+            PoolError::TorSocks(msg) => {
+                assert!(msg.contains("59999"), "{msg}");
+            }
+            other => panic!("expected TorSocks, got {other:?}"),
+        }
     }
 }

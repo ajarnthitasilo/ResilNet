@@ -21,6 +21,7 @@
 | ข้อมือ | Apple Watch ↔ iPhone | สถานะ + Direct สั้น (เข้ารหัสบน iPhone) |
 | LAN | Local Wi‑Fi (มือถือ↔มือถือ) | ฮอตสปอตหรือเราเตอร์เดียวกัน |
 | กลาง | ESP32 mule หรือ LoRa gateway | ออฟไลน์ระยะไกลขึ้น / เก็บส่งต่อ |
+| กลาง+ | เกตเวย์ ESP32 + HaLow (ทางเลือก) | Sub‑1 GHz ความจุสูงขึ้นเมื่อมีฮาร์ดแวร์ |
 | บ้าน | Home node (Reticulum / LXMF) | มี Mac/Pi bridge บน Wi‑Fi |
 | ไกล | Nostr (สาธารณะ) | มีอินเทอร์เน็ต (ทางเลือก: ผ่าน Tor) |
 
@@ -30,8 +31,9 @@
 2. สร้างเอกลักษณ์บนเครื่อง — **ไม่ต้องสมัครบัญชี** (ตาม onboarding ในแอป)
 3. ส่ง [แชต 1:1](guide/chat.md) หรือโพสต์ [ประกาศสาธารณะบน mesh](guide/mesh.md) / ใช้ [Area](guide/area.md)
 4. (ถ้ามีฮาร์ดแวร์) ตั้ง [ESP32 Mule](guide/esp32-mule.md) หรือ [LoRa Gateway](guide/esp32-lora.md)
-5. (ทางเลือก LAN) [Local Wi‑Fi](guide/local-wifi.md) หรือ [Home node / Reticulum](guide/reticulum-home-node.md)
-6. (ทางเลือก iOS) [Apple Watch](guide/apple-watch.md)
+5. (ทางเลือก HaLow) [เกตเวย์ Wi‑Fi HaLow](guide/wifi-halow.md) — สวิตช์ RF บน ESP32
+6. (ทางเลือก LAN) [Local Wi‑Fi](guide/local-wifi.md) หรือ [Home node / Reticulum](guide/reticulum-home-node.md)
+7. (ทางเลือก iOS) [Apple Watch](guide/apple-watch.md)
 
 ดูสิ่งที่เปลี่ยนจากคู่มือรอบ 1.9.64: **[มีอะไรใหม่](guide/whats-new.md)**
 

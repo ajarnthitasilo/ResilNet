@@ -16,14 +16,19 @@ use crate::nostr::{ResilNetEnvelope, ResilNetEventKind};
 ///
 /// After connect, background task auto-ingests ResilNet envelopes into the hybrid router
 /// (same dedup path as BLE / LoRa).
+///
+/// `use_tor`: when true, all relay WebSockets use local SOCKS5 (default `127.0.0.1:9050`).
+/// Fail-closed — if SOCKS is down, clearnet is not used.
 #[frb]
 pub async fn init_nostr(
     secret_key_hex: Option<String>,
     relay_urls: Option<Vec<String>>,
+    use_tor: Option<bool>,
+    socks_addr: Option<String>,
 ) -> Result<NostrInitResultDto, String> {
     let pool = get_nostr_pool()?;
     let status = pool
-        .init(secret_key_hex, relay_urls)
+        .init(secret_key_hex, relay_urls, use_tor, socks_addr)
         .await
         .map_err(|e| e.to_string())?;
     let secret = pool.export_secret_hex().map_err(|e| e.to_string())?;
@@ -61,6 +66,23 @@ pub fn get_nostr_status() -> Result<NostrPoolStatusDto, String> {
 pub async fn nostr_reconnect() -> Result<(), String> {
     let pool = get_nostr_pool()?;
     pool.reconnect().await.map_err(|e| e.to_string())
+}
+
+/// Enable/disable Tor SOCKS routing for Nostr and rebuild the relay client.
+///
+/// When `enabled` is true and SOCKS is unreachable, any clearnet client is shut
+/// down (fail-closed) and an error is returned.
+#[frb]
+pub async fn set_nostr_tor_enabled(
+    enabled: bool,
+    socks_addr: Option<String>,
+) -> Result<NostrPoolStatusDto, String> {
+    let pool = get_nostr_pool()?;
+    let status = pool
+        .set_tor_enabled(enabled, socks_addr)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(status.into())
 }
 
 /// Publish ResilNet envelope to Nostr relays (kind = direct | health).

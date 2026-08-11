@@ -3,7 +3,8 @@
 use flutter_rust_bridge::frb;
 
 use crate::hybrid_router::{
-    MessagePacket, NetworkStatus, PayloadTag, RoutedPacket, RouterConfig, TransportType,
+    GatewayRadioPreference, MessagePacket, NetworkStatus, PayloadTag, RoutedPacket, RouterConfig,
+    TransportType,
 };
 use crate::nostr::{NostrPoolStatus, RelayStatus, ResilNetEnvelope};
 
@@ -14,6 +15,7 @@ pub enum TransportTypeDto {
     Nostr,
     BluetoothMesh,
     LoRa,
+    HaLow,
     OfflineQueue,
 }
 
@@ -23,7 +25,38 @@ impl From<TransportType> for TransportTypeDto {
             TransportType::Nostr => Self::Nostr,
             TransportType::BluetoothMesh => Self::BluetoothMesh,
             TransportType::LoRa => Self::LoRa,
+            TransportType::HaLow => Self::HaLow,
             TransportType::OfflineQueue => Self::OfflineQueue,
+        }
+    }
+}
+
+/// โหมดวิทยุเกตเวย์จาก Settings (LoRa / HaLow / Auto)
+#[frb]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum GatewayRadioPreferenceDto {
+    LoRa,
+    HaLow,
+    #[default]
+    Auto,
+}
+
+impl From<GatewayRadioPreference> for GatewayRadioPreferenceDto {
+    fn from(p: GatewayRadioPreference) -> Self {
+        match p {
+            GatewayRadioPreference::LoRa => Self::LoRa,
+            GatewayRadioPreference::HaLow => Self::HaLow,
+            GatewayRadioPreference::Auto => Self::Auto,
+        }
+    }
+}
+
+impl From<GatewayRadioPreferenceDto> for GatewayRadioPreference {
+    fn from(d: GatewayRadioPreferenceDto) -> Self {
+        match d {
+            GatewayRadioPreferenceDto::LoRa => Self::LoRa,
+            GatewayRadioPreferenceDto::HaLow => Self::HaLow,
+            GatewayRadioPreferenceDto::Auto => Self::Auto,
         }
     }
 }
@@ -87,21 +120,27 @@ impl PayloadTagDto {
     }
 }
 
-/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + LoRa)
+/// สถานะเครือข่ายจาก Flutter (`connectivity_plus` + BLE + gateway radios)
 #[frb]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NetworkStatusDto {
     pub is_internet_available: bool,
     pub active_ble_peers_count: u32,
     pub lora_available: bool,
+    pub halow_available: bool,
+    pub halow_link_up: bool,
+    pub gateway_radio_preference: GatewayRadioPreferenceDto,
 }
 
 impl From<NetworkStatusDto> for NetworkStatus {
     fn from(d: NetworkStatusDto) -> Self {
-        NetworkStatus::with_lora(
+        NetworkStatus::with_gateway(
             d.is_internet_available,
             d.active_ble_peers_count as usize,
             d.lora_available,
+            d.halow_available,
+            d.halow_link_up,
+            d.gateway_radio_preference.into(),
         )
     }
 }
@@ -112,6 +151,9 @@ impl From<NetworkStatus> for NetworkStatusDto {
             is_internet_available: s.is_internet_available,
             active_ble_peers_count: s.active_ble_peers_count as u32,
             lora_available: s.lora_available,
+            halow_available: s.halow_available,
+            halow_link_up: s.halow_link_up,
+            gateway_radio_preference: s.gateway_radio_preference.into(),
         }
     }
 }
@@ -240,6 +282,10 @@ pub struct NostrPoolStatusDto {
     pub connected_relays: u32,
     pub total_relays: u32,
     pub relays: Vec<RelayStatusDto>,
+    /// When true, relay WebSockets go through local Tor SOCKS5.
+    pub tor_enabled: bool,
+    /// SOCKS endpoint (e.g. `127.0.0.1:9050`) when Tor routing is enabled.
+    pub socks_addr: String,
 }
 
 impl From<NostrPoolStatus> for NostrPoolStatusDto {
@@ -251,6 +297,8 @@ impl From<NostrPoolStatus> for NostrPoolStatusDto {
             connected_relays: s.connected_relays,
             total_relays: s.total_relays,
             relays: s.relays.into_iter().map(Into::into).collect(),
+            tor_enabled: s.tor_enabled,
+            socks_addr: s.socks_addr,
         }
     }
 }

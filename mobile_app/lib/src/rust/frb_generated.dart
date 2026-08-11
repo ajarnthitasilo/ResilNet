@@ -70,7 +70,7 @@ class ResilNetCore
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1043576424;
+  int get rustContentHash => -900289830;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -92,6 +92,9 @@ abstract class ResilNetCoreApi extends BaseApi {
 
   Future<int> crateApiNostrApiFlushOfflineQueueToNostr();
 
+  Future<GatewayRadioPreferenceDto>
+  crateApiDtoGatewayRadioPreferenceDtoDefault();
+
   Future<NetworkStatusDto> crateApiRouterApiGetNetworkStatus();
 
   Future<NostrPoolStatusDto> crateApiNostrApiGetNostrStatus();
@@ -107,6 +110,8 @@ abstract class ResilNetCoreApi extends BaseApi {
   Future<NostrInitResultDto> crateApiNostrApiInitNostr({
     String? secretKeyHex,
     List<String>? relayUrls,
+    bool? useTor,
+    String? socksAddr,
   });
 
   Future<void> crateApiRouterApiInitResilnetCore();
@@ -173,12 +178,20 @@ abstract class ResilNetCoreApi extends BaseApi {
 
   Future<RouterConfigDto> crateApiDtoRouterConfigDtoDefault();
 
+  Future<NostrPoolStatusDto> crateApiNostrApiSetNostrTorEnabled({
+    required bool enabled,
+    String? socksAddr,
+  });
+
   Stream<MessagePacketDto> crateApiRouterApiSubscribeIncomingMessages();
 
   Future<void> crateApiRouterApiUpdateNetworkStatus({
     required bool isInternetAvailable,
     required int activeBlePeersCount,
     required bool loraAvailable,
+    required bool halowAvailable,
+    required bool halowLinkUp,
+    required GatewayRadioPreferenceDto gatewayRadioPreference,
   });
 }
 
@@ -302,7 +315,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       );
 
   @override
-  Future<NetworkStatusDto> crateApiRouterApiGetNetworkStatus() {
+  Future<GatewayRadioPreferenceDto>
+  crateApiDtoGatewayRadioPreferenceDtoDefault() {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -311,6 +325,36 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             generalizedFrbRustBinding,
             serializer,
             funcId: 5,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_gateway_radio_preference_dto,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiDtoGatewayRadioPreferenceDtoDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDtoGatewayRadioPreferenceDtoDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "gateway_radio_preference_dto_default",
+        argNames: [],
+      );
+
+  @override
+  Future<NetworkStatusDto> crateApiRouterApiGetNetworkStatus() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 6,
             port: port_,
           );
         },
@@ -337,7 +381,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 7,
             port: port_,
           );
         },
@@ -367,7 +411,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 8,
             port: port_,
           );
         },
@@ -400,7 +444,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 9,
             port: port_,
           );
         },
@@ -422,6 +466,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   Future<NostrInitResultDto> crateApiNostrApiInitNostr({
     String? secretKeyHex,
     List<String>? relayUrls,
+    bool? useTor,
+    String? socksAddr,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -429,10 +475,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_opt_String(secretKeyHex, serializer);
           sse_encode_opt_list_String(relayUrls, serializer);
+          sse_encode_opt_box_autoadd_bool(useTor, serializer);
+          sse_encode_opt_String(socksAddr, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 10,
             port: port_,
           );
         },
@@ -441,7 +489,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiNostrApiInitNostrConstMeta,
-        argValues: [secretKeyHex, relayUrls],
+        argValues: [secretKeyHex, relayUrls, useTor, socksAddr],
         apiImpl: this,
       ),
     );
@@ -449,7 +497,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
 
   TaskConstMeta get kCrateApiNostrApiInitNostrConstMeta => const TaskConstMeta(
     debugName: "init_nostr",
-    argNames: ["secretKeyHex", "relayUrls"],
+    argNames: ["secretKeyHex", "relayUrls", "useTor", "socksAddr"],
   );
 
   @override
@@ -461,7 +509,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 11,
             port: port_,
           );
         },
@@ -489,7 +537,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 12,
             port: port_,
           );
         },
@@ -513,7 +561,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_bool,
@@ -543,7 +591,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 14,
             port: port_,
           );
         },
@@ -578,7 +626,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 15,
             port: port_,
           );
         },
@@ -615,7 +663,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 16,
             port: port_,
           );
         },
@@ -654,7 +702,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 17,
             port: port_,
           );
         },
@@ -687,7 +735,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 18,
             port: port_,
           );
         },
@@ -717,7 +765,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 19,
             port: port_,
           );
         },
@@ -749,7 +797,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 20,
             port: port_,
           );
         },
@@ -782,7 +830,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 20,
+            funcId: 21,
             port: port_,
           );
         },
@@ -815,7 +863,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 21,
+              funcId: 22,
               port: port_,
             );
           },
@@ -850,7 +898,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 22,
+              funcId: 23,
               port: port_,
             );
           },
@@ -882,7 +930,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 24,
             port: port_,
           );
         },
@@ -910,7 +958,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 25,
             port: port_,
           );
         },
@@ -940,7 +988,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 25,
+            funcId: 26,
             port: port_,
           );
         },
@@ -968,7 +1016,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 27,
             port: port_,
           );
         },
@@ -996,7 +1044,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_u_8(value, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_opt_box_autoadd_payload_tag_dto,
@@ -1027,7 +1075,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 28,
+            funcId: 29,
             port: port_,
           );
         },
@@ -1054,7 +1102,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 29,
+            funcId: 30,
             port: port_,
           );
         },
@@ -1073,6 +1121,41 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       const TaskConstMeta(debugName: "router_config_dto_default", argNames: []);
 
   @override
+  Future<NostrPoolStatusDto> crateApiNostrApiSetNostrTorEnabled({
+    required bool enabled,
+    String? socksAddr,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_bool(enabled, serializer);
+          sse_encode_opt_String(socksAddr, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 31,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_nostr_pool_status_dto,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiNostrApiSetNostrTorEnabledConstMeta,
+        argValues: [enabled, socksAddr],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNostrApiSetNostrTorEnabledConstMeta =>
+      const TaskConstMeta(
+        debugName: "set_nostr_tor_enabled",
+        argNames: ["enabled", "socksAddr"],
+      );
+
+  @override
   Stream<MessagePacketDto> crateApiRouterApiSubscribeIncomingMessages() {
     final sink = RustStreamSink<MessagePacketDto>();
     unawaited(
@@ -1084,7 +1167,7 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 30,
+              funcId: 32,
               port: port_,
             );
           },
@@ -1112,6 +1195,9 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     required bool isInternetAvailable,
     required int activeBlePeersCount,
     required bool loraAvailable,
+    required bool halowAvailable,
+    required bool halowLinkUp,
+    required GatewayRadioPreferenceDto gatewayRadioPreference,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -1120,10 +1206,16 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           sse_encode_bool(isInternetAvailable, serializer);
           sse_encode_u_32(activeBlePeersCount, serializer);
           sse_encode_bool(loraAvailable, serializer);
+          sse_encode_bool(halowAvailable, serializer);
+          sse_encode_bool(halowLinkUp, serializer);
+          sse_encode_gateway_radio_preference_dto(
+            gatewayRadioPreference,
+            serializer,
+          );
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 31,
+            funcId: 33,
             port: port_,
           );
         },
@@ -1132,7 +1224,14 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiRouterApiUpdateNetworkStatusConstMeta,
-        argValues: [isInternetAvailable, activeBlePeersCount, loraAvailable],
+        argValues: [
+          isInternetAvailable,
+          activeBlePeersCount,
+          loraAvailable,
+          halowAvailable,
+          halowLinkUp,
+          gatewayRadioPreference,
+        ],
         apiImpl: this,
       ),
     );
@@ -1145,6 +1244,9 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
           "isInternetAvailable",
           "activeBlePeersCount",
           "loraAvailable",
+          "halowAvailable",
+          "halowLinkUp",
+          "gatewayRadioPreference",
         ],
       );
 
@@ -1191,6 +1293,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
   MessagePacketDto dco_decode_box_autoadd_message_packet_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_message_packet_dto(raw);
@@ -1220,6 +1328,14 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_u_64(raw);
+  }
+
+  @protected
+  GatewayRadioPreferenceDto dco_decode_gateway_radio_preference_dto(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return GatewayRadioPreferenceDto.values[raw as int];
   }
 
   @protected
@@ -1310,12 +1426,15 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   NetworkStatusDto dco_decode_network_status_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return NetworkStatusDto(
       isInternetAvailable: dco_decode_bool(arr[0]),
       activeBlePeersCount: dco_decode_u_32(arr[1]),
       loraAvailable: dco_decode_bool(arr[2]),
+      halowAvailable: dco_decode_bool(arr[3]),
+      halowLinkUp: dco_decode_bool(arr[4]),
+      gatewayRadioPreference: dco_decode_gateway_radio_preference_dto(arr[5]),
     );
   }
 
@@ -1335,8 +1454,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   NostrPoolStatusDto dco_decode_nostr_pool_status_dto(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return NostrPoolStatusDto(
       initialized: dco_decode_bool(arr[0]),
       pubkeyHex: dco_decode_String(arr[1]),
@@ -1344,6 +1463,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       connectedRelays: dco_decode_u_32(arr[3]),
       totalRelays: dco_decode_u_32(arr[4]),
       relays: dco_decode_list_relay_status_dto(arr[5]),
+      torEnabled: dco_decode_bool(arr[6]),
+      socksAddr: dco_decode_String(arr[7]),
     );
   }
 
@@ -1351,6 +1472,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   String? dco_decode_opt_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_bool(raw);
   }
 
   @protected
@@ -1517,6 +1644,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_bool(deserializer));
+  }
+
+  @protected
   MessagePacketDto sse_decode_box_autoadd_message_packet_dto(
     SseDeserializer deserializer,
   ) {
@@ -1552,6 +1685,15 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
+  GatewayRadioPreferenceDto sse_decode_gateway_radio_preference_dto(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return GatewayRadioPreferenceDto.values[inner];
   }
 
   @protected
@@ -1684,10 +1826,18 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     var var_isInternetAvailable = sse_decode_bool(deserializer);
     var var_activeBlePeersCount = sse_decode_u_32(deserializer);
     var var_loraAvailable = sse_decode_bool(deserializer);
+    var var_halowAvailable = sse_decode_bool(deserializer);
+    var var_halowLinkUp = sse_decode_bool(deserializer);
+    var var_gatewayRadioPreference = sse_decode_gateway_radio_preference_dto(
+      deserializer,
+    );
     return NetworkStatusDto(
       isInternetAvailable: var_isInternetAvailable,
       activeBlePeersCount: var_activeBlePeersCount,
       loraAvailable: var_loraAvailable,
+      halowAvailable: var_halowAvailable,
+      halowLinkUp: var_halowLinkUp,
+      gatewayRadioPreference: var_gatewayRadioPreference,
     );
   }
 
@@ -1715,6 +1865,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     var var_connectedRelays = sse_decode_u_32(deserializer);
     var var_totalRelays = sse_decode_u_32(deserializer);
     var var_relays = sse_decode_list_relay_status_dto(deserializer);
+    var var_torEnabled = sse_decode_bool(deserializer);
+    var var_socksAddr = sse_decode_String(deserializer);
     return NostrPoolStatusDto(
       initialized: var_initialized,
       pubkeyHex: var_pubkeyHex,
@@ -1722,6 +1874,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
       connectedRelays: var_connectedRelays,
       totalRelays: var_totalRelays,
       relays: var_relays,
+      torEnabled: var_torEnabled,
+      socksAddr: var_socksAddr,
     );
   }
 
@@ -1731,6 +1885,17 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_bool(deserializer));
     } else {
       return null;
     }
@@ -1952,6 +2117,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   }
 
   @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_message_packet_dto(
     MessagePacketDto self,
     SseSerializer serializer,
@@ -1991,6 +2162,15 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_gateway_radio_preference_dto(
+    GatewayRadioPreferenceDto self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -2102,6 +2282,12 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     sse_encode_bool(self.isInternetAvailable, serializer);
     sse_encode_u_32(self.activeBlePeersCount, serializer);
     sse_encode_bool(self.loraAvailable, serializer);
+    sse_encode_bool(self.halowAvailable, serializer);
+    sse_encode_bool(self.halowLinkUp, serializer);
+    sse_encode_gateway_radio_preference_dto(
+      self.gatewayRadioPreference,
+      serializer,
+    );
   }
 
   @protected
@@ -2126,6 +2312,8 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     sse_encode_u_32(self.connectedRelays, serializer);
     sse_encode_u_32(self.totalRelays, serializer);
     sse_encode_list_relay_status_dto(self.relays, serializer);
+    sse_encode_bool(self.torEnabled, serializer);
+    sse_encode_String(self.socksAddr, serializer);
   }
 
   @protected
@@ -2135,6 +2323,16 @@ class ResilNetCoreApiImpl extends ResilNetCoreApiImplPlatform
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_bool(self, serializer);
     }
   }
 

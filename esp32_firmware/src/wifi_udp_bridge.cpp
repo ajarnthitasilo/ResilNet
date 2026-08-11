@@ -8,6 +8,7 @@
 #include <esp_wifi.h>
 
 #include "config.h"
+#include "gateway_control.h"
 #include "transport_router.h"
 
 static WifiUdpBridge s_wifiUdp;
@@ -125,6 +126,7 @@ void WifiUdpBridge::pollPowerSave() {
 void WifiUdpBridge::onStationConnected() {
   _lastStationActivityMs = millis();
   Serial.printf("[WiFi] station connected (total=%d)\n", WiFi.softAPgetStationNum());
+  gatewayBroadcastCaps();
 }
 
 void WifiUdpBridge::onStationDisconnected() {
@@ -141,6 +143,17 @@ void WifiUdpBridge::onBleActivity() {
   _apStoppedAtMs = 0;
   ensureApRunning();
   _lastStationActivityMs = millis();
+}
+
+void WifiUdpBridge::broadcastControlFrame(const uint8_t* data, size_t len) {
+  if (!_apActive || data == nullptr || len == 0) return;
+
+  const IPAddress broadcast(192, 168, 4, 255);
+  _udp.beginPacket(broadcast, WIFI_UDP_PORT);
+  _udp.write(data, len);
+  if (_udp.endPacket()) {
+    Serial.printf("[WiFi] UDP control broadcast %u bytes\n", (unsigned)len);
+  }
 }
 
 void WifiUdpBridge::broadcastPacket(const ResilNetRadioPacket& pkt) {
@@ -166,6 +179,7 @@ bool WifiUdpBridge::begin() {
 void WifiUdpBridge::taskUdp(void* arg) {
   auto* self = static_cast<WifiUdpBridge*>(arg);
   uint8_t buf[RESILNET_RADIO_FRAME_MAX];
+  uint32_t lastCapsMs = 0;
 
   while (true) {
     if (!self->_apActive) {
@@ -176,10 +190,20 @@ void WifiUdpBridge::taskUdp(void* arg) {
 
     self->pollPowerSave();
 
+    const uint32_t nowMs = millis();
+    if (nowMs - lastCapsMs >= 5000UL) {
+      gatewayBroadcastCaps();
+      lastCapsMs = nowMs;
+    }
+
     const int packetSize = self->_udp.parsePacket();
     if (packetSize > 0) {
       const int n = self->_udp.read(buf, sizeof(buf));
       if (n > 0) {
+        if (gatewayIsControlFrame(buf, static_cast<size_t>(n))) {
+          gatewayHandleRadioCommand(buf, static_cast<size_t>(n));
+          continue;
+        }
         ResilNetRadioPacket pkt{};
         if (self->parseUdpPayload(buf, static_cast<size_t>(n), pkt)) {
           self->_lastStationActivityMs = millis();

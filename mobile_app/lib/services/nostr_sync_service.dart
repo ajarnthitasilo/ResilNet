@@ -21,6 +21,9 @@ class NostrSyncService extends ChangeNotifier {
   bool _running = false;
   bool _publishing = false;
   bool _reconnecting = false;
+  /// Preferred Tor SOCKS routing (persisted by AppState, applied on start/rebuild).
+  bool _useTor = false;
+  String? _socksAddr;
   String? _lastError;
   Timer? _statusPoll;
   StreamSubscription<GeoPresenceDto>? _presenceSub;
@@ -30,6 +33,7 @@ class NostrSyncService extends ChangeNotifier {
 
   bool get running => _running;
   bool get reconnecting => _reconnecting;
+  bool get useTor => _useTor;
   String? get lastError => _lastError;
   NostrPoolStatusDto? get status => _status;
   String get npub => _status?.npub ?? '';
@@ -78,7 +82,16 @@ class NostrSyncService extends ChangeNotifier {
   }
 
   /// Start pool with retries. Does not throw — sets [lastError] on failure.
-  Future<bool> start({List<String>? relayUrls, int maxAttempts = 3}) async {
+  Future<bool> start({
+    List<String>? relayUrls,
+    bool? useTor,
+    String? socksAddr,
+    int maxAttempts = 3,
+  }) async {
+    if (useTor != null) _useTor = useTor;
+    if (socksAddr != null && socksAddr.trim().isNotEmpty) {
+      _socksAddr = socksAddr.trim();
+    }
     if (_running && isInitialized) {
       await refreshStatus();
       return isOnline || totalRelays > 0;
@@ -87,12 +100,16 @@ class NostrSyncService extends ChangeNotifier {
     notifyListeners();
 
     Object? lastErr;
-    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+    // Tor fail-closed: don't spam retries when SOCKS is simply not running.
+    final attempts = _useTor ? 1 : maxAttempts;
+    for (var attempt = 1; attempt <= attempts; attempt++) {
       try {
         final stored = await _readSecretSafe();
         final result = await initNostr(
           secretKeyHex: (stored != null && stored.isNotEmpty) ? stored : null,
           relayUrls: relayUrls,
+          useTor: _useTor,
+          socksAddr: _socksAddr,
         ).timeout(
           _initTimeout,
           onTimeout: () => throw TimeoutException('initNostr'),
@@ -114,9 +131,9 @@ class NostrSyncService extends ChangeNotifier {
         lastErr = e;
         _lastError = '$e';
         _running = false;
-        debugPrint('[Nostr] start attempt $attempt/$maxAttempts failed: $e\n$st');
+        debugPrint('[Nostr] start attempt $attempt/$attempts failed: $e\n$st');
         notifyListeners();
-        if (attempt < maxAttempts) {
+        if (attempt < attempts) {
           await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
         }
       }
@@ -124,6 +141,50 @@ class NostrSyncService extends ChangeNotifier {
     _lastError = lastErr?.toString() ?? 'start_failed';
     notifyListeners();
     return false;
+  }
+
+  /// Rebuild relay client with/without Tor SOCKS. Fail-closed when enabling Tor.
+  Future<bool> setTorEnabled(bool enabled, {String? socksAddr}) async {
+    if (socksAddr != null && socksAddr.trim().isNotEmpty) {
+      _socksAddr = socksAddr.trim();
+    }
+    _useTor = enabled;
+    if (_reconnecting) return isOnline;
+    _reconnecting = true;
+    notifyListeners();
+    try {
+      if (!_running || !isInitialized) {
+        final ok = await start(useTor: enabled, socksAddr: _socksAddr);
+        return ok;
+      }
+      try {
+        _status = await setNostrTorEnabled(
+          enabled: enabled,
+          socksAddr: _socksAddr,
+        ).timeout(_initTimeout);
+        _running = true;
+        _lastError = null;
+        await _attachPresenceStream();
+        await _attachNoticeStream();
+        _ensureStatusPoll();
+        if (!isOnline) {
+          await _pollUntilOnlineOrGiveUp(maxAttempts: 6);
+        }
+        _logRelaySnapshot(enabled ? 'tor on' : 'tor off');
+        return isOnline || totalRelays > 0;
+      } catch (e) {
+        _lastError = '$e';
+        debugPrint('[Nostr] setTorEnabled failed: $e');
+        // Identity may still exist; mark not fully running if client was torn down.
+        try {
+          await refreshStatus();
+        } catch (_) {}
+        return false;
+      }
+    } finally {
+      _reconnecting = false;
+      notifyListeners();
+    }
   }
 
   Future<void> _attachNoticeStream() async {
@@ -172,6 +233,14 @@ class NostrSyncService extends ChangeNotifier {
         isInitialized &&
         !isOnline &&
         !_reconnecting) {
+      // Tor fail-closed: don't hammer reconnect while SOCKS is down.
+      final err = _lastError ?? '';
+      if (_useTor &&
+          (err.contains('SOCKS') ||
+              err.contains('Tor') ||
+              err.contains('socks'))) {
+        return;
+      }
       debugPrint('[Nostr] status tick offline — reconnecting');
       unawaited(reconnect());
     }

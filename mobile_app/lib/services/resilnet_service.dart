@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
+import '../core/gateway_caps_coordinator.dart';
 import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
 import '../core/resilnet_radio_codec.dart';
 import '../models/chat_message.dart';
+import '../models/gateway_radio_mode.dart';
 import '../services/chunk_arq_service.dart';
 import '../services/crypto_service.dart';
 import '../services/resilnet_packet_codec.dart';
@@ -25,6 +27,7 @@ class ResilNetService extends ChangeNotifier {
   StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
   StreamSubscription<MessagePacketDto>? _incomingSub;
   StreamSubscription<ResilNetRadioPacket>? _udpIncomingSub;
+  StreamSubscription<GatewayCaps>? _udpCapsSub;
 
   UdpTransportService? _udpTransport;
 
@@ -37,6 +40,14 @@ class ResilNetService extends ChangeNotifier {
   CryptoService? _crypto;
   Timer? _chunkPurgeTimer;
   StreamSubscription<NackFrame>? _udpNackSub;
+  Timer? _capsTimeoutTimer;
+  final GatewayCapsCoordinator _capsCoordinator = GatewayCapsCoordinator();
+
+  /// RN_CAPS handshake phase (for UI / debugging).
+  GatewayCapsPhase get gatewayCapsPhase => _capsCoordinator.phase;
+
+  bool get gatewayCapsKnown => _capsCoordinator.availability().capsKnown;
+  bool get gatewayHalowStub => _gatewayCaps?.halowStub ?? false;
 
   /// Stream ข้อความเข้าที่ผ่าน dedup แล้วจาก Rust router
   final _incomingController = StreamController<MessagePacketDto>.broadcast();
@@ -47,16 +58,76 @@ class ResilNetService extends ChangeNotifier {
   bool _internetAvailable = false;
   int _blePeerCount = 0;
   bool _loraAvailable = false;
+  bool _halowAvailable = false;
+  bool _halowLinkUp = false;
+  GatewayRadioMode _gatewayRadioMode = GatewayRadioMode.auto;
+  GatewayCaps? _gatewayCaps;
 
   bool get isInitialized => _initialized;
   bool get isInternetAvailable => _internetAvailable;
   int get blePeerCount => _blePeerCount;
   bool get loraAvailable => _loraAvailable;
+  bool get halowAvailable => _halowAvailable;
+  bool get halowLinkUp => _halowLinkUp;
+  GatewayRadioMode get gatewayRadioMode => _gatewayRadioMode;
+  GatewayCaps? get gatewayCaps => _gatewayCaps;
+  bool get gatewayHalowCapable => _gatewayCaps?.halowCapable ?? false;
+
+  void setGatewayRadioMode(GatewayRadioMode mode) {
+    configureGatewayRadioMode(mode, notifyGateway: true);
+  }
+
+  void configureGatewayRadioMode(
+    GatewayRadioMode mode, {
+    bool notifyGateway = false,
+  }) {
+    if (_gatewayRadioMode == mode && !notifyGateway) return;
+    _gatewayRadioMode = mode;
+    unawaited(_pushNetworkStatus());
+    if (notifyGateway) {
+      unawaited(_udpTransport?.sendRadioCommand(mode));
+    }
+  }
 
   void setLoraAvailable(bool value) {
     if (_loraAvailable == value) return;
     _loraAvailable = value;
     unawaited(_pushNetworkStatus());
+  }
+
+  void _applyGatewayCaps(GatewayCaps? caps) {
+    if (caps != null) {
+      _capsCoordinator.onCaps(caps);
+      _gatewayCaps = caps;
+    }
+    _syncAvailabilityFromCoordinator();
+  }
+
+  void _syncAvailabilityFromCoordinator() {
+    final avail = _capsCoordinator.availability();
+    _loraAvailable = avail.loraAvailable;
+    _halowAvailable = avail.halowAvailable;
+    _halowLinkUp = avail.halowLinkUp;
+    _gatewayCaps = _capsCoordinator.caps;
+    unawaited(_pushNetworkStatus());
+    notifyListeners();
+  }
+
+  void _startCapsTimeoutPoll() {
+    _capsTimeoutTimer?.cancel();
+    _capsTimeoutTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      if (_capsCoordinator.checkTimeout(DateTime.now())) {
+        debugPrint(
+          '[ResilNet] RN_CAPS timeout (${GatewayCapsCoordinator.defaultWaitTimeout.inSeconds}s) — LoRa-only fallback',
+        );
+        _syncAvailabilityFromCoordinator();
+      }
+    });
+  }
+
+  void _stopCapsTimeoutPoll() {
+    _capsTimeoutTimer?.cancel();
+    _capsTimeoutTimer = null;
   }
 
   bool get isGatewayWifiActive => _udpTransport?.isActive ?? false;
@@ -86,6 +157,14 @@ class ResilNetService extends ChangeNotifier {
         debugPrint('[ResilNet] UDP NACK stream error: $e\n$st');
       },
     );
+    _udpCapsSub?.cancel();
+    _udpCapsSub = udp.incomingCaps.listen(
+      (caps) => _applyGatewayCaps(caps),
+      onError: (Object e, StackTrace st) {
+        debugPrint('[ResilNet] UDP caps stream error: $e\n$st');
+      },
+    );
+    udp.addListener(_onUdpActiveChanged);
     _chunkPurgeTimer?.cancel();
     _chunkPurgeTimer = Timer.periodic(const Duration(seconds: 15), (_) {
       _chunkArq.purgeStale();
@@ -405,6 +484,17 @@ class ResilNetService extends ChangeNotifier {
     await _pushNetworkStatus();
   }
 
+  void _onUdpActiveChanged() {
+    final active = _udpTransport?.isActive ?? false;
+    _capsCoordinator.onGatewayActive(active, DateTime.now());
+    if (active) {
+      _startCapsTimeoutPoll();
+    } else {
+      _stopCapsTimeoutPoll();
+    }
+    _syncAvailabilityFromCoordinator();
+  }
+
   Future<void> _pushNetworkStatus() async {
     if (!_initialized) return;
     try {
@@ -412,6 +502,9 @@ class ResilNetService extends ChangeNotifier {
         isInternetAvailable: _internetAvailable,
         activeBlePeersCount: _blePeerCount,
         loraAvailable: _loraAvailable,
+        halowAvailable: _halowAvailable,
+        halowLinkUp: _halowLinkUp,
+        gatewayRadioPreference: _gatewayRadioMode.toDto(),
       );
       notifyListeners();
     } catch (e, st) {
@@ -422,7 +515,10 @@ class ResilNetService extends ChangeNotifier {
   @override
   void dispose() {
     _chunkPurgeTimer?.cancel();
+    _capsTimeoutTimer?.cancel();
     _udpNackSub?.cancel();
+    _udpCapsSub?.cancel();
+    _udpTransport?.removeListener(_onUdpActiveChanged);
     _chunkArq.dispose();
     _connectivitySub?.cancel();
     _incomingSub?.cancel();

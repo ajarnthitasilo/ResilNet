@@ -55,6 +55,12 @@ bool LoRaManager::enqueueTx(const ResilNetRadioPacket& pkt) {
   return xQueueSend(_tx_queue, &pkt, pdMS_TO_TICKS(100)) == pdTRUE;
 }
 
+void LoRaManager::flushTxQueue() {
+  if (!_tx_queue) return;
+  xQueueReset(_tx_queue);
+  Serial.println("[LoRa] TX queue flushed (radio switch)");
+}
+
 bool LoRaManager::transmitNow(const ResilNetRadioPacket& pkt) {
   if (!_ready || !s_radio) return false;
 

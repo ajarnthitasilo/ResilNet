@@ -6,6 +6,7 @@
 #include <esp_mac.h>
 
 #include "config.h"
+#include "gateway_control.h"
 #include "lora_manager.h"
 #include "lora_store_forward.h"
 #include "ota_ble_service.h"
@@ -30,6 +31,17 @@ static String gatewayDeviceName() {
 class RxCallbacks : public NimBLECharacteristicCallbacks {
   void onWrite(NimBLECharacteristic* c, NimBLEConnInfo& info) override {
     const std::string& value = c->getValue();
+    if (value.size() < 4) {
+      Serial.println("[BLE] write too short");
+      return;
+    }
+
+    const uint8_t* raw = reinterpret_cast<const uint8_t*>(value.data());
+    if (gatewayIsControlFrame(raw, value.size())) {
+      gatewayHandleRadioCommand(raw, value.size());
+      return;
+    }
+
     if (value.size() < 19) {
       Serial.println("[BLE] write too short");
       return;
@@ -112,6 +124,13 @@ void BleGatewayManager::notifyPacketToPhone(const ResilNetRadioPacket& pkt) {
   s_txChar->setValue(buf, idx);
   s_txChar->notify();
   Serial.printf("[BLE] notify phone len=%u\n", (unsigned)idx);
+}
+
+void BleGatewayManager::notifyControlFrame(const uint8_t* data, size_t len) {
+  if (!s_txChar || data == nullptr || len == 0) return;
+  s_txChar->setValue(data, len);
+  s_txChar->notify();
+  Serial.printf("[BLE] notify control len=%u\n", (unsigned)len);
 }
 
 bool BleGatewayManager::phoneConnected() const {

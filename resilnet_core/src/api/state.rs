@@ -120,12 +120,18 @@ pub(crate) fn update_network_status_mapped(
     is_internet_available: bool,
     active_ble_peers_count: u32,
     lora_available: bool,
+    halow_available: bool,
+    halow_link_up: bool,
+    gateway_radio_preference: crate::api::dto::GatewayRadioPreferenceDto,
 ) -> Result<(), String> {
     let handle = get_handle()?;
-    handle.update_network_status(crate::hybrid_router::NetworkStatus::with_lora(
+    handle.update_network_status(crate::hybrid_router::NetworkStatus::with_gateway(
         is_internet_available,
         active_ble_peers_count as usize,
         lora_available,
+        halow_available,
+        halow_link_up,
+        gateway_radio_preference.into(),
     ));
     Ok(())
 }

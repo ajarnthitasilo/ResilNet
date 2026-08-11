@@ -48,6 +48,9 @@ abstract class ResilNetCoreApiImplPlatform
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw);
+
+  @protected
   MessagePacketDto dco_decode_box_autoadd_message_packet_dto(dynamic raw);
 
   @protected
@@ -63,6 +66,11 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  GatewayRadioPreferenceDto dco_decode_gateway_radio_preference_dto(
+    dynamic raw,
+  );
 
   @protected
   GeoNoticeDto dco_decode_geo_notice_dto(dynamic raw);
@@ -102,6 +110,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw);
 
   @protected
   PayloadTagDto? dco_decode_opt_box_autoadd_payload_tag_dto(dynamic raw);
@@ -170,6 +181,9 @@ abstract class ResilNetCoreApiImplPlatform
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
   MessagePacketDto sse_decode_box_autoadd_message_packet_dto(
     SseDeserializer deserializer,
   );
@@ -191,6 +205,11 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  GatewayRadioPreferenceDto sse_decode_gateway_radio_preference_dto(
+    SseDeserializer deserializer,
+  );
 
   @protected
   GeoNoticeDto sse_decode_geo_notice_dto(SseDeserializer deserializer);
@@ -240,6 +259,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer);
 
   @protected
   PayloadTagDto? sse_decode_opt_box_autoadd_payload_tag_dto(
@@ -318,6 +340,9 @@ abstract class ResilNetCoreApiImplPlatform
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_message_packet_dto(
     MessagePacketDto self,
     SseSerializer serializer,
@@ -343,6 +368,12 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_gateway_radio_preference_dto(
+    GatewayRadioPreferenceDto self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_geo_notice_dto(GeoNoticeDto self, SseSerializer serializer);
@@ -409,6 +440,9 @@ abstract class ResilNetCoreApiImplPlatform
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_payload_tag_dto(
