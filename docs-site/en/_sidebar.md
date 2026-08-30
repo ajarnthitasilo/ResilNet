@@ -15,3 +15,4 @@
 * [Firmware](/en/firmware/)
 * [FAQ](/en/faq/)
 * [For developers](/en/dev/)
+  * [System architecture diagram](/diagrams/architecture.html)

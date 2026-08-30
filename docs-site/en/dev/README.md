@@ -17,6 +17,11 @@ docs-site/          This Docsify site
 tool/               sync_firmware_release.sh
 ```
 
+## System architecture
+
+Interactive diagram (Archify): **[Open architecture map](/diagrams/architecture.html)**  
+Direct URL: https://ajarnthitasilo.github.io/ResilNet/diagrams/architecture.html
+
 ## Build firmware
 
 ```bash
