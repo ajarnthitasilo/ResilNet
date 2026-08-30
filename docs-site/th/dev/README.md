@@ -17,6 +17,11 @@ docs-site/          เว็บคู่มือนี้ (Docsify)
 tool/               sync_firmware_release.sh
 ```
 
+## แผนผังสถาปัตยกรรมระบบ
+
+ไดอะแกรมแบบโต้ตอบ (Archify): **[เปิดแผนผังสถาปัตยกรรม](/diagrams/architecture.html)**  
+URL ตรง: https://ajarnthitasilo.github.io/ResilNet/diagrams/architecture.html
+
 ## Build เฟิร์มแวร์
 
 ```bash

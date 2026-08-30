@@ -21,6 +21,7 @@ import '../core/meshtastic_bridge_core.dart';
 import '../core/notice_wire.dart';
 import '../core/payload_kinds.dart';
 import '../core/peer_id.dart';
+import '../core/gateway_caps_coordinator.dart';
 import '../core/platform_caps.dart';
 import '../l10n/supported_locales.dart';
 import '../models/app_recovery.dart';

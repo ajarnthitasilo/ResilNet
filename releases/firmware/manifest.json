@@ -13,8 +13,8 @@
     },
     "loraGateway": {
       "file": "resilnet_esp32_lora_gateway.bin",
-      "sizeBytes": 1088048,
-      "sha256": "925750a098f562c6a1356c7581c8468526090691c0b1d68a65fa46112bffff7d",
+      "sizeBytes": 1089088,
+      "sha256": "65b643ca1dfaa79e2c341395a04d754a62829c1fe224567ac0a23b415f229e8a",
       "platformioEnv": "lora_gateway",
       "title": "ESP32 LoRa Gateway (BLE \u2194 LoRa + OTA)"
     }
