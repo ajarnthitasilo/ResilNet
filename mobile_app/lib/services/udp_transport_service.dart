@@ -340,7 +340,9 @@ class UdpTransportService extends ChangeNotifier {
     try {
       if (dto.payload.length <= ResilNetProtocol.radioMaxPayloadLen &&
           !ResilNetChunkCodec.isChunked(dto.payload)) {
-        return sendRadioFrame(
+        // await, so a throw lands in this method's catch instead of escaping
+        // as an unhandled async error past the error handling below.
+        return await sendRadioFrame(
           packetId: dto.id,
           ttl: dto.ttl,
           payload: Uint8List.fromList(dto.payload),
@@ -356,7 +358,9 @@ class UdpTransportService extends ChangeNotifier {
         chunks: chunks,
         transport: ChunkArqTransport.wifiUdp,
       );
-      return _sendChunkPayloads(
+      // Same here: without await, a chunk-send failure skipped the catch and
+      // left _transferState stuck on the aborted transfer.
+      return await _sendChunkPayloads(
         messageId: dto.id,
         ttl: dto.ttl,
         chunks: chunks,
