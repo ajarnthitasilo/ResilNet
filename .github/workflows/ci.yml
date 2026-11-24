@@ -31,6 +31,31 @@ jobs:
       - name: flutter test gateway HaLow / LoRa-only regression
         run: flutter test test/gateway_control_test.dart
 
+  # The job above covers one regression file. This one is the app's own gate:
+  # the analyzer plus the whole test suite.
+  flutter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile_app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: flutter pub get
+        run: flutter pub get
+      # Scoped to lib/ and test/ on purpose: rust_builder/cargokit is a
+      # vendored build tool with its own pubspec, and
+      # integration_test/simple_test.dart is a flutter_rust_bridge template
+      # leftover referencing a MyApp this app never had. Errors and warnings
+      # fail the build; the ~24 remaining style infos do not.
+      - name: flutter analyze
+        run: flutter analyze --no-fatal-infos lib test
+      - name: flutter test
+        run: flutter test
+
   esp32-lora-gateway-build:
     runs-on: ubuntu-latest
     defaults:

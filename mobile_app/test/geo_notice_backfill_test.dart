@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:resilnet/core/geohash.dart';
 import 'package:resilnet/core/notice_wire.dart';
-import 'package:resilnet/models/local_notice.dart';
 
 void main() {
   group('geo notice bulletin ingest', () {

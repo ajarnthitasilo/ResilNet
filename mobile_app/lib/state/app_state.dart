@@ -2931,46 +2931,6 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  Future<int> _fanOutToNearby(
-    String text, {
-    String kind = PayloadKinds.areaPublic,
-  }) async {
-    final peers = _mesh?.nearbyPeers ?? const <Peer>[];
-    var sent = 0;
-    for (final peer in peers) {
-      if (peer.id == myUserId || peer.publicKey.isEmpty) continue;
-      try {
-        final ts = DateTime.now().millisecondsSinceEpoch;
-        final pkg = crypto.encryptForRecipient(
-          plaintext: text,
-          receiverPublicPem: peer.publicKey,
-          senderId: myUserId,
-          receiverId: peer.id,
-          timestamp: ts,
-        );
-        final msg = ChatMessage(
-          id: _uuid.v4(),
-          senderId: myUserId,
-          receiverId: peer.id,
-          encryptedPayload: pkg.encryptedPayload,
-          encryptedKey: pkg.encryptedKey,
-          signature: pkg.signature,
-          ttl: 5,
-          timestamp: ts,
-          status: MessageStatus.pending,
-          type: MessageType.direct,
-          payloadKind: kind,
-        );
-        await persistChatMessage(msg);
-        await routeOutbound(msg);
-        sent++;
-      } catch (e) {
-        debugPrint('[ResilNet] fan-out to ${peer.id} failed: $e');
-      }
-    }
-    return sent;
-  }
-
   Future<void> setDisplayName(String v) async {
     final next = effectiveDisplayName(v);
     _displayName = next;

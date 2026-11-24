@@ -78,7 +78,6 @@ class BleMeshService extends ChangeNotifier {
   bool get gattReady => _gattReady;
   bool get isAdvertising => _advertising;
   Future<void>? _gattEnsureInFlight;
-  bool _peripheralPoweredOn = false;
   bool _bulletinListenActive = false;
   Timer? _roleTimer;
   Timer? _holdAdvertiseTimer;
@@ -521,7 +520,6 @@ class BleMeshService extends ChangeNotifier {
 
       final powered = Completer<void>();
       BlePeripheral.setBleStateChangeCallback((on) {
-        _peripheralPoweredOn = on;
         debugPrint('[BLE] peripheral poweredOn=$on');
         if (on && !powered.isCompleted) powered.complete();
         // Retry setup if we previously failed while BT was off.
