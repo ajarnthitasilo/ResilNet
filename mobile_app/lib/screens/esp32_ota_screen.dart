@@ -167,10 +167,10 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('แฟลชเฟิร์มแวร์ผ่าน Bluetooth'),
+        title: Text(context.l10n.firmwareOtaTitle),
         actions: [
           IconButton(
-            tooltip: 'สแกนใหม่',
+            tooltip: context.l10n.peersRefreshTooltip,
             onPressed: _flashing ? null : () => _ota.startScan(),
             icon: const Icon(Icons.bluetooth_searching),
           ),
@@ -179,7 +179,10 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
       body: ListView(
         padding: const EdgeInsets.all(18),
         children: [
-          Text('เลือกเฟิร์มแวร์', style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            context.l10n.firmwarePickTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           SegmentedButton<FirmwareKind>(
             segments: FirmwareKind.values
@@ -215,7 +218,10 @@ class _Esp32OtaScreenState extends State<Esp32OtaScreen> {
             );
           }),
           const SizedBox(height: 16),
-          Text('บอร์ด ESP32 ใกล้เคียง', style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            context.l10n.firmwareNearbyBoards,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           if (_ota.phase == OtaPhase.scanning && devices.isEmpty)
             const LinearProgressIndicator(),

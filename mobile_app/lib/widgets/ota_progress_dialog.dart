@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../app/glass_overlays.dart';
+import '../l10n/l10n_ext.dart';
 
 /// Dialog แสดงความคืบหน้า OTA / chunk reassembly พร้อม NACK ARQ %
 class OtaProgressDialog extends StatelessWidget {
@@ -92,7 +94,10 @@ class OtaProgressDialog extends StatelessWidget {
       ),
       actions: [
         if (onCancel != null)
-          TextButton(onPressed: onCancel, child: const Text('ยกเลิก')),
+          TextButton(
+            onPressed: onCancel,
+            child: Text(context.l10n.cancel),
+          ),
       ],
     );
   }

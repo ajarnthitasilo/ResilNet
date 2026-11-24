@@ -181,8 +181,8 @@ class _Esp32FirmwareScreenState extends State<Esp32FirmwareScreen> {
           Card(
             child: ListTile(
               leading: const Icon(Icons.bluetooth_connected),
-              title: const Text('แฟลชเฟิร์มแวร์ผ่าน Bluetooth'),
-              subtitle: const Text('เปิดหน้าจอ OTA — สแกนและอัปเดตบอร์ด ESP32'),
+              title: Text(context.l10n.firmwareOtaTitle),
+              subtitle: Text(context.l10n.firmwareOtaSubtitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../app/tokens.dart';
 import '../core/geohash.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
@@ -144,7 +145,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
             Text(
               l10n.geoManualActive(s.geoChannelLabel),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: const Color(0xFF7EB6FF),
+                    color: context.tokens.link,
                   ),
             ),
           ],
@@ -345,7 +346,7 @@ class _LocationChannelSheetState extends State<_LocationChannelSheet> {
           Text(
             title,
             style: TextStyle(
-              color: accent ? const Color(0xFF7EB6FF) : onSurface,
+              color: accent ? context.tokens.link : onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),

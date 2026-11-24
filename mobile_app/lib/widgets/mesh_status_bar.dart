@@ -9,6 +9,7 @@ import '../core/resilnet_protocol.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/ble_radio_state.dart';
 import '../models/gateway_radio_mode.dart';
+import '../screens/network_panel_sheet.dart';
 import '../state/app_state.dart';
 import '../app/glass_overlays.dart';
 
@@ -138,105 +139,132 @@ class MeshStatusBar extends StatelessWidget {
           bottom: BorderSide(color: ResilNetTheme.barBorder(context)),
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      // The whole bar opens the network panel: transport mode, area channel,
+      // bulletins, local Wi-Fi and home node now live behind the status people
+      // already read, instead of as bare icons in the app bar.
+      child: InkWell(
+        onTap: () => unawaited(showNetworkPanelSheet(context)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: meshRunning
-                      ? _phaseColor(context, phase)
-                      : ResilNetTheme.mutedOnSurface(context, alpha: 0.28),
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  meshRunning
-                      ? _phaseLabel(l10n, phase, meshPeers: activePeers)
-                      : _radioLabel(l10n, radioState),
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-              ),
-              if (showRestart)
-                TextButton(
-                  onPressed: () => s.ensureBleRadiosStarted(),
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+              Row(
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: meshRunning
+                          ? _phaseColor(context, phase)
+                          : ResilNetTheme.mutedOnSurface(context, alpha: 0.28),
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                  child: Text(l10n.meshBleRestart),
-                ),
-              InkWell(
-                onTap: s.nostrReconnecting
-                    ? null
-                    : () => unawaited(_onNostrTap(context, s)),
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (s.nostrReconnecting)
-                        const SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      else
-                        Icon(
-                          nostrOnline ? Icons.hub_outlined : Icons.cloud_off,
-                          size: 18,
-                          color: nostrOnline
-                              ? ResilNetTheme.emerald
-                              : Colors.orangeAccent,
-                        ),
-                      const SizedBox(width: 6),
-                      Text(
-                        l10n.meshNostrOnline(relays),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      meshRunning
+                          ? _phaseLabel(l10n, phase, meshPeers: activePeers)
+                          : _radioLabel(l10n, radioState),
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ),
+                  if (showRestart)
+                    TextButton(
+                      onPressed: () => s.ensureBleRadiosStarted(),
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                      ),
+                      child: Text(l10n.meshBleRestart),
+                    ),
+                  InkWell(
+                    onTap: s.nostrReconnecting
+                        ? null
+                        : () => unawaited(_onNostrTap(context, s)),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (s.nostrReconnecting)
+                            const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          else
+                            Icon(
+                              nostrOnline ? Icons.hub_outlined : Icons.cloud_off,
+                              size: 18,
                               color: nostrOnline
                                   ? ResilNetTheme.emerald
                                   : Colors.orangeAccent,
                             ),
+                          const SizedBox(width: 6),
+                          Text(
+                            l10n.meshNostrOnline(relays),
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  color: nostrOnline
+                                      ? ResilNetTheme.emerald
+                                      : Colors.orangeAccent,
+                                ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.meshFooter(
+                        activePeers,
+                        lora,
+                        ResilNetProtocol.syncRangeMeters,
+                      ),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: ResilNetTheme.mutedOnSurface(context),
+                          ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.networkPanelOpenHint,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: ResilNetTheme.emerald,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 14,
+                    color: ResilNetTheme.emerald,
+                  ),
+                ],
+              ),
+              if (s.isGatewayWifiActive) ...[
+                const SizedBox(height: 4),
+                Text(
+                  chunkProgress != null
+                      ? l10n.meshGatewayProgress(chunkProgress.label)
+                      : _gatewayDetailLabel(l10n, s),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: chunkProgress != null
+                            ? ResilNetTheme.emerald
+                            : ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
+                      ),
+                ),
+              ],
             ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            l10n.meshFooter(
-              activePeers,
-              lora,
-              ResilNetProtocol.syncRangeMeters,
-            ),
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: ResilNetTheme.mutedOnSurface(context),
-                ),
-          ),
-          if (s.isGatewayWifiActive) ...[
-            const SizedBox(height: 4),
-            Text(
-              chunkProgress != null
-                  ? l10n.meshGatewayProgress(chunkProgress.label)
-                  : _gatewayDetailLabel(l10n, s),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: chunkProgress != null
-                        ? ResilNetTheme.emerald
-                        : ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
-                  ),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }

@@ -27,14 +27,14 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get appRefreshTitleHint =>
-      'แตะสองครั้ง = รีเฟรชเบา · กดค้าง = กู้หนัก · แตะสามครั้ง = ล้างฉุกเฉิน';
+      'แตะสองครั้ง = รีเฟรชวิทยุ · กดค้าง = กู้คืนแบบเต็ม';
 
   @override
   String get softRefreshTipTitle => 'ถ้าแอปดูนิ่งหรือค้าง';
 
   @override
   String get softRefreshTipBody =>
-      'แตะชื่อ ResilNet สองครั้งเพื่อรีเฟรชวิทยุ หากยังค้าง: กดค้างที่ชื่อ หรือ ⋮ / ตั้งค่า → กู้แอป แตะสามครั้ง = ล้างฉุกเฉินเมื่อตั้งใจเท่านั้น';
+      'แตะชื่อ ResilNet (มุมซ้ายบน) สองครั้งเพื่อรีเฟรชวิทยุ ถ้ายังค้าง: กดชื่อค้างไว้ หรือเลือก ⋮ → กู้คืนแบบเต็ม หรือไปที่หน้าตั้งค่า';
 
   @override
   String get softRefreshTipGotIt => 'เข้าใจแล้ว';
@@ -2454,7 +2454,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get panicWipeSubtitle =>
-      'ลบทุกอย่างในเครื่อง — เหมือนแตะชื่อบนหน้าหลักสามครั้ง (แตะสองครั้ง = รีเฟรชวิทยุ)';
+      'ลบทุกอย่างที่เก็บในเครื่องนี้ — ตัวตน ข้อความ และรายชื่อ ย้อนกลับไม่ได้';
 
   @override
   String get panicWipeConfirmTitle => 'ล้างข้อมูลทั้งหมดในเครื่อง?';
@@ -2781,4 +2781,71 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get announceConfirmFollow => 'ติดตาม';
+
+  @override
+  String get chatLoadOlder => 'โหลดข้อความก่อนหน้า';
+
+  @override
+  String chatSendingAs(String name) {
+    return 'ส่งในชื่อ $name';
+  }
+
+  @override
+  String get chatSendTooltip => 'ส่ง';
+
+  @override
+  String get chatE2eeOffBlocked =>
+      'การเข้ารหัสแบบต้นทางถึงปลายทางปิดอยู่ จึงส่งไม่ได้ เปิดได้ที่ ตั้งค่า → ความเป็นส่วนตัว';
+
+  @override
+  String get chatBlockConfirmTitle => 'บล็อกคนนี้ไหม?';
+
+  @override
+  String chatBlockConfirmBody(String name) {
+    return '$name จะไม่ปรากฏในรายการของคุณอีก และข้อความจากเขาจะถูกข้าม ยกเลิกได้ทันทีหลังกด หรือปลดบล็อกภายหลังที่หน้ารายชื่อ';
+  }
+
+  @override
+  String get chatBlockConfirmAction => 'บล็อก';
+
+  @override
+  String get undo => 'เลิกทำ';
+
+  @override
+  String meshPublicSent(int count) {
+    return 'ส่งถึงโหนดใกล้เคียง $count เครื่องบน #mesh แล้ว';
+  }
+
+  @override
+  String get meshPublicSentNone =>
+      'ยังไม่มีโหนดใกล้เคียงรับข้อความนี้ — ค้างคิวไว้บน #mesh';
+
+  @override
+  String get networkPanelTitle => 'เครือข่าย';
+
+  @override
+  String get networkPanelSubtitle => 'ตอนนี้เครื่องนี้เชื่อมต่ออย่างไร';
+
+  @override
+  String get networkPanelOpenHint => 'เครือข่าย';
+
+  @override
+  String get settingsSearchHint => 'ค้นหาการตั้งค่า';
+
+  @override
+  String settingsSearchEmpty(String query) {
+    return 'ไม่พบการตั้งค่าที่ตรงกับ “$query”';
+  }
+
+  @override
+  String get firmwareOtaTitle => 'แฟลชเฟิร์มแวร์ผ่าน Bluetooth';
+
+  @override
+  String get firmwareOtaSubtitle => 'เปิดหน้าจอ OTA — สแกนและอัปเดตบอร์ด ESP32';
+
+  @override
+  String get firmwarePickTitle => 'เลือกเฟิร์มแวร์';
+
+  @override
+  String get firmwareNearbyBoards => 'บอร์ด ESP32 ใกล้เคียง';
 }

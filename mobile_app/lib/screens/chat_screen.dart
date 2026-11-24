@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../app/theme.dart';
+import '../app/tokens.dart';
 import '../core/board_invite_wire.dart';
 import '../core/chat_image_codec.dart';
 import '../core/identity_invite_wire.dart';
@@ -31,6 +32,7 @@ import '../services/resilnet_packet_codec.dart';
 import '../services/secure_screen.dart';
 import '../state/app_state.dart';
 import '../widgets/identicon.dart';
+import '../widgets/page_shell.dart';
 import 'announcements_screen.dart';
 import 'qr_scanner_screen.dart';
 import 'voice_record_sheet.dart';
@@ -67,11 +69,19 @@ class _ChatScreenState extends State<ChatScreen> {
   int _boundEpoch = -1;
   int _seenRecoveryEpoch = -1;
   bool _reloadQueued = false;
+  bool _reloadDirty = false;
   Timer? _markReadDebounce;
   AppState? _appState;
 
-  static const _pickerBg = Color(0xFF1A2332);
-  static const _pickerAccent = Color(0xFF10B981);
+  /// How many messages of the thread are loaded. Grows by [_pageSize] when the
+  /// reader asks for older messages — a long history used to be read AND
+  /// decrypted in full on every refresh, which froze the UI.
+  int _pageSize = _initialPageSize;
+  int _totalMessages = 0;
+  bool _loadingOlder = false;
+
+  static const _initialPageSize = 50;
+  static const _pageStep = 50;
   static const _sendDupWindowMs = 2200;
 
   void _toggleEmojiPicker() {
@@ -83,30 +93,42 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Config get _emojiPickerConfig => Config(
-    height: 256,
-    checkPlatformCompatibility: true,
-    emojiViewConfig: const EmojiViewConfig(
-      backgroundColor: _pickerBg,
-      emojiSizeMax: 28,
-    ),
-    categoryViewConfig: const CategoryViewConfig(
-      backgroundColor: _pickerBg,
-      indicatorColor: _pickerAccent,
-      iconColor: Colors.white54,
-      iconColorSelected: _pickerAccent,
-      backspaceColor: _pickerAccent,
-    ),
-    bottomActionBarConfig: const BottomActionBarConfig(
-      backgroundColor: _pickerBg,
-      buttonColor: _pickerAccent,
-      buttonIconColor: Colors.white,
-    ),
-    searchViewConfig: const SearchViewConfig(
-      backgroundColor: _pickerBg,
-      buttonIconColor: Colors.white54,
-    ),
-  );
+  /// Emoji picker chrome, taken from the theme so it follows light/dark
+  /// instead of staying dark-on-light.
+  Config get _emojiPickerConfig {
+    final tokens = context.tokens;
+    final scheme = Theme.of(context).colorScheme;
+    final pickerBg = tokens.pickerSurface;
+    final accent = scheme.primary;
+    final muted = scheme.onSurface.withValues(alpha: 0.55);
+    // Keep the picker at a readable height without eating a short screen.
+    final height =
+        (MediaQuery.sizeOf(context).height * 0.34).clamp(200.0, 320.0);
+    return Config(
+      height: height,
+      checkPlatformCompatibility: true,
+      emojiViewConfig: EmojiViewConfig(
+        backgroundColor: pickerBg,
+        emojiSizeMax: 28,
+      ),
+      categoryViewConfig: CategoryViewConfig(
+        backgroundColor: pickerBg,
+        indicatorColor: accent,
+        iconColor: muted,
+        iconColorSelected: accent,
+        backspaceColor: accent,
+      ),
+      bottomActionBarConfig: BottomActionBarConfig(
+        backgroundColor: pickerBg,
+        buttonColor: accent,
+        buttonIconColor: scheme.onPrimary,
+      ),
+      searchViewConfig: SearchViewConfig(
+        backgroundColor: pickerBg,
+        buttonIconColor: muted,
+      ),
+    );
+  }
 
   Future<void> _setAlias() async {
     final s = context.read<AppState>();
@@ -114,8 +136,12 @@ class _ChatScreenState extends State<ChatScreen> {
     final existing = s.contactAlias(widget.peerId) ?? '';
     final controller = TextEditingController(text: existing);
 
-    if (!mounted) return;
-    final ok = await showDialog<bool>(
+    if (!mounted) {
+      controller.dispose();
+      return;
+    }
+    try {
+      final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) {
         return GlassAlertDialog(
@@ -149,11 +175,14 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       },
     );
-    if (ok != true) return;
-    await s.setContactAlias(
-      publicKeyHash: widget.peerId,
-      aliasName: controller.text,
-    );
+      if (ok != true) return;
+      await s.setContactAlias(
+        publicKeyHash: widget.peerId,
+        aliasName: controller.text,
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   @override
@@ -228,14 +257,23 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _reloadMessages({bool force = false}) async {
-    if (_reloadQueued && !force) return;
+    if (_reloadQueued) {
+      // Something changed mid-reload: remember it instead of dropping it.
+      _reloadDirty = true;
+      if (!force) return;
+    }
     _reloadQueued = true;
     try {
       final s = context.read<AppState>();
       final epoch = s.chatDataEpoch;
       if (!force && epoch == _boundEpoch) return;
       final l10n = context.l10n;
-      final items = await s.messagesForConversation(s.myUserId, widget.peerId);
+      final items = await s.messagesForConversation(
+        s.myUserId,
+        widget.peerId,
+        limit: _pageSize,
+      );
+      final total = await s.conversationMessageCount(s.myUserId, widget.peerId);
       if (!mounted) return;
       final plains = <String, String>{};
       for (final m in items) {
@@ -253,6 +291,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ..clear()
           ..addAll(plains);
         _boundEpoch = epoch;
+        _totalMessages = total;
         _loading = false;
         _loadError = null;
       });
@@ -264,6 +303,28 @@ class _ChatScreenState extends State<ChatScreen> {
       });
     } finally {
       _reloadQueued = false;
+      if (_reloadDirty && mounted) {
+        _reloadDirty = false;
+        // Not forced: the epoch check decides whether there is anything new,
+        // and the plaintext cache is reused instead of decrypting the page
+        // again on every inbound burst.
+        unawaited(_reloadMessages());
+      }
+    }
+  }
+
+  bool get _hasOlderMessages => _totalMessages > _messages.length;
+
+  Future<void> _loadOlderMessages() async {
+    if (_loadingOlder || !_hasOlderMessages) return;
+    setState(() {
+      _loadingOlder = true;
+      _pageSize += _pageStep;
+    });
+    try {
+      await _reloadMessages(force: true);
+    } finally {
+      if (mounted) setState(() => _loadingOlder = false);
     }
   }
 
@@ -296,7 +357,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (!s.e2eeEnabled) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.chatE2eeOffBlocked)),
       );
       return;
     }
@@ -447,7 +508,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        GlassSnackBar(content: Text(l10n.settingsE2eeSubtitle)),
+        GlassSnackBar(content: Text(l10n.chatE2eeOffBlocked)),
       );
       return;
     }
@@ -516,7 +577,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final l10n = context.l10n;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        GlassSnackBar(content: Text(l10n.settingsE2eeSubtitle)),
+        GlassSnackBar(content: Text(l10n.chatE2eeOffBlocked)),
       );
       return;
     }
@@ -639,8 +700,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _statusTicks(MessageStatus s) {
     final gray = ResilNetTheme.mutedOnSurface(context, alpha: 0.55);
-    const blue = Color(0xFF53BDEB);
-    final red = Colors.redAccent.withValues(alpha: 0.9);
+    final blue = context.tokens.readReceipt;
+    final red = context.tokens.danger;
 
     Widget singleTick(Color color) =>
         Icon(Icons.done, size: 14, color: color);
@@ -842,18 +903,31 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     }
 
+    final tokens = context.tokens;
+    // Bubble width follows the screen instead of a fixed 340px, which left a
+    // narrow column of text on tablets and in landscape.
+    final maxBubbleWidth =
+        (MediaQuery.sizeOf(context).width * 0.78).clamp(220.0, 560.0);
+    // reverse: true anchors the list at the newest message, so opening a thread
+    // lands on the latest line and arriving messages need no manual scroll.
+    final olderRows = _hasOlderMessages ? 1 : 0;
     return ListView.builder(
+      reverse: true,
       padding: const EdgeInsets.fromLTRB(14, 4, 14, 14),
-      itemCount: _messages.length,
+      itemCount: _messages.length + olderRows,
       itemBuilder: (context, i) {
-        final m = _messages[i];
+        if (i >= _messages.length) {
+          return _loadOlderButton(l10n);
+        }
+        final m = _messages[_messages.length - 1 - i];
         final isMe = m.senderId == myId;
         final text = _plainById[m.id] ?? '…';
         return Align(
           alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 340),
+            constraints: BoxConstraints(maxWidth: maxBubbleWidth),
             child: Card(
+              color: isMe ? tokens.bubbleMine : tokens.bubbleTheirs,
               child: InkWell(
                 onLongPress: () => unawaited(
                   _showMessageActions(s, l10n, m, text, isMe: isMe),
@@ -868,8 +942,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           l10n.areaPublicBadge,
                           style:
                               Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: Colors.tealAccent
-                                        .withValues(alpha: 0.9),
+                                    color: tokens.channel,
                                   ),
                         ),
                         const SizedBox(height: 4),
@@ -921,8 +994,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     .labelSmall
                                     ?.copyWith(
                                       color: m.status == MessageStatus.failed
-                                          ? Colors.redAccent
-                                              .withValues(alpha: 0.9)
+                                          ? tokens.danger
                                           : ResilNetTheme.mutedOnSurface(
                                               context,
                                               alpha: 0.7,
@@ -955,6 +1027,26 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         );
       },
+    );
+  }
+
+  /// Top row of the (reversed) thread: pull in the previous page of history.
+  Widget _loadOlderButton(AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Center(
+        child: _loadingOlder
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : TextButton.icon(
+                onPressed: () => unawaited(_loadOlderMessages()),
+                icon: const Icon(Icons.history, size: 18),
+                label: Text(l10n.chatLoadOlder),
+              ),
+      ),
     );
   }
 
@@ -1039,8 +1131,9 @@ class _ChatScreenState extends State<ChatScreen> {
     required VoidCallback onTap,
     VoidCallback? onLongPress,
   }) {
+    final tokens = context.tokens;
     return Material(
-      color: const Color(0xFF1A3A2A),
+      color: tokens.inviteBanner,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -1050,7 +1143,7 @@ class _ChatScreenState extends State<ChatScreen> {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              Icon(icon, color: const Color(0xFF5AC8FA)),
+              Icon(icon, color: tokens.link),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -1058,20 +1151,26 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleSmall,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: tokens.onInviteBanner,
+                          ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Colors.white70,
+                            color: tokens.onInviteBanner
+                                .withValues(alpha: 0.75),
                           ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Colors.white54),
+              Icon(
+                Icons.chevron_right,
+                color: tokens.onInviteBanner.withValues(alpha: 0.6),
+              ),
             ],
           ),
         ),
@@ -1200,7 +1299,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _linkifiedText(String text, AppLocalizations l10n) {
     final style = Theme.of(context).textTheme.bodyMedium;
     final linkStyle = style?.copyWith(
-      color: const Color(0xFF5AC8FA),
+      color: context.tokens.link,
       decoration: TextDecoration.underline,
     );
     final matches = _urlRe.allMatches(text).toList();
@@ -1471,10 +1570,45 @@ class _ChatScreenState extends State<ChatScreen> {
     final l10n = context.l10n;
     final myId = s.myUserId;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
+    final meLabel = s.displayName.trim().isNotEmpty
+        ? s.displayName.trim()
+        : formatShortPeerId(myId);
+
+    return ResilNetPage(
       appBar: AppBar(
-        title: Text(l10n.chatTitle),
+        titleSpacing: 4,
+        // The peer is who this screen is about, so they are the title — the
+        // generic "Chat" heading with a 'Peer:/Me:' strip under it is gone.
+        title: Row(
+          children: [
+            Identicon(id: widget.peerId, size: 32),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    s.peerDisplayLabel(widget.peerId),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    l10n.chatSendingAs(meLabel),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: ResilNetTheme.mutedOnSurface(context, alpha: 0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: l10n.chatScanTooltip,
@@ -1487,64 +1621,18 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.qr_code_scanner),
           ),
           IconButton(
-            tooltip: l10n.chatBlockTooltip,
-            onPressed: () async {
-              await context.read<AppState>().db.setPeerBlocked(
-                widget.peerId,
-                true,
-              );
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                GlassSnackBar(content: Text(context.l10n.chatBlockedSnack)),
-              );
-            },
-            icon: const Icon(Icons.block),
-          ),
-          IconButton(
             tooltip: l10n.chatAliasTooltip,
             onPressed: _setAlias,
             icon: const Icon(Icons.edit_outlined),
           ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(52),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-            child: Row(
-              children: [
-                Identicon(id: widget.peerId, size: 30),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Peer: ${s.peerDisplayLabel(widget.peerId)}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.85),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'Me: ${s.displayName.trim().isNotEmpty ? s.displayName.trim() : formatShortPeerId(myId)}',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.55),
-                  ),
-                ),
-              ],
-            ),
+          IconButton(
+            tooltip: l10n.chatBlockTooltip,
+            onPressed: () => unawaited(_confirmBlockPeer()),
+            icon: const Icon(Icons.block),
           ),
-        ),
+        ],
       ),
-      body: Container(
-        decoration: ResilNetTheme.pageDecoration(context),
-        child: Column(
+      body: Column(
         children: [
           Expanded(child: _buildThread(context, s, l10n, myId)),
           SafeArea(
@@ -1556,10 +1644,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
                     child: Material(
-                      color: const Color(0xFF1A3A2A),
+                      color: context.tokens.inviteBanner,
                       borderRadius: BorderRadius.circular(12),
                       child: ListTile(
                         dense: true,
+                        iconColor: context.tokens.onInviteBanner,
+                        textColor: context.tokens.onInviteBanner,
                         leading: Icon(
                           _composeInvite == _ComposeInviteKind.board
                               ? Icons.campaign_outlined
@@ -1634,7 +1724,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           _showEmojiPicker
                               ? Icons.keyboard_outlined
                               : Icons.emoji_emotions_outlined,
-                          color: _showEmojiPicker ? _pickerAccent : null,
+                          color: _showEmojiPicker ? context.tokens.brand : null,
                         ),
                       ),
                       Expanded(
@@ -1674,14 +1764,15 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       const SizedBox(width: 8),
                       IconButton.filled(
+                        key: const ValueKey('direct-send'),
+                        tooltip: l10n.chatSendTooltip,
                         onPressed: _composeLocked ? null : _send,
                         style: IconButton.styleFrom(
-                          backgroundColor: _sendingOutbound
-                              ? Colors.white.withValues(alpha: 0.18)
-                              : const Color(0xFF10B981),
-                          foregroundColor: _sendingOutbound
-                              ? Colors.white70
-                              : Colors.white,
+                          backgroundColor: context.tokens.brand,
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: context.tokens.brand
+                              .withValues(alpha: 0.4),
+                          disabledForegroundColor: Colors.white70,
                         ),
                         icon: _sendingOutbound
                             ? const SizedBox(
@@ -1706,6 +1797,50 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Blocking a peer hides them everywhere and is easy to hit by accident from
+  /// the app bar, so it now asks first and offers an immediate undo.
+  Future<void> _confirmBlockPeer() async {
+    final s = context.read<AppState>();
+    final l10n = context.l10n;
+    final label = s.peerDisplayLabel(widget.peerId);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => GlassAlertDialog(
+        icon: Icon(Icons.block, color: context.tokens.danger),
+        title: Text(l10n.chatBlockConfirmTitle),
+        content: Text(l10n.chatBlockConfirmBody(label)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: context.tokens.danger,
+            ),
+            child: Text(l10n.chatBlockConfirmAction),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await s.db.setPeerBlocked(widget.peerId, true);
+    s.markPeerDirectoryChanged();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      GlassSnackBar(
+        content: Text(l10n.chatBlockedSnack),
+        action: SnackBarAction(
+          label: l10n.undo,
+          onPressed: () async {
+            await s.db.setPeerBlocked(widget.peerId, false);
+            s.markPeerDirectoryChanged();
+          },
         ),
       ),
     );

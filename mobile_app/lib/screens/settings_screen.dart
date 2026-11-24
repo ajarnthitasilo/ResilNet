@@ -11,7 +11,10 @@ import '../l10n/supported_locales.dart';
 import '../models/notice_expiry.dart';
 import '../models/gateway_radio_mode.dart';
 import '../models/transport_mode.dart';
+import '../app/tokens.dart';
 import '../state/app_state.dart';
+import '../widgets/cached_future_builder.dart';
+import '../widgets/page_shell.dart';
 import 'announcements_screen.dart';
 import 'esp32_firmware_screen.dart';
 import 'home_node_bridge_sheet.dart';
@@ -30,9 +33,88 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
+/// One titled group of settings.
+///
+/// Settings used to be a single flat 600-line list with bare text headings;
+/// grouping them lets each section render as a card and lets the search field
+/// filter whole sections instead of scrolling for them.
+class _SettingsSection {
+  const _SettingsSection({
+    required this.title,
+    required this.children,
+    this.subtitle,
+    this.keywords = const <String>[],
+    this.danger = false,
+  });
+
+  final String title;
+  final String? subtitle;
+  final List<String> keywords;
+  final List<Widget> children;
+  final bool danger;
+
+  bool matches(String query) {
+    final q = query.trim().toLowerCase();
+    if (q.isEmpty) return true;
+    if (title.toLowerCase().contains(q)) return true;
+    if ((subtitle ?? '').toLowerCase().contains(q)) return true;
+    return keywords.any((k) => k.toLowerCase().contains(q));
+  }
+}
+
+class _SettingsCard extends StatelessWidget {
+  const _SettingsCard({required this.section});
+
+  final _SettingsSection section;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: ResilNetTheme.glassPanel(
+        context: context,
+        borderRadius: BorderRadius.circular(18),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              section.title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: section.danger ? scheme.error : null,
+                  ),
+            ),
+            if (section.subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                section.subtitle!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: ResilNetTheme.mutedOnSurface(context),
+                    ),
+              ),
+            ],
+            const SizedBox(height: 10),
+            ...section.children,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _clearing = false;
   bool _wiping = false;
+  final _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickLanguage(BuildContext context, AppState s) async {
     final l10n = context.l10n;
@@ -176,9 +258,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Widget _section(String title) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+  Widget _searchField(AppLocalizations l10n) => Padding(
+        padding: const EdgeInsets.only(bottom: 14),
+        child: TextField(
+          controller: _searchController,
+          onChanged: (v) => setState(() => _query = v),
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            hintText: l10n.settingsSearchHint,
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: _query.isEmpty
+                ? null
+                : IconButton(
+                    tooltip: l10n.cancel,
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() => _query = '');
+                    },
+                  ),
+          ),
+        ),
       );
 
   @override
@@ -187,22 +287,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final s = context.watch<AppState>();
     final override = s.localeOverrideCode;
 
-    return Container(
-      decoration: ResilNetTheme.pageDecoration(context),
-      child: Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(title: Text(l10n.settings)),
-      body: ListView(
-          padding: const EdgeInsets.all(18),
-          children: [
-            _section(l10n.language),
-            Text(
-              l10n.languageSubtitle,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context),
-                  ),
-            ),
-            const SizedBox(height: 12),
+    final sections = <_SettingsSection>[
+      _SettingsSection(
+        title: l10n.language,
+        subtitle: l10n.languageSubtitle,
+        keywords: [l10n.languageSystem, 'language', 'ภาษา'],
+        children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.translate),
@@ -219,15 +309,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => unawaited(_pickLanguage(context, s)),
             ),
-            const SizedBox(height: 28),
-            _section(l10n.localWifiTitle),
-            Text(
-              l10n.localWifiSubtitle,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context),
-                  ),
-            ),
-            const SizedBox(height: 12),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.localWifiTitle,
+        subtitle: l10n.localWifiSubtitle,
+        keywords: ['wifi', 'lan', 'hotspot', 'ไวไฟ'],
+        children: [
             FilledButton.tonalIcon(
               onPressed: () => unawaited(showLocalWifiLinkSheet(context)),
               icon: const Icon(Icons.wifi_lock_outlined),
@@ -240,15 +328,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
                   ),
             ),
-            const SizedBox(height: 28),
-            _section(l10n.lxmfBridgeTitle),
-            Text(
-              l10n.lxmfBridgeSubtitle,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context),
-                  ),
-            ),
-            const SizedBox(height: 12),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.lxmfBridgeTitle,
+        subtitle: l10n.lxmfBridgeSubtitle,
+        keywords: ['lxmf', 'reticulum', 'home node', 'bridge'],
+        children: [
             FilledButton.tonalIcon(
               onPressed: () => unawaited(showHomeNodeBridgeSheet(context)),
               icon: Icon(
@@ -270,15 +356,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
                   ),
             ),
-            const SizedBox(height: 28),
-            _section(l10n.appRecoverySection),
-            Text(
-              l10n.appRecoverySectionSubtitle,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context),
-                  ),
-            ),
-            const SizedBox(height: 12),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.appRecoverySection,
+        subtitle: l10n.appRecoverySectionSubtitle,
+        keywords: [
+          l10n.appHardRecoverAction,
+          l10n.appSessionResetAction,
+          'recover',
+          'reset',
+          'กู้คืน',
+        ],
+        children: [
             FilledButton.icon(
               onPressed: s.recovering
                   ? null
@@ -326,19 +416,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: const Icon(Icons.restart_alt),
               label: Text(l10n.appSessionResetAction),
             ),
-            const SizedBox(height: 28),
-            _section(l10n.settingsPrivacy),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.settingsPrivacy,
+        keywords: [
+          l10n.settingsE2eeTitle,
+          l10n.enableMessageNotifications,
+          l10n.settingsScreenshotTitle,
+          l10n.meshBridgeTitle,
+          l10n.gatewayRadioTitle,
+          l10n.transportModeTitle,
+          l10n.nostrSectionTitle,
+          l10n.nostrTorTitle,
+          l10n.settingsNostrExpiryTitle,
+          'e2ee',
+          'tor',
+          'nostr',
+          'relay',
+          'lora',
+          'halow',
+          'bluetooth',
+          'ความเป็นส่วนตัว',
+        ],
+        children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(
+              leading: Icon(
                 Icons.lock_outline,
-                color: ResilNetTheme.emerald,
+                color: context.tokens.success,
               ),
               title: Text(l10n.settingsE2eeTitle),
               subtitle: Text(l10n.settingsE2eeSubtitle),
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.check_circle,
-                color: ResilNetTheme.emerald,
+                color: context.tokens.success,
                 size: 22,
               ),
             ),
@@ -449,8 +561,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onSelectionChanged: (set) => s.setTransportMode(set.first),
             ),
             const SizedBox(height: 12),
-            FutureBuilder<({String bt, String loc})>(
-              future: s.meshPermissionLabels(),
+            CachedFutureBuilder<({String bt, String loc})>(
+              // Re-read permission labels when the radio state changes, not on
+              // every unrelated AppState tick.
+              epoch: s.bleRadioState,
+              load: () => s.meshPermissionLabels(),
               builder: (context, snap) {
                 final bt = snap.data?.bt ?? '…';
                 final loc = snap.data?.loc ?? '…';
@@ -632,22 +747,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 for (final e in NoticeExpiry.values)
                   ChoiceChip(
-                    label: Text(
-                      e == NoticeExpiry.forever
-                          ? '∞'
-                          : e == NoticeExpiry.oneDay
-                              ? '1d'
-                              : e == NoticeExpiry.threeDays
-                                  ? '3d'
-                                  : '7d',
-                    ),
+                    label: Text(switch (e) {
+                      NoticeExpiry.forever => '∞',
+                      NoticeExpiry.oneDay => '1d',
+                      NoticeExpiry.threeDays => '3d',
+                      NoticeExpiry.sevenDays => '7d',
+                    }),
                     selected: s.nostrExpiry == e,
                     onSelected: (_) => s.setNostrExpiry(e),
                   ),
               ],
             ),
-            const SizedBox(height: 24),
-            _section(l10n.settingsDevices),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.settingsDevices,
+        keywords: [
+          l10n.settingsClearLocationTitle,
+          l10n.announceOpen,
+          l10n.topologyOpen,
+          l10n.mtBridgeTitle,
+          l10n.settingsFirmwareTitle,
+          'esp32',
+          'firmware',
+          'meshtastic',
+          'geohash',
+          'อุปกรณ์',
+        ],
+        children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.location_off_outlined),
@@ -706,15 +833,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
-            const SizedBox(height: 24),
-            _section(l10n.settingsData),
-            Text(
-              l10n.settingsDataHint,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context),
-                  ),
-            ),
-            const SizedBox(height: 8),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.settingsData,
+        subtitle: l10n.settingsDataHint,
+        keywords: [
+          l10n.settingsSaveHistoryTitle,
+          l10n.settingsClearTitle,
+          'history',
+          'ประวัติ',
+          'ลบ',
+        ],
+        children: [
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               secondary: Icon(
@@ -747,26 +878,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
               enabled: !_clearing && !_wiping,
               onTap: _confirmClearMessages,
             ),
-            const SizedBox(height: 28),
-            _section(l10n.dangerZoneTitle),
-            Text(
-              l10n.dangerZoneSubtitle,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context),
-                  ),
-            ),
-            const SizedBox(height: 8),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.dangerZoneTitle,
+        subtitle: l10n.dangerZoneSubtitle,
+        danger: true,
+        keywords: [
+          l10n.panicWipeTitle,
+          l10n.docsGuideTitle,
+          'wipe',
+          'ล้าง',
+          'ฉุกเฉิน',
+        ],
+        children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Icon(
                 Icons.warning_amber_rounded,
                 color: _wiping
                     ? ResilNetTheme.mutedOnSurface(context, alpha: 0.38)
-                    : Colors.redAccent,
+                    : context.tokens.danger,
               ),
               title: Text(
                 l10n.panicWipeTitle,
-                style: const TextStyle(color: Colors.redAccent),
+                style: TextStyle(color: context.tokens.danger),
               ),
               subtitle: Text(l10n.panicWipeSubtitle),
               trailing: _wiping
@@ -775,7 +911,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       height: 22,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.chevron_right, color: Colors.redAccent),
+                  : Icon(Icons.chevron_right, color: context.tokens.danger),
               enabled: !_clearing && !_wiping,
               onTap: _confirmPanicWipe,
             ),
@@ -795,7 +931,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => showInfoSheet(context),
             ),
-            const SizedBox(height: 32),
+        ],
+      ),
+    ];
+
+    final visible = sections.where((x) => x.matches(_query)).toList();
+
+    return ResilNetPage(
+      appBar: AppBar(title: Text(l10n.settings)),
+      body: ListView(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
+          children: [
+            _searchField(l10n),
+            for (final section in visible) _SettingsCard(section: section),
+            if (visible.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                child: Text(
+                  l10n.settingsSearchEmpty(_query),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: ResilNetTheme.mutedOnSurface(context),
+                      ),
+                ),
+              ),
+            const SizedBox(height: 20),
             Center(
               child: Text(
                 l10n.settingsVersion(kAppVersion),
@@ -807,7 +967,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 12),
           ],
         ),
-      ),
     );
   }
 }

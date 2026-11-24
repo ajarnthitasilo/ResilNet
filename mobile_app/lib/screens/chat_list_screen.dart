@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../app/tokens.dart';
 import '../core/chat_image_codec.dart';
 import '../core/payload_kinds.dart';
 import '../core/voice_payload.dart';
@@ -22,24 +23,39 @@ import '../services/mic_permission.dart';
 import '../services/audio_recorder_service.dart';
 import '../state/app_state.dart';
 import '../widgets/app_recovery_actions.dart';
+import '../widgets/cached_future_builder.dart';
 import '../widgets/geo_discovery_empty.dart';
 import '../widgets/identicon.dart';
 import '../widgets/mesh_status_bar.dart';
+import '../widgets/page_shell.dart';
 import 'announcements_screen.dart';
 import 'chat_screen.dart';
-import 'feed_channel_sheet.dart';
 import 'identity_screen.dart';
 import 'info_sheet.dart';
 import 'location_channel_sheet.dart';
+import 'network_panel_sheet.dart';
 import 'local_wifi_link_sheet.dart';
-import 'notices_sheet.dart';
 import 'online_people_sheet.dart';
-import 'panic_wipe.dart';
 import 'settings_screen.dart';
 import 'voice_record_sheet.dart';
 import '../app/glass_overlays.dart';
 
-/// Home feed — clean bitchat-style chrome with sheets for mode pickers.
+/// The slice of [AppState] the home chrome actually renders.
+///
+/// A record, so `Selector` can compare it by value and skip rebuilds when an
+/// unrelated part of the god-object notifier changes.
+typedef _HomeChrome = ({
+  FeedChannel channel,
+  bool ready,
+  int unread,
+  int online,
+  bool tipSeen,
+  int lastSystemLineTs,
+  String channelLabel,
+  int messageable,
+});
+
+/// Home feed — three channel tabs, with sheets for the pickers.
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
@@ -73,13 +89,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
       _titleTapCount += 1;
     }
     _titleTapAt = now;
-    // Double-tap: soft refresh. Triple-tap (same window): emergency wipe.
-    if (_titleTapCount == 2) {
-      unawaited(_softRefreshFromTitle());
-    } else if (_titleTapCount >= 3) {
+    // Double-tap: soft refresh. The triple-tap emergency wipe that used to live
+    // here is gone — an irreversible wipe behind three taps on the title was
+    // far too easy to trigger by accident. It now lives in
+    // Settings → danger zone, where it asks before erasing anything.
+    if (_titleTapCount >= 2) {
       _titleTapCount = 0;
       _titleTapAt = null;
-      unawaited(confirmAndPanicWipe(context));
+      unawaited(_softRefreshFromTitle());
     }
   }
 
@@ -207,8 +224,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final l10n = context.l10n;
     final existing = s.contactAlias(peerId) ?? '';
     final controller = TextEditingController(text: existing);
-    if (!context.mounted) return;
-    final ok = await showDialog<bool>(
+    if (!context.mounted) {
+      controller.dispose();
+      return;
+    }
+    try {
+      final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => GlassAlertDialog(
         title: Text(l10n.aliasTitle),
@@ -240,11 +261,32 @@ class _ChatListScreenState extends State<ChatListScreen> {
         ],
       ),
     );
-    if (ok != true) return;
-    await s.setContactAlias(
-      publicKeyHash: peerId,
-      aliasName: controller.text,
-    );
+      if (ok != true) return;
+      await s.setContactAlias(
+        publicKeyHash: peerId,
+        aliasName: controller.text,
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
+  /// Expiry options the current channel actually honours.
+  ///
+  /// Mesh bulletins carry a max 7-day TTL, so "∞" is not offered there — it
+  /// used to stay selected while the post was silently stored for 7 days.
+  List<NoticeExpiry> _expiryOptions(AppState s) {
+    if (s.feedChannel == FeedChannel.mesh) {
+      return NoticeExpiry.values
+          .where((e) => e != NoticeExpiry.forever)
+          .toList();
+    }
+    return NoticeExpiry.values;
+  }
+
+  NoticeExpiry _effectiveExpiry(AppState s) {
+    final options = _expiryOptions(s);
+    return options.contains(_expiry) ? _expiry : NoticeExpiry.sevenDays;
   }
 
   String _channelLabel(AppState s) {
@@ -278,23 +320,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
       return;
     }
 
+    if (!mounted) return;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(l10n.chatE2eeOffBlocked)),
       );
       return;
     }
+    final expiry = _effectiveExpiry(s);
     setState(() => _sending = true);
     try {
       if (s.feedChannel == FeedChannel.mesh) {
-        await s.setNostrExpiry(_expiry);
+        await s.setNostrExpiry(expiry);
         await s.postNotice(
           scope: 'mesh',
           channelLabel: '#mesh',
           text: text,
-          expiry: _expiry == NoticeExpiry.forever
-              ? NoticeExpiry.sevenDays
-              : _expiry,
+          expiry: expiry,
         );
         if (!mounted) return;
         final warn = s.lastNoticePublishWarning;
@@ -315,7 +357,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           );
         }
       } else if (s.feedChannel == FeedChannel.geo) {
-        await s.setNostrExpiry(_expiry);
+        await s.setNostrExpiry(expiry);
         final n = await s.sendAreaPublicText(text);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -332,7 +374,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Future<void> _sendPublicImage(AppState s) async {
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.chatE2eeOffBlocked)),
       );
       return;
     }
@@ -377,8 +419,15 @@ class _ChatListScreenState extends State<ChatListScreen> {
           kind: PayloadKinds.image,
         );
         if (!mounted) return;
+        // #mesh has its own wording — it used to report the area-channel one.
         ScaffoldMessenger.of(context).showSnackBar(
-          GlassSnackBar(content: Text(context.l10n.geoPublicSent(n))),
+          GlassSnackBar(
+            content: Text(
+              n <= 0
+                  ? context.l10n.meshPublicSentNone
+                  : context.l10n.meshPublicSent(n),
+            ),
+          ),
         );
       }
     } finally {
@@ -390,7 +439,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     if (_sending) return;
     if (!s.e2eeEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        GlassSnackBar(content: Text(context.l10n.settingsE2eeTitle)),
+        GlassSnackBar(content: Text(context.l10n.chatE2eeOffBlocked)),
       );
       return;
     }
@@ -463,15 +512,37 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final s = context.watch<AppState>();
-    final l10n = context.l10n;
-    final onlineCount = s.isReady ? s.onlinePresenceCount : 0;
-    final unreadCount = s.isReady ? s.unreadDirectCount : 0;
+    // The chrome (app bar, tabs, channel line, composer) depends on a handful
+    // of values, not on all of AppState. Watching the whole notifier rebuilt
+    // this entire page on every BLE / Nostr / chunk tick; the record below has
+    // value equality, so a tick that changes none of these rebuilds nothing.
+    return Selector<AppState, _HomeChrome>(
+      selector: (_, s) => (
+        channel: s.feedChannel,
+        ready: s.isReady,
+        unread: s.isReady ? s.unreadDirectCount : 0,
+        online: s.isReady ? s.onlinePresenceCount : 0,
+        tipSeen: s.softRefreshTipSeen,
+        lastSystemLineTs:
+            s.systemLines.isEmpty ? 0 : s.systemLines.last.timestamp,
+        channelLabel: _channelLabel(s),
+        messageable: s.feedChannel == FeedChannel.directs
+            ? 0
+            : s.feedChannel == FeedChannel.geo
+                ? s.peersOnlineInSelectedArea().length
+                : (s.isReady ? s.mesh.nearbyPeers.length : 0),
+      ),
+      builder: (context, chrome, _) => _buildHome(context, chrome),
+    );
+  }
 
-    return Container(
-      decoration: ResilNetTheme.pageDecoration(context),
-      child: Scaffold(
-      backgroundColor: Colors.transparent,
+  Widget _buildHome(BuildContext context, _HomeChrome chrome) {
+    final s = context.read<AppState>();
+    final l10n = context.l10n;
+    final onlineCount = chrome.online;
+    final unreadCount = chrome.unread;
+
+    return ResilNetPage(
       appBar: AppBar(
         titleSpacing: 8,
         title: Tooltip(
@@ -483,77 +554,24 @@ class _ChatListScreenState extends State<ChatListScreen> {
             child: Semantics(
               button: true,
               label: '${l10n.communityTitle}. ${l10n.appRefreshTitleHint}',
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  l10n.communityTitle,
-                  maxLines: 1,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
-                    fontSize: 18,
-                  ),
-                ),
+              child: Text(
+                l10n.communityTitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.3,
+                    ),
               ),
             ),
           ),
         ),
         actionsIconTheme: const IconThemeData(size: 22),
+        // Four unlabelled pickers used to sit here. The channel switch is now
+        // the bottom tab bar and the connection controls live in the network
+        // panel behind the status bar — both labelled. Everything is still one
+        // or two taps away, and the old sheets are unchanged.
         actions: [
-          _compactIcon(
-            tooltip: l10n.channelPickerTooltip,
-            onPressed: () => showFeedChannelSheet(context),
-            icon: Icon(switch (s.feedChannel) {
-              FeedChannel.directs => Icons.lock_outline,
-              FeedChannel.mesh => Icons.bluetooth,
-              FeedChannel.geo => Icons.tag,
-            }),
-          ),
-          _compactIcon(
-            tooltip: l10n.locationPickerTooltip,
-            onPressed: () => showLocationChannelSheet(context),
-            icon: const Icon(Icons.place_outlined),
-          ),
-          if (s.feedChannel != FeedChannel.directs)
-            _compactIcon(
-              tooltip: l10n.transportPickerTooltip,
-              onPressed: () => showTransportModeSheet(context),
-              icon: Icon(switch (s.transportMode.name) {
-                'mesh' => Icons.bluetooth_searching,
-                'internet' => Icons.wifi,
-                _ => Icons.sync_alt,
-              }),
-            ),
-          if (s.feedChannel != FeedChannel.directs)
-            _compactIcon(
-              tooltip: l10n.noticesOpen,
-              onPressed: () => showNoticesSheet(
-                context,
-                initialScope:
-                    s.feedChannel == FeedChannel.mesh ? 'mesh' : 'geo',
-              ),
-              icon: const Icon(Icons.campaign_outlined),
-            ),
-          _compactIcon(
-            tooltip: unreadCount > 0
-                ? l10n.unreadDirectsTooltip(unreadCount)
-                : l10n.unreadDirectsTooltipEmpty,
-            onPressed: () {
-              if (s.feedChannel != FeedChannel.directs) {
-                unawaited(s.setFeedChannel(FeedChannel.directs));
-              }
-            },
-            icon: Badge(
-              isLabelVisible: unreadCount > 0,
-              label: Text('$unreadCount'),
-              child: Icon(
-                unreadCount > 0
-                    ? Icons.mark_email_unread_outlined
-                    : Icons.mail_outline,
-              ),
-            ),
-          ),
           _compactIcon(
             tooltip: '${l10n.onlinePeopleTooltip} ($onlineCount)',
             onPressed: () => _onPeoplePressed(s),
@@ -568,31 +586,38 @@ class _ChatListScreenState extends State<ChatListScreen> {
             padding: EdgeInsets.zero,
             icon: const Icon(Icons.more_vert, size: 22),
             onSelected: (v) {
-              if (v == 'settings') {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                );
-              } else if (v == 'identity') {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const IdentityScreen()),
-                );
-              } else if (v == 'info') {
-                showInfoSheet(context);
-              } else if (v == 'announce') {
-                openAnnouncementsScreen(context);
-              } else if (v == 'hard_recover') {
-                unawaited(
-                  runAppRecoveryAction(
-                    context,
-                    busyLabel: l10n.appHardRecovering,
-                    action: (s) => s.hardRecoverApp(reason: 'overflow-menu'),
-                  ),
-                );
-              } else if (v == 'local_wifi') {
-                unawaited(showLocalWifiLinkSheet(context));
+              switch (v) {
+                case 'settings':
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                case 'identity':
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const IdentityScreen()),
+                  );
+                case 'info':
+                  showInfoSheet(context);
+                case 'announce':
+                  openAnnouncementsScreen(context);
+                case 'network':
+                  unawaited(showNetworkPanelSheet(context));
+                case 'hard_recover':
+                  unawaited(
+                    runAppRecoveryAction(
+                      context,
+                      busyLabel: l10n.appHardRecovering,
+                      action: (s) => s.hardRecoverApp(reason: 'overflow-menu'),
+                    ),
+                  );
+                case 'local_wifi':
+                  unawaited(showLocalWifiLinkSheet(context));
               }
             },
             itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'network',
+                child: Text(l10n.networkPanelTitle),
+              ),
               PopupMenuItem(
                 value: 'local_wifi',
                 child: Text(l10n.localWifiTitle),
@@ -621,15 +646,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: _channelTabs(s, chrome.channel, unreadCount),
       body: Column(
           children: [
             const MeshStatusBar(),
-            if (s.isReady && !s.softRefreshTipSeen) _softRefreshTipBanner(s),
-            if (s.systemLines.isNotEmpty)
+            if (chrome.ready && !chrome.tipSeen) _softRefreshTipBanner(s),
+            if (chrome.lastSystemLineTs > 0)
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
                 child: Text(
-                  '${l10n.screenshotTaken} [${TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(s.systemLines.last.timestamp)).format(context)}]',
+                  '${l10n.screenshotTaken} [${TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(chrome.lastSystemLineTs)).format(context)}]',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: ResilNetTheme.mutedOnSurface(context, alpha: 0.45),
@@ -639,31 +665,91 @@ class _ChatListScreenState extends State<ChatListScreen> {
               ),
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  _channelLabel(s),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontFamily: s.feedChannel == FeedChannel.geo
-                            ? 'monospace'
-                            : null,
-                        color: s.feedChannel == FeedChannel.geo
-                            ? ResilNetTheme.channelGreen
-                            : null,
-                      ),
-                ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      chrome.channelLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontFamily: chrome.channel == FeedChannel.geo
+                                ? 'monospace'
+                                : null,
+                            color: chrome.channel == FeedChannel.geo
+                                ? context.tokens.channel
+                                : null,
+                          ),
+                    ),
+                  ),
+                  if (chrome.channel == FeedChannel.geo)
+                    TextButton.icon(
+                      onPressed: () => showLocationChannelSheet(context),
+                      icon: const Icon(Icons.place_outlined, size: 18),
+                      label: Text(l10n.locationPickerTooltip),
+                    ),
+                ],
               ),
             ),
-            Expanded(child: _bodyFor(s)),
-            if (s.feedChannel != FeedChannel.directs) _bottomCompose(s),
+            Expanded(child: _bodyFor(chrome.channel)),
+            if (chrome.channel != FeedChannel.directs)
+              _bottomCompose(s, chrome),
           ],
         ),
-      ),
     );
   }
 
-  Widget _bodyFor(AppState s) {
-    return switch (s.feedChannel) {
+  /// Channel switch as a bottom tab bar.
+  ///
+  /// Same three feeds, same [AppState.setFeedChannel] call the picker sheet
+  /// makes — but visible and labelled instead of hidden behind an icon, with
+  /// the unread badge on the tab it belongs to.
+  Widget _channelTabs(AppState s, FeedChannel current, int unreadCount) {
+    final l10n = context.l10n;
+    final index = FeedChannel.values.indexOf(current);
+    return NavigationBar(
+      selectedIndex: index < 0 ? 0 : index,
+      onDestinationSelected: (i) {
+        final next = FeedChannel.values[i];
+        if (next == current) return;
+        HapticFeedback.selectionClick();
+        unawaited(s.setFeedChannel(next));
+      },
+      destinations: [
+        NavigationDestination(
+          icon: Badge(
+            isLabelVisible: unreadCount > 0,
+            label: Text('$unreadCount'),
+            child: const Icon(Icons.lock_outline),
+          ),
+          selectedIcon: Badge(
+            isLabelVisible: unreadCount > 0,
+            label: Text('$unreadCount'),
+            child: const Icon(Icons.lock),
+          ),
+          label: l10n.feedDirects,
+          tooltip: unreadCount > 0
+              ? l10n.unreadDirectsTooltip(unreadCount)
+              : l10n.unreadDirectsTooltipEmpty,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.bluetooth),
+          selectedIcon: const Icon(Icons.bluetooth_connected),
+          label: l10n.feedMesh,
+          tooltip: l10n.feedMeshSubtitle,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.public_outlined),
+          selectedIcon: const Icon(Icons.public),
+          label: l10n.feedGeo,
+          tooltip: l10n.feedGeoSubtitle,
+        ),
+      ],
+    );
+  }
+
+  Widget _bodyFor(FeedChannel channel) {
+    return switch (channel) {
       FeedChannel.directs => _DirectsBody(
           peerController: _peerController,
           onOpen: _openPeer,
@@ -674,12 +760,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
     };
   }
 
-  Widget _bottomCompose(AppState s) {
+  Widget _bottomCompose(AppState s, _HomeChrome chrome) {
     final l10n = context.l10n;
-    final channel = _channelLabel(s);
-    final messageable = s.feedChannel == FeedChannel.geo
-        ? s.peersOnlineInSelectedArea().length
-        : (s.isReady ? s.mesh.nearbyPeers.length : 0);
+    final channel = chrome.channelLabel;
+    final messageable = chrome.messageable;
 
     return SafeArea(
       top: false,
@@ -781,21 +865,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       ),
                 ),
                 const SizedBox(width: 10),
-                for (final e in NoticeExpiry.values)
+                for (final e in _expiryOptions(s))
                   Padding(
                     padding: const EdgeInsets.only(right: 6),
                     child: ChoiceChip(
                       visualDensity: VisualDensity.compact,
-                      label: Text(
-                        e == NoticeExpiry.forever
-                            ? '∞'
-                            : e == NoticeExpiry.oneDay
-                                ? '1d'
-                                : e == NoticeExpiry.threeDays
-                                    ? '3d'
-                                    : '7d',
-                      ),
-                      selected: _expiry == e,
+                      label: Text(switch (e) {
+                        NoticeExpiry.forever => '∞',
+                        NoticeExpiry.oneDay => '1d',
+                        NoticeExpiry.threeDays => '3d',
+                        NoticeExpiry.sevenDays => '7d',
+                      }),
+                      selected: _effectiveExpiry(s) == e,
                       onSelected: (_) => setState(() => _expiry = e),
                     ),
                   ),
@@ -848,9 +929,9 @@ class _DirectsBody extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: FutureBuilder<List<Peer>>(
-            key: ValueKey('peers-${s.contactAliasEpoch}'),
-            future: s.db.getAllPeers(),
+          child: CachedFutureBuilder<List<Peer>>(
+            epoch: s.peerDirectoryEpoch,
+            load: () => s.db.getAllPeers(),
             builder: (context, snap) {
               final peers = snap.data ?? const <Peer>[];
               if (peers.isEmpty) {

@@ -8,6 +8,7 @@ import '../core/peer_id.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/peer.dart';
 import '../state/app_state.dart';
+import '../widgets/cached_future_builder.dart';
 import 'chat_screen.dart';
 
 /// Mesh topology as a ResilNet-styled graph (you + discovered neighbors).
@@ -63,8 +64,9 @@ class _MeshTopologyScreenState extends State<MeshTopologyScreen> {
       ),
       body: Container(
         decoration: ResilNetTheme.pageDecoration(context),
-        child: FutureBuilder<List<Peer>>(
-          future: s.db.getAllPeers(),
+        child: CachedFutureBuilder<List<Peer>>(
+          epoch: s.peerDirectoryEpoch,
+          load: () => s.db.getAllPeers(),
           builder: (context, snap) {
             final known = snap.data ?? const <Peer>[];
             final nearby = s.isReady ? s.mesh.nearbyPeers : const <Peer>[];

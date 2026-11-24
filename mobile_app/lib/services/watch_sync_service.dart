@@ -214,18 +214,14 @@ class WatchSyncService {
     try {
       final peerIds = await s.db.getChatPeersFor(myId);
       for (final peerId in peerIds.take(_maxChats)) {
-        final msgs = await s.db.getConversation(myId, peerId);
-        final recent = msgs.length > _maxMessages
-            ? msgs.sublist(msgs.length - _maxMessages)
-            : msgs;
-        var unread = 0;
-        for (final m in msgs) {
-          if (m.receiverId == myId &&
-              (m.status == MessageStatus.delivered ||
-                  m.status == MessageStatus.sent)) {
-            unread++;
-          }
-        }
+        // Read only what the Watch shows, and count unread in SQL — loading
+        // every message of every conversation on each push burned battery.
+        final recent = await s.db.getConversation(
+          myId,
+          peerId,
+          limit: _maxMessages,
+        );
+        final unread = await s.db.countUnreadIncomingFromPeer(myId, peerId);
         final last = recent.isEmpty ? null : recent.last;
         chats.add({
           'peerId': peerId,

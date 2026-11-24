@@ -486,6 +486,24 @@ class AppState extends ChangeNotifier {
     unawaited(refreshUnreadDirectCount());
   }
 
+  /// Bumped whenever a peer row is written or blocked/unblocked.
+  ///
+  /// Peer lists cache their SQLite query against this, so they reload when the
+  /// directory actually changes instead of re-querying on every rebuild.
+  int _peerDirectoryEpoch = 0;
+  int get peerDirectoryEpoch => _peerDirectoryEpoch ^ (_contactAliasEpoch << 16);
+
+  Future<void> _upsertPeerRow(Peer peer) async {
+    await db.upsertPeer(peer);
+    _peerDirectoryEpoch++;
+  }
+
+  /// Call after writing peer rows outside [_upsertPeerRow] (block, delete, …).
+  void markPeerDirectoryChanged() {
+    _peerDirectoryEpoch++;
+    notifyListeners();
+  }
+
   /// Recount unread private DMs (SQLite + ephemeral session).
   Future<void> refreshUnreadDirectCount() async {
     if (!myUserIdReady) {
@@ -1295,7 +1313,7 @@ class AppState extends ChangeNotifier {
     if (data.id == myUserId) return null;
     final now = DateTime.now().millisecondsSinceEpoch;
     final peer = data.toPeer(lastSeen: now);
-    await db.upsertPeer(peer);
+    await _upsertPeerRow(peer);
     if (data.name == null || data.name!.isEmpty) {
       // Do not invent a contact alias from the pubkey hash — that makes the
       // UI look like the alias "failed to save" when the user never set one.
@@ -2666,11 +2684,11 @@ class AppState extends ChangeNotifier {
         final existing = await db.getPeer(wire.senderId);
         if (existing != null) {
           if ((existing.displayName ?? '').trim() != nick) {
-            await db.upsertPeer(existing.copyWith(displayName: nick));
+            await _upsertPeerRow(existing.copyWith(displayName: nick));
           }
         } else {
           final pem = CryptoService.normalizePublicKey(wire.senderPk);
-          await db.upsertPeer(
+          await _upsertPeerRow(
             Peer(
               id: wire.senderId,
               publicKey: pem,
@@ -3162,7 +3180,7 @@ class AppState extends ChangeNotifier {
       if (CryptoService.publicKeyHash(pem) != sighting.id) return;
       final existing = await db.getPeer(sighting.id);
       final now = DateTime.now().millisecondsSinceEpoch;
-      await db.upsertPeer(
+      await _upsertPeerRow(
         Peer(
           id: sighting.id,
           publicKey: pem,
@@ -3188,7 +3206,7 @@ class AppState extends ChangeNotifier {
           final id = CryptoService.publicKeyHash(pem);
           if (id == msg.senderId) {
             final existing = await db.getPeer(id);
-            await db.upsertPeer(
+            await _upsertPeerRow(
               Peer(
                 id: id,
                 publicKey: pem,
@@ -3231,7 +3249,7 @@ class AppState extends ChangeNotifier {
           final id = CryptoService.publicKeyHash(pem);
           if (id == msg.senderId) {
             final existing = await db.getPeer(id);
-            await db.upsertPeer(
+            await _upsertPeerRow(
               Peer(
                 id: id,
                 publicKey: pem,
@@ -3728,9 +3746,16 @@ class AppState extends ChangeNotifier {
   }
 
   /// Conversation view: SQLite history (if enabled) + sealed session-only envelopes.
-  Future<List<ChatMessage>> messagesForConversation(String a, String b) async {
+  ///
+  /// [limit] caps how many of the newest persisted messages are read, so a long
+  /// thread is paged instead of loaded and decrypted in full on every refresh.
+  Future<List<ChatMessage>> messagesForConversation(
+    String a,
+    String b, {
+    int? limit,
+  }) async {
     final persisted = _saveMessageHistory
-        ? await db.getConversation(a, b)
+        ? await db.getConversation(a, b, limit: limit)
         : const <ChatMessage>[];
     final session = _sessionMessages.where((m) {
       if (!PayloadKinds.isChatVisible(m.payloadKind)) return false;
@@ -3745,6 +3770,18 @@ class AppState extends ChangeNotifier {
     final items = byId.values.toList()
       ..sort((x, y) => x.timestamp.compareTo(y.timestamp));
     return items;
+  }
+
+  /// How many messages the conversation holds in total (disk + session), so the
+  /// thread can offer "load older" only when there is something older to load.
+  Future<int> conversationMessageCount(String a, String b) async {
+    final onDisk = _saveMessageHistory ? await db.countConversation(a, b) : 0;
+    final inSession = _sessionMessages.where((m) {
+      if (!PayloadKinds.isChatVisible(m.payloadKind)) return false;
+      return (m.senderId == a && m.receiverId == b) ||
+          (m.senderId == b && m.receiverId == a);
+    }).length;
+    return onDisk + inSession;
   }
 
   /// Peer IDs for the home chat list (disk + ephemeral session).
@@ -4118,7 +4155,7 @@ class AppState extends ChangeNotifier {
           isBlocked: false,
           lastSeen: lastSeen,
         );
-        unawaited(db.upsertPeer(boundPeer));
+        unawaited(_upsertPeerRow(boundPeer));
       } catch (e) {
         debugPrint('[ResilNet] geo presence peer upsert failed: $e');
         return;
@@ -4229,7 +4266,7 @@ class AppState extends ChangeNotifier {
       }
     }
     if (latest != null) {
-      await db.upsertPeer(latest);
+      await _upsertPeerRow(latest);
       return latest;
     }
     return db.getPeer(id);
@@ -5725,6 +5762,8 @@ class AppState extends ChangeNotifier {
   void dispose() {
     _meshUiNotifyDebounce?.cancel();
     _radioUiNotifyDebounce?.cancel();
+    _presenceSummaryDebounce?.cancel();
+    _bulletinCatchUpDebounce?.cancel();
     screenshots.removeListener(_onScreenshot);
     screenshots.dispose();
     _retentionTimer?.cancel();

@@ -454,6 +454,33 @@ class DatabaseService {
     return (rows.first['c'] as int?) ?? 0;
   }
 
+  /// จำนวนข้อความที่ยังไม่ได้อ่านจากคู่สนทนาหนึ่งคน (นับใน SQLite ไม่ต้องโหลดทั้งห้อง)
+  Future<int> countUnreadIncomingFromPeer(
+    String myUserId,
+    String peerId,
+  ) async {
+    final rows = await _database.rawQuery(
+      '''
+      SELECT COUNT(*) AS c FROM messages
+      WHERE senderId = ?
+        AND receiverId = ?
+        AND type = ?
+        AND status IN (?, ?)
+        AND IFNULL(payloadKind, 'text') NOT IN
+          ('presence', 'notice', 'area_public', 'system',
+           'board_key_request', 'board_key_grant', 'board_post')
+      ''',
+      [
+        peerId,
+        myUserId,
+        MessageType.direct.name,
+        MessageStatus.delivered.name,
+        MessageStatus.sent.name,
+      ],
+    );
+    return (rows.first['c'] as int?) ?? 0;
+  }
+
   /// บันทึก pending ACK ลง SQLite (persist ก่อน background/terminate)
   Future<void> savePendingAcks(List<Map<String, Object?>> rows) async {
     final batch = _database.batch();
@@ -526,16 +553,48 @@ class DatabaseService {
     return (row['isSyncedWithCloud'] as int? ?? 0) == 1;
   }
 
-  Future<List<ChatMessage>> getConversation(String a, String b) async {
+  /// Messages of one conversation, oldest → newest.
+  ///
+  /// [limit] keeps only the newest [limit] rows (still returned oldest first),
+  /// so the UI can page a long thread instead of loading — and decrypting —
+  /// every message ever exchanged. `null` means the whole thread.
+  Future<List<ChatMessage>> getConversation(
+    String a,
+    String b, {
+    int? limit,
+  }) async {
+    const where =
+        '((senderId = ? AND receiverId = ?) OR (senderId = ? AND receiverId = ?))'
+        " AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')";
+    if (limit == null || limit <= 0) {
+      final rows = await _database.query(
+        'messages',
+        where: where,
+        whereArgs: [a, b, b, a],
+        orderBy: 'timestamp ASC',
+      );
+      return rows.map(ChatMessage.fromMap).toList();
+    }
     final rows = await _database.query(
       'messages',
-      where:
-          '((senderId = ? AND receiverId = ?) OR (senderId = ? AND receiverId = ?))'
-          " AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')",
+      where: where,
       whereArgs: [a, b, b, a],
-      orderBy: 'timestamp ASC',
+      orderBy: 'timestamp DESC',
+      limit: limit,
     );
-    return rows.map(ChatMessage.fromMap).toList();
+    return rows.reversed.map(ChatMessage.fromMap).toList();
+  }
+
+  /// Total messages in one conversation — used to tell the UI whether older
+  /// pages exist without loading them.
+  Future<int> countConversation(String a, String b) async {
+    final rows = await _database.rawQuery(
+      'SELECT COUNT(*) AS n FROM messages WHERE '
+      '((senderId = ? AND receiverId = ?) OR (senderId = ? AND receiverId = ?))'
+      " AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')",
+      [a, b, b, a],
+    );
+    return (rows.first['n'] as int?) ?? 0;
   }
 
   Future<List<String>> getChatPeersFor(String myId) async {

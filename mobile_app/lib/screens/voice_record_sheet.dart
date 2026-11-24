@@ -5,6 +5,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../app/theme.dart';
+import '../app/tokens.dart';
 import '../l10n/l10n_ext.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/mic_permission.dart';
@@ -248,9 +250,12 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
     final bottom = MediaQuery.paddingOf(context).bottom;
     return Container(
       height: kVoiceRecordPanelHeight + bottom,
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      decoration: BoxDecoration(
+        // Follows light/dark; this panel used to be fixed near-black, which
+        // left white-on-white controls in light mode.
+        color: context.tokens.pickerSurface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+        border: Border.all(color: ResilNetTheme.glassBorder(context)),
       ),
       child: Padding(
         padding: EdgeInsets.fromLTRB(16, 14, 16, 16 + bottom),
@@ -266,19 +271,23 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
   }
 
   Widget _buildRecording(AppLocalizations l10n) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
             onPressed: _discard,
-            icon: const Icon(Icons.close, color: Colors.white54),
+            icon: Icon(
+              Icons.close,
+              color: ResilNetTheme.mutedOnSurface(context),
+            ),
           ),
         ),
         Text(
           formatVoiceRecordTimerMs(_elapsedMs),
-          style: const TextStyle(
-            color: Colors.white70,
+          style: TextStyle(
+            color: scheme.onSurface.withValues(alpha: 0.78),
             fontSize: 28,
             fontWeight: FontWeight.w300,
             fontFeatures: [FontFeature.tabularFigures()],
@@ -298,7 +307,7 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
                       duration: const Duration(milliseconds: 70),
                       height: 56 * h,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFF3B30),
+                        color: context.tokens.recording,
                         borderRadius: BorderRadius.circular(1.5),
                       ),
                     ),
@@ -310,7 +319,10 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
         const Spacer(),
         Text(
           l10n.voicePttRecording,
-          style: const TextStyle(color: Colors.white38, fontSize: 13),
+          style: TextStyle(
+            color: ResilNetTheme.mutedOnSurface(context, alpha: 0.5),
+            fontSize: 13,
+          ),
         ),
         const SizedBox(height: 14),
         GestureDetector(
@@ -320,14 +332,17 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
             height: 72,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white24, width: 3),
+              border: Border.all(
+                color: scheme.onSurface.withValues(alpha: 0.24),
+                width: 3,
+              ),
             ),
             alignment: Alignment.center,
             child: Container(
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: const Color(0xFFFF3B30),
+                color: context.tokens.recording,
                 borderRadius: BorderRadius.circular(6),
               ),
             ),
@@ -339,6 +354,7 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
   }
 
   Widget _buildPreview(AppLocalizations l10n) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Row(
@@ -346,20 +362,26 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
             Expanded(
               child: Text(
                 l10n.voicePttDraftReady,
-                style: const TextStyle(color: Colors.white70, fontSize: 15),
+                style: TextStyle(
+                  color: scheme.onSurface.withValues(alpha: 0.78),
+                  fontSize: 15,
+                ),
               ),
             ),
             Text(
               formatVoiceRecordTimerMs(_draftDurationMs),
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: scheme.onSurface,
                 fontSize: 18,
-                fontFeatures: [FontFeature.tabularFigures()],
+                fontFeatures: const [FontFeature.tabularFigures()],
               ),
             ),
             IconButton(
               onPressed: _discard,
-              icon: const Icon(Icons.close, color: Colors.white54),
+              icon: Icon(
+                Icons.close,
+                color: ResilNetTheme.mutedOnSurface(context),
+              ),
             ),
           ],
         ),
@@ -376,24 +398,27 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _playing
-                          ? const Color(0xFF10B981)
-                          : const Color(0xFF10B981).withValues(alpha: 0.18),
+                          ? context.tokens.brand
+                          : context.tokens.brand.withValues(alpha: 0.18),
                       border: Border.all(
-                        color: const Color(0xFF10B981),
+                        color: context.tokens.brand,
                         width: 2.5,
                       ),
                     ),
                     child: Icon(
                       _playing ? Icons.stop_rounded : Icons.play_arrow_rounded,
                       size: 40,
-                      color: _playing ? Colors.black : const Color(0xFF10B981),
+                      color: _playing ? Colors.white : context.tokens.brand,
                     ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   _playing ? l10n.voicePttStopPreview : l10n.voicePttPlayPreview,
-                  style: const TextStyle(color: Colors.white54, fontSize: 13),
+                  style: TextStyle(
+                    color: ResilNetTheme.mutedOnSurface(context),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -405,19 +430,19 @@ class _VoiceRecordPanelState extends State<_VoiceRecordPanel> {
             _Action(
               icon: Icons.delete_outline_rounded,
               label: l10n.voicePttDiscard,
-              color: Colors.white54,
+              color: ResilNetTheme.mutedOnSurface(context),
               onTap: _discard,
             ),
             _Action(
               icon: Icons.mic_none_rounded,
               label: l10n.voicePttReRecord,
-              color: Colors.white70,
+              color: scheme.onSurface.withValues(alpha: 0.78),
               onTap: () => unawaited(_reRecord()),
             ),
             _Action(
               icon: Icons.send_rounded,
               label: l10n.voicePttSend,
-              color: const Color(0xFF10B981),
+              color: context.tokens.brand,
               filled: true,
               onTap: _send,
             ),

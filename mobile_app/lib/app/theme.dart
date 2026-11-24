@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'tokens.dart';
+
 /// ResilNet look — emerald identity; follows system light/dark via [ThemeMode.system].
 ///
 /// Soft **liquid glass** for panels, snack bars, dialogs, menus, and sheets
@@ -43,8 +45,8 @@ class ResilNetTheme {
   static bool isDark(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
 
-  static LinearGradient scaffoldGradientFor(BuildContext context) =>
-      isDark(context) ? scaffoldGradient : scaffoldGradientLight;
+  static Gradient scaffoldGradientFor(BuildContext context) =>
+      context.tokens.pageGradient;
 
   static BoxDecoration pageDecoration(BuildContext context) => BoxDecoration(
         gradient: scaffoldGradientFor(context),
@@ -186,6 +188,7 @@ class ResilNetTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      extensions: const [ResilNetTokens.dark],
       colorScheme: scheme.copyWith(
         primary: emerald,
         secondary: channelGreen,
@@ -276,6 +279,7 @@ class ResilNetTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      extensions: const [ResilNetTokens.light],
       colorScheme: scheme.copyWith(
         primary: const Color(0xFF0D9488),
         secondary: const Color(0xFF059669),
