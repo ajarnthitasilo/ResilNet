@@ -21,6 +21,7 @@ import '../models/peer.dart';
 import '../services/mic_permission.dart';
 import '../services/audio_recorder_service.dart';
 import '../services/database_service.dart';
+import '../services/secure_screen.dart';
 import '../state/app_state.dart';
 import '../widgets/app_recovery_actions.dart';
 import '../widgets/cached_future_builder.dart';
@@ -91,7 +92,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
   DateTime? _titleTapAt;
 
   @override
+  void initState() {
+    super.initState();
+    // The list itself is sensitive: it carries who you talk to, when you last
+    // talked and how much is waiting. It is also the route everything else is
+    // pushed on top of, so holding the lock here keeps captures blocked for
+    // the whole app, not just the thread.
+    unawaited(SecureScreen.acquire());
+  }
+
+  @override
   void dispose() {
+    unawaited(SecureScreen.release());
     _peerController.dispose();
     _compose.dispose();
     _composeFocus.dispose();
