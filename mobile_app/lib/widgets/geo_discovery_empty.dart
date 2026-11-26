@@ -6,6 +6,7 @@ import '../l10n/l10n_ext.dart';
 import '../models/feed_channel.dart';
 import '../models/geo_discovery.dart';
 import '../models/geo_location_result.dart';
+import '../models/transport_mode.dart';
 import '../screens/location_channel_sheet.dart';
 import '../state/app_state.dart';
 import '../app/glass_overlays.dart';
@@ -46,7 +47,8 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
     final l10n = context.l10n;
     final reason = s.geoDiscoveryEmptyReason;
     final showActions = reason == GeoDiscoveryEmptyReason.noLocation ||
-        reason == GeoDiscoveryEmptyReason.noNostr;
+        reason == GeoDiscoveryEmptyReason.noNostr ||
+        reason == GeoDiscoveryEmptyReason.meshOnly;
     final noGeohash =
         s.currentGeohash == null || s.currentGeohash!.isEmpty;
 
@@ -109,6 +111,12 @@ class GeoDiscoveryEmptyPanel extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
+                  if (reason == GeoDiscoveryEmptyReason.meshOnly)
+                    FilledButton.tonalIcon(
+                      onPressed: () => s.setTransportMode(TransportMode.auto),
+                      icon: const Icon(Icons.sync_alt, size: 18),
+                      label: Text(l10n.transportModeAuto),
+                    ),
                   if (reason == GeoDiscoveryEmptyReason.noLocation) ...[
                     FilledButton.tonalIcon(
                       onPressed: s.geoRefreshing
