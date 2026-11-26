@@ -2868,7 +2868,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get networkPanelTitle => 'Network';
 
   @override
-  String get networkPanelSubtitle => 'How this phone is connected right now';
+  String get networkPanelSubtitle => 'How this device is connected right now';
 
   @override
   String get networkPanelOpenHint => 'Network';
