@@ -147,10 +147,12 @@ class ResilNetTheme {
 
   static PopupMenuThemeData _popupMenuTheme({required bool dark}) =>
       PopupMenuThemeData(
-        color: dark
-            ? surface.withValues(alpha: 0.78)
-            : const Color(0xFFEAF4F8).withValues(alpha: 0.82),
-        elevation: 0,
+        // Opaque on purpose: at <1.0 the page behind the menu bled through and
+        // collided with the menu labels. The shadow below carries the "floating
+        // layer" read that the translucency used to.
+        color: dark ? surface : const Color(0xFFEAF4F8),
+        elevation: 8,
+        shadowColor: Colors.black.withValues(alpha: dark ? 0.55 : 0.28),
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
