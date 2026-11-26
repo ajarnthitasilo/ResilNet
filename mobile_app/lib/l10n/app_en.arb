@@ -1302,7 +1302,7 @@
   },
   "meshPublicSentNone": "No nearby node received this yet — it stays queued on #mesh",
   "networkPanelTitle": "Network",
-  "networkPanelSubtitle": "How this phone is connected right now",
+  "networkPanelSubtitle": "How this device is connected right now",
   "networkPanelOpenHint": "Network",
   "settingsSearchHint": "Search settings",
   "settingsSearchEmpty": "No setting matches “{query}”",

@@ -5132,7 +5132,7 @@ abstract class AppLocalizations {
   /// No description provided for @networkPanelSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'How this phone is connected right now'**
+  /// **'How this device is connected right now'**
   String get networkPanelSubtitle;
 
   /// No description provided for @networkPanelOpenHint.

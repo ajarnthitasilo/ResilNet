@@ -51,123 +51,140 @@ class _NetworkPanelSheet extends StatelessWidget {
       'internet' => Icons.wifi,
       _ => Icons.sync_alt,
     };
+    final channelLabel = switch (s.feedChannel) {
+      FeedChannel.directs => l10n.feedDirects,
+      FeedChannel.mesh => l10n.feedMesh,
+      FeedChannel.geo => l10n.feedGeo,
+    };
 
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.networkPanelTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
+      // Short window (a desktop window, a landscape phone): cap the sheet and
+      // let the list scroll instead of running past the bottom edge.
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.networkPanelTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    l10n.networkPanelSubtitle,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: muted),
-                  ),
-                ],
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.networkPanelSubtitle,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: muted),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                children: [
-                  ListTile(
-                    leading: Icon(transportIcon),
-                    title: Text(l10n.transportModeTitle),
-                    subtitle: Text(transportLabel),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.pop(context);
-                      unawaited(showTransportModeSheet(context));
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.place_outlined),
-                    title: Text(l10n.locationPickerTooltip),
-                    subtitle: Text(
-                      s.geoChannelLabel,
-                      style: const TextStyle(fontFamily: 'monospace'),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  children: [
+                    ListTile(
+                      leading: Icon(transportIcon),
+                      title: Text(l10n.transportModeTitle),
+                      subtitle: Text(transportLabel),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.pop(context);
+                        unawaited(showTransportModeSheet(context));
+                      },
                     ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.pop(context);
-                      unawaited(showLocationChannelSheet(context));
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.campaign_outlined),
-                    title: Text(l10n.noticesOpen),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      final scope = s.feedChannel == FeedChannel.mesh
-                          ? 'mesh'
-                          : 'geo';
-                      Navigator.pop(context);
-                      unawaited(showNoticesSheet(context, initialScope: scope));
-                    },
-                  ),
-                  const Divider(height: 8),
-                  ListTile(
-                    leading: const Icon(Icons.wifi_lock_outlined),
-                    title: Text(l10n.localWifiTitle),
-                    subtitle: Text(l10n.localWifiSubtitle, maxLines: 2),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.pop(context);
-                      unawaited(showLocalWifiLinkSheet(context));
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.home_work_outlined,
-                      color: s.lxmfBridgeEnabled && s.lxmfBridge?.online == true
-                          ? tokens.success
-                          : null,
+                    ListTile(
+                      leading: const Icon(Icons.place_outlined),
+                      title: Text(l10n.locationPickerTooltip),
+                      subtitle: Text(
+                        s.geoChannelLabel,
+                        style: const TextStyle(fontFamily: 'monospace'),
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.pop(context);
+                        unawaited(showLocationChannelSheet(context));
+                      },
                     ),
-                    title: Text(l10n.lxmfBridgeTitle),
-                    subtitle: Text(
-                      s.lxmfBridgeEnabled
-                          ? (s.lxmfBridge?.online == true
-                                ? l10n.lxmfBridgeStatusOnline
-                                : l10n.lxmfBridgeStatusOffline)
-                          : l10n.lxmfBridgeDisabledHint,
-                      maxLines: 2,
+                    ListTile(
+                      leading: const Icon(Icons.campaign_outlined),
+                      title: Text(l10n.noticesOpen),
+                      subtitle: Text(l10n.noticesMeshPublicBadge),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        final scope = s.feedChannel == FeedChannel.mesh
+                            ? 'mesh'
+                            : 'geo';
+                        Navigator.pop(context);
+                        unawaited(
+                          showNoticesSheet(context, initialScope: scope),
+                        );
+                      },
                     ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.pop(context);
-                      unawaited(showHomeNodeBridgeSheet(context));
-                    },
-                  ),
-                  const Divider(height: 8),
-                  ListTile(
-                    leading: const Icon(Icons.tune),
-                    title: Text(l10n.channelPickerTooltip),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.pop(context);
-                      unawaited(showFeedChannelSheet(context));
-                    },
-                  ),
-                ],
+                    const Divider(height: 8),
+                    ListTile(
+                      leading: const Icon(Icons.wifi_lock_outlined),
+                      title: Text(l10n.localWifiTitle),
+                      subtitle: Text(l10n.localWifiSubtitle, maxLines: 2),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.pop(context);
+                        unawaited(showLocalWifiLinkSheet(context));
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        Icons.home_work_outlined,
+                        color:
+                            s.lxmfBridgeEnabled && s.lxmfBridge?.online == true
+                            ? tokens.success
+                            : null,
+                      ),
+                      title: Text(l10n.lxmfBridgeTitle),
+                      subtitle: Text(
+                        s.lxmfBridgeEnabled
+                            ? (s.lxmfBridge?.online == true
+                                  ? l10n.lxmfBridgeStatusOnline
+                                  : l10n.lxmfBridgeStatusOffline)
+                            : l10n.lxmfBridgeDisabledHint,
+                        maxLines: 2,
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.pop(context);
+                        unawaited(showHomeNodeBridgeSheet(context));
+                      },
+                    ),
+                    const Divider(height: 8),
+                    ListTile(
+                      leading: const Icon(Icons.tune),
+                      title: Text(l10n.channelPickerTooltip),
+                      subtitle: Text(channelLabel),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.pop(context);
+                        unawaited(showFeedChannelSheet(context));
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
