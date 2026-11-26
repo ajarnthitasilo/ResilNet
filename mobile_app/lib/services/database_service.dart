@@ -1,4 +1,3 @@
-import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -6,15 +5,16 @@ import '../core/peer_id.dart';
 import '../core/resilnet_protocol.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
+import 'database_location.dart';
 
 class DatabaseService {
   Database? _db;
 
   Future<void> init() async {
     if (_db != null) return;
-    final dbPath = await getDatabasesPath();
-    final path = p.join(dbPath, 'resilnet.db');
-    _db = await _openDatabaseAt(path);
+    final location = await resolveDatabaseLocation();
+    debugPrint('[DB] $location');
+    _db = await _openDatabaseAt(location.path);
   }
 
   /// In-memory SQLite สำหรับ unit tests
