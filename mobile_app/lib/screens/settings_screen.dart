@@ -10,6 +10,7 @@ import '../l10n/l10n_ext.dart';
 import '../l10n/supported_locales.dart';
 import '../models/notice_expiry.dart';
 import '../models/gateway_radio_mode.dart';
+import '../models/mesh_retention.dart';
 import '../models/transport_mode.dart';
 import '../app/tokens.dart';
 import '../state/app_state.dart';
@@ -841,11 +842,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
         keywords: [
           l10n.settingsSaveHistoryTitle,
           l10n.settingsClearTitle,
+          l10n.meshRetentionTitle,
           'history',
+          'auto-delete',
           'ประวัติ',
           'ลบ',
+          'ลบอัตโนมัติ',
         ],
         children: [
+            // Moved here from the #mesh feed, where it sat a few rows above the
+            // composer's "expires in" chips with identical styling: one is how
+            // long received history is kept, the other the TTL of what you send.
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.auto_delete_outlined),
+              title: Text(l10n.meshRetentionTitle),
+              subtitle: Text(l10n.meshRetentionSubtitle),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final r in MeshRetention.values)
+                    ChoiceChip(
+                      visualDensity: VisualDensity.compact,
+                      label: Text(switch (r) {
+                        MeshRetention.keep => l10n.meshRetentionKeep,
+                        MeshRetention.oneDay => l10n.meshRetention1Day,
+                        MeshRetention.threeDays => l10n.meshRetention3Days,
+                        MeshRetention.sevenDays => l10n.meshRetention7Days,
+                      }),
+                      selected: s.meshRetention == r,
+                      onSelected: (_) => s.setMeshRetention(r),
+                    ),
+                ],
+              ),
+            ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               secondary: Icon(

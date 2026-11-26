@@ -16,7 +16,6 @@ import '../core/slash_commands.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/app_recovery.dart';
 import '../models/feed_channel.dart';
-import '../models/mesh_retention.dart';
 import '../models/notice_expiry.dart';
 import '../models/peer.dart';
 import '../services/mic_permission.dart';
@@ -993,37 +992,13 @@ class _MeshListBody extends StatelessWidget {
     final s = context.watch<AppState>();
     final l10n = context.l10n;
     final peers = s.isReady ? s.mesh.nearbyPeers : const <Peer>[];
+    // The auto-delete window lives in Settings > Data, not here. On this screen
+    // it sat a few rows above the composer's "expires in" chips with the same
+    // styling and overlapping values, and the two mean opposite things: this one
+    // is how long received history is kept locally, that one is the TTL of the
+    // notice being sent.
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-          child: Row(
-            children: [
-              Text(
-                l10n.meshRetentionTitle,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: ResilNetTheme.mutedOnSurface(context),
-                    ),
-              ),
-              const Spacer(),
-              for (final r in MeshRetention.values)
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: ChoiceChip(
-                    visualDensity: VisualDensity.compact,
-                    label: Text(switch (r) {
-                      MeshRetention.keep => l10n.meshRetentionKeep,
-                      MeshRetention.oneDay => '1d',
-                      MeshRetention.threeDays => '3d',
-                      MeshRetention.sevenDays => '7d',
-                    }),
-                    selected: s.meshRetention == r,
-                    onSelected: (_) => s.setMeshRetention(r),
-                  ),
-                ),
-            ],
-          ),
-        ),
         Expanded(
           child: peers.isEmpty
               ? Center(
