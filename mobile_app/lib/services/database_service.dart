@@ -7,6 +7,12 @@ import '../core/resilnet_protocol.dart';
 import '../models/chat_message.dart';
 import '../models/peer.dart';
 
+/// Metadata about one 1:1 conversation, for the chat list.
+///
+/// Deliberately carries no message text: bodies stay sealed in SQLite and are
+/// only unwrapped inside the chat screen, which is screenshot-protected.
+typedef PeerChatSummary = ({int lastTs, int unread});
+
 class DatabaseService {
   Database? _db;
 
@@ -595,6 +601,82 @@ class DatabaseService {
       [a, b, b, a],
     );
     return (rows.first['n'] as int?) ?? 0;
+  }
+
+  /// Last-activity time and unread count for every 1:1 peer, in two grouped
+  /// queries rather than one pair per row.
+  Future<Map<String, PeerChatSummary>> getDirectChatSummaries(
+    String myUserId,
+  ) async {
+    final lastRows = await _database.rawQuery(
+      '''
+      SELECT peerId, MAX(timestamp) AS lastTs
+      FROM (
+        SELECT
+          CASE
+            WHEN senderId = ? THEN receiverId
+            ELSE senderId
+          END AS peerId,
+          timestamp
+        FROM messages
+        WHERE (senderId = ? OR receiverId = ?)
+          AND type != ?
+          AND receiverId != ?
+          AND IFNULL(payloadKind, 'text') NOT IN ('presence', 'notice')
+      )
+      WHERE peerId IS NOT NULL AND peerId != ''
+      GROUP BY peerId
+    ''',
+      [
+        myUserId,
+        myUserId,
+        myUserId,
+        MessageType.broadcast.name,
+        ResilNetIds.broadcastReceiverId,
+      ],
+    );
+
+    final unreadRows = await _database.rawQuery(
+      '''
+      SELECT senderId AS peerId, COUNT(*) AS unread
+      FROM messages
+      WHERE receiverId = ?
+        AND type = ?
+        AND status IN (?, ?)
+        AND IFNULL(payloadKind, 'text') NOT IN
+          ('presence', 'notice', 'area_public', 'system',
+           'board_key_request', 'board_key_grant', 'board_post')
+      GROUP BY senderId
+    ''',
+      [
+        myUserId,
+        MessageType.direct.name,
+        MessageStatus.delivered.name,
+        MessageStatus.sent.name,
+      ],
+    );
+
+    final unreadByPeer = <String, int>{};
+    for (final row in unreadRows) {
+      final id = (row['peerId'] as String?) ?? '';
+      if (id.isEmpty) continue;
+      unreadByPeer[id] = (row['unread'] as int?) ?? 0;
+    }
+
+    final out = <String, PeerChatSummary>{};
+    for (final row in lastRows) {
+      final id = (row['peerId'] as String?) ?? '';
+      if (id.isEmpty || id == ResilNetIds.broadcastReceiverId) continue;
+      out[id] = (
+        lastTs: (row['lastTs'] as int?) ?? 0,
+        unread: unreadByPeer.remove(id) ?? 0,
+      );
+    }
+    // Unread senders with no surviving conversation row still deserve a badge.
+    for (final entry in unreadByPeer.entries) {
+      out[entry.key] = (lastTs: 0, unread: entry.value);
+    }
+    return out;
   }
 
   Future<List<String>> getChatPeersFor(String myId) async {

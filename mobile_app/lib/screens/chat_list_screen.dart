@@ -20,6 +20,7 @@ import '../models/notice_expiry.dart';
 import '../models/peer.dart';
 import '../services/mic_permission.dart';
 import '../services/audio_recorder_service.dart';
+import '../services/database_service.dart';
 import '../state/app_state.dart';
 import '../widgets/app_recovery_actions.dart';
 import '../widgets/cached_future_builder.dart';
@@ -888,6 +889,29 @@ class _ChatListScreenState extends State<ChatListScreen> {
   }
 }
 
+/// What one load of the 1:1 list needs: the peer rows plus per-peer metadata.
+class _DirectsSnapshot {
+  const _DirectsSnapshot({required this.peers, required this.summaries});
+
+  final List<Peer> peers;
+  final Map<String, PeerChatSummary> summaries;
+}
+
+/// Clock time for today, numeric date before that — digits only, so it reads
+/// the same in every locale the app ships.
+String _formatLastActivity(int timestampMs) {
+  if (timestampMs <= 0) return '';
+  final dt = DateTime.fromMillisecondsSinceEpoch(timestampMs).toLocal();
+  final now = DateTime.now();
+  if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
+    final hh = dt.hour.toString().padLeft(2, '0');
+    final mm = dt.minute.toString().padLeft(2, '0');
+    return '$hh:$mm';
+  }
+  if (dt.year == now.year) return '${dt.day}/${dt.month}';
+  return '${dt.day}/${dt.month}/${dt.year}';
+}
+
 class _DirectsBody extends StatelessWidget {
   const _DirectsBody({
     required this.peerController,
@@ -928,11 +952,19 @@ class _DirectsBody extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: CachedFutureBuilder<List<Peer>>(
-            epoch: s.peerDirectoryEpoch,
-            load: () => s.db.getAllPeers(),
+          child: CachedFutureBuilder<_DirectsSnapshot>(
+            epoch: (s.peerDirectoryEpoch, s.chatDataEpoch),
+            load: () async {
+              final peers = await s.db.getAllPeers();
+              final summaries = s.myUserIdReady
+                  ? await s.db.getDirectChatSummaries(s.myUserId)
+                  : const <String, PeerChatSummary>{};
+              return _DirectsSnapshot(peers: peers, summaries: summaries);
+            },
             builder: (context, snap) {
-              final peers = snap.data ?? const <Peer>[];
+              final peers = snap.data?.peers ?? const <Peer>[];
+              final summaries =
+                  snap.data?.summaries ?? const <String, PeerChatSummary>{};
               if (peers.isEmpty) {
                 return Center(
                   child: Padding(
@@ -956,8 +988,15 @@ class _DirectsBody extends StatelessWidget {
                 separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (context, i) {
                   final peer = peers[i];
+                  final summary = summaries[peer.id];
+                  final unread = summary?.unread ?? 0;
+                  final stamp = _formatLastActivity(summary?.lastTs ?? 0);
                   return ListTile(
-                    leading: Identicon(id: peer.id),
+                    leading: Badge(
+                      isLabelVisible: unread > 0,
+                      label: Text('$unread'),
+                      child: Identicon(id: peer.id),
+                    ),
                     title: Text(
                       s.peerDisplayLabel(
                         peer.id,
@@ -966,6 +1005,20 @@ class _DirectsBody extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    subtitle: stamp.isEmpty
+                        ? null
+                        : Text(
+                            stamp,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: ResilNetTheme.mutedOnSurface(
+                                    context,
+                                    alpha: 0.6,
+                                  ),
+                                ),
+                          ),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 18),
                       onPressed: () => onAlias(context, peer.id),
