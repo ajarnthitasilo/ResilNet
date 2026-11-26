@@ -290,136 +290,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     final sections = <_SettingsSection>[
       _SettingsSection(
-        title: l10n.language,
-        subtitle: l10n.languageSubtitle,
-        keywords: [l10n.languageSystem, 'language', 'ภาษา'],
-        children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.translate),
-              title: Text(l10n.language),
-              subtitle: Text(
-                () {
-                  if (override == null) return l10n.languageSystem;
-                  for (final o in kAppLocaleOptions) {
-                    if (o.id == override) return o.menuLabel;
-                  }
-                  return override;
-                }(),
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => unawaited(_pickLanguage(context, s)),
-            ),
-        ],
-      ),
-      _SettingsSection(
-        title: l10n.localWifiTitle,
-        subtitle: l10n.localWifiSubtitle,
-        keywords: ['wifi', 'lan', 'hotspot', 'ไวไฟ'],
-        children: [
-            FilledButton.tonalIcon(
-              onPressed: () => unawaited(showLocalWifiLinkSheet(context)),
-              icon: const Icon(Icons.wifi_lock_outlined),
-              label: Text(l10n.localWifiTitle),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.localWifiNotGatewayHint,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
-                  ),
-            ),
-        ],
-      ),
-      _SettingsSection(
-        title: l10n.lxmfBridgeTitle,
-        subtitle: l10n.lxmfBridgeSubtitle,
-        keywords: ['lxmf', 'reticulum', 'home node', 'bridge'],
-        children: [
-            FilledButton.tonalIcon(
-              onPressed: () => unawaited(showHomeNodeBridgeSheet(context)),
-              icon: Icon(
-                Icons.home_work_outlined,
-                color: s.lxmfBridgeEnabled && s.lxmfBridge?.online == true
-                    ? ResilNetTheme.emerald
-                    : null,
-              ),
-              label: Text(l10n.lxmfBridgeOpen),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              s.lxmfBridgeEnabled
-                  ? (s.lxmfBridge?.online == true
-                      ? l10n.lxmfBridgeStatusOnline
-                      : l10n.lxmfBridgeStatusOffline)
-                  : l10n.lxmfBridgeDisabledHint,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
-                  ),
-            ),
-        ],
-      ),
-      _SettingsSection(
-        title: l10n.appRecoverySection,
-        subtitle: l10n.appRecoverySectionSubtitle,
-        keywords: [
-          l10n.appHardRecoverAction,
-          l10n.appSessionResetAction,
-          'recover',
-          'reset',
-          'กู้คืน',
-        ],
-        children: [
-            FilledButton.icon(
-              onPressed: s.recovering
-                  ? null
-                  : () => unawaited(
-                        runAppRecoveryAction(
-                          context,
-                          busyLabel: l10n.appHardRecovering,
-                          action: (state) =>
-                              state.hardRecoverApp(reason: 'settings'),
-                        ),
-                      ),
-              icon: const Icon(Icons.healing_outlined),
-              label: Text(l10n.appHardRecoverAction),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: s.recovering
-                  ? null
-                  : () async {
-                      final ok = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => GlassAlertDialog(
-                          title: Text(l10n.appSessionResetConfirmTitle),
-                          content: Text(l10n.appSessionResetConfirmBody),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: Text(l10n.cancel),
-                            ),
-                            FilledButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: Text(l10n.appSessionResetAction),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (ok != true || !context.mounted) return;
-                      await runAppRecoveryAction(
-                        context,
-                        busyLabel: l10n.appSessionResetRunning,
-                        action: (state) =>
-                            state.resetAppSession(reason: 'settings'),
-                      );
-                    },
-              icon: const Icon(Icons.restart_alt),
-              label: Text(l10n.appSessionResetAction),
-            ),
-        ],
-      ),
-      _SettingsSection(
         title: l10n.settingsPrivacy,
         keywords: [
           l10n.settingsE2eeTitle,
@@ -762,6 +632,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
       _SettingsSection(
+        title: l10n.localWifiTitle,
+        subtitle: l10n.localWifiSubtitle,
+        keywords: ['wifi', 'lan', 'hotspot', 'ไวไฟ'],
+        children: [
+            FilledButton.tonalIcon(
+              onPressed: () => unawaited(showLocalWifiLinkSheet(context)),
+              icon: const Icon(Icons.wifi_lock_outlined),
+              label: Text(l10n.localWifiTitle),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.localWifiNotGatewayHint,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
+                  ),
+            ),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.lxmfBridgeTitle,
+        subtitle: l10n.lxmfBridgeSubtitle,
+        keywords: ['lxmf', 'reticulum', 'home node', 'bridge'],
+        children: [
+            FilledButton.tonalIcon(
+              onPressed: () => unawaited(showHomeNodeBridgeSheet(context)),
+              icon: Icon(
+                Icons.home_work_outlined,
+                color: s.lxmfBridgeEnabled && s.lxmfBridge?.online == true
+                    ? ResilNetTheme.emerald
+                    : null,
+              ),
+              label: Text(l10n.lxmfBridgeOpen),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              s.lxmfBridgeEnabled
+                  ? (s.lxmfBridge?.online == true
+                      ? l10n.lxmfBridgeStatusOnline
+                      : l10n.lxmfBridgeStatusOffline)
+                  : l10n.lxmfBridgeDisabledHint,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.55),
+                  ),
+            ),
+        ],
+      ),
+      _SettingsSection(
         title: l10n.settingsDevices,
         keywords: [
           l10n.settingsClearLocationTitle,
@@ -911,6 +828,89 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   : const Icon(Icons.chevron_right),
               enabled: !_clearing && !_wiping,
               onTap: _confirmClearMessages,
+            ),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.appRecoverySection,
+        subtitle: l10n.appRecoverySectionSubtitle,
+        keywords: [
+          l10n.appHardRecoverAction,
+          l10n.appSessionResetAction,
+          'recover',
+          'reset',
+          'กู้คืน',
+        ],
+        children: [
+            FilledButton.icon(
+              onPressed: s.recovering
+                  ? null
+                  : () => unawaited(
+                        runAppRecoveryAction(
+                          context,
+                          busyLabel: l10n.appHardRecovering,
+                          action: (state) =>
+                              state.hardRecoverApp(reason: 'settings'),
+                        ),
+                      ),
+              icon: const Icon(Icons.healing_outlined),
+              label: Text(l10n.appHardRecoverAction),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: s.recovering
+                  ? null
+                  : () async {
+                      final ok = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => GlassAlertDialog(
+                          title: Text(l10n.appSessionResetConfirmTitle),
+                          content: Text(l10n.appSessionResetConfirmBody),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: Text(l10n.cancel),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: Text(l10n.appSessionResetAction),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (ok != true || !context.mounted) return;
+                      await runAppRecoveryAction(
+                        context,
+                        busyLabel: l10n.appSessionResetRunning,
+                        action: (state) =>
+                            state.resetAppSession(reason: 'settings'),
+                      );
+                    },
+              icon: const Icon(Icons.restart_alt),
+              label: Text(l10n.appSessionResetAction),
+            ),
+        ],
+      ),
+      _SettingsSection(
+        title: l10n.language,
+        subtitle: l10n.languageSubtitle,
+        keywords: [l10n.languageSystem, 'language', 'ภาษา'],
+        children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.translate),
+              title: Text(l10n.language),
+              subtitle: Text(
+                () {
+                  if (override == null) return l10n.languageSystem;
+                  for (final o in kAppLocaleOptions) {
+                    if (o.id == override) return o.menuLabel;
+                  }
+                  return override;
+                }(),
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => unawaited(_pickLanguage(context, s)),
             ),
         ],
       ),
