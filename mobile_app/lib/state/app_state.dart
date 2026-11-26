@@ -793,6 +793,7 @@ class AppState extends ChangeNotifier {
         onEphemeralMessage: _rememberSessionMessage,
         onBulletinMessage: _onBulletinMessage,
         onLinkReady: _onBleLinkReadyForBulletins,
+        onNodeDiscovered: (device) => _esp32?.onExternalDiscovery(device),
       );
       _syncMeshIdentity();
       _esp32 = Esp32SyncService(
@@ -4949,6 +4950,7 @@ class AppState extends ChangeNotifier {
       onEphemeralMessage: _rememberSessionMessage,
       onBulletinMessage: _onBulletinMessage,
       onLinkReady: _onBleLinkReadyForBulletins,
+      onNodeDiscovered: (device) => _esp32?.onExternalDiscovery(device),
     );
     _syncMeshIdentity();
     _onMeshChanged = () {
@@ -5629,7 +5631,14 @@ class AppState extends ChangeNotifier {
           );
         }
         try {
-          await esp32.startBackgroundScan();
+          // One BLE scan per process: when the mesh scan is up, the ESP32
+          // service reuses its hits instead of starting a second scan
+          // (reactive_ble asserts on an overlapping scan and aborts).
+          if (mesh.running) {
+            await esp32.attachExternalScan();
+          } else {
+            await esp32.startBackgroundScan();
+          }
         } catch (e) {
           debugPrint('[ResilNet] esp32.start failed (continuing): $e');
         }

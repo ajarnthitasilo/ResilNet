@@ -11,6 +11,7 @@ import '../core/resilnet_chunk_codec.dart';
 import '../core/resilnet_nack_codec.dart';
 import '../core/resilnet_ack_codec.dart';
 import '../core/resilnet_payload_type.dart';
+import '../core/resilnet_protocol.dart';
 import '../models/area_presence.dart';
 import '../models/ack_entry.dart';
 import '../models/chat_message.dart';
@@ -41,11 +42,13 @@ class BleMeshService extends ChangeNotifier {
     void Function(ChatMessage message)? onEphemeralMessage,
     Future<bool> Function(ChatMessage message)? onBulletinMessage,
     void Function(String deviceId)? onLinkReady,
+    void Function(DiscoveredDevice device)? onNodeDiscovered,
   })  : _db = database,
         _shouldPersistHistory = shouldPersistHistory ?? (() => true),
         _onEphemeralMessage = onEphemeralMessage,
         _onBulletinMessage = onBulletinMessage,
-        _onLinkReady = onLinkReady;
+        _onLinkReady = onLinkReady,
+        _onNodeDiscovered = onNodeDiscovered;
 
   final CryptoService? crypto;
   final ResilNetService? resilnet;
@@ -53,6 +56,11 @@ class BleMeshService extends ChangeNotifier {
   final AckHandlerService? ackHandler;
   final bool Function() _shouldPersistHistory;
   final void Function(ChatMessage message)? _onEphemeralMessage;
+
+  /// ESP32 node sightings forwarded from this scan. Only one BLE scan may run
+  /// per process (reactive_ble asserts otherwise), so Esp32SyncService reuses
+  /// these hits instead of opening a second scan.
+  final void Function(DiscoveredDevice device)? _onNodeDiscovered;
 
   /// Public bulletin ingest (verify + dedupe ทำใน AppState).
   /// คืน true เมื่อ bulletin ผ่านการตรวจและถูกรับเข้า.
@@ -100,6 +108,12 @@ class BleMeshService extends ChangeNotifier {
   String? localGeohash;
 
   StreamSubscription<DiscoveredDevice>? _scanSub;
+
+  /// Serializes scan stop -> start. reactive_ble_mobile asserts on
+  /// `!central.isScanning`, so handing the native central a new scan while the
+  /// previous one is still tearing down aborts debug builds (macOS trips this
+  /// on every lifecycle flip).
+  Future<void> _scanChain = Future.value();
   StreamSubscription<BleStatus>? _bleStatusSub;
   StreamSubscription<ConnectionStateUpdate>? _connSub;
   StreamSubscription<List<int>>? _notifySub;
@@ -185,7 +199,7 @@ class BleMeshService extends ChangeNotifier {
       await BlePeripheral.clearServices();
     } catch (_) {}
     _gattReady = false;
-    await _scanSub?.cancel();
+    await _stopScanning();
     await _bleStatusSub?.cancel();
     await _connSub?.cancel();
     await _notifySub?.cancel();
@@ -295,8 +309,7 @@ class BleMeshService extends ChangeNotifier {
   Future<void> _applyBulletinListenPhase() async {
     if (!_running || !_bulletinListenActive) return;
     if (_roleAdvertisePhase) {
-      await _scanSub?.cancel();
-      _scanSub = null;
+      await _stopScanning();
       await _startAdvertising();
       debugPrint('[BLE] bulletin phase=ADV gatt=$_gattReady');
     } else {
@@ -426,8 +439,7 @@ class BleMeshService extends ChangeNotifier {
       return;
     }
     if (_roleAdvertisePhase) {
-      await _scanSub?.cancel();
-      _scanSub = null;
+      await _stopScanning();
       await _startAdvertising();
     } else {
       // Legacy: pause ADV while scanning (hurts bulletin receive).
@@ -477,6 +489,11 @@ class BleMeshService extends ChangeNotifier {
     final n = d.name.trim().toLowerCase();
     // Darwin ads use localName "ResilNet" (manufacturer fingerprint is ignored).
     return n == 'resilnet' || n.contains('resil');
+  }
+
+  bool _looksLikeEsp32Node(DiscoveredDevice d) {
+    final node = ResilNetProtocol.nodeServiceUuid.toString().toLowerCase();
+    return d.serviceUuids.any((u) => u.toString().toLowerCase() == node);
   }
 
   bool _uuidEq(String a, String b) => a.toLowerCase() == b.toLowerCase();
@@ -735,24 +752,47 @@ class BleMeshService extends ChangeNotifier {
     // Unfiltered + client filter: Darwin never sends manufacturerData, but
     // localName "ResilNet" + service UUID (when present) both match here.
     // Service-UUID-only scans miss overflow-area UUIDs on Apple.
-    _startFallbackScan();
+    unawaited(_startFallbackScan());
   }
 
-  void _startFallbackScan() {
-    _scanSub?.cancel();
-    debugPrint('[BLE] starting unfiltered ResilNet scan');
-    _scanSub = _ble
-        .scanForDevices(
-          withServices: const [],
-          scanMode: ScanMode.lowLatency,
-          requireLocationServicesEnabled: false,
-        )
-        .listen((d) {
-          if (_looksLikeResilNetAdv(d)) _onScanHit(d);
-        }, onError: (e) {
-          debugPrint('[BLE] scan error: $e');
-        });
+  /// Queue [op] behind every scan operation already in flight, so the plugin
+  /// never receives an overlapping stop/start pair.
+  Future<void> _enqueueScanOp(Future<void> Function() op) {
+    final next = _scanChain.then((_) => op()).catchError((Object e) {
+      debugPrint('[BLE] scan op failed: $e');
+    });
+    _scanChain = next;
+    return next;
   }
+
+  Future<void> _cancelScanSub() async {
+    final previous = _scanSub;
+    _scanSub = null;
+    if (previous != null) await previous.cancel();
+  }
+
+  /// Stop the current scan and wait for the native central to settle.
+  Future<void> _stopScanning() => _enqueueScanOp(_cancelScanSub);
+
+  Future<void> _startFallbackScan() => _enqueueScanOp(() async {
+        await _cancelScanSub();
+        if (!_running) return;
+        debugPrint('[BLE] starting unfiltered ResilNet scan');
+        _scanSub = _ble
+            .scanForDevices(
+              withServices: const [],
+              scanMode: ScanMode.lowLatency,
+              requireLocationServicesEnabled: false,
+            )
+            .listen((d) {
+              if (_looksLikeResilNetAdv(d)) _onScanHit(d);
+              if (_onNodeDiscovered != null && _looksLikeEsp32Node(d)) {
+                _onNodeDiscovered(d);
+              }
+            }, onError: (e) {
+              debugPrint('[BLE] scan error: $e');
+            });
+      });
 
   void _onScanHit(DiscoveredDevice d) {
     _nearby[d.id] = d;

@@ -37,6 +37,11 @@ class Esp32SyncService extends ChangeNotifier {
   SyncPhase _phase = SyncPhase.idle;
   SyncPhase get phase => _phase;
 
+  /// True once BleMeshService feeds us its scan hits. Only one BLE scan may be
+  /// active per process, so we must not open our own while the mesh scans.
+  bool _externalScan = false;
+  bool get usesExternalScan => _externalScan;
+
   String? _connectedNodeId;
   String? get connectedNodeId => _connectedNodeId;
 
@@ -47,8 +52,30 @@ class Esp32SyncService extends ChangeNotifier {
 
   final _pendingResponses = <Completer<Map<String, dynamic>>>[];
 
+  /// Take node sightings from BleMeshService's scan instead of opening our own.
+  Future<void> attachExternalScan() async {
+    _externalScan = true;
+    await _scanSub?.cancel();
+    _scanSub = null;
+    _scanTimer?.cancel();
+    _scanTimer = null;
+    if (_phase != SyncPhase.syncing) _setPhase(SyncPhase.scanning);
+    debugPrint('[Esp32Sync] using shared mesh scan');
+  }
+
+  /// A node seen by the mesh scan — same handling as our own scan hits.
+  void onExternalDiscovery(DiscoveredDevice device) {
+    if (!_externalScan) return;
+    if (_phase != SyncPhase.scanning) return;
+    unawaited(_connectAndSync(device.id));
+  }
+
   /// เริ่มสแกนหา ESP32 Node ในเบื้องหลัง
   Future<void> startBackgroundScan() async {
+    if (_externalScan) {
+      if (_phase != SyncPhase.syncing) _setPhase(SyncPhase.scanning);
+      return;
+    }
     if (_scanSub != null) return;
     _setPhase(SyncPhase.scanning);
 
@@ -96,6 +123,7 @@ class Esp32SyncService extends ChangeNotifier {
   }
 
   Future<void> stop() async {
+    _externalScan = false;
     await _scanSub?.cancel();
     await _connSub?.cancel();
     await _notifySub?.cancel();
