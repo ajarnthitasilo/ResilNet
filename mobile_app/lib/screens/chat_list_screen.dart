@@ -63,6 +63,24 @@ class ChatListScreen extends StatefulWidget {
   State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
+/// One row of the ⋮ menu: icon then label, so the menu can be scanned by
+/// shape instead of read line by line.
+PopupMenuItem<String> _overflowItem({
+  required String value,
+  required IconData icon,
+  required String label,
+}) =>
+    PopupMenuItem<String>(
+      value: value,
+      child: Row(
+        children: [
+          Icon(icon, size: 20),
+          const SizedBox(width: 12),
+          Expanded(child: Text(label)),
+        ],
+      ),
+    );
+
 class _ChatListScreenState extends State<ChatListScreen> {
   final _peerController = TextEditingController();
   final _compose = TextEditingController();
@@ -613,34 +631,48 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   unawaited(showLocalWifiLinkSheet(context));
               }
             },
+            // Same seven entries in the same order as before, now grouped by
+            // what they are for and labelled with the icon each destination
+            // already uses elsewhere: hub = the Network panel behind the
+            // status bar, wifi_lock = the Local Wi-Fi sheet in Settings.
             itemBuilder: (context) => [
-              PopupMenuItem(
+              _overflowItem(
                 value: 'network',
-                child: Text(l10n.networkPanelTitle),
+                icon: Icons.hub_outlined,
+                label: l10n.networkPanelTitle,
               ),
-              PopupMenuItem(
+              _overflowItem(
                 value: 'local_wifi',
-                child: Text(l10n.localWifiTitle),
+                icon: Icons.wifi_lock_outlined,
+                label: l10n.localWifiTitle,
               ),
-              PopupMenuItem(
+              const PopupMenuDivider(),
+              _overflowItem(
                 value: 'hard_recover',
-                child: Text(l10n.appHardRecoverAction),
+                icon: Icons.restart_alt,
+                label: l10n.appHardRecoverAction,
               ),
-              PopupMenuItem(
+              const PopupMenuDivider(),
+              _overflowItem(
                 value: 'info',
-                child: Text(l10n.infoOpen),
+                icon: Icons.info_outline,
+                label: l10n.infoOpen,
               ),
-              PopupMenuItem(
+              _overflowItem(
                 value: 'announce',
-                child: Text(l10n.announceOpen),
+                icon: Icons.campaign_outlined,
+                label: l10n.announceOpen,
               ),
-              PopupMenuItem(
+              const PopupMenuDivider(),
+              _overflowItem(
                 value: 'settings',
-                child: Text(l10n.settings),
+                icon: Icons.settings_outlined,
+                label: l10n.settings,
               ),
-              PopupMenuItem(
+              _overflowItem(
                 value: 'identity',
-                child: Text(l10n.identityQrTooltip),
+                icon: Icons.qr_code_2,
+                label: l10n.identityQrTooltip,
               ),
             ],
           ),
