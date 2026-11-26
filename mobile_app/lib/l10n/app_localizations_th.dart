@@ -414,7 +414,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get feedGeoSubtitle => 'ช่องตาม geohash (ค้นพบ)';
 
   @override
-  String get peerIdHint => 'วาง Receiver ID (Public Key Hash) เพื่อเริ่มแชต';
+  String get peerIdHint => 'วางรหัสผู้ใช้ของเพื่อนเพื่อเริ่มแชต';
 
   @override
   String get directsEmpty =>

@@ -416,8 +416,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedGeoSubtitle => 'Geohash discovery channel';
 
   @override
-  String get peerIdHint =>
-      'Paste Receiver ID (Public Key Hash) to start a chat';
+  String get peerIdHint => 'Paste a friend\'s user ID to start a chat';
 
   @override
   String get directsEmpty =>

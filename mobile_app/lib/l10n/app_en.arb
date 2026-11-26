@@ -150,7 +150,7 @@
   "feedDirectsSubtitle": "Private E2EE messages",
   "feedMeshSubtitle": "Nearby peers (BLE)",
   "feedGeoSubtitle": "Geohash discovery channel",
-  "peerIdHint": "Paste Receiver ID (Public Key Hash) to start a chat",
+  "peerIdHint": "Paste a friend's user ID to start a chat",
   "directsEmpty": "No chats yet — scan a QR or paste a Receiver ID to start\nMessages are sealed with E2EE before send (BLE / LoRa / Nostr)",
   "directsSubtitle": "E2EE • tap to open chat",
   "meshIntro": "Peers in BLE range — tap for a private E2EE chat (no public compose on #mesh)\nSends via hybrid router (BLE + LoRa + Nostr when online)",

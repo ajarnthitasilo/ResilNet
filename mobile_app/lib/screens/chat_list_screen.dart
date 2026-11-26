@@ -936,7 +936,11 @@ class _DirectsBody extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: peerController,
-                  decoration: InputDecoration(hintText: l10n.peerIdHint),
+                  decoration: InputDecoration(
+                    hintText: l10n.peerIdHint,
+                    // Wrap rather than cut the sentence in half on a phone.
+                    hintMaxLines: 2,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),

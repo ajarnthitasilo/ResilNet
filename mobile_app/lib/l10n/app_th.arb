@@ -150,7 +150,7 @@
   "feedDirectsSubtitle": "ข้อความส่วนตัว E2EE",
   "feedMeshSubtitle": "เพื่อนใกล้ตัว (BLE)",
   "feedGeoSubtitle": "ช่องตาม geohash (ค้นพบ)",
-  "peerIdHint": "วาง Receiver ID (Public Key Hash) เพื่อเริ่มแชต",
+  "peerIdHint": "วางรหัสผู้ใช้ของเพื่อนเพื่อเริ่มแชต",
   "directsEmpty": "ยังไม่มีแชต — สแกน QR หรือวาง Receiver ID เพื่อเริ่ม\nข้อความถูกผนึก E2EE ก่อนส่ง (BLE / LoRa / Nostr)",
   "directsSubtitle": "E2EE • แตะเพื่อเปิดแชต",
   "meshIntro": "เพื่อนในรัศมี BLE — แตะเพื่อแชตส่วนตัว E2EE (ไม่มีช่องพิมพ์สาธารณะใน #mesh)\nส่งผ่าน hybrid router (BLE + LoRa + Nostr เมื่อออนไลน์)",

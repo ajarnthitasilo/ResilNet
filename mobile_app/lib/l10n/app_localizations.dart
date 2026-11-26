@@ -902,7 +902,7 @@ abstract class AppLocalizations {
   /// No description provided for @peerIdHint.
   ///
   /// In en, this message translates to:
-  /// **'Paste Receiver ID (Public Key Hash) to start a chat'**
+  /// **'Paste a friend\'s user ID to start a chat'**
   String get peerIdHint;
 
   /// No description provided for @directsEmpty.
