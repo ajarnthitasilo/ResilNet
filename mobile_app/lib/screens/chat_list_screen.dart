@@ -181,7 +181,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       child: ResilNetTheme.glassPanel(
         context: context,
         borderRadius: BorderRadius.circular(14),
-        padding: const EdgeInsets.fromLTRB(12, 10, 4, 10),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -219,11 +219,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ],
               ),
             ),
-            IconButton(
-              tooltip: l10n.close,
-              onPressed: () => unawaited(s.dismissSoftRefreshTip()),
-              icon: const Icon(Icons.close, size: 18),
-            ),
+            // One way out, not two: the labelled button below is the dismiss.
+            // The bare ✕ that used to sit here did exactly the same thing.
           ],
         ),
       ),
