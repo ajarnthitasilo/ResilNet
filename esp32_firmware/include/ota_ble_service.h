@@ -2,6 +2,8 @@
 
 #include <Arduino.h>
 
+#include <string>
+
 class NimBLEServer;
 class NimBLECharacteristic;
 
