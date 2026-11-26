@@ -200,7 +200,7 @@ abstract class AppLocalizations {
   /// No description provided for @appRefreshTitleHint.
   ///
   /// In en, this message translates to:
-  /// **'Double-tap = soft refresh. Long-press = hard recover. Triple-tap = emergency wipe.'**
+  /// **'Double-tap = soft refresh. Long-press = hard recover.'**
   String get appRefreshTitleHint;
 
   /// No description provided for @softRefreshTipTitle.
@@ -212,7 +212,7 @@ abstract class AppLocalizations {
   /// No description provided for @softRefreshTipBody.
   ///
   /// In en, this message translates to:
-  /// **'Double-tap ResilNet (top-left) for a soft radio refresh. If still stuck: long-press the title, use ⋮ → Hard recover, or Settings. Triple-tap is emergency wipe only.'**
+  /// **'Double-tap ResilNet (top-left) for a soft radio refresh. If still stuck: long-press the title, use ⋮ → Hard recover, or Settings.'**
   String get softRefreshTipBody;
 
   /// No description provided for @softRefreshTipGotIt.
@@ -902,7 +902,7 @@ abstract class AppLocalizations {
   /// No description provided for @peerIdHint.
   ///
   /// In en, this message translates to:
-  /// **'Paste Receiver ID (Public Key Hash) to start a chat'**
+  /// **'Paste a friend\'s user ID to start a chat'**
   String get peerIdHint;
 
   /// No description provided for @directsEmpty.
@@ -4490,7 +4490,7 @@ abstract class AppLocalizations {
   /// No description provided for @panicWipeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Erase everything local — same as triple-tapping the home title (double-tap refreshes radios)'**
+  /// **'Erase everything stored on this phone — identity, messages and contacts. This cannot be undone.'**
   String get panicWipeSubtitle;
 
   /// No description provided for @panicWipeConfirmTitle.
@@ -5062,6 +5062,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Follow'**
   String get announceConfirmFollow;
+
+  /// No description provided for @chatLoadOlder.
+  ///
+  /// In en, this message translates to:
+  /// **'Load earlier messages'**
+  String get chatLoadOlder;
+
+  /// No description provided for @chatSendingAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending as {name}'**
+  String chatSendingAs(String name);
+
+  /// No description provided for @chatSendTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get chatSendTooltip;
+
+  /// No description provided for @chatE2eeOffBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'End-to-end encryption is off, so this cannot be sent. Turn it on in Settings → Privacy.'**
+  String get chatE2eeOffBlocked;
+
+  /// No description provided for @chatBlockConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block this person?'**
+  String get chatBlockConfirmTitle;
+
+  /// No description provided for @chatBlockConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will no longer appear in your lists and their messages will be ignored. You can undo this right after, or unblock later from People.'**
+  String chatBlockConfirmBody(String name);
+
+  /// No description provided for @chatBlockConfirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get chatBlockConfirmAction;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @meshPublicSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {count} nearby node(s) on #mesh'**
+  String meshPublicSent(int count);
+
+  /// No description provided for @meshPublicSentNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No nearby node received this yet — it stays queued on #mesh'**
+  String get meshPublicSentNone;
+
+  /// No description provided for @networkPanelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get networkPanelTitle;
+
+  /// No description provided for @networkPanelSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How this device is connected right now'**
+  String get networkPanelSubtitle;
+
+  /// No description provided for @networkPanelOpenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get networkPanelOpenHint;
+
+  /// No description provided for @settingsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search settings'**
+  String get settingsSearchHint;
+
+  /// No description provided for @settingsSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No setting matches “{query}”'**
+  String settingsSearchEmpty(String query);
+
+  /// No description provided for @firmwareOtaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flash firmware over Bluetooth'**
+  String get firmwareOtaTitle;
+
+  /// No description provided for @firmwareOtaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the OTA screen — scan and update an ESP32 board'**
+  String get firmwareOtaSubtitle;
+
+  /// No description provided for @firmwarePickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose firmware'**
+  String get firmwarePickTitle;
+
+  /// No description provided for @firmwareNearbyBoards.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby ESP32 boards'**
+  String get firmwareNearbyBoards;
 }
 
 class _AppLocalizationsDelegate

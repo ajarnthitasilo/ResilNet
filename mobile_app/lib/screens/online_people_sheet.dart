@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app/theme.dart';
+import '../app/tokens.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/area_presence.dart';
 import '../models/feed_channel.dart';
@@ -115,8 +116,8 @@ class _OnlinePeopleSheet extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: e.source.isInternet
-                                ? const Color(0xFFFF9F43)
-                                : ResilNetTheme.identityOrange,
+                                ? context.tokens.identity
+                                : context.tokens.channel,
                           ),
                         ),
                         subtitle: Text(

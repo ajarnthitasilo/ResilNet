@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
 
 import '../core/payload_kinds.dart';
 import '../core/resilnet_ack_codec.dart';

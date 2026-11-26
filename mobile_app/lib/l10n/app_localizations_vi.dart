@@ -2827,4 +2827,72 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get announceConfirmFollow => 'Theo';
+
+  @override
+  String get chatLoadOlder => 'Load earlier messages';
+
+  @override
+  String chatSendingAs(String name) {
+    return 'Sending as $name';
+  }
+
+  @override
+  String get chatSendTooltip => 'Send';
+
+  @override
+  String get chatE2eeOffBlocked =>
+      'End-to-end encryption is off, so this cannot be sent. Turn it on in Settings → Privacy.';
+
+  @override
+  String get chatBlockConfirmTitle => 'Block this person?';
+
+  @override
+  String chatBlockConfirmBody(String name) {
+    return '$name will no longer appear in your lists and their messages will be ignored. You can undo this right after, or unblock later from People.';
+  }
+
+  @override
+  String get chatBlockConfirmAction => 'Block';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String meshPublicSent(int count) {
+    return 'Sent to $count nearby node(s) on #mesh';
+  }
+
+  @override
+  String get meshPublicSentNone =>
+      'No nearby node received this yet — it stays queued on #mesh';
+
+  @override
+  String get networkPanelTitle => 'Network';
+
+  @override
+  String get networkPanelSubtitle => 'How this device is connected right now';
+
+  @override
+  String get networkPanelOpenHint => 'Network';
+
+  @override
+  String get settingsSearchHint => 'Search settings';
+
+  @override
+  String settingsSearchEmpty(String query) {
+    return 'No setting matches “$query”';
+  }
+
+  @override
+  String get firmwareOtaTitle => 'Flash firmware over Bluetooth';
+
+  @override
+  String get firmwareOtaSubtitle =>
+      'Open the OTA screen — scan and update an ESP32 board';
+
+  @override
+  String get firmwarePickTitle => 'Choose firmware';
+
+  @override
+  String get firmwareNearbyBoards => 'Nearby ESP32 boards';
 }

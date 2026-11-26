@@ -59,29 +59,20 @@ class _ResilNetAppState extends State<ResilNetApp> {
   @override
   void initState() {
     super.initState();
+    // WatchSyncService.bind() installs its own debounced AppState listener,
+    // a push burst and an 8s heartbeat. Do NOT add a second listener here:
+    // it used to queue 5 extra delayed pushes per notification, and each push
+    // reads the whole chat history of up to 12 conversations from SQLite.
     WatchSyncService.instance.bind(
       appState: widget.appState,
       navigatorKey: _navigatorKey,
     );
-    widget.appState.addListener(_onAppStateForWatch);
   }
 
   @override
   void dispose() {
-    widget.appState.removeListener(_onAppStateForWatch);
     WatchSyncService.instance.dispose();
     super.dispose();
-  }
-
-  void _onAppStateForWatch() {
-    final s = widget.appState;
-    if (!s.myUserIdReady) return;
-    unawaited(WatchSyncService.instance.pushSnapshot());
-    for (final delay in [1, 2, 4, 8, 15]) {
-      Future<void>.delayed(Duration(seconds: delay), () {
-        unawaited(WatchSyncService.instance.pushSnapshot());
-      });
-    }
   }
 
   @override

@@ -92,6 +92,17 @@
 	<string>ResilNet uses the microphone for sealed voice notes.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>ResilNet uses location for Area geohash presence over Nostr (optional on Mac).</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>ResilNet uses the local network to find nearby devices on the same Wi-Fi or hotspot and exchange sealed messages without the internet.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_resilnet-lan._udp</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSLocationUsageDescription</key>
 	<string>ResilNet uses location for Area geohash presence over Nostr (optional on Mac).</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -7,6 +7,7 @@ import '../app/theme.dart';
 import '../core/peer_id.dart';
 import '../l10n/app_localizations.dart';
 import '../state/app_state.dart';
+import 'cached_future_builder.dart';
 import 'identicon.dart';
 import '../app/glass_overlays.dart';
 
@@ -200,8 +201,9 @@ Future<void> showInviteSendToChatSheet({
                           separatorBuilder: (_, _) => const Divider(height: 1),
                           itemBuilder: (_, i) {
                             final peer = peers[i];
-                            return FutureBuilder<String>(
-                              future: s.db.resolveDisplayName(peer.id),
+                            return CachedFutureBuilder<String>(
+                              epoch: '${peer.id}-${s.peerDirectoryEpoch}',
+                              load: () => s.db.resolveDisplayName(peer.id),
                               builder: (context, snap) {
                                 final label = peerListLabel(
                                   aliasOrNick: snap.data ?? peer.displayName,

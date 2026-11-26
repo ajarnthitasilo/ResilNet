@@ -12,9 +12,9 @@
       }
     }
   },
-  "appRefreshTitleHint": "แตะสองครั้ง = รีเฟรชเบา · กดค้าง = กู้หนัก · แตะสามครั้ง = ล้างฉุกเฉิน",
+  "appRefreshTitleHint": "แตะสองครั้ง = รีเฟรชวิทยุ · กดค้าง = กู้คืนแบบเต็ม",
   "softRefreshTipTitle": "ถ้าแอปดูนิ่งหรือค้าง",
-  "softRefreshTipBody": "แตะชื่อ ResilNet สองครั้งเพื่อรีเฟรชวิทยุ หากยังค้าง: กดค้างที่ชื่อ หรือ ⋮ / ตั้งค่า → กู้แอป แตะสามครั้ง = ล้างฉุกเฉินเมื่อตั้งใจเท่านั้น",
+  "softRefreshTipBody": "แตะชื่อ ResilNet (มุมซ้ายบน) สองครั้งเพื่อรีเฟรชวิทยุ ถ้ายังค้าง: กดชื่อค้างไว้ หรือเลือก ⋮ → กู้คืนแบบเต็ม หรือไปที่หน้าตั้งค่า",
   "softRefreshTipGotIt": "เข้าใจแล้ว",
   "infoSoftRefreshTitle": "ถ้าแอปดูนิ่งหรือค้าง",
   "infoSoftRefreshStepRefresh": "แตะชื่อ ResilNet มุมซ้ายบนสองครั้ง → รีเฟรชวิทยุและคนใกล้ ๆ",
@@ -150,7 +150,7 @@
   "feedDirectsSubtitle": "ข้อความส่วนตัว E2EE",
   "feedMeshSubtitle": "เพื่อนใกล้ตัว (BLE)",
   "feedGeoSubtitle": "ช่องตาม geohash (ค้นพบ)",
-  "peerIdHint": "วาง Receiver ID (Public Key Hash) เพื่อเริ่มแชต",
+  "peerIdHint": "วางรหัสผู้ใช้ของเพื่อนเพื่อเริ่มแชต",
   "directsEmpty": "ยังไม่มีแชต — สแกน QR หรือวาง Receiver ID เพื่อเริ่ม\nข้อความถูกผนึก E2EE ก่อนส่ง (BLE / LoRa / Nostr)",
   "directsSubtitle": "E2EE • แตะเพื่อเปิดแชต",
   "meshIntro": "เพื่อนในรัศมี BLE — แตะเพื่อแชตส่วนตัว E2EE (ไม่มีช่องพิมพ์สาธารณะใน #mesh)\nส่งผ่าน hybrid router (BLE + LoRa + Nostr เมื่อออนไลน์)",
@@ -1080,7 +1080,7 @@
   "dangerZoneTitle": "โซนอันตราย",
   "dangerZoneSubtitle": "ลบข้อความ กุญแจเข้ารหัส ตัวตน Nostr เพียร์ และชื่อเล่นบนเครื่องนี้ คุณจะต้องตั้งค่าใหม่",
   "panicWipeTitle": "ล้างข้อมูลฉุกเฉิน",
-  "panicWipeSubtitle": "ลบทุกอย่างในเครื่อง — เหมือนแตะชื่อบนหน้าหลักสามครั้ง (แตะสองครั้ง = รีเฟรชวิทยุ)",
+  "panicWipeSubtitle": "ลบทุกอย่างที่เก็บในเครื่องนี้ — ตัวตน ข้อความ และรายชื่อ ย้อนกลับไม่ได้",
   "panicWipeConfirmTitle": "ล้างข้อมูลทั้งหมดในเครื่อง?",
   "panicWipeConfirmBody": "จะลบแชท กุญแจ และตัวตนบนโทรศัพท์นี้ถาวร\nเพื่อนต้องสแกน QR ใหม่กับตัวตนใหม่ของคุณ\nย้อนกลับไม่ได้",
   "panicWipeAction": "ล้างทั้งหมด",
@@ -1269,5 +1269,24 @@
       }
     }
   },
-  "announceConfirmFollow": "ติดตาม"
+  "announceConfirmFollow": "ติดตาม",
+  "chatLoadOlder": "โหลดข้อความก่อนหน้า",
+  "chatSendingAs": "ส่งในชื่อ {name}",
+  "chatSendTooltip": "ส่ง",
+  "chatE2eeOffBlocked": "การเข้ารหัสแบบต้นทางถึงปลายทางปิดอยู่ จึงส่งไม่ได้ เปิดได้ที่ ตั้งค่า → ความเป็นส่วนตัว",
+  "chatBlockConfirmTitle": "บล็อกคนนี้ไหม?",
+  "chatBlockConfirmBody": "{name} จะไม่ปรากฏในรายการของคุณอีก และข้อความจากเขาจะถูกข้าม ยกเลิกได้ทันทีหลังกด หรือปลดบล็อกภายหลังที่หน้ารายชื่อ",
+  "chatBlockConfirmAction": "บล็อก",
+  "undo": "เลิกทำ",
+  "meshPublicSent": "ส่งถึงโหนดใกล้เคียง {count} เครื่องบน #mesh แล้ว",
+  "meshPublicSentNone": "ยังไม่มีโหนดใกล้เคียงรับข้อความนี้ — ค้างคิวไว้บน #mesh",
+  "networkPanelTitle": "เครือข่าย",
+  "networkPanelSubtitle": "ตอนนี้เครื่องนี้เชื่อมต่ออย่างไร",
+  "networkPanelOpenHint": "เครือข่าย",
+  "settingsSearchHint": "ค้นหาการตั้งค่า",
+  "settingsSearchEmpty": "ไม่พบการตั้งค่าที่ตรงกับ “{query}”",
+  "firmwareOtaTitle": "แฟลชเฟิร์มแวร์ผ่าน Bluetooth",
+  "firmwareOtaSubtitle": "เปิดหน้าจอ OTA — สแกนและอัปเดตบอร์ด ESP32",
+  "firmwarePickTitle": "เลือกเฟิร์มแวร์",
+  "firmwareNearbyBoards": "บอร์ด ESP32 ใกล้เคียง"
 }

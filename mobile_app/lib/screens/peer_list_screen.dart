@@ -6,6 +6,7 @@ import '../core/peer_id.dart';
 import '../l10n/l10n_ext.dart';
 import '../models/peer.dart';
 import '../state/app_state.dart';
+import '../widgets/cached_future_builder.dart';
 import '../widgets/identicon.dart';
 import 'chat_screen.dart';
 import '../app/glass_overlays.dart';
@@ -21,8 +22,11 @@ class PeerListScreen extends StatefulWidget {
 class _PeerListScreenState extends State<PeerListScreen> {
   static const _recentWindowMs = 120000; // 2 minutes
 
+  /// Bumped by the refresh button so the cached peer query re-runs on demand.
+  int _manualEpoch = 0;
+
   Future<void> _refresh() async {
-    if (mounted) setState(() {});
+    if (mounted) setState(() => _manualEpoch++);
   }
 
   String _connectionLabel(
@@ -42,19 +46,25 @@ class _PeerListScreenState extends State<PeerListScreen> {
     return l10n.peersOffline;
   }
 
-  Color _connectionColor(AppLocalizations l10n, String label) {
-    if (label == l10n.peersBlocked) return Colors.redAccent;
+  Color _connectionColor(
+    BuildContext context,
+    AppLocalizations l10n,
+    String label,
+  ) {
+    final scheme = Theme.of(context).colorScheme;
+    if (label == l10n.peersBlocked) return scheme.error;
     if (label == l10n.peersNearbyBle ||
         label == l10n.peersRecentlyOnline ||
         label == l10n.peersOnlineInArea) {
       return ResilNetTheme.emerald;
     }
-    return Colors.white54;
+    return ResilNetTheme.mutedOnSurface(context);
   }
 
   Future<void> _toggleBlock(AppState s, Peer peer) async {
     final next = !peer.isBlocked;
     await s.db.setPeerBlocked(peer.id, next);
+    s.markPeerDirectoryChanged();
     if (!mounted) return;
     final l10n = context.l10n;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -93,8 +103,9 @@ class _PeerListScreenState extends State<PeerListScreen> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Peer>>(
-        future: s.db.getAllPeers(),
+      body: CachedFutureBuilder<List<Peer>>(
+        epoch: '${s.peerDirectoryEpoch}-$_manualEpoch',
+        load: () => s.db.getAllPeers(),
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -108,7 +119,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
                   l10n.peersEmpty,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
+                    color: ResilNetTheme.mutedOnSurface(context, alpha: 0.75),
                     height: 1.4,
                   ),
                 ),
@@ -170,7 +181,7 @@ class _PeerListScreenState extends State<PeerListScreen> {
                       Text(
                         conn,
                         style: TextStyle(
-                          color: _connectionColor(l10n, conn),
+                          color: _connectionColor(context, l10n, conn),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -179,7 +190,10 @@ class _PeerListScreenState extends State<PeerListScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Colors.white54,
+                          color: ResilNetTheme.mutedOnSurface(
+                            context,
+                            alpha: 0.5,
+                          ),
                           fontFamily: 'monospace',
                         ),
                       ),

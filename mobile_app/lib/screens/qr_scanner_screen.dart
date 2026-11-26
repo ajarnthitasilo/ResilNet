@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../services/camera_permission.dart';
 import '../l10n/l10n_ext.dart';
+import '../app/tokens.dart';
 import '../state/app_state.dart';
 import '../app/glass_overlays.dart';
 
@@ -264,7 +265,7 @@ class _QrScanOverlay extends StatelessWidget {
     return IgnorePointer(
       child: CustomPaint(
         painter: _QrScanOverlayPainter(
-          frameColor: const Color(0xFF10B981),
+          frameColor: context.tokens.brand,
           overlayColor: Colors.black.withValues(alpha: 0.55),
         ),
         child: const SizedBox.expand(),
